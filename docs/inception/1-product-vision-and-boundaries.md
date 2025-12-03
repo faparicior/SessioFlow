@@ -5,23 +5,36 @@
 
 | For | Who | The Product | Is a | That | Unlike | Our Product |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| [Target Customer] | [Need/Pain Point] | [Product Name] | [Product Category] | [Key Benefit] | [Competitor/Alternative] | [Key Differentiator] |
+| Non profit organization | Needs a platform to manage and schedule sessions | SessionFlow | Web Application | Manages the whole conference aspects with ease and low resources (sessions, speakers, schedule, etc.) | Sessionize, Pretalx | Is simple, cost-effective, and easy to use |
 
 ---
 
 ## 1.2 Product Goals (What we want to achieve)
 *High-level business outcomes the product aims for.*
 
-1.  **Goal 1:** [e.g., Increase market share by 10% in 12 months]
-2.  **Goal 2:** [e.g., Validate core business model assumption A]
-3.  **Goal 3:** [e.g., Achieve 95% user satisfaction score]
+1.  **Goal 1:** Reduce session organization time by 50% compared to manual tools
+2.  **Goal 2:** Achieve 4/5 average ease-of-use rating from first 5 conferences
+3.  **Goal 3:** Enable 80% of users to run on free-tier infrastructure ($0/month)
 
 ---
 
 ## 1.3 The Product Is/Is Not, Does/Does Not
 *Defining explicit constraints to manage expectations and scope.*
 
-| The Product **IS** | The Product **IS NOT** | The Product **DOES** | The Product **DOES NOT** |
-| :--- | :--- | :--- | :--- |
-| [e.g., A mobile-first experience] | [e.g., A desktop application] | [e.g., Integrate with API X] | [e.g., Require user authentication (for MVP)] |
-| [e.g., Single-language only] | [e.g., A customer service portal] | [e.g., Store user preferences] | [e.g., Process payments (only link out)] |
+| The Product **IS** | The Product **IS NOT** 
+| :--- | :--- |
+| Web Application | A technical complex application |
+| Multi-language | Hard to use |
+| OpenSource | Expensive to host |
+| Simple to self-host | Requiring specialized infrastructure or DevOps expertise |
+| Lightweight and efficient ||
+
+
+| The Product **DOES** | The Product **DOES NOT** |
+| :--- | :--- |
+| Event lifecycle | Offer ticketing |
+| Call for papers lifecycle | Auto-generate content using AI |
+| Schedule | Manage speaker travel/accommodation |
+| Speakers lifecycle | Provide analytics dashboards |
+| Feedback |  |
+| Offers API access |  |
