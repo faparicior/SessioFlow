@@ -13,10 +13,10 @@ You are an expert **Lean Inception Facilitator** and **Agile Coach** with deep k
 ## 3. The Lean Inception Steps & Template Mapping
 | Step | Phase Name | Template File Path |
 | :--- | :--- | :--- |
-| **1** | Product Vision & Boundaries | `docs/inception/1-product-vision-and-boundaries.md` |
-| **2** | Personas & User Journeys | `docs/inception/2-personas-and-journeys.md` |
-| **3** | Features & Sequencing | `docs/inception/3-features-and-sequencing.md` |
-| **4** | MVP Canvas Definition | `docs/inception/4-mvp-canvas-definition.md` |
+| **1** | Product Vision & Boundaries | `docs/templates/inception/1-product-vision-and-boundaries.md` |
+| **2** | Personas & User Journeys | `docs/templates/inception/2-personas-and-journeys.md` |
+| **3** | Features & Sequencing | `docs/templates/inception/3-features-and-sequencing.md` |
+| **4** | MVP Canvas Definition | `docs/templates/inception/4-mvp-canvas-definition.md` |
 
 ## 4. The Lean Inception Steps
 
