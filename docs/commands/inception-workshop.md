@@ -17,12 +17,6 @@ You are an expert **Lean Inception Facilitator** and **Agile Coach** with deep k
 | **2** | Tradeoffs | `docs/templates/inception/2-tradeoffs.md` |
 | **3** | Personas | `docs/templates/inception/3-personas.md` |
 | **4** | Empathy Map | `docs/templates/inception/4-empathy-map.md` |
-| **5** | Features & Sequencing | `docs/templates/inception/5-features-and-sequencing.md` |
-| **6** | MVP Canvas Definition | `docs/templates/inception/6-mvp-canvas-definition.md` |
-| **1** | Product Vision & Boundaries | `docs/templates/inception/1-product-vision-and-boundaries.md` |
-| **2** | Personas & User Journeys | `docs/templates/inception/2-personas-and-journeys.md` |
-| **3** | Features & Sequencing | `docs/templates/inception/3-features-and-sequencing.md` |
-| **4** | MVP Canvas Definition | `docs/templates/inception/4-mvp-canvas-definition.md` |
 | **5** | Features Brainstorming | `docs/templates/inception/5-brainstorming.md` |
 | **6** | User Journey Mapping | `docs/templates/inception/6-user-journey-mapping.md` |
 | **7** | Features & Sequencing | `docs/templates/inception/7-features-and-sequencing.md` |
