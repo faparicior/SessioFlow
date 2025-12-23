@@ -5,7 +5,7 @@
 
 | For | Who | The Product | Is a | That | Unlike | Our Product |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Non profit organization | Needs a platform to manage and schedule sessions | SessionFlow | Web Application | Manages the whole conference aspects with ease and low resources (sessions, speakers, schedule, etc.) | Sessionize, Pretalx | Is simple, cost-effective, and easy to use |
+| Non profit organization | Needs a platform to manage and schedule sessions | SessionFlow | Web Application | Manages the whole conference aspects with ease and low resources (sessions, speakers, schedule, etc.), except ticketing and speakers accomodation and travel | Sessionize, Pretalx | Is simple, cost-effective, and easy to use |
 
 ---
 
@@ -21,7 +21,7 @@
 ## 1.3 The Product Is/Is Not, Does/Does Not
 *Defining explicit constraints to manage expectations and scope.*
 
-| The Product **IS** | The Product **IS NOT** 
+| The Product **IS** | The Product **IS NOT** |
 | :--- | :--- |
 | Web Application | A technical complex application |
 | Multi-language | Hard to use |
@@ -32,9 +32,9 @@
 
 | The Product **DOES** | The Product **DOES NOT** |
 | :--- | :--- |
-| Event lifecycle | Offer ticketing |
-| Call for papers lifecycle | Auto-generate content using AI |
-| Schedule | Manage speaker travel/accommodation |
-| Speakers lifecycle | Provide analytics dashboards |
-| Feedback |  |
-| Offers API access |  |
+| Manage the academic event lifecycle | Offer ticketing |
+| Facilitate the Call for Papers (CfP) process | Auto-generate content using AI |
+| Generate and publish the schedule | Manage speaker travel/accommodation |
+| Coordinate speaker communication | Provide analytics dashboards |
+| Collect attendee feedback |  |
+| Expose public API for integration |  |

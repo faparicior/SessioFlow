@@ -1,23 +1,43 @@
 # ⚖️ Trade-off Board (Project Constraints)
 
-## 1. Trade-off Rule
-**The core decision is defining which axis is FIXED.** You must choose **one** (or at most two) critical axis(es) and make the remaining axis(es) flexible.
+The **Trade-off Board**, often referred to as **"Understanding the Trade-offs"** or **"Sliders"**, is a strategic activity in the execution phase of a Lean Inception. Its purpose is to build a common understanding regarding the "solution of compromise"—an agreement where certain product aspects are deprioritised to favour others that are deemed more vital.
+
+According to the sources, this activity is essential because products are often built on conflicting premises, such as **Security vs Usability** or **Performance vs Flexibility**. By forcing a collaborative conversation, the team reaches a consensus that prevents future misunderstandings and accelerates decision-making.
+
+### Trade-off Board (Sliders) Template
+
+Below is a markdown template based on the "Sliders" format described in the sources.
+
+***
+
+# Trade-off Board: [Product Name]
+
+**Instructions:**
+1.  **Identify Categories:** List all relevant product qualities (e.g., Security, Usability, Cost).
+2.  **Rank Importance:** Columns are numbered **1 to N**, where **1 is the most important**.
+3.  **The Golden Rule:** Each column can only contain **one** consensus mark. You cannot have two categories at the same priority level.
+
+| Priority Rank | 1 (Most) | 2 | 3 | 4 | 5 | 6 | 7 (Least) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Usability** | | | | | | | |
+| **Security** | | | | | | | |
+| **Performance** | | | | | | | |
+| **Flexibility** | | | | | | | |
+| **Scalability** | | | | | | | |
+| **Cost** | | | | | | | |
+| **Simplicity** | | | | | | | |
 
 ---
 
-## 2. The Prioritization Matrix
+### How to use this template:
+*   **Individual Voting:** Participants place their initials (e.g., "PC", "JB") in the cells to indicate their personal perspective of priority.
+*   **Consensus:** After discussion, a **different colour** (such as a red post-it) is used to mark the final agreed-upon position for each category.
+*   **Constraint:** Ensure that in the final consensus row, every vertical column has exactly one mark.
 
-| **Priority Axis** | **FIXED (Immovable Constraint)** | **FLEXIBLE (Can Adjust/Negotiate)** | **FREE (Least Critical Driver)** |
-| :--- | :--- | :--- | :--- |
-| **SCOPE (Features)** | [Mark 'X' here if the defined feature set MUST be delivered.] | [Mark 'X' here if features can be cut, swapped, or added.] | [Mark 'X' here if feature volume is the easiest thing to compromise on.] |
-| **SCHEDULE (Time/Deadline)** | [Mark 'X' here if the delivery date MUST NOT change (e.g., regulatory deadline).] | [Mark 'X' here if the deadline can shift by a few weeks.] | [Mark 'X' here if time pressure is not the primary driver.] |
-| **BUDGET (Cost)** | [Mark 'X' here if the total allocated cost MUST NOT be exceeded.] | [Mark 'X' here if the budget can be slightly negotiated up or down.] | [Mark 'X' here if cost is not the primary restriction.] |
+***
 
----
+### Strategic Insight
+The source emphasises that this activity is not just about a final list but about the **"open and collaborative conversation"** it triggers. If the team discovers that their individual votes are widely scattered (e.g., some see Security as a '1' and others as a '7'), the facilitator must guide them to resolve these conflicting visions before the MVP construction begins.
 
-## 3. Final Decision Summary
-* **The FIXED Axis is:** [Insert the chosen fixed axis, e.g., SCHEDULE]
-* **Meaning:** [Insert concise explanation, e.g., "We must ship on time, which means we will sacrifice features (Scope) if necessary."]
-* **Agreed By:** [List key stakeholders who agreed to this trade-off.]
-
-> **The primary risk to this project will be related to:** [e.g., Scope, due to the fixed schedule.]
+**Analogy**
+Think of the Trade-off Board as a **limited budget for a holiday**. You might want a five-star hotel, a first-class flight, and a three-week duration, but your budget (the product scope) won't allow all three at the top level. You must "slide" the hotel quality down to a '3' if you insist on keeping the flight at a '1'. You are deciding what the "must-haves" are and what can be sacrificed to stay "Lean".
