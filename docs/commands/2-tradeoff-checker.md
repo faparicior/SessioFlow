@@ -50,3 +50,5 @@ Instructions for the Audit: Analyze the provided Trade-off Board data (likely in
 • Coaching Advice: (Specific steps to resolve conflicting visions).
 
 • The "Holiday Budget" Question: Ask the team a specific question based on their #1 vs #2 priority to confirm they are truly willing to sacrifice the second to protect the first.
+
+Eval the file `docs/inception/2-tradeoff.md` content and provide a compliance score for each section.

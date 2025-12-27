@@ -38,3 +38,5 @@ Output Format:
 • Gaps: Specifically what information is missing or too thin.
 
 • Coach's Question: One deep question to help the team empathise further (e.g., "What is [Persona Name]’s biggest fear if they fail to reach their goal?").
+
+Eval the file `docs/inception/3-personas.md` content and provide a compliance score for each section.
