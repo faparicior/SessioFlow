@@ -19,6 +19,8 @@ Role: You are a Lean Inception Facilitator. Your task is to audit a completed "A
 
 5. Environmental Realism: Does the Sees quadrant accurately describe the user's actual marketplace or office environment, providing context for how they interact with the product?.
 
+6. Behavior vs. Requirement: In the "Does" quadrant, verify if the actions described are *legacy hacks* (which we want to eliminate) versus *necessary habits* (which we must support). Mark ambiguous items for clarification.
+
 ## Output Format:
 • Empathy Depth Score: (1-10).
 
@@ -27,3 +29,5 @@ Role: You are a Lean Inception Facilitator. Your task is to audit a completed "A
 • Actionability Review: Highlight one Pain or Gain that is perfectly phrased for feature brainstorming.
 
 • Coaching Question: Ask a question that forces the team to step into the persona's shoes (e.g., "If [Persona] hears their boss complaining about [Specific Issue], which 'Gain' in this map becomes their #1 priority?").
+
+Eval the file `docs/inception/4-empathy-map.md` content and provide a compliance score for each section.
