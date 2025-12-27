@@ -8,7 +8,47 @@ Define the primary persona(s) who will use the product. Understanding who we're 
 ## Primary Persona
 *The core user we are solving the MVP for.*
 
-**Persona Name:** [e.g., Alex the Analyst]
+**Persona Name:** Fernando, the volunteer organizer of a conference
+
+| Attribute | Details |
+| :--- | :--- |
+| **Age & Demographics** | 47 years, male, urban |
+| **Role/Job Title** | Volunteer Organizer |
+| **Experience Level** | 4 years of experience in organizing conferences. High technical skills |
+| **Work Environment** | Full remote. Asynchronous work and a meet with the group each 15 days |
+
+### Goals & Motivations
+*What does this persona want to achieve?*
+- **Primary Goal:** Organize the conference with no effort for the volunteers
+- **Secondary Goal:** Offer the best experience for the speakers
+- **What motivates them:** To be recognized as a good organizer and to be able to help other volunteers
+
+### Pain Points & Frustrations
+*What problems do they currently face?*
+- ❌ **Pain 1:** Too repetitive work to organize the call for papers
+- ❌ **Pain 2:** Lot of manual work to manage the event with different sources of data
+- ❌ **Pain 3:** New volunteers has to learn some tools to be able to do their job
+
+### Needs & Expectations
+*What does this persona need from our product?*
+- ✅ **Need 1:** A single platform that integrates all data sources for the speaker sessions
+- ✅ **Need 2:** Automated data validation to catch errors early
+- ✅ **Need 3:** Simple, intuitive interface that doesn't require training
+
+### Tech Savviness
+- [ ] Beginner (needs hand-holding, prefers simple interfaces)
+- [ ] Intermediate (comfortable with standard tools, learns quickly)
+- [X] Advanced (power user, wants customization and shortcuts)
+
+### Quote
+> *I need a single point of truth to manage the sessions of the event. I just want to focus on the event.*
+
+---
+
+## Secondary Persona
+*If there's another important user type, define them briefly.*
+
+**Persona Name:** Sandra, the rookie organizer of a conference
 
 | Attribute | Details |
 | :--- | :--- |
@@ -44,20 +84,6 @@ Define the primary persona(s) who will use the product. Understanding who we're 
 > "[A memorable quote that captures their mindset or main frustration]"
 > 
 > *Example: "I just need to see the data, not spend half my day fighting with it."*
-
----
-
-## Secondary Persona (Optional)
-*If there's another important user type, define them briefly.*
-
-**Persona Name:** [e.g., Maria the Manager]
-
-| Attribute | Details |
-| :--- | :--- |
-| **Role/Job Title** | [e.g., Team Lead, Analytics Department] |
-| **Primary Goal** | [e.g., Oversee team productivity and report quality] |
-| **Main Pain Point** | [e.g., Difficulty tracking team progress and report accuracy] |
-| **Key Need** | [e.g., Dashboard showing team KPIs and bottlenecks] |
 
 ---
 
