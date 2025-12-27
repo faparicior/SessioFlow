@@ -24,7 +24,7 @@ Role: You are an expert Lean Inception Coach. Your task is to audit a "Product V
 
     • Apply the Aurineide Cavalcante Rule: Adjectives and nouns must be in the "Is/Is Not" quadrants; verbs (actions) must be in the "Does/Does Not" quadrants.
     
-    • Check for Strategic Clarity: Ensure the "Is Not" and "Does Not" sections explicitly clarify strategic decisions, such as things the product will never do or should not do yet.
+    • Scope Creep Prevention: Ensure the "Does Not" section prevents specific scope creep. Vague phrases like "Does not make coffee" are failures. Good constraints are specific: "Does not handle payments" or "Does not have a mobile app."
 
 4. Strategic Alignment Check:
 

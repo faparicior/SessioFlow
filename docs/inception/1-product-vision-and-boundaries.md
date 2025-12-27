@@ -5,7 +5,7 @@
 
 | For | Who | The Product | Is a | That | Unlike | Our Product |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Non profit organization | Needs a platform to manage and schedule sessions | SessionFlow | Web Application | Manages the whole conference aspects with ease and low resources (sessions, speakers, schedule, etc.), except ticketing and speakers accomodation and travel | Sessionize, Pretalx | Is simple, cost-effective, and easy to use |
+| Non profit organization | Needs a platform to manage and schedule sessions | SessionFlow | Web Application | Manages the Call for Papers and Scheduling aspects with ease and low resources (sessions, speakers, schedule, etc.), except ticketing and speakers accomodation and travel | Sessionize, Pretalx | Is simple, cost-effective, and easy to use |
 
 ---
 
@@ -32,7 +32,7 @@
 
 | The Product **DOES** | The Product **DOES NOT** |
 | :--- | :--- |
-| Manage the academic event lifecycle | Offer ticketing |
+| Manage the academic event lifecycle | Handle payments |
 | Facilitate the Call for Papers (CfP) process | Auto-generate content using AI |
 | Generate and publish the schedule | Manage speaker travel/accommodation |
 | Coordinate speaker communication | Provide analytics dashboards |

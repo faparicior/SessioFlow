@@ -41,6 +41,13 @@ Instructions for the Audit: Analyze the provided Trade-off Board data (likely in
     
     • Verification: If a product is described as "Simple and Cost-effective," but the board ranks "Scalability" or "Flexibility" higher than "Cost" or "Simplicity," flag this as a potential strategic misalignment.
 
+6. Reality & Safety Check
+
+    Even if the sorting follows the rules, is the result dangerous?
+
+    • Verification: If "Security" is ranked low (e.g., 4 or 5) but the product involves payments, health data, or personal info, flag this immediately as a Critical Risk.
+    • Verification: If "Performance" is ranked low but the product depends on real-time data, flag this contradiction.
+
 ## Output Format:
 
 • Compliance Status: (Aligned / Needs Revision).

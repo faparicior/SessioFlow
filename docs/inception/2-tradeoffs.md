@@ -4,13 +4,11 @@ The **Trade-off Board**, often referred to as **"Understanding the Trade-offs"**
 
 According to the sources, this activity is essential because products are often built on conflicting premises, such as **Security vs Usability** or **Performance vs Flexibility**. By forcing a collaborative conversation, the team reaches a consensus that prevents future misunderstandings and accelerates decision-making.
 
-### Trade-off Board (Sliders) Template
-
-Below is a markdown template based on the "Sliders" format described in the sources.
+### Trade-off Board (Sliders)
 
 ***
 
-# Trade-off Board: [Product Name]
+# Trade-off Board: SessioFlow
 
 **Instructions:**
 1.  **Identify Categories:** List all relevant product qualities (e.g., Security, Usability, Cost).
@@ -19,25 +17,27 @@ Below is a markdown template based on the "Sliders" format described in the sour
 
 | Priority Rank | 1 (Most) | 2 | 3 | 4 | 5 | 6 | 7 (Least) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Usability** | | | | | | | |
-| **Security** | | | | | | | |
-| **Performance** | | | | | | | |
-| **Flexibility** | | | | | | | |
-| **Scalability** | | | | | | | |
-| **Cost** | | | | | | | |
-| **Simplicity** | | | | | | | |
+| **Cost** | 🔴 | | | | | | |
+| **Usability** | | 🔴 | | | | | |
+| **Simplicity** | | | 🔴 | | | | |
+| **Security** | | | | 🔴 | | | |
+| **Flexibility** | | | | | 🔴 | | |
+| **Performance** | | | | | | 🔴 | |
+| **Scalability** | | | | | | | 🔴 |
 
 ---
 
-### How to use this template:
-*   **Individual Voting:** Participants place their initials (e.g., "PC", "JB") in the cells to indicate their personal perspective of priority.
-*   **Consensus:** After discussion, a **different colour** (such as a red post-it) is used to mark the final agreed-upon position for each category.
-*   **Constraint:** Ensure that in the final consensus row, every vertical column has exactly one mark.
+### Consensus Reasoning
+
+*   **1. Cost:** The Vision explicitly states "$0/month infrastructure". If the architecture requires an expensive DB or heavy server, the product fails its primary market (Non-profits/Volunteers).
+*   **2. Usability:** Fernando (Persona) is a volunteer with limited time. If he needs to read a manual to find the "Reject" button, he will go back to Excel.
+*   **3. Simplicity:** To achieve "#1 Cost", the code must be simple enough to run on basic hosting (e.g., Vercel + Supabase Free Tier). Complex microservices are banned.
+*   **4. Security:** We handle personal data (Names/Emails) so GDPR compliance is mandatory, but we are *not* handling payments (Out of Scope), which lowers the threat model compared to a Fintech app.
+*   **5. Flexibility:** We are building *a* way to manage events, not *every* way. Custom workflows are out of scope for MVP.
+*   **6. Performance:** It is an admin tool. 200ms vs 500ms latency does not change the value proposition.
+*   **7. Scalability:** The MVP is for single-conference use. We do not need to architect for 1 million concurrent users right now. YAGNI (You Aren't Gonna Need It).
 
 ***
 
 ### Strategic Insight
-The source emphasises that this activity is not just about a final list but about the **"open and collaborative conversation"** it triggers. If the team discovers that their individual votes are widely scattered (e.g., some see Security as a '1' and others as a '7'), the facilitator must guide them to resolve these conflicting visions before the MVP construction begins.
-
-**Analogy**
-Think of the Trade-off Board as a **limited budget for a holiday**. You might want a five-star hotel, a first-class flight, and a three-week duration, but your budget (the product scope) won't allow all three at the top level. You must "slide" the hotel quality down to a '3' if you insist on keeping the flight at a '1'. You are deciding what the "must-haves" are and what can be sacrificed to stay "Lean".
+The team agrees that **User Experience (Cost + Usability)** trumps **Engineering Ego (Scalability + Perforamnce)**. This is a "Boring Tech" project designed to be accessible, not a technical showcase of high-throughput systems.
