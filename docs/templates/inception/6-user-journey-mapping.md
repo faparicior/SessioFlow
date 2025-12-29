@@ -4,7 +4,7 @@
 Map the brainstormed features to specific stages of the user journey, visualizing how features support the user's path from awareness to achieving their goal. This helps identify feature coverage, gaps, and dependencies.
 
 ## Instructions
-1. Review the personas and journeys defined in Step 3
+1. Review the personas defined in Step 3
 2. Review the features brainstormed in Step 5
 3. Map each feature to one or more stages of the user journey
 4. Identify which features are critical at each stage
