@@ -11,7 +11,9 @@ The sources state that features must address user needs, pain points, and goals 
 
     • Verification: Does every feature include a "Related to" field linking it to a specific Persona need?
 
-    • Audit Rule: If a feature is not clearly associated with a persona's need, flag it for removal or rethinking, as its value is not clearly associated with a user.
+    • Strict Name Check: Does the link explicitly name the Persona (e.g., "Fernando's Pain 1" instead of just "Pain 1")? This is crucial for multi-persona projects.
+
+    • Audit Rule: If a feature is not clearly associated with a persona's need by name, flag it for revision.
 
 2. Clarity of Description
 Features should be described as simply as possible, focusing on the action or interaction a user takes with the product.
@@ -49,3 +51,6 @@ Ensure the team is not trying to do too much at once.
 3. The "Red Flag" List: List features with low technical certainty (Red/Yellow) that need further clarification before the sequencing step.
 
 4. Coach's Question: Ask one question to challenge the MVP scope (e.g., "If you could only build three features from the 'Core' list to validate your primary hypothesis, which would they be?").
+
+
+Eval the file `docs/inception/5-brainstorming.md` content and provide a compliance score for each section.

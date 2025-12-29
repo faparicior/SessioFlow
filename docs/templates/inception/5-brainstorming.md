@@ -16,38 +16,38 @@ Brainstorm and identify potential features for the product based on the personas
 *Features that are essential to the product's primary value proposition*
 
 **Feature 1: [Feature Name]**
-- **Description:** [What does this feature do?]
+- **Description:** [Start with a VERB: What action does the user take?]
 - **Why it matters:** [How does this address user needs or pain points?]
-- **Related to:** [Which persona need does this support?]
+- **Related to:** [Must reference specific Persona Name & Need ID (e.g., Fernando's Pain 1)]
 
 **Feature 2: [Feature Name]**
-- **Description:** [What does this feature do?]
+- **Description:** [Start with a VERB: What action does the user take?]
 - **Why it matters:** [How does this address user needs or pain points?]
-- **Related to:** [Which persona need does this support?]
+- **Related to:** [Must reference specific Persona Name & Need ID (e.g., Fernando's Pain 1)]
 
 ### Supporting Features
 *Features that enhance the user experience but are not critical to the core value*
 
 **Feature 1: [Feature Name]**
-- **Description:** [What does this feature do?]
+- **Description:** [Start with a VERB: What action does the user take?]
 - **Why it matters:** [How does this address user needs or pain points?]
-- **Related to:** [Which persona need does this support?]
+- **Related to:** [Must reference specific Persona Name & Need ID (e.g., Fernando's Pain 1)]
 
 ### Differentiating Features
 *Features that set the product apart from competitors*
 
 **Feature 1: [Feature Name]**
-- **Description:** [What does this feature do?]
+- **Description:** [Start with a VERB: What action does the user take?]
 - **Why it matters:** [How does this address user needs or pain points?]
-- **Related to:** [Which persona need does this support?]
+- **Related to:** [Must reference specific Persona Name & Need ID (e.g., Fernando's Pain 1)]
 
 ### Nice-to-Have Features
 *Features that could add value but are lower priority*
 
 **Feature 1: [Feature Name]**
-- **Description:** [What does this feature do?]
+- **Description:** [Start with a VERB: What action does the user take?]
 - **Why it matters:** [How does this address user needs or pain points?]
-- **Related to:** [Which persona need does this support?]
+- **Related to:** [Must reference specific Persona Name & Need ID (e.g., Fernando's Pain 1)]
 
 ## Initial Feature Assessment
 
