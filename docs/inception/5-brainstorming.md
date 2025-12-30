@@ -18,7 +18,7 @@ Brainstorm and identify potential features for the product based on the personas
 **Feature 1: Collect Proposals (CfP)**
 - **Description:** **Collect** speaker proposals via a public form and allow organizers to **view** them in a dashboard.
 - **Why it matters:** It is the entry point for all content in the event. Without this, there are no sessions to manage.
-- **Related to:** **Fernando's Need 1** (Single platform that integrates all data) and **Fernando's Pain 1** (Too repetitive work).
+- **Related to:** **Fernando's Need 1** (Single platform that integrates all data) and **Andrea's Primary Goal** (Have easy way to propose sessions).
 
 **Feature 2: Review & Score Sessions**
 - **Description:** **Enable** organizers to **read, score, and select** proposals in a centralized workflow.
@@ -27,13 +27,18 @@ Brainstorm and identify potential features for the product based on the personas
 
 **Feature 3: Automate Speaker Communications**
 - **Description:** **Automatically send** email updates to speakers when their status changes (submitted/accepted/rejected).
-- **Why it matters:** Drastically reduces manual communication effort, which is the biggest time sink.
-- **Related to:** **Fernando's Primary Goal** (Reduce administrative overhead by 70%).
+- **Why it matters:** Drastically reduces manual communication effort and keeps speakers informed.
+- **Related to:** **Fernando's Primary Goal** (Reduce administrative overhead) and **Andrea's Secondary Goal** (Clear view of schedule and steps).
 
 **Feature 4: Assign Schedule Slots**
 - **Description:** **Assign** accepted sessions to specific rooms and time slots via simple inputs.
 - **Why it matters:** Transforms the selected list of talks into an actionable event timeline.
-- **Related to:** **Fernando's Need 1** (Single platform) and **Fernando's Secondary Goal** (Offer best experience for speakers).
+- **Related to:** **Fernando's Need 1** (Single platform).
+
+**Feature 5: Co-Speaker Management**
+- **Description:** **Allow** a proposer to **invite** a colleague to join the session proposal via unique link or email.
+- **Why it matters:** Many sessions are collaborative; handling this manually is a major pain point for speakers and organizers.
+- **Related to:** **Andrea's Need 2** (Easy way to add a colleague) and **Andrea's Pain 2** (Add a partner is not easy).
 
 ### Supporting Features
 *Features that enhance the user experience but are not critical to the core value*
@@ -43,13 +48,18 @@ Brainstorm and identify potential features for the product based on the personas
 - **Why it matters:** Saves time when dealing with hundreds of submissions.
 - **Related to:** **Fernando's Need 3** (Simple, intuitive interface).
 
+**Feature 2: Speaker Travel & Info Dashboard**
+- **Description:** **Display** a dedicated page for accepted speakers with reimbursement guides, hotel deals, and travel info.
+- **Why it matters:** Centralizes logistics info, reducing email questions to organizers.
+- **Related to:** **Andrea's Need 1** (Single point for event info/travel) and **Andrea's Pain 3** (Hard to find info).
+
 ### Differentiating Features
 *Features that set the product apart from competitors*
 
 **Feature 1: Deploy with Standard Tools**
 - **Description:** **Deploy** the application using a standard Docker Compose configuration.
 - **Why it matters:** Enables volunteers to run the platform on low-cost infrastructure.
-- **Related to:** **Fernando's Role** (Volunteer Organizer) and **Fernando's Tech Savviness** (Intermediate).
+- **Related to:** **Fernando's Role** (Volunteer Organizer).
 
 **Feature 2: Expose Public API**
 - **Description:** **Provide** read-only API endpoints for the schedule and speaker details.
@@ -79,14 +89,18 @@ For each brainstormed feature, provide a quick assessment:
 | Review & Score Sessions | High | Medium | High | Must-have |
 | Automate Speaker Communications | High | Medium | High | Must-have |
 | Assign Schedule Slots | High | Medium | Medium | Must-have |
+| Co-Speaker Management | High | Low | High | Must-have |
 | Bulk Update Session Status | Medium | Low | High | Should-have |
+| Speaker Travel & Info Dashboard | High | Low | High | Should-have |
 | Deploy with Standard Tools | High | Medium | Low | Should-have |
 | Expose Public API | Medium | Low | High | Should-have |
 | Collect Attendee Feedback | Low | Low | Medium | Nice-to-have |
 | Detect Schedule Conflicts | Medium | Medium | Medium | Nice-to-have |
 
 ## Notes & Observations
-*Capture any patterns, concerns, or insights that emerged during brainstorming*
+*   **Persona Integration:** Added features for Andrea (Speaker) to ensure a balanced ecosystem. Without content (Andrea), Fernando has nothing to organize.
+*   **Co-Speakers:** Identified as a specific pain point for Andrea, elevated to Core/High priority to ensure competitive advantage/usability.
+*   **Travel Info:** Added as a dashboard feature to offload organizer support time.
 
 ---
 

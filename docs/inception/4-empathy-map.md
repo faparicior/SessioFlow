@@ -37,3 +37,46 @@
 * [ ] **Need 1:** An easy and automated tool for the sessions and call for papers process
 * [ ] **Want 2:** To have a single tool to deal with the speaker sessions whole process
 * [ ] **Success Metric 3:** To have a tool that helps us to organize the sessions and call for papers process in a smooth way
+
+
+# 🗺️ Empathy Map for Agile Inception
+
+## 👤 Persona: Andrea, senior speaker that lives far from the conference
+* **Focus Goal:** Organize the sessions and Call for paper of a conference
+* **Current Context:** She is a senior speaker, with 6 years of experience in development. She is also used to be a speaker in conferences and has a good communication skills.
+
+---
+
+## 1. The Quadrants (What They Experience)
+
+| **👀 SEES** (The Environment) | **🗣️ SAYS** (Out Loud) |
+| :--- | :--- |
+| *What do they see in the marketplace, their office, or on their screen?* | *What do they tell others about their current process, frustrations, or desires?* |
+| - Remote work with an Agile team | - "I want to be a speaker in the conference" |
+| - A lot of possible conferences | - "I want a smooth process to deal with the sessions and call for papers" |
+| - | "I want information about how to get expenses reimbursement and how I can reserve a hotel and get travel discounts" |
+
+| **🧠 THINKS** (Internal World) | **✍️ DOES** (Actions & Behavior) |
+| :--- | :--- |
+| *What are their motivations, beliefs, fears, and hopes (that they may not say)?* | *What steps do they physically take? How do they actually behave in the current situation?* |
+| - *[Fear:]* - The conference ecosystem is too competitive and I don't want to be compromised | -  |
+| - *[Fear:]* - I want to reserve a hotel and transport. I don't know how much will cost | - Prepare a budget and calculate the expenses |
+| - *[Hope:]* - I want to be a speaker in the conference | - Apply to all conferences I can |
+| - *[Hope:]* - I want to get networking opportunities | - Improve my social media presence |
+
+
+---
+
+## 2. Summary & Outcome
+
+### 😖 PAINS (Fears, Obstacles, and Frustrations)
+*What are the biggest barriers to achieving their goal?*
+* [ ] **Frustration 1:** It's difficult to be selected as a speaker
+* [ ] **Obstacle 2:** I don't know how much will cost to go to the conference
+* [ ] **Fear 3:** I don't know how to get expenses reimbursement
+
+### ✨ GAINS (Wants, Needs, and Success)
+*What defines success for them? What are they trying to achieve?*
+* [ ] **Need 1:** A single point to deal with the sessions and call for papers process
+* [ ] **Want 2:** A easy way to deal with the expenses reimbursement process
+* [ ] **Success Metric 3:** To be selected as a speaker
