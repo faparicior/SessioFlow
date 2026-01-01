@@ -15,10 +15,10 @@
 ### 🌊 Wave 1: The Minimum Viable Product (MVP)
 *Features required to validate the core hypothesis and deliver a complete slice of value.*
 
-| Feature | Value (1-5) | Comfort (1-5) | Owner |
-| :--- | :--- | :--- | :--- |
-| [e.g., Data Source Selector] | 5 | 4 | @TeamBlue |
-| [e.g., Basic User Login] | 3 | 5 | @TeamRed |
+| Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| [e.g., Data Source Selector] | E | $$$ | ♥♥ | TT | @TeamBlue |
+| [e.g., Basic User Login] | EE | $ | ♥ | TTT | @TeamRed |
 
 ### 🌊 Wave 2: Next Increment
 *High-value features that were deprioritized from the MVP.*

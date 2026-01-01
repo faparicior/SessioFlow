@@ -25,13 +25,13 @@ Organize the brainstormed features into a logical sequence of releases to define
 ### 🌊 Wave 1: The Minimum Viable Product (MVP)
 *Features required to validate the core hypothesis: "A simple, free tool for non-profits to manage the full CfP lifecycle."*
 
-| Feature | Business Value (1-5) | Tech Comfort (1-5) | Owner |
-| :--- | :---: | :---: | :--- |
-| **Collect Proposals (CfP)** | 5 (High) | 4 (Standard CRUD) | @CoreTeam |
-| **Review & Score Sessions** | 5 (High) | 4 (Standard CRUD) | @CoreTeam |
-| **Automate Speaker Communications** | 5 (High) | 3 (Email Integration) | @CoreTeam |
-| **Assign Schedule Slots** | 5 (High) | 3 (Logic/UI) | @CoreTeam |
-| **Co-Speaker Management** | 4 (Differentiator) | 5 (Simple Link Logic) | @CoreTeam |
+| Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **Collect Proposals (CfP)** | E | $$$ | ♥♥♥ | TT | @CoreTeam |
+| **Review & Score Sessions** | E | $$$ | ♥ | TT | @CoreTeam |
+| **Automate Speaker Communications** | EE | $$$ | ♥♥♥ | T | @CoreTeam |
+| **Assign Schedule Slots** | EE | $$$ | ♥♥ | T | @CoreTeam |
+| **Co-Speaker Management** | E | $$ | ♥♥♥ | TTT | @CoreTeam |
 
 **MVP Rationale:**
 This wave covers the "Critical Path" identified in Step 6 (Journeys 1, 2, and 3). It allows a user to **collect**, **select**, **communicate**, and **schedule** content. Without any of these, the product is incomplete for holding an event. "Co-Speaker Management" is included because it addresses a specific high-priority pain point for the "Andrea" persona that competitors often fail at.

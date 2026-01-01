@@ -7,11 +7,11 @@ Role: You are a Lean Inception Coach. Your task is to audit the "Product Roadmap
 1. The Technical Rules Check
     • Rule 1 (Capacity): Each "Wave" (onda) must contain a maximum of three features.
 
-    • Rule 2 & 3 (Risk/Confidence): A single wave cannot have more than one "Red" feature (low confidence), and it cannot contain three "Yellow" or "Red" features simultaneously. This ensures the team doesn't take on too much uncertainty at once.
+    • Rule 2 & 3 (Risk/Confidence): A single wave cannot have more than one "Red" feature (Low Comfort = `T`), and it cannot contain three "Yellow" (`TT`) or "Red" (`T`) features simultaneously. Note: `TTT` = Green (High Comfort).
 
-    • Rule 4 (Effort): The total sum of effort (E, EE, EEE) in a single wave cannot exceed five "E"s.
+    • Rule 4 (Effort): The total sum of effort (E, EE, EEE) in a single wave cannot exceed five "E"s. Count `E`=1, `EE`=2, `EEE`=3.
 
-    • Rule 5 (Value/UX): To ensure a constant focus on delivery, the sum of "Value" (marks) must be ≥ 4 AND the sum of "UX/Hearts" must be ≥ 4 per wave.
+    • Rule 5 (Business Value/UX): To ensure a constant focus on delivery, the sum of "Business Value" (`$`) must be ≥ 4 (count the `$` symbols) AND the sum of "UX Value" (`♥`) must be ≥ 4 (count the `♥` symbols) per wave.
 
     • Rule 6 (Dependencies): If Feature B depends on Feature A, Feature A must be placed in an earlier wave.
 
