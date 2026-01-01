@@ -1,166 +1,115 @@
-# Step 8: MVP Canvas Definition
+# Step 8: The MVP Canvas
 
 ## Goal
-Synthesize all decisions from Steps 1-7 into a final, high-level business plan for the MVP. This canvas should reflect your product vision, constraints, user needs, key features, and sequencing decisions.
+Synthesize all previous steps into a strategic blueprint for the first release (The "Cupcake"). This canvas aligns the team on exactly WHAT we are building, WHY, FOR WHOM, and HOW we will measure success.
 
 ---
 
-## Instructions
-Review the outputs from previous steps before completing this canvas:
-- **Step 1:** Product Vision & Boundaries
-- **Step 2:** Tradeoffs & Constraints
-- **Step 3:** Personas
-- **Step 4:** Empathy Map
-- **Step 5:** Features Brainstorming
-- **Step 6:** User Journey Mapping
-- **Step 7:** Features & Sequencing (Wave 1 = MVP)
+## 1. MVP Proposal
+*What is the "Cupcake" (the minimum valuable slice)?*
+
+**Product Name:** SessioFlow MVP 1.0 - "The CfP Manager"
+
+**MVP Vision Statement:**
+For **Event Organizers** (Fernando) who need to **manage the Call for Papers efficiently**, **SessioFlow** is a **session management tool** that **streamlines the submission, review, and selection process**. Unlike **manual spreadsheets or Google Forms**, our product is **specialized for tech events, includes co-speaker support by default, and is free to host.**
+
+### Core Value Proposition
+We are not building the "Full Event Management System" yet. We are solving the most painful initial phase: **Getting high-quality talks and reviewing them without chaos.**
 
 ---
 
-## 1. MVP Definition
-*A succinct statement of the first product increment - the "cupcake" (complete, simple slice of value), not a "layer of cake" (incomplete technical foundation).*
+## 2. MVP Scope - Wave 1 Features
+*From Step 7 (Features & Sequencing) - the specific feature set.*
 
-**MVP Proposal:**
-[What is the minimum product we are building? Focus on the core value delivery.]
-
-*Example: "A mobile app that allows [Primary Persona] to [core action] in order to [achieve goal], delivering value through [key differentiation]."*
-
----
-
-## 2. Business Results & Metrics
-*What the business hopes to achieve, and how we will measure success.*
-
-### Business Goals
-*From Step 1 (Vision) and Step 2 (Tradeoffs) - what are we trying to accomplish?*
-1. [e.g., Validate that users will pay for this solution]
-2. [e.g., Reduce customer support tickets by 15%]
-3. [e.g., Achieve product-market fit in [target segment]]
-
-### Success Metrics (KPIs)
-*Quantifiable metrics that directly measure progress toward business goals.*
-
-| Metric | Target | How to Measure |
-|--------|--------|----------------|
-| [e.g., Conversion Rate] | [e.g., > 5%] | [e.g., Sign-ups / Visitors] |
-| [e.g., Daily Active Users] | [e.g., > 1,000] | [e.g., Analytics dashboard] |
-| [e.g., User Satisfaction] | [e.g., NPS > 40] | [e.g., Post-interaction survey] |
-| [e.g., Key Task Completion] | [e.g., > 80%] | [e.g., Journey stage analytics] |
-
-### Validation Criteria
-*How will we know the MVP succeeded or failed?*
-- **Success:** [e.g., At least 60% of test users complete the core journey and rate it 4+ stars]
-- **Failure:** [e.g., Less than 30% engagement after first week, indicating poor product-market fit]
-
----
-
-## 3. MVP Scope - Wave 1 Features
-*From Step 7 (Features & Sequencing) - which features are included in Wave 1 (the MVP)?*
-
-### Critical Path Features
-*Features required for the minimum happy path identified in Step 6 (User Journey Mapping):*
-1. ✅ **[Feature Name]** - [Brief description and why it's critical]
-2. ✅ **[Feature Name]** - [Brief description and why it's critical]
-3. ✅ **[Feature Name]** - [Brief description and why it's critical]
-
-### Supporting Features (If absolutely necessary)
-*Additional Wave 1 features that are essential but not on the critical path:*
-- [ ] **[Feature Name]** - [Brief description]
+### Critical Path Features (The "Cupcake")
+1. ✅ **Collect Proposals (CfP)**: Public form for speakers (Andrea) to submit talks.
+2. ✅ **Co-Speaker Management**: The "Wow" feature allowing easy multi-speaker proposals.
+3. ✅ **Review & Score Sessions**: Dashboard for Fernando to rate and filter submissions.
 
 ### Explicitly Out of Scope (Wave 2+)
-*Important to state what we are NOT building in the MVP:*
-- ❌ [Feature/Capability] - *Reason: [e.g., Nice-to-have, not tied to core journey]*
-- ❌ [Feature/Capability] - *Reason: [e.g., Requires infrastructure not ready yet]*
+*Crucial for preventing scope creep:*
+- ❌ **Assign Schedule Slots** (Scheduling happens *after* selection - can be done manually for MVP if needed).
+- ❌ **Automate Speaker Communications** (Fernando can email accepted speakers manually for the first pilot).
+- ❌ **Speaker Travel Dashboard** (Complex logistics, not core).
+- ❌ **Public API** (Not needed for the first event).
 
 ---
 
-## 4. Cost, Schedule, and Risks
+## 3. Personas & Journey Alignment
+*From Steps 3 & 6 - Who are we serving?*
 
-### Cost Estimate
-*Resources required to build and launch the MVP:*
-- **Development Effort:** [e.g., 80 person-days, 2 developers x 8 weeks]
-- **Infrastructure/Hosting:** [e.g., $5,000 for cloud services]
-- **Design/Research:** [e.g., 20 person-days for UX/UI]
-- **Other Costs:** [e.g., Third-party API fees, testing tools]
+**Primary Persona:** **Fernando**, the Community Organizer.
+*   **Pain Solved:** "Too repetitive work to organize the call for papers" & "Data inconsistencies".
+*   **Gain:** A centralized, clean list of scored proposals ready for selection.
 
-**Total Estimated Cost:** [e.g., $75,000 or equivalent effort]
-
-### Schedule
-*Timeline for MVP development and launch:*
-- **Duration:** [e.g., 4 Sprints (8 weeks)]
-- **Key Milestones:**
-  - Week 2: [e.g., Core feature prototype ready]
-  - Week 4: [e.g., Alpha testing with internal team]
-  - Week 6: [e.g., Beta testing with 20 target users]
-  - Week 8: [e.g., MVP launch]
-
-### Risks & Mitigation
-*From Step 2 (Tradeoffs) and technical assessment - what could go wrong?*
-
-| Risk | Impact | Likelihood | Mitigation Strategy |
-|------|--------|------------|---------------------|
-| [e.g., Legacy system integration fails] | High | Medium | [e.g., Build abstraction layer early, have fallback] |
-| [e.g., Users don't adopt single feature] | High | Low | [e.g., Validate with user testing in Week 6] |
-| [e.g., Third-party API unavailable] | Medium | Low | [e.g., Identify backup provider, test early] |
-
----
-
-## 5. Technical & UX Enablers
-*Necessary foundations (not user-facing features) required for the MVP to function. These are the infrastructure and design systems needed.*
-
-### Technical Enablers
-- [ ] [e.g., Set up CI/CD pipeline for automated deployment]
-- [ ] [e.g., Implement authentication service API]
-- [ ] [e.g., Configure database and data models]
-- [ ] [e.g., Set up monitoring and logging infrastructure]
-
-### UX Enablers
-- [ ] [e.g., Create design system with core UI components]
-- [ ] [e.g., Define information architecture for main screens]
-- [ ] [e.g., Establish accessibility standards (WCAG 2.1 AA)]
-- [ ] [e.g., Design error states and loading indicators]
-
----
-
-## 6. Personas & Journey Alignment
-*From Steps 3, 4, and 6 - confirm the MVP serves the primary persona's journey.*
-
-**Primary Persona:** [Name from Step 3]
+**Secondary Persona:** **Andrea**, the Experienced Speaker.
+*   **Pain Solved:** "Adding a partner to the proposal is not easy."
+*   **Gain:** A smooth submission flow that respects her need for collaboration.
 
 **Core Journey Supported:**
-[Briefly describe the critical path from Step 6 that the MVP enables]
+*   **Step 1:** Andrea lands on CfP -> Submits Talk + Invites Co-Speaker.
+*   **Step 2:** Fernando sees new proposal -> Reviews content -> Assigns Score.
+*   **Step 3:** Fernando filters top-rated talks -> Final Selection (Manual notification).
 
-**Pain Points Addressed:**
-- [Pain point 1 from Steps 3/4 that MVP solves]
-- [Pain point 2 from Steps 3/4 that MVP solves]
+---
 
-**Gains Delivered:**
-- [Gain 1 from Step 4 that MVP provides]
-- [Gain 2 from Step 4 that MVP provides]
+## 4. Hypothesis & Success Metrics
+*How do we know if this works?*
+
+**Hypothesis:**
+We believe that by **providing a specialized CfP tool with built-in co-speaker management**, we will **reduce the organizer's administrative time by 50%** and **reduce friction for speakers**, resulting in **higher completion rates for multi-speaker proposals**.
+
+### Validation Metrics (KPIs)
+*   **Adoption:** 5 Event Organizers installing/using the MVP in the first month.
+*   **Efficiency:** Fernando spends < 3 minutes on average to review and score a session.
+*   **Engagement:** > 20% of submitted sessions utilize the Co-Speaker feature (proving the "Wow" factor).
+*   **Satisfaction:** Net Promoter Score (NPS) > 40 from Organizers after the selection phase.
+
+### Failure Condition
+*   If organizers revert to exporting data to Excel to generate the final list, the **Review & Score** feature has failed in usability.
+
+---
+
+## 5. Cost, Schedule, and Risks
+*From Step 2 (Tradeoffs) and Step 7.*
+
+### Cost & Schedule
+*   **Infrastructure:** **$0/month** (Constraint #1). Must run on Vercel/Netlify + Supabase/Firebase Free Tier.
+*   **Development Effort:** Estimated 3 Sprints (6 Weeks) for 2 Developers.
+    *   Sprint 1: CfP Form & Co-Speaker Logic.
+    *   Sprint 2: Organizer Dashboard & Auth.
+    *   Sprint 3: Scoring Logic & Polish.
+
+### Risks & Mitigation
+*   **Risk:** Low adoption because "Google Forms is easier".
+    *   *Mitigation:* Focus heavily on the **Co-Speaker Experience** (which Forms handles poorly) as the key differentiator.
+*   **Risk:** GDPR/Privacy compliance for collecting emails.
+    *   *Mitigation:* Implement "Delete my Data" button in Sprint 2 (Regulatory necessity).
+*   **Risk:** Organizers need to schedule immediately.
+    *   *Mitigation:* Provide a simple "Export to CSV" button so they can schedule in Excel if they can't wait for Wave 2.
+
+---
+
+## 6. Technical & UX Enablers
+*Foundations needed to support the MVP.*
+
+### Technical Enablers
+- [ ] Setup defined tech stack (Next.js + Tailwind + Database).
+- [ ] Database Schema for `Proposals`, `Speakers`, and `Reviews`.
+- [ ] Authentication system (Magic Link or Social Auth) for Organizers.
+
+### UX Enablers
+- [ ] "Clean & Focused" Design System (High readability for reading abstract text).
+- [ ] Mobile-responsive form for Speakers (Andrea often submits on the go).
 
 ---
 
 ## 7. Final Validation Checklist
 
-Before finalizing the MVP Canvas, verify:
+- [x] **Vision Alignment:** Focuses strictly on the "Session Management" core.
+- [x] **Constraints Respected:** Designs for $0 infrastructure cost.
+- [x] **User-Centered:** Solves Fernando's "Manual Data" pain and Andrea's "Co-speaker" pain.
+- [x] **Properly Scoped:** It is a "Cupcake" - a complete "Collect & Select" workflow. It is not just a DB (Dry) or just a Form (Unfinished).
+- [x] **Risky:** We acknowledge the "Google Forms" competitor risk and tackle it with the Co-Speaker feature.
 
-- [ ] **Vision Alignment:** Does this MVP deliver on the product vision from Step 1?
-- [ ] **Constraints Respected:** Does this respect the tradeoffs and constraints from Step 2?
-- [ ] **User-Centered:** Does this solve real problems for the Primary Persona (Steps 3-4)?
-- [ ] **Journey Complete:** Can users complete the critical path with Wave 1 features (Step 6)?
-- [ ] **Properly Scoped:** Are we building a "cupcake" (complete value) not a "layer" (infrastructure only)?
-- [ ] **Measurable:** Can we clearly measure success/failure with the defined metrics?
-- [ ] **Achievable:** Is the schedule and cost realistic given the scope?
-- [ ] **Risky:** Have we identified and mitigated the biggest risks?
-
----
-
-## Next Steps After MVP Definition
-
-Once the MVP Canvas is complete and validated:
-1. **Break down features** into user stories and technical tasks
-2. **Create sprint plan** based on the schedule
-3. **Assign resources** and begin development
-4. **Set up measurement** infrastructure for KPIs
-5. **Plan user testing** sessions for validation
-
-**Congratulations! You've completed the Lean Inception workshop.** 🎉
+**Ready for Implementation!** 🚀
