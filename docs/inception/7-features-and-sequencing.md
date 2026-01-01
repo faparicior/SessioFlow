@@ -29,20 +29,29 @@ Organize the brainstormed features into a logical sequence of releases to define
 | :--- | :---: | :---: | :---: | :---: | :--- |
 | **Collect Proposals (CfP)** | E | $$$ | ♥♥♥ | TT | @CoreTeam |
 | **Review & Score Sessions** | E | $$$ | ♥ | TT | @CoreTeam |
-| **Automate Speaker Communications** | EE | $$$ | ♥♥♥ | T | @CoreTeam |
-| **Assign Schedule Slots** | EE | $$$ | ♥♥ | T | @CoreTeam |
 | **Co-Speaker Management** | E | $$ | ♥♥♥ | TTT | @CoreTeam |
 
 **MVP Rationale:**
-This wave covers the "Critical Path" identified in Step 6 (Journeys 1, 2, and 3). It allows a user to **collect**, **select**, **communicate**, and **schedule** content. Without any of these, the product is incomplete for holding an event. "Co-Speaker Management" is included because it addresses a specific high-priority pain point for the "Andrea" persona that competitors often fail at.
+This wave focuses strictly on the **Intake and Review** phase. It allows the Persona (Fernando) to launch the Call for Papers and gather content. The "Co-Speaker Management" is the key differentiator (Wow Factor) included to attract high-quality speakers (Andrea) early on. Scheduling and Mass Communication are deferred to Wave 2, as they happen *after* selection.
 
 ### 🌊 Wave 2: Operations & Ease of Use (Next Increment)
 *Features that streamline the workflow and improve the deployment experience.*
 
-* [ ] **Deploy with Standard Tools**: Essential for the "self-hosting" promise, but can be manual/documented for MVP.
-* [ ] **Bulk Update Session Status**: Adds efficiency for larger events (pain point relief), but not strictly blocking for small batches.
-* [ ] **Speaker Travel & Info Dashboard**: High value for speakers, but can be handled via static emails in MVP.
-* [ ] **Expose Public API**: Enables "Power User" flexibility (Fernando's tech savviness).
+| Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **Assign Schedule Slots** | EE | $$$ | ♥♥ | T | @CoreTeam |
+| **Automate Speaker Communications** | EE | $$$ | ♥♥♥ | T | @CoreTeam |
+| **Bulk Update Session Status** | E | $$$ | ♥♥ | TTT | @CoreTeam |
+
+### 🌊 Wave 3: Scale & Ecosystem
+*Features that enable growth and external integrations.*
+
+| Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **Deploy with Standard Tools** | EE | $$ | ♥ | T | @CoreTeam |
+| **Speaker Travel & Info Dashboard** | EE | $ | ♥♥♥ | TT | @CoreTeam |
+| **Expose Public API** | EEE | $ | ♥ | TT | @CoreTeam |
+
 
 ### 🗑️ Parking Lot (Out of Scope for now)
 *Features that are not critical for the initial validation.*

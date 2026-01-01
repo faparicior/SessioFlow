@@ -29,7 +29,7 @@ Role: You are a Lean Inception Coach. Your task is to audit the "Product Roadmap
 
 ## Output Format:
 
-• Rule Compliance Report: A table showing which rules (1-6) passed or failed for each Wave.
+• Rule Compliance Report: A table showing which rules (1-6) passed or failed for each Wave (Wave 1, Wave 2, Wave 3).
 
 • Risk Alert: Identify any "Dangerous Waves" (too much effort or too much uncertainty).
 

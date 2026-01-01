@@ -23,8 +23,17 @@
 ### 🌊 Wave 2: Next Increment
 *High-value features that were deprioritized from the MVP.*
 
-* [ ] Feature D: [e.g., Customizable email alerts]
-* [ ] Feature E: [e.g., Advanced filtering options]
+| Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| [e.g., Customizable email alerts] | EE | $$ | ♥ | T | @TeamBlue |
+| [e.g., Advanced filtering options] | E | $$$ | ♥♥ | TTT | @TeamRed |
+
+### 🌊 Wave 3: Scale & Ecosystem
+*Features that enable growth and external integrations.*
+
+| Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| [e.g., Public API] | EEE | $ | ♥ | TT | @TeamGreen |
 
 ### 🗑️ Parking Lot (Out of Scope for now)
 *Features that will not be pursued in the near term.*
