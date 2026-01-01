@@ -95,7 +95,7 @@ We believe that by **providing a specialized CfP tool with built-in co-speaker m
 
 ### Technical Enablers
 - [ ] Setup defined tech stack (Next.js + Tailwind + Database).
-- [ ] Database Schema for `Proposals`, `Speakers`, and `Reviews`.
+- [ ] Database (e.g., Supabase/Postgres) Schema for `Proposals`, `Speakers`, and `Reviews`.
 - [ ] Authentication system (Magic Link or Social Auth) for Organizers.
 
 ### UX Enablers

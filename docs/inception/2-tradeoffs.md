@@ -31,7 +31,7 @@ According to the sources, this activity is essential because products are often 
 
 *   **1. Cost:** The Vision explicitly states "$0/month infrastructure". If the architecture requires an expensive DB or heavy server, the product fails its primary market (Non-profits/Volunteers).
 *   **2. Usability:** Fernando (Persona) is a volunteer with limited time. If he needs to read a manual to find the "Reject" button, he will go back to Excel.
-*   **3. Simplicity:** To achieve "#1 Cost", the code must be simple enough to run on basic hosting (e.g., Vercel + Supabase Free Tier). Complex microservices are banned.
+*   **3. Simplicity:** To achieve "#1 Cost", the code must be simple enough to run on **basic hosting (e.g., Vercel + Supabase Free Tier)**. Complex microservices architectures are banned.
 *   **4. Security:** We handle personal data (Names/Emails) so GDPR compliance is mandatory, but we are *not* handling payments (Out of Scope), which lowers the threat model compared to a Fintech app.
 *   **5. Flexibility:** We are building *a* way to manage events, not *every* way. Custom workflows are out of scope for MVP.
 *   **6. Performance:** It is an admin tool. 200ms vs 500ms latency does not change the value proposition.
