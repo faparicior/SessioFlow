@@ -54,6 +54,11 @@ Zod has become the standard for TypeScript-first validation. Its "schema-first" 
 *   Good, because zero dependencies.
 *   Bad, because it is error-prone, repetitive, and hard to maintain.
 
+### Joi
+
+*   Good, because it is a powerful legacy validation library.
+*   Bad, because it was designed for JavaScript and has poor TypeScript inference support compared to Zod.
+
 ## Links
 
 *   [Zod Documentation](https://zod.dev/)

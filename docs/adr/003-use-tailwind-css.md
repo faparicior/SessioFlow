@@ -58,6 +58,12 @@ Tailwind CSS allows for extremely rapid UI development by using utility classes 
 *   Bad, because the site looks like every other Bootstrap site unless heavily customized.
 *   Bad, because the bundle size can be large.
 
+### CSS Modules
+
+*   Good, because it locally scopes CSS to avoid name collisions.
+*   Bad, because it still requires writing standard CSS (slower than utility classes for prototyping).
+*   Bad, because it does not enforce a design system by default.
+
 ## Links
 
 *   [Tailwind CSS](https://tailwindcss.com/)

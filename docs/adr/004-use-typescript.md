@@ -48,6 +48,12 @@ TypeScript is the industry standard for modern React applications. It provides s
 *   Good, because it is dynamic and flexible.
 *   Bad, because it allows loose typing which leads to bugs in data-heavy apps.
 
+### JSDoc
+
+*   Good, because it adds type checking without a compilation step.
+*   Bad, because the syntax is verbose and clutters the code comments.
+*   Bad, because the developer experience is inferior to native TypeScript.
+
 ## Links
 
 *   [TypeScript](https://www.typescriptlang.org/)

@@ -59,6 +59,17 @@ Vercel is the creator of Next.js and provides the most optimized hosting environ
 *   Bad, because the complexity is extremely high (IAM, CloudFormation, Certificates).
 *   Bad, because "free tier" expires after 12 months for many services.
 
+### Heroku
+
+*   Good, because it is very easy to use (PaaS).
+*   Bad, because the free tier has been removed (violates $0 cost constraint).
+
+### Self-Hosted (VPS)
+
+*   Good, because it provides full control over the environment.
+*   Bad, because it requires manual security patching and maintenance.
+*   Bad, because it is not free (requires paying for the VPS).
+
 ## Links
 
 *   [Vercel](https://vercel.com/)

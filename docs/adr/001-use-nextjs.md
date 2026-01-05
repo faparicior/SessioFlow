@@ -59,6 +59,12 @@ Next.js provides the best balance of Server-Side Rendering (SSR) for the public 
 *   Bad, because managing state for the "Review & Score" dashboard would become complex and "spaghetti code" very quickly.
 *   Bad, because no component reusability.
 
+### Vue.js / Nuxt
+
+*   Good, because it is a very capable framework comparable to Next.js.
+*   Bad, because the team is more experienced with React ecosystem (Next.js).
+*   Bad, because the Vercel ecosystem is slightly more optimized for Next.js.
+
 ## Links
 
 *   [Next.js Documentation](https://nextjs.org/)
