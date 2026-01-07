@@ -15,6 +15,8 @@ Organize the brainstormed features into a logical sequence of releases to define
 * [ ] **Speaker Travel & Info Dashboard**: dedicated area for logistics info.
 * [ ] **Deploy with Standard Tools**: Docker/script based deployment.
 * [ ] **Expose Public API**: Read-only endpoints for external apps.
+* [x] **User Authentication**: Secure login for Organizers and Speaker account creation.
+* [x] **Speaker Profile (Photo Upload)**: Allow speakers to upload profile pictures.
 * [ ] **Collect Attendee Feedback**: Post-session rating system.
 * [ ] **Detect Schedule Conflicts**: Validation logic for double-bookings.
 
@@ -30,6 +32,8 @@ Organize the brainstormed features into a logical sequence of releases to define
 | **Collect Proposals (CfP)** | E | $$$ | ♥♥♥ | TT | @CoreTeam |
 | **Review & Score Sessions** | E | $$$ | ♥ | TT | @CoreTeam |
 | **Co-Speaker Management** | E | $$ | ♥♥♥ | TTT | @CoreTeam |
+| **User Authentication** | E | $$$ | ♥♥ | TT | @CoreTeam |
+| **Speaker Profile (Photo Upload)** | E | $$ | ♥♥♥ | TT | @CoreTeam |
 
 **MVP Rationale:**
 This wave focuses strictly on the **Intake and Review** phase. It allows the Persona (Fernando) to launch the Call for Papers and gather content. The "Co-Speaker Management" is the key differentiator (Wow Factor) included to attract high-quality speakers (Andrea) early on. Scheduling and Mass Communication are deferred to Wave 2, as they happen *after* selection.

@@ -8,7 +8,7 @@
 
 ## Context and Problem Statement
 
-We are collecting user input via public forms (Call for Papers). This input includes personal data (names, emails) and content data (abstracts). We must ensure that the data is valid (e.g., valid email format, max length for abstracts) before processing it or sending it to the database. We need a way to share validation logic between the Client (Frontend form) and the Server (API Route).
+We are collecting user input via public forms (Call for Papers). This input includes personal data (names, emails), content data (abstracts), and **file uploads (profile photos)**. We must ensure that the data is valid (e.g., valid email format, max length for abstracts, **correct image MIME type and size limit**) before processing it or sending it to the storage bucket. We need a way to share validation logic between the Client (Frontend form) and the Server (API Route).
 
 **Decision Drivers:**
 *   **Reliability:** Reusing validation logic prevents divergence between UI feedback and API errors.
@@ -27,7 +27,7 @@ We are collecting user input via public forms (Call for Papers). This input incl
 **Chosen Option:** "Zod"
 
 **Justification:**
-Zod has become the standard for TypeScript-first validation. Its "schema-first" approach allows us to define the shape of a valid "Proposal" once, and then infer the TypeScript type from that schema. This guarantees that our compile-time types always match our runtime validation logic. It works seamlessly with `react-hook-form` (for the UI) and on the server-side API.
+Zod has become the standard for TypeScript-first validation. Its "schema-first" approach allows us to define the shape of a valid "Proposal" once, and then infer the TypeScript type from that schema. This guarantees that our compile-time types always match our runtime validation logic. It works seamlessly with `react-hook-form` (for the UI) and on the server-side API. **Furthermore, Zod supports custom refinement for validating File objects (size, type), which is essential for the new Profile Photo feature.**
 
 ### Consequences
 

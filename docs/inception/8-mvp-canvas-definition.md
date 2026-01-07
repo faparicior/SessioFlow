@@ -24,7 +24,8 @@ We are not building the "Full Event Management System" yet. We are solving the m
 ### Critical Path Features (The "Cupcake")
 1. ✅ **Collect Proposals (CfP)**: Public form for speakers (Andrea) to submit talks.
 2. ✅ **Co-Speaker Management**: The "Wow" feature allowing easy multi-speaker proposals.
-3. ✅ **Review & Score Sessions**: Dashboard for Fernando to rate and filter submissions.
+3. ✅ **Speaker Profile & Photo Upload**: Essential for event website content.
+4. ✅ **Review & Score Sessions**: Dashboard for Fernando to rate and filter submissions.
 
 ### Explicitly Out of Scope (Wave 2+)
 *Crucial for preventing scope creep:*
@@ -96,7 +97,8 @@ We believe that by **providing a specialized CfP tool with built-in co-speaker m
 ### Technical Enablers
 - [ ] Setup defined tech stack (Next.js + Tailwind + Database).
 - [ ] Database (e.g., Supabase/Postgres) Schema for `Proposals`, `Speakers`, and `Reviews`.
-- [ ] Authentication system (Magic Link or Social Auth) for Organizers.
+- [ ] Authentication system (Magic Link or Social Auth) for **Organizers & Speakers**.
+- [ ] **Image Storage** (Supabase Storage) for profile photos (Bucket configuration).
 
 ### UX Enablers
 - [ ] "Clean & Focused" Design System (High readability for reading abstract text).

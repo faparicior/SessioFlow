@@ -12,10 +12,11 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 
 | Step | User Action | System Feature / Response | Pain Point Addressed |
 | :--- | :--- | :--- | :--- |
-| 1. | Andrea lands on the CfP page. | **Collect Proposals (CfP)**: Displays form. | Needs a single entry point. |
-| 2. | Andrea fills in title & abstract. | Validates input. | |
-| 3. | Andrea wants to add her co-speaker. | **Co-Speaker Management**: Generates invite link. | **Pain 2:** "Add a partner is not easy." |
-| 4. | Andrea submits the proposal. | **Automate Speaker Communications**: Sends "Received" email. | **Need 2:** Clear view of steps. |
+| 1. | Andrea lands on the CfP page. | **Collect Proposals (CfP)**: Displays landing page. | Needs a single entry point. |
+| 2. | Andrea creates an account or logs in. | **User Authentication**: Magic Link / Social Login. | Security & Profile persistence. |
+| 3. | Andrea fills in title, abstract & **uploads photo**. | **Speaker Profile**: Forms + **File Storage**. | |
+| 4. | Andrea wants to add her co-speaker. | **Co-Speaker Management**: Generates invite link. | **Pain 2:** "Add a partner is not easy." |
+| 5. | Andrea submits the proposal. | **Automate Speaker Communications**: Sends "Received" email. | **Need 2:** Clear view of steps. |
 
 ---
 
@@ -26,7 +27,7 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 
 | Step | User Action | System Feature / Response | Pain Point Addressed |
 | :--- | :--- | :--- | :--- |
-| 1. | Fernando logs in to see submissions. | **Collect Proposals (CfP)**: Listing Dashboard. | **Need 1:** Single platform. |
+| 1. | Fernando logs in (Authorized Admin). | **User Authentication**: Admin Role Check. | **Need 1:** Single platform. |
 | 2. | Fernando rates sessions. | **Review & Score Sessions**: Scoring UI. | **Pain 2:** Manual work in Excel. |
 | 3. | Fernando selects final list. | **Bulk Update Session Status**: Marks as "Accepted". | **Pain 1:** Repetitive work. |
 | 4. | Fernando assigns rooms/times. | **Assign Schedule Slots**: Drag-and-drop/Form. | **Need 1:** Single platform. |

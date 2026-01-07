@@ -15,6 +15,7 @@ SessioFlow requires a backend to store relational data (Sessions, Speakers, Revi
 *   **Constraint:** "Simplicity" - Avoid managing Linux servers or Docker containers manually.
 *   **Requirement:** Relational data model (Many-to-Many relationship between Speakers and Sessions).
 *   **Requirement:** Secure Authentication for Organizers.
+*   **Requirement:** Object Storage for Profile Photos (with security rules).
 
 ## Considered Options
 
@@ -28,7 +29,7 @@ SessioFlow requires a backend to store relational data (Sessions, Speakers, Revi
 **Chosen Option:** "Supabase"
 
 **Justification:**
-Supabase offers a "Backend-as-a-Service" experience built on top of standard PostgreSQL. It meets the relational data requirement (unlike Firebase's NoSQL which would complicate the Co-Speaker logic) and offers a generous free tier that fits our cost constraint. It handles Auth, Database, and auto-generated APIs, drastically reducing the coding effort for the MVP.
+Supabase offers a "Backend-as-a-Service" experience built on top of standard PostgreSQL. It meets the relational data requirement and offers a generous free tier that fits our cost constraint. It provides **Database, Authentication, AND Object Storage** in a single package. Crucially, it allows us to secure file access using the same **Row Level Security (RLS)** policies as the database, avoiding the need for complex synchronisation with external storage providers like AWS S3.
 
 ### Consequences
 
