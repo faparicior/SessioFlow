@@ -1,4 +1,4 @@
-# Define Project Structure (App Router)
+# Use Feature-Based Colocation (App Router)
 
 * **Status:** Proposed
 * **Date:** 2026-01-07

@@ -21,7 +21,7 @@ SessioFlow requires a backend to store relational data (Sessions, Speakers, Revi
 
 *   **Supabase**
 *   **Firebase**
-*   **Custom Node.js + PostgreSQL on a VP S**
+*   **Custom Node.js + PostgreSQL on a VPS**
 *   **SQLite (embedded)**
 
 ## Decision Outcome

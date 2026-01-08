@@ -1,4 +1,4 @@
-# Define Testing Strategy
+# Use Vitest and Playwright for Testing
 
 * **Status:** Proposed
 * **Date:** 2026-01-07
@@ -8,11 +8,11 @@
 
 ## Context and Problem Statement
 
-As the application grows, relying solely on manual testing becomes sustainable and risky. We need a testing strategy that ensures reliability without violating the "Simplicity" and "Cost" constraints. We need to define *what* to test and *which tools* to use, avoiding the "Testing Trophy" vs "Testing Pyramid" debates that waste time.
+As the application grows, relying solely on manual testing becomes unsustainable and risky. We need a testing strategy that ensures reliability without violating the "Simplicity" and "Cost" constraints. We need to define *what* to test and *which tools* to use, avoiding the "Testing Trophy" vs "Testing Pyramid" debates that waste time.
 
 **Decision Drivers:**
 *   **Simplicity:** The setup must be minimal and fast.
-*   **Integration:** Must work seamlessly with Next.js and Vite (if used).
+*   **Integration:** Must work seamlessly with Next.js and our tooling (Vite/Vitest).
 *   **Reliability:** Critical flows (Login, Submission) must work 100% of the time.
 *   **Developer Experience:** Tests should be easy to write and run locally.
 
@@ -28,7 +28,7 @@ As the application grows, relying solely on manual testing becomes sustainable a
 **Chosen Option:** "Vitest (Unit) + Playwright (E2E)"
 
 **Justification:**
-We choose **Vitest** for unit/integration tests because it is built on top of Vite. Next.js uses SWC/Turbo, and Vitest integrates with modern bundlers much faster than Jest, which often requires complex Babel configuration. For End-to-End (E2E) testing, **Playwright** is chosen over Cypress because it is faster, supports parallel execution better, and allows testing multiple browser tabs (crucial for Auth flows).
+We choose **Vitest** for unit/integration tests. Although this deviates slightly from the "Boring Tech" preference (Jest is older), Vitest integrates natively with the modern ecosystem (Next.js/SWC), is significantly faster, and requires less configuration than Jest for TypeScript. For End-to-End (E2E) testing, **Playwright** is chosen over Cypress because it is faster, supports parallel execution better, and allows testing multiple browser tabs (crucial for Auth flows).
 
 The strategy is:
 1.  **Unit Tests (Vitest):** logic-heavy functions (e.g. Zod validators, scoring algorithms).

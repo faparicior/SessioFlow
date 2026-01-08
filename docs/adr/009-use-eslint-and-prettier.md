@@ -1,4 +1,4 @@
-# Define Linting and Formatting Standards
+# Use ESLint and Prettier for Linting
 
 * **Status:** Proposed
 * **Date:** 2026-01-07

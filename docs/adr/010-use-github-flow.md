@@ -1,4 +1,4 @@
-# Define Git Branching Strategy
+# Use GitHub Flow
 
 * **Status:** Proposed
 * **Date:** 2026-01-07
@@ -8,7 +8,7 @@
 
 ## Context and Problem Statement
 
-Multpile developers working on the same codebase can lead to merge conflicts and unstable code in the `main` branch. We need a workflow that ensures code review happens before merging, while keeping the process simple enough for a small team. Complex workflows like GitFlow are often overkill for small/medium web apps.
+Multiple developers working on the same codebase can lead to merge conflicts and unstable code in the `main` branch. We need a workflow that ensures code review happens before merging, while keeping the process simple enough for a small team. Complex workflows like GitFlow are often overkill for small/medium web apps.
 
 **Decision Drivers:**
 *   **Simplicity:** Minimal overhead for creating branches.
