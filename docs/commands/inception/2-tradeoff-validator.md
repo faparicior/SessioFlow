@@ -9,53 +9,53 @@ Instructions for the Audit: Analyze the provided Trade-off Board data (likely in
 
     The sources state that a trade-off is a "solution of compromise".
     
-    • Verification: Ensure that in the final consensus row, each vertical column contains exactly one mark.
+    - Verification: Ensure that in the final consensus row, each vertical column contains exactly one mark.
     
-    • Conflict: If the team has ranked two categories (e.g., both "Security" and "Usability") as priority #1, flag this as a failure. You must remind the team that they cannot have every slider at maximum volume; they must "slide" some down to protect others.
+    - Conflict: If the team has ranked two categories (e.g., both "Security" and "Usability") as priority #1, flag this as a failure. You must remind the team that they cannot have every slider at maximum volume; they must "slide" some down to protect others.
 
 2. Individual vs. Consensus Distinction
 
     The sources emphasize that this activity is about the "open and collaborative conversation" it triggers.
     
-    • Verification: Check if the board shows Individual Voting (initials of participants) as well as a Final Consensus (often marked with a different color/indicator).
+    - Verification: Check if the board shows Individual Voting (initials of participants) as well as a Final Consensus (often marked with a different color/indicator).
 
-    • Feedback: If the board only shows a final list without individual variations, ask if the team actually debated different perspectives or simply "filled out the boxes" without discussion.
+    - Feedback: If the board only shows a final list without individual variations, ask if the team actually debated different perspectives or simply "filled out the boxes" without discussion.
 
 3. Category Relevance
 
     The board should use categories that represent conflicting product qualities.
     
-    • Verification: Look for categories like Security, Usability, Performance, Flexibility, Scalability, Cost, or Simplicity.
+    - Verification: Look for categories like Security, Usability, Performance, Flexibility, Scalability, Cost, or Simplicity.
     
-    • Feedback: Suggest specific trade-off pairs if they are missing, such as Security vs Usability or Performance vs Flexibility, to ensure the team has addressed common technical conflicts.
+    - Feedback: Suggest specific trade-off pairs if they are missing, such as Security vs Usability or Performance vs Flexibility, to ensure the team has addressed common technical conflicts.
 
 4. Ranking Logic
 
     The columns must be numbered 1 to N, where 1 is the most important.
     
-    • Verification: Confirm the scale is correctly oriented. If the team has confused the scale (e.g., using N as the most important), provide a correction.
+    - Verification: Confirm the scale is correctly oriented. If the team has confused the scale (e.g., using N as the most important), provide a correction.
 
 5. Strategic Alignment (Challenging the Team)
 
     Compare the ranking to the broader project context.
     
-    • Verification: If a product is described as "Simple and Cost-effective," but the board ranks "Scalability" or "Flexibility" higher than "Cost" or "Simplicity," flag this as a potential strategic misalignment.
+    - Verification: If a product is described as "Simple and Cost-effective," but the board ranks "Scalability" or "Flexibility" higher than "Cost" or "Simplicity," flag this as a potential strategic misalignment.
 
 6. Reality & Safety Check
 
     Even if the sorting follows the rules, is the result dangerous?
 
-    • Verification: If "Security" is ranked low (e.g., 4 or 5) but the product involves payments, health data, or personal info, flag this immediately as a Critical Risk.
-    • Verification: If "Performance" is ranked low but the product depends on real-time data, flag this contradiction.
+    - Verification: If "Security" is ranked low (e.g., 4 or 5) but the product involves payments, health data, or personal info, flag this immediately as a Critical Risk.
+    - Verification: If "Performance" is ranked low but the product depends on real-time data, flag this contradiction.
 
 ## Output Format:
 
-• Compliance Status: (Aligned / Needs Revision).
+- Compliance Status: (Aligned / Needs Revision).
 
-• Rule Violations: (Identify duplicate rankings in columns).
+- Rule Violations: (Identify duplicate rankings in columns).
 
-• Coaching Advice: (Specific steps to resolve conflicting visions).
+- Coaching Advice: (Specific steps to resolve conflicting visions).
 
-• The "Holiday Budget" Question: Ask the team a specific question based on their #1 vs #2 priority to confirm they are truly willing to sacrifice the second to protect the first.
+- The "Holiday Budget" Question: Ask the team a specific question based on their #1 vs #2 priority to confirm they are truly willing to sacrifice the second to protect the first.
 
 Eval the file `docs/inception/2-tradeoff.md` content and provide a compliance score for each section.
