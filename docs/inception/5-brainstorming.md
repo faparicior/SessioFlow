@@ -89,7 +89,7 @@ For each brainstormed feature, provide a quick assessment:
 | Review & Score Sessions | High | Medium | High | Must-have |
 | Automate Speaker Communications | High | Medium | High | Must-have |
 | Assign Schedule Slots | High | Medium | Medium | Must-have |
-| Co-Speaker Management | High | Low | High | Must-have |
+| Co-Speaker Management | High | Medium | High | Must-have |
 | Bulk Update Session Status | Medium | Low | High | Should-have |
 | Speaker Travel & Info Dashboard | High | Low | High | Should-have |
 | Deploy with Standard Tools | High | Medium | Low | Should-have |

@@ -31,9 +31,9 @@ Organize the brainstormed features into a logical sequence of releases to define
 | :--- | :---: | :---: | :---: | :---: | :--- |
 | **Collect Proposals (CfP)** | E | $$$ | ♥♥♥ | TT | @CoreTeam |
 | **Review & Score Sessions** | E | $$$ | ♥ | TT | @CoreTeam |
-| **Co-Speaker Management** | E | $$ | ♥♥♥ | TTT | @CoreTeam |
-| **User Authentication** | E | $$$ | ♥♥ | TT | @CoreTeam |
-| **Speaker Profile (Photo Upload)** | E | $$ | ♥♥♥ | TT | @CoreTeam |
+| **Co-Speaker Management** | EE | $$ | ♥♥♥ | TTT | @CoreTeam |
+| **User Authentication** | EE | $$$ | ♥♥ | TT | @CoreTeam |
+| **Speaker Profile (Photo Upload)** | EE | $$ | ♥♥♥ | TT | @CoreTeam |
 
 **MVP Rationale:**
 This wave focuses strictly on the **Intake and Review** phase. It allows the Persona (Fernando) to launch the Call for Papers and gather content. The "Co-Speaker Management" is the key differentiator (Wow Factor) included to attract high-quality speakers (Andrea) early on. Scheduling and Mass Communication are deferred to Wave 2, as they happen *after* selection.

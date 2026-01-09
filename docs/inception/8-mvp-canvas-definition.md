@@ -76,10 +76,11 @@ We believe that by **providing a specialized CfP tool with built-in co-speaker m
 
 ### Cost & Schedule
 *   **Infrastructure:** **$0/month** (Constraint #1). Must run on Vercel/Netlify + Supabase/Firebase Free Tier.
-*   **Development Effort:** Estimated 3 Sprints (6 Weeks) for 2 Developers.
-    *   Sprint 1: CfP Form & Co-Speaker Logic.
-    *   Sprint 2: Organizer Dashboard & Auth.
-    *   Sprint 3: Scoring Logic & Polish.
+*   **Development Effort:** Estimated 4 Sprints (8 Weeks) for 2 Developers.
+    *   Sprint 1: CfP Form & User Authentication.
+    *   Sprint 2: Co-Speaker Logic & Invite Flow.
+    *   Sprint 3: Organizer Dashboard & Profile Management.
+    *   Sprint 4: Review Scoring Logic & Final Polish.
 
 ### Risks & Mitigation
 *   **Risk:** Low adoption because "Google Forms is easier".
