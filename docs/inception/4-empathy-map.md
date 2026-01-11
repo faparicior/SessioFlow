@@ -80,3 +80,44 @@
 * [ ] **Need 1:** A single point to deal with the sessions and call for papers process
 * [ ] **Want 2:** A easy way to deal with the expenses reimbursement process
 * [ ] **Success Metric 3:** To be selected as a speaker
+
+
+# 🗺️ Empathy Map for Agile Inception
+
+## 👤 Persona: Sandra, junior event volunteer organizer
+* **Focus Goal:** Participate in the organization of the main event
+* **Current Context:** She is a junior volunteer. Not used to data tools and not familiarized with the process. She has only participated in conferences as attendee.
+
+---
+
+## 1. The Quadrants (What They Experience)
+
+| **👀 SEES** (The Environment) | **🗣️ SAYS** (Out Loud) |
+| :--- | :--- |
+| *What do they see in the marketplace, their office, or on their screen?* | *What do they tell others about their current process, frustrations, or desires?* |
+| - Processes difficult to undersand as a beginer | - "I wish more information about the different processes" |
+| - Many tools and spread data | - "Not having so many tools and centralized data" |
+| - | "I don't want to spend lot of time in tasks that can be automated" |
+
+| **🧠 THINKS** (Internal World) | **✍️ DOES** (Actions & Behavior) |
+| :--- | :--- |
+| *What are their motivations, beliefs, fears, and hopes (that they may not say)?* | *What steps do they physically take? How do they actually behave in the current situation?* |
+| - *[Fear:]* Don't have a clear idea about the process | - Participate in less initiatives |
+| - *[Fear:]* - Having to do manual work can prompt to errors | - Invest more time in reviewing things |
+| - *[Hope:]* An easier tool can improve participation | -  |
+
+---
+
+## 2. Summary & Outcome
+
+### 😖 PAINS (Fears, Obstacles, and Frustrations)
+*What are the biggest barriers to achieving their goal?*
+* [ ] **Frustration 1:** Invest a lot of time using and understanding the tool and in the call for paper review 
+* [ ] **Obstacle 2:** Difficult to compare different talks
+* [ ] **Fear 3:** Doing mistakes in the call for paper review
+
+### ✨ GAINS (Wants, Needs, and Success)
+*What defines success for them? What are they trying to achieve?*
+* [ ] **Need 1:** An easy and automated tool for call for papers process and data analysis
+* [ ] **Want 2:** Less tools for the big event organization
+* [ ] **Success Metric 3:** New joiners can use the tool without much support
