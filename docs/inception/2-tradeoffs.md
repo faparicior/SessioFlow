@@ -4,9 +4,7 @@ The **Trade-off Board**, often referred to as **"Understanding the Trade-offs"**
 
 According to the sources, this activity is essential because products are often built on conflicting premises, such as **Security vs Usability** or **Performance vs Flexibility**. By forcing a collaborative conversation, the team reaches a consensus that prevents future misunderstandings and accelerates decision-making.
 
-### Trade-off Board (Sliders)
-
-***
+---
 
 # Trade-off Board: SessioFlow
 
@@ -18,26 +16,48 @@ According to the sources, this activity is essential because products are often 
 | Priority Rank | 1 (Most) | 2 | 3 | 4 | 5 | 6 | 7 (Least) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Cost** | 🔴 | | | | | | |
-| **Usability** | | 🔴 | | | | | |
-| **Simplicity** | | | 🔴 | | | | |
+| **Simplicity** | | 🔴 | | | | | |
+| **Usability** | | | 🔴 | | | | |
 | **Security** | | | | 🔴 | | | |
-| **Flexibility** | | | | | 🔴 | | |
-| **Performance** | | | | | | 🔴 | |
+| **Performance** | | | | | 🔴 | | |
+| **Flexibility** | | | | | | 🔴 | |
 | **Scalability** | | | | | | | 🔴 |
 
 ---
 
 ### Consensus Reasoning
 
-*   **1. Cost:** The Vision explicitly states "$0/month infrastructure". If the architecture requires an expensive DB or heavy server, the product fails its primary market (Non-profits/Volunteers).
-*   **2. Usability:** Fernando (Persona) is a volunteer with limited time. If he needs to read a manual to find the "Reject" button, he will go back to Excel.
-*   **3. Simplicity:** To achieve "#1 Cost", the code must be simple enough to run on **basic hosting (e.g., Vercel + Supabase Free Tier)**. Complex microservices architectures are banned.
-*   **4. Security:** We handle personal data (Names/Emails) so GDPR compliance is mandatory, but we are *not* handling payments (Out of Scope), which lowers the threat model compared to a Fintech app.
-*   **5. Flexibility:** We are building *a* way to manage events, not *every* way. Custom workflows are out of scope for MVP.
-*   **6. Performance:** It is an admin tool. 200ms vs 500ms latency does not change the value proposition.
-*   **7. Scalability:** The MVP is for single-conference use. We do not need to architect for 1 million concurrent users right now. YAGNI (You Aren't Gonna Need It).
+The following reasoning explains the strategic ranking above, derived from the core **Product Vision** and **Is/Is Not** constraints:
 
-***
+1.  **Cost (#1 - The "Golden" Constraint):**
+    *   **Why:** The Product Vision explicitly targets "Non profit organizations" and sets a hard goal to "Enable 80% of users to run on free-tier infrastructure ($0/month)". This is the primary differentiator against competitors like Sessionize.
+    *   **Trade-off:** We will reject any feature, no matter how "cool" or "performant," if it forces the user to buy expensive infrastructure (e.g., managed databases, complex cloud services).
+
+2.  **Simplicity (#2):**
+    *   **Why:** To achieve the #1 goal of Low Cost and the vision of being "Simple to self-host," the technical architecture must remain minimal (e.g., Monolith, SQLite, minimal dependencies).
+    *   **Trade-off:** We prioritise a boring, simple stack over complex "Enterprise" architectures. "Is Not: A technical complex application."
+
+3.  **Usability (#3):**
+    *   **Why:** The Vision claims the product is "easy to use" and aims for a "4/5 average rating". The target audience (event organizers) are often volunteers with limited time.
+    *   **Trade-off:** Once the Cost and Architecture constraints are met, we obsess over UX. However, we won't break the "Free Tier" constraint to slightly improve UX (e.g., using a paid heavy AI service for auto-complete).
+
+4.  **Security (#4):**
+    *   **Why:** We must handle user logins and public data securely (Hygiene factor).
+    *   **Trade-off:** Since the product **"DOES NOT Handle payments"** or sensitive PII (like passports), we treat Security as important but not the *primary* driver vs Cost/Simplicity. We rely on standard framework defenses rather than building a Fort Knox.
+
+5.  **Performance (#5):**
+    *   **Why:** The Vision states "Lightweight and efficient".
+    *   **Trade-off:** We want it to be fast, but not at the expense of Simplicity. We accept standard server-rendered page loads rather than complex Single Page App optimizations if they complicate the "Easy to hosting" promise.
+
+6.  **Flexibility (#6):**
+    *   **Why:** The Vision is specific: "Manages session organization". It **IS NOT** a generic CMS.
+    *   **Trade-off:** We provide *one* opinionated, optimized workflow. We do not support every possible conference variation or complex plugin systems.
+
+7.  **Scalability (#7):**
+    *   **Why:** The focus is on individual events/conferences (intermittent load), not a multi-tenant global SaaS platform serving millions simultaneously.
+    *   **Trade-off:** We explicitly sacrifice horizontal scaling (K8s/Microservices) to protect **Cost (#1)** and **Simplicity (#2)**. The system just needs to survive the "Call for Papers" rush for a single event.
+
+---
 
 ### Strategic Insight
-The team agrees that **User Experience (Cost + Usability)** trumps **Engineering Ego (Scalability + Perforamnce)**. This is a "Boring Tech" project designed to be accessible, not a technical showcase of high-throughput systems.
+The source emphasizes that this activity is not just about a final list but about the **"open and collaborative conversation"** it triggers. The stark contrast between **Cost (#1)** and **Scalability (#7)** defines the architectural strategy: **Vertical Efficiency over Horizontal Scale**.
