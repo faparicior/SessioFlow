@@ -26,6 +26,7 @@ Below is a markdown template based on the "Sliders" format described in the sour
 | **Scalability** | | | | | | | |
 | **Cost** | | | | | | | |
 | **Simplicity** | | | | | | | |
+| **Other** | | | | | | | |
 
 ---
 
