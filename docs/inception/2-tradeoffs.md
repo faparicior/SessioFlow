@@ -4,60 +4,44 @@ The **Trade-off Board**, often referred to as **"Understanding the Trade-offs"**
 
 According to the sources, this activity is essential because products are often built on conflicting premises, such as **Security vs Usability** or **Performance vs Flexibility**. By forcing a collaborative conversation, the team reaches a consensus that prevents future misunderstandings and accelerates decision-making.
 
----
+***
 
-# Trade-off Board: SessioFlow
+# Trade-off Board: SessionFlow
 
-**Instructions:**
-1.  **Identify Categories:** List all relevant product qualities (e.g., Security, Usability, Cost).
-2.  **Rank Importance:** Columns are numbered **1 to N**, where **1 is the most important**.
-3.  **The Golden Rule:** Each column can only contain **one** consensus mark. You cannot have two categories at the same priority level.
+## 1. Individual Perspectives
+*Capture the initial "Must Haves" from different stakeholders before compromise.*
+
+| Role | Initial Priority #1 | Reasoning |
+| :--- | :--- | :--- |
+| **Product Owner** | **Cost** | The Vision explicitly targets non-profits with a goal of running on **free-tier infrastructure ($0/month)**. If the solution is expensive to host, it fails the primary business constraint. |
+| **UX Advocate** | **Usability** | The Elevator Pitch defines the product as "Simple" and "Easy to use". It competes against manual tools (Excel/Email), so if it isn't significantly more usable (Goal: 4/5 rating), users won't switch. |
+| **Tech Lead** | **Simplicity** | To satisfy the "Is Not requiring specialized infrastructure" constraint, the architecture must remain boring and standard. Complexity is the enemy of self-hosting. |
+
+## 2. Final Consensus Trade-off Board
 
 | Priority Rank | 1 (Most) | 2 | 3 | 4 | 5 | 6 | 7 (Least) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Cost** | 🔴 | | | | | | |
-| **Simplicity** | | 🔴 | | | | | |
-| **Usability** | | | 🔴 | | | | |
-| **Security** | | | | 🔴 | | | |
-| **Performance** | | | | | 🔴 | | |
-| **Flexibility** | | | | | | 🔴 | |
-| **Scalability** | | | | | | | 🔴 |
+| **Usability** | **X** | | | | | | |
+| **Cost** | | **X** | | | | | |
+| **Simplicity** | | | **X** | | | | |
+| **Performance** | | | | **X** | | | |
+| **Security** | | | | | **X** | | |
+| **Flexibility** | | | | | | **X** | |
+| **Scalability** | | | | | | | **X** |
 
----
+## 3. Consensus Reasoning
+*Explain why the final trade-offs were made, specifically addressing any conflicts identified in section 1.*
 
-### Consensus Reasoning
-
-The following reasoning explains the strategic ranking above, derived from the core **Product Vision** and **Is/Is Not** constraints:
-
-1.  **Cost (#1 - The "Golden" Constraint):**
-    *   **Why:** The Product Vision explicitly targets "Non profit organizations" and sets a hard goal to "Enable 80% of users to run on free-tier infrastructure ($0/month)". This is the primary differentiator against competitors like Sessionize.
-    *   **Trade-off:** We will reject any feature, no matter how "cool" or "performant," if it forces the user to buy expensive infrastructure (e.g., managed databases, complex cloud services).
-
-2.  **Simplicity (#2):**
-    *   **Why:** To achieve the #1 goal of Low Cost and the vision of being "Simple to self-host," the technical architecture must remain minimal (e.g., Monolith, SQLite, minimal dependencies).
-    *   **Trade-off:** We prioritise a boring, simple stack over complex "Enterprise" architectures. "Is Not: A technical complex application."
-
-3.  **Usability (#3):**
-    *   **Why:** The Vision claims the product is "easy to use" and aims for a "4/5 average rating". The target audience (event organizers) are often volunteers with limited time.
-    *   **Trade-off:** Once the Cost and Architecture constraints are met, we obsess over UX. However, we won't break the "Free Tier" constraint to slightly improve UX (e.g., using a paid heavy AI service for auto-complete).
-
-4.  **Security (#4):**
-    *   **Why:** We must handle user logins and public data securely (Hygiene factor).
-    *   **Trade-off:** Since the product **"DOES NOT Handle payments"** or sensitive PII (like passports), we treat Security as important but not the *primary* driver vs Cost/Simplicity. We rely on standard framework defenses rather than building a Fort Knox.
-
-5.  **Performance (#5):**
-    *   **Why:** The Vision states "Lightweight and efficient".
-    *   **Trade-off:** We want it to be fast, but not at the expense of Simplicity. We accept standard server-rendered page loads rather than complex Single Page App optimizations if they complicate the "Easy to hosting" promise.
-
-6.  **Flexibility (#6):**
-    *   **Why:** The Vision is specific: "Manages session organization". It **IS NOT** a generic CMS.
-    *   **Trade-off:** We provide *one* opinionated, optimized workflow. We do not support every possible conference variation or complex plugin systems.
-
-7.  **Scalability (#7):**
-    *   **Why:** The focus is on individual events/conferences (intermittent load), not a multi-tenant global SaaS platform serving millions simultaneously.
-    *   **Trade-off:** We explicitly sacrifice horizontal scaling (K8s/Microservices) to protect **Cost (#1)** and **Simplicity (#2)**. The system just needs to survive the "Call for Papers" rush for a single event.
+*   **Why was Usability ranked #1?**: The primary "Product Goal" is to "Reduce session organization time by 50%". We agreed that even if the app is free (Cost), it adds no value if it isn't easier than the current manual process. Usability is the core differentiator against tools like Excel.
+*   **Why was Cost ranked #2?**: This is the hardest constraint ("The Product Is Not Expensive to host"). It sits just below Usability because while a free app is useless if unusable, a usable app is inaccessible to our target audience (non-profits) if it costs too much.
+*   **Why is Simplicity #3?**: Simplicity (technical and functional) is our strategy to achieve low Cost and high Usability. We sacrifice feature depth to keep the "Lightweight" promise.
+*   **Why was Security ranked #5?**: While important, the product **Does Not** handle payments or highly sensitive health/legal data. We rely on standard framework security features. It is a hygiene factor, not a differentiator.
+*   **Why was Scalability sacrified (ranked #7)?**: The Vision states the product "Is Not a technical complex application". It is designed for single-conference self-hosting, not for serving millions of concurrent users. We explicitly deprioritized complex architecture (e.g., k8s, microservices) to protect Cost and Simplicity.
 
 ---
 
 ### Strategic Insight
-The source emphasizes that this activity is not just about a final list but about the **"open and collaborative conversation"** it triggers. The stark contrast between **Cost (#1)** and **Scalability (#7)** defines the architectural strategy: **Vertical Efficiency over Horizontal Scale**.
+The source emphasises that this activity is not just about a final list but about the **"open and collaborative conversation"** it triggers. If the team discovers that their individual votes are widely scattered (e.g., some see Security as a '1' and others as a '7'), the facilitator must guide them to resolve these conflicting visions before the MVP construction begins.
+
+**Analogy**
+Think of the Trade-off Board as a **limited budget for a holiday**. You might want a five-star hotel, a first-class flight, and a three-week duration, but your budget (the product scope) won't allow all three at the top level. You must "slide" the hotel quality down to a '3' if you insist on keeping the flight at a '1'. You are deciding what the "must-haves" are and what can be sacrificed to stay "Lean".

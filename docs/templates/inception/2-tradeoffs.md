@@ -17,6 +17,17 @@ Below is a markdown template based on the "Sliders" format described in the sour
 2.  **Rank Importance:** Columns are numbered **1 to N**, where **1 is the most important**.
 3.  **The Golden Rule:** Each column can only contain **one** consensus mark. You cannot have two categories at the same priority level.
 
+## 1. Individual Perspectives
+*Capture the initial "Must Haves" from different stakeholders before compromise.*
+
+| Role | Initial Priority #1 | Reasoning |
+| :--- | :--- | :--- |
+| **Product Owner** | | |
+| **UX Advocate** | | |
+| **Tech Lead** | | |
+
+## 2. Final Consensus Trade-off Board
+
 | Priority Rank | 1 (Most) | 2 | 3 | 4 | 5 | 6 | 7 (Least) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Usability** | | | | | | | |
@@ -27,6 +38,11 @@ Below is a markdown template based on the "Sliders" format described in the sour
 | **Cost** | | | | | | | |
 | **Simplicity** | | | | | | | |
 | **Other** | | | | | | | |
+
+## 3. Consensus Reasoning
+*Explain why the final trade-offs were made. specifically addressing any conflicts identified in section 1.*
+*   **Why was [Quality X] ranked #1?**: ...
+*   **Why was [Quality Y] sacrified (ranked low)?**: ...
 
 ---
 
