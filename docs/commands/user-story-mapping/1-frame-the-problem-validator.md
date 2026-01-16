@@ -16,7 +16,11 @@ Act as an expert Product Discovery coach. Review the provided '1-Frame the Probl
 
 7. The RUST Test: Rate the content based on Readability, Understandability, Specifiability, and Technical feasibility..
 
-Identify any 'white spots' or gaps where the team needs more research before proceeding to mapping, and suggest specific improvements to move from a 'Feature Factory' mindset to a value-driven one.
+## Output Request
+
+- Provide a **Compliance Score** (1-5) for each of the 7 criteria.
+- Identify specific **"White Spots"** or gaps where the team needs more research.
+- Suggest specific improvements to move from a 'Feature Factory' mindset to a value-driven one.
 
 --------------------------------------------------------------------------------
 
@@ -35,5 +39,3 @@ If you are performing a manual review, ensure your document answers these critic
 ## The Blueprint Analogy
 
 Reviewing your framing document is like checking the foundation of a building before the walls go up. If the foundation is misaligned or built on soft ground (risky assumptions), no amount of high-quality 'bricks' (user stories) will keep the structure from eventually leaning or collapsing. A quality blueprint ensures the entire weight of the development effort is supported by a solid understanding of Who and Why
-
-Review the file `docs/user-story-mapping/1-frame-the-problem.md` content and provide a compliance score for each section.

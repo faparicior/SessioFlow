@@ -22,7 +22,8 @@ Act as an expert User Story Mapping Coach (referencing principles from Jeff Patt
     - Does the story continue **after** the main value interaction? (e.g., Reporting, Wrap-up, Offboarding).
     - *Warning:* Inception data often skips these "boring" parts. You must verify they exist or flag them as missing.
 
-## Output Request:
+## Output Request
+
 - Rate the backbone on a scale of 1-5 for Narrative Coherence.
 - List any 'Red Flag' items that look like features rather than user tasks.
 - Identify specific gaps in the timeline where the user seemingly 'teleports' from one state to another.
@@ -30,7 +31,9 @@ Act as an expert User Story Mapping Coach (referencing principles from Jeff Patt
 --------------------------------------------------------------------------------
 
 ## Manual Quality Checklist
+
 If you are performing the review manually, look for these specific "smells" in the document:
+
 - The "Feature List" Smell: If the backbone lists "Login Screen," "Search Bar," and "Checkout Button," it is a list of features, not a story. It should say "Log in," "Find Product," and "Purchase Items."
 - The "Silo" Smell: Does the backbone only show one user's perspective? A good backbone often crosses multiple users (e.g., The Shopper orders -> The System processes -> The Admin fulfills).
 - The "Granularity" Smell: If one step is "Open App" and the next is "Complete Monthly Audit," the granularity is mismatched. Ensure the tasks are at a similar "altitude" of abstraction.
