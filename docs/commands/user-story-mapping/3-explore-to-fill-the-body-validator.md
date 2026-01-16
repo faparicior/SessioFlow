@@ -20,6 +20,8 @@ Evaluate its idoneity and quality based on the following specific criteria deriv
     - User Value: Do the stories imply value to the user or customer, rather than just technical necessity?
     - Independence: Do the stories appear distinct enough to be prioritized independently, or are they tightly coupled 'compound stories' that need further splitting?
     - Confirmation: For the highest priority items, are there hints of 'Acceptance Criteria' or notes on how we will verify the story is done?
+    - **Completeness:** Are there detailed Story Cards for **ALL** major MVP user stories, not just a random sample?
+    - **Formatting:** Do the Story Cards follow the strict 4-section format: Title, Narrative (Who/What/Why), Acceptance Criteria, and **Design/Technical Notes**?
 
 4. Plan Alignment (Waves & Dependencies):
 
@@ -32,6 +34,11 @@ Evaluate its idoneity and quality based on the following specific criteria deriv
     - Risky Assumptions: Does the document identify technical risks or 'spikes' required for stories that are currently vague or complex?
     - Completeness: Are there obvious gaps between steps where the user would be 'stranded' without a bridging action?
 
+6. Inception Alignment (Source of Truth):
+
+    - **Scope Check:** Does the map contradict the MVP Canvas? (e.g., marking a feature as MVP regarding 'Co-Speakers' when the Canvas says it is 'Out of Scope').
+    - **Persona Check:** Does it include personas that were explicitly removed or deprecated (e.g., 'Sandra')?
+
 ## Output Request
 
 1. Score the Depth: Rate the exploration on a scale of 1–5 (1 = Happy Path only, 5 = Comprehensive coverage of edge cases).
@@ -39,7 +46,8 @@ Evaluate its idoneity and quality based on the following specific criteria deriv
 3. Gap Analysis: Point out any specific Backbone activities that look suspiciously empty or under-explored.
 4. Scope Creep Check: Flag any story marked as "MVP" that seems non-essential.
 5. Missing Dependencies: List high-priority stories that seem to depend on external systems but lack a **Dep:** note.
-6. Risk Flag: Highlight any stories that seem too large ('Epics') and suggest how to split them."
+6. Risk Flag: Highlight any stories that seem too large ('Epics') and suggest how to split them.
+7. **Template Compliance:** Verify if all Story Cards have the required 'Design/Technical Notes' section. (Pass/Fail).
 
 --------------------------------------------------------------------------------
 
