@@ -34,7 +34,7 @@ Read the backbone aloud. Does it tell a coherent story? Use the conjunction "and
 - Missing Links: The previous gap (Deploy -> Submit) is now bridged by the Configuration step. The story now extends through the actual event execution.
 - Notes:
     - **Deployment (Journey 4)** is a prerequisite step but essential for the Volunteer Organizer persona who needs a "simple checkout" equivalent for IT operations.
-    - **Co-Speaker Management** is handled within the Proposal Submission activity to address Andrea's pain point immediately.
+    - **Co-Speaker Management** is handled within the Proposal Submission activity to address Andrea's pain point (slated for Wave 2).
 
 ## 4 - Multi-User/System Intersections
 

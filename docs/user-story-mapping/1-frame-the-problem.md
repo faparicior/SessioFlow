@@ -43,7 +43,7 @@ Objective: Define the Who and the Why to ensure the discovery team is aligned on
 
 | Dimension | Guiding Questions | Team Input |
 | :--- | :--- | :--- |
-| **Anti-Goals** | What are we explicitly **NOT** doing right now? (Out of Scope) | 1. Payments/Ticketing management.<br>2. Speaker travel/accommodation logistics.<br>3. Public API (for now).<br>4. AI Content Generation.<br>5. Complex scheduling (Wave 2). |
+| **Anti-Goals** | What are we explicitly **NOT** doing right now? (Out of Scope) | 1. Payments/Ticketing management.<br>2. Speaker travel/accommodation logistics.<br>3. Public API (for now).<br>4. AI Content Generation.<br>5. Complex scheduling (Wave 2).<br>6. Co-Speaker Management (Wave 2). |
 | **Risky Assumptions** | What are the biggest things we believe to be true that might actually be wrong? | 1. That "Google Forms is easier" might stop adoption.<br>2. That GDPR compliance for email collection might be a barrier.<br>3. That organizers can handle scheduling manually if we don't build it in V1. |
 | **Tech Constraints** | Are there specific architectural or feasibility concerns? | 1. **Cost:** Must run on free tiers (Vercel/Supabase).<br>2. **Simplicity:** No complex microservices; keep it monolithic/modular.<br>3. **Security:** Zero-trust for user data; rigorous auth required. |
 | **Budget / Size** | What is the gut estimate of the time or resources we are willing to invest? | Estimated 4 Sprints (8 Weeks) for 2 Developers. |
