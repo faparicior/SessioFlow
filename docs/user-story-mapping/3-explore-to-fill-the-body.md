@@ -24,25 +24,25 @@ Before finalizing stories, play the "What-About" game for your major activities.
 
 Map the details vertically under each Backbone Task. Ideally, arrange them with the "Happy Path" (standard flow) at the top, and variations/exceptions below.
 
-| Backbone Task | User Stories / Sub-Tasks (The specifics) | Notes / "What About" variations (Exceptions, edge cases, pains) |
-| :--- | :--- | :--- |
-| **1. System Deployment** | | |
-| [Download & Setup] | 1. Clone repository from GitHub<br>2. Configure environment variables (.env)<br>3. Run `docker-compose up`<br>4. Access localhost:3000 | **Exception:** Docker not installed (Show error message/Link to docs)<br>**Exception:** Port 3000 busy (Allow port configuration)<br>**Variation:** Download ZIP instead of Git |
-| **2. Event Configuration** | | |
-| [Define Event Details] | 1. Enter Event Name & Description<br>2. Set Start/End Dates<br>3. Upload Event Logo/Banner | **Validation:** End date before Start date?<br>**Exception:** Image upload fails (Size/Format limit)<br>**Variation:** Multi-day vs Single-day event logic |
-| [Configure CfP] | 1. Set CfP Open/Close Dates<br>2. Define Session Tracks (e.g., Frontend, DevOps)<br>3. Define Session Formats (e.g., Lightning Talk, Workshop) | **Risk:** Changing dates while CfP is active?<br>**Variation:** Allow "Anonymous Review" toggle? |
-| **3. Proposal Submission** | | |
-| [Account & Profile] | 1. Enter Email for Magic Link<br>2. Click Magic Link to Log in<br>3. Complete Profile (Bio, Name)<br>4. **Upload Profile Photo** | **Alt:** Social Login (Google/GitHub) - *Start with Magic Link for MVP*<br>**Exception:** Photo too big (>5MB) -> Auto-resize or Error?<br>**Edge Case:** User exists but Profile incomplete |
-| [Fill Proposal] | 1. Enter Session Title<br>2. Enter Abstract/Description<br>3. Select Track & Format<br>4. Save Draft | **Pain:** Losing work on refresh -> Needs LocalStorage autosave<br>**Validation:** Abstract too short/long |
-| [Co-Speaker Mgmt] | 1. Click "Add Co-Speaker"<br>2. Enter Co-Speaker Email<br>3. Generate & Send Invite Link | **Exception:** Co-speaker already has a session?<br>**Edge Case:** Co-speaker declines -> Notify Primary Speaker<br>**Risk:** Invite link expires |
-| [Submit] | 1. Review Summary<br>2. Click "Submit Final"<br>3. Receive Confirmation Email | **Exception:** Network error on submit -> Retry logic<br>**Post-Cond:** Lock editing after submission (unless "Edit" allowed until close) |
-| **4. Selection & Scheduling** | | |
-| [Review & Rate] | 1. View List of Blinded Proposals<br>2. Rate 1-5 Stars<br>3. Add internal comment | **Variation:** Sort by Track/Format<br>**Exception:** Tie-breaking logic?<br>**Risk:** Organizer bias (ensure blinding works) |
-| [Select Final List] | 1. Filter by Top Rated<br>2. Mark status "Accepted"<br>3. Mark status "Waitlist" / "Rejected" | **Volume:** Bulk select capabilities needed for large events<br>**Exception:** Selecting more talks than slots available (Warning?) |
-| [Assign Slots] | 1. View Schedule Grid (Time x Room)<br>2. Drag accepted session to slot<br>3. Publish Schedule | **Conflict:** Double booking a speaker? (Warn user)<br>**Exception:** Room capacity mismatch |
-| **5. Acceptance & Logistics** | | |
-| [Notify Speakers] | 1. Trigger "Send Decision Emails"<br>2. System filters Accepted vs Rejected templates<br>3. Send in batches | **Exception:** Email bounces<br>**Edge Case:** Speaker hasn't responded in X days |
-| [Speaker Confirm] | 1. Speaker clicks "Confirm Attendance"<br>2. Speaker enters Dietary Requirements<br>3. View Travel/Hotel Info Page | **Sad Path:** Speaker Declines -> Prompt to select from Waitlist<br>**Note:** Travel info is static Markdown/HTML for MVP |
+| Backbone Task | Wave (MVP/2/3) | User Stories / Sub-Tasks (The specifics) | Notes / Dependencies / Variations |
+| :--- | :---: | :--- | :--- |
+| **1. System Deployment** | | | |
+| [Download & Setup] | 3 | 1. Clone repository from GitHub<br>2. Configure environment variables (.env)<br>3. Run `docker-compose up`<br>4. Access localhost:3000 | **Dep:** Docker not installed (Show error message/Link to docs)<br>**Dep:** Port 3000 busy (Allow port configuration)<br>**Var:** Download ZIP instead of Git |
+| **2. Event Configuration** | | | |
+| [Define Event Details] | MVP | 1. Enter Event Name & Description<br>2. Set Start/End Dates<br>3. Upload Event Logo/Banner | **Val:** End date before Start date?<br>**Exc:** Image upload fails (Size/Format limit)<br>**Var:** Multi-day vs Single-day event logic |
+| [Configure CfP] | MVP | 1. Set CfP Open/Close Dates<br>2. Define Session Tracks (e.g., Frontend, DevOps)<br>3. Define Session Formats (e.g., Lightning Talk, Workshop) | **Risk:** Changing dates while CfP is active?<br>**Var:** Allow "Anonymous Review" toggle? |
+| **3. Proposal Submission** | | | |
+| [Account & Profile] | MVP | 1. Enter Email for Magic Link<br>2. Click Magic Link to Log in<br>3. Complete Profile (Bio, Name)<br>4. **Upload Profile Photo** | **Var:** Social Login (Google/GitHub) - *Start with Magic Link for MVP*<br>**Exc:** Photo too big (>5MB) -> Auto-resize or Error?<br>**Edge:** User exists but Profile incomplete |
+| [Fill Proposal] | MVP | 1. Enter Session Title<br>2. Enter Abstract/Description<br>3. Select Track & Format<br>4. Save Draft | **Pain:** Losing work on refresh -> Needs LocalStorage autosave<br>**Val:** Abstract too short/long |
+| [Co-Speaker Mgmt] | MVP | 1. Click "Add Co-Speaker"<br>2. Enter Co-Speaker Email<br>3. Generate & Send Invite Link | **Exc:** Co-speaker already has a session?<br>**Edge:** Co-speaker declines -> Notify Primary Speaker<br>**Risk:** Invite link expires |
+| [Submit] | MVP | 1. Review Summary<br>2. Click "Submit Final"<br>3. Receive Confirmation Email | **Exc:** Network error on submit -> Retry logic<br>**Post:** Lock editing after submission (unless "Edit" allowed until close) |
+| **4. Selection & Scheduling** | | | |
+| [Review & Rate] | MVP | 1. View List of Blinded Proposals<br>2. Rate 1-5 Stars<br>3. Add internal comment | **Var:** Sort by Track/Format<br>**Exc:** Tie-breaking logic?<br>**Risk:** Organizer bias (ensure blinding works) |
+| [Select Final List] | 2 | 1. Filter by Top Rated<br>2. Mark status "Accepted"<br>3. Mark status "Waitlist" / "Rejected" | **Vol:** Bulk select capabilities needed for large events<br>**Exc:** Selecting more talks than slots available (Warning?) |
+| [Assign Slots] | 2 | 1. View Schedule Grid (Time x Room)<br>2. Drag accepted session to slot<br>3. Publish Schedule | **Con:** Double booking a speaker? (Warn user)<br>**Exc:** Room capacity mismatch |
+| **5. Acceptance & Logistics** | | | |
+| [Notify Speakers] | 2 | 1. Trigger "Send Decision Emails"<br>2. System filters Accepted vs Rejected templates<br>3. Send in batches | **Exc:** Email bounces<br>**Edge:** Speaker hasn't responded in X days |
+| [Speaker Confirm] | 2 | 1. Speaker clicks "Confirm Attendance"<br>2. Speaker enters Dietary Requirements<br>3. View Travel/Hotel Info Page | **Sad:** Speaker Declines -> Prompt to select from Waitlist<br>**Note:** Travel info is static Markdown/HTML for MVP |
 
 ## 3. Story Definition Template
 

@@ -15,11 +15,11 @@ Before finalizing stories, play the "What-About" game for your major activities.
 
 Map the details vertically under each Backbone Task. Ideally, arrange them with the "Happy Path" (standard flow) at the top, and variations/exceptions below.
 
-| Backbone Task (From Step 2) | User Stories / Sub-Tasks (The specifics) | Notes / "What About" variations (Exceptions, edge cases, pains) |
-| :--- | :--- | :--- |
-| [e.g., Log In] | 1. Enter email/password<br>2. Click "Login"<br>3. Reset Password | What if they forgot their password?<br>What if the account is locked? |
-| [e.g., Search Item] | 1. Enter keyword<br>2. Filter by price<br>3. Sort by rating | What if there are zero results?<br>What if they mistype the word? |
-| [e.g., Checkout] | 1. Select shipping<br>2. Enter payment<br>3. Confirm order | What if the card expires?<br>What if they want to split payment? |
+| Backbone Task (From Step 2) | Wave (MVP/2/3) | User Stories / Sub-Tasks (The specifics) | Notes / Dependencies / Variations |
+| :--- | :---: | :--- | :--- |
+| [e.g., Log In] | MVP | 1. Enter email/password<br>2. Click "Login"<br>3. Reset Password | **Dep:** Requires Auth API<br>**Var:** what if they forgot password? |
+| [e.g., Search Item] | 2 | 1. Enter keyword<br>2. Filter by price<br>3. Sort by rating | **Var:** Zero results handling? |
+| [e.g., Checkout] | MVP | 1. Select shipping<br>2. Enter payment<br>3. Confirm order | **Sad:** Card declines |
 
 ## 3. Story Definition Template
 
@@ -27,8 +27,9 @@ For high-priority items identified above, flesh out the "Card, Conversation, Con
 
 ### Story Card [ID]
 
-Title: [Short verb phrase, e.g., "Reset Password"]
-The Narrative (Who/What/Why):
+**Title:** [Short verb phrase, e.g., "Reset Password"]
+
+**The Narrative (Who/What/Why):**
 As a [specific user persona], I want to [specific action], So that [benefit/value].
 
 ### Acceptance Criteria (Confirmation)
@@ -39,8 +40,8 @@ As a [specific user persona], I want to [specific action], So that [benefit/valu
 
 ### Design/Technical Notes
 
-- UI Sketch Reference: [Link or description of visual]
-- Technical Dependencies: [e.g., Requires Email Service API]
+- **Dependencies:** [e.g., Requires Email Service API]
+- **UI Sketch Reference:** [Link or description of visual]
 
 ### Splitting & Refining (The "Rock Breaking")
 
