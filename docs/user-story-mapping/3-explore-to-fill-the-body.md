@@ -51,58 +51,131 @@ Map the details vertically under each Backbone Task. Ideally, arrange them with 
 
 For high-priority items identified above, flesh out the "Card, Conversation, Confirmation" details.
 
-### Story Card 1: Co-Speaker Invitation
+### Story Card 1: Event Configuration
 
-**Title:** Invite Co-Speaker to Session
-**The Narrative:**
-As a **Speaker (Andrea)**, I want to **invite a colleague to my proposal via email**, So that **we can present together properly attributed**.
+**Title:** Define Event Core Details
 
-### Acceptance Criteria (Confirmation)
-
-- [ ] Verify that the primary speaker can enter an email address.
-- [ ] Verify that a unique, secure link is generated and sent to that email.
-- [ ] Verify that the co-speaker accepts, their profile is linked to the session.
-- [ ] **Sad Path:** If the co-speaker rejects, the primary speaker is notified.
-- [ ] **Constraint:** Maximum 1 co-speaker per talk for MVP.
-
-### Design/Technical Notes
-
-- **Dependencies:** Requires Email Service (Resend/SendGrid).
-- **Risk:** What if the co-speaker creates a new duplicate session instead of accepting? (UX text must be clear).
-
----
-
-### Story Card 2: Upload Profile Photo
-
-**Title:** Speaker Profile Photo Upload
-**The Narrative:**
-As a **Speaker**, I want to **upload my photo**, So that **attendees can recognize me on the schedule page**.
+**The Narrative (Who/What/Why):**
+As an **Organizer (Fernando)**, I want to **set up my event name, dates, and logo**, So that **speakers know what they are applying for**.
 
 ### Acceptance Criteria (Confirmation)
 
-- [ ] Verify user can select image file (jpg, png).
-- [ ] Verify file size limit (e.g., 2MB) is enforced.
-- [ ] Verify image is displayed in circular preview after upload.
-- [ ] **Sad Path:** Show clear error if file is not an image or too large.
+- [ ] Verify event name and description are required.
+- [ ] Verify Start Date <= End Date validation.
+- [ ] Verify logo upload (max 2MB, image format).
+- [ ] **Sad Path:** Show error if dates are in the past (optional warning).
 
 ### Design/Technical Notes
 
-- **Tech:** Use Supabase Storage (S3).
-- **Optimization:** Client-side resize preferable to save bandwidth.
+- **Dependencies:** Requires Database Schema for `Events` table.
+- **UI Sketch Reference:** One-page Setup Wizard (Step 1).
 
 ---
 
-### Story Card 3: Organizer Scoring
+### Story Card 2: CfP Setup
 
-**Title:** Rate and Review Sessions
-**The Narrative:**
-As an **Organizer (Fernando)**, I want to **rate sessions on a 1-5 scale**, So that **I can sort them by quality for selection**.
+**Title:** Configure Call for Papers
 
-### Acceptance Criteria
+**The Narrative (Who/What/Why):**
+As an **Organizer**, I want to **define submission tracks and formats**, So that **speakers can categorize their talks correctly**.
 
-- [ ] Verify organizer can see abstract and title without speaker name (Blind Review).
-- [ ] Verify 1-5 star input is persisted instantly.
-- [ ] Verify list can be sorted by average score.
+### Acceptance Criteria (Confirmation)
+
+- [ ] Verify organizer can add multiple tracks (e.g. Frontend, DevOps).
+- [ ] Verify organizer can add multiple formats (e.g. Lightning Talk, Standard).
+- [ ] Verify CfP Open/Close dates can be set.
+- [ ] **Constraint:** At least one track and one format required to open CfP.
+
+### Design/Technical Notes
+
+- **Dependencies:** Relation 1:N (`Events` -> `Tracks`, `Events` -> `Formats`).
+- **UI Sketch Reference:** Dynamic input list (Add/Remove tags or rows).
+
+---
+
+### Story Card 3: Speaker Onboarding
+
+**Title:** Speaker Profile & Auth
+
+**The Narrative (Who/What/Why):**
+As a **Speaker (Andrea)**, I want to **log in via Magic Link and set my profile photo**, So that **I can start my submission securely**.
+
+### Acceptance Criteria (Confirmation)
+
+- [ ] Verify email entry triggers Magic Link email.
+- [ ] Verify clicking link logs user in.
+- [ ] Verify Name and Bio inputs.
+- [ ] Verify Profile Photo upload (circular crop preview).
+- [ ] **Sad Path:** Token expired -> Request new link.
+
+### Design/Technical Notes
+
+- **Dependencies:** Supabase Auth (Magic Link) + Supabase Storage (Images).
+- **UI Sketch Reference:** Clean Login Card -> Profile Modal.
+
+---
+
+### Story Card 4: Proposal Submission
+
+**Title:** Submit Session Proposal
+
+**The Narrative (Who/What/Why):**
+As a **Speaker**, I want to **fill in my talk details and submit**, So that **the organizers can review it**.
+
+### Acceptance Criteria (Confirmation)
+
+- [ ] Verify Title and Abstract are required.
+- [ ] Verify Selection of Track and Format from organizer-defined lists.
+- [ ] Verify "Save Draft" works without validation.
+- [ ] Verify "Submit" enforces all required fields and locks the proposal.
+- [ ] **Sad Path:** Network error during submit -> Auto-retry or user alert.
+
+### Design/Technical Notes
+
+- **Dependencies:** Autosave to LocalStorage to prevent data loss.
+- **UI Sketch Reference:** Two-column layout (Inputs left, Preview right/bottom).
+
+---
+
+### Story Card 5: Review & Scoring
+
+**Title:** Blind Review Dashboard
+
+**The Narrative (Who/What/Why):**
+As an **Organizer**, I want to **rate anonymized proposals 1-5 stars**, So that **content is judged on merit, not fame**.
+
+### Acceptance Criteria (Confirmation)
+
+- [ ] Verify Speaker Name is hidden (Blind Mode).
+- [ ] Verify 1-5 Star rating input.
+- [ ] Verify optional internal comment field.
+- [ ] Verify "Next Proposal" navigation for rapid review.
+
+### Design/Technical Notes
+
+- **Dependencies:** Database RLS policy to hide `speaker_id` from reviewer during this phase (optional secure implementation).
+- **UI Sketch Reference:** Tinder-like or Card-based review interface (Focus on one at a time).
+
+---
+
+### Story Card 6: Selection
+
+**Title:** Final Breakdown & Selection
+
+**The Narrative (Who/What/Why):**
+As an **Organizer**, I want to **filter top talks and mark them as Accepted**, So that **I can finalize the program**.
+
+### Acceptance Criteria (Confirmation)
+
+- [ ] Verify list can be sorted by Average Score.
+- [ ] Verify filter by Track.
+- [ ] Verify status toggle: Pending -> Accepted | Waitlist | Rejected.
+- [ ] **Operational:** Total selected count vs available slots (Manual check for MVP).
+
+### Design/Technical Notes
+
+- **Dependencies:** Bulk update API endpoint highly recommended for performance.
+- **UI Sketch Reference:** Data Table with Status Dropdowns.
 
 ## 4. Risk Assessment (The "Opps" Factor)
 
