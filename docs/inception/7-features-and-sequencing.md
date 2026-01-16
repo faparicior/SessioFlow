@@ -31,12 +31,11 @@ Organize the brainstormed features into a logical sequence of releases to define
 | :--- | :---: | :---: | :---: | :---: | :--- |
 | **Collect Proposals (CfP)** | E | $$$ | ♥♥♥ | TT | @CoreTeam |
 | **Review & Score Sessions** | E | $$$ | ♥ | TT | @CoreTeam |
-| **Co-Speaker Management** | EE | $$ | ♥♥♥ | TTT | @CoreTeam |
 | **User Authentication** | EE | $$$ | ♥♥ | TT | @CoreTeam |
 | **Speaker Profile (Photo Upload)** | EE | $$ | ♥♥♥ | TT | @CoreTeam |
 
 **MVP Rationale:**
-This wave focuses strictly on the **Intake and Review** phase. It allows the Persona (Fernando) to launch the Call for Papers and gather content. The "Co-Speaker Management" is the key differentiator (Wow Factor) included to attract high-quality speakers (Andrea) early on. Scheduling and Mass Communication are deferred to Wave 2, as they happen *after* selection.
+This wave focuses strictly on the **Intake and Review** phase. It allows the Persona (Fernando) to launch the Call for Papers and gather content. We focus on the core flow: Submission -> Review -> Scoring. Co-Speaker management is deferred to simplify the initial release. Scheduling and Mass Communication are deferred to Wave 2.
 
 ### 🌊 Wave 2: Operations & Ease of Use (Next Increment)
 *Features that streamline the workflow and improve the deployment experience.*
@@ -46,6 +45,7 @@ This wave focuses strictly on the **Intake and Review** phase. It allows the Per
 | **Assign Schedule Slots** | EE | $$$ | ♥♥ | T | @CoreTeam |
 | **Automate Speaker Communications** | EE | $$$ | ♥♥♥ | T | @CoreTeam |
 | **Bulk Update Session Status** | E | $$$ | ♥♥ | TTT | @CoreTeam |
+| **Co-Speaker Management** | EE | $$ | ♥♥♥ | TTT | @CoreTeam |
 
 ### 🌊 Wave 3: Scale & Ecosystem
 *Features that enable growth and external integrations.*

@@ -11,7 +11,7 @@ Synthesize all previous steps into a strategic blueprint for the first release (
 **Product Name:** SessioFlow MVP 1.0 - "The CfP Manager"
 
 **MVP Vision Statement:**
-For **Event Organizers** (Fernando) who need to **manage the Call for Papers efficiently**, **SessioFlow** is a **session management tool** that **streamlines the submission, review, and selection process**. Unlike **manual spreadsheets or Google Forms**, our product is **specialized for tech events, includes co-speaker support by default, and is free to host.**
+For **Event Organizers** (Fernando) who need to **manage the Call for Papers efficiently**, **SessioFlow** is a **session management tool** that **streamlines the submission, review, and selection process**. Unlike **manual spreadsheets or Google Forms**, our product is **specialized for tech events and is free to host.**
 
 ### Core Value Proposition
 We are not building the "Full Event Management System" yet. We are solving the most painful initial phase: **Getting high-quality talks and reviewing them without chaos.**
@@ -23,12 +23,12 @@ We are not building the "Full Event Management System" yet. We are solving the m
 
 ### Critical Path Features (The "Cupcake")
 1. ✅ **Collect Proposals (CfP)**: Public form for speakers (Andrea) to submit talks.
-2. ✅ **Co-Speaker Management**: The "Wow" feature allowing easy multi-speaker proposals.
-3. ✅ **Speaker Profile & Photo Upload**: Essential for event website content.
-4. ✅ **Review & Score Sessions**: Dashboard for Fernando to rate and filter submissions.
+2. ✅ **Speaker Profile & Photo Upload**: Essential for event website content.
+3. ✅ **Review & Score Sessions**: Dashboard for Fernando to rate and filter submissions.
 
 ### Explicitly Out of Scope (Wave 2+)
 *Crucial for preventing scope creep:*
+- ❌ **Co-Speaker Management** (Deferred to Wave 2).
 - ❌ **Assign Schedule Slots** (Scheduling happens *after* selection - can be done manually for MVP if needed).
 - ❌ **Automate Speaker Communications** (Fernando can email accepted speakers manually for the first pilot).
 - ❌ **Speaker Travel Dashboard** (Complex logistics, not core).
@@ -58,7 +58,7 @@ We are not building the "Full Event Management System" yet. We are solving the m
 *How do we know if this works?*
 
 **Hypothesis:**
-We believe that by **providing a specialized CfP tool with built-in co-speaker management**, we will **reduce the organizer's administrative time by 50%** and **reduce friction for speakers**, resulting in **higher completion rates for multi-speaker proposals**.
+We believe that by **providing a specialized CfP tool**, we will **reduce the organizer's administrative time by 50%**.
 
 ### Validation Metrics (KPIs)
 *   **Adoption:** 5 Event Organizers installing/using the MVP in the first month.
@@ -78,13 +78,12 @@ We believe that by **providing a specialized CfP tool with built-in co-speaker m
 *   **Infrastructure:** **$0/month** (Constraint #1). Must run on Vercel/Netlify + Supabase/Firebase Free Tier.
 *   **Development Effort:** Estimated 4 Sprints (8 Weeks) for 2 Developers.
     *   Sprint 1: CfP Form & User Authentication.
-    *   Sprint 2: Co-Speaker Logic & Invite Flow.
-    *   Sprint 3: Organizer Dashboard & Profile Management.
-    *   Sprint 4: Review Scoring Logic & Final Polish.
+    *   Sprint 2: Organizer Dashboard & Profile Management.
+    *   Sprint 3: Review Scoring Logic & Final Polish.
 
 ### Risks & Mitigation
 *   **Risk:** Low adoption because "Google Forms is easier".
-    *   *Mitigation:* Focus heavily on the **Co-Speaker Experience** (which Forms handles poorly) as the key differentiator.
+    *   *Mitigation:* Focus on the **structured data & scoring** key differentiator.
 *   **Risk:** GDPR/Privacy compliance for collecting emails.
     *   *Mitigation:* Implement "Delete my Data" button in Sprint 2 (Regulatory necessity).
 *   **Risk:** Organizers need to schedule immediately.
