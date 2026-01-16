@@ -34,15 +34,18 @@ Map the details vertically under each Backbone Task. Ideally, arrange them with 
 | **3. Proposal Submission** | | | |
 | [Account & Profile] | MVP | 1. Enter Email for Magic Link<br>2. Click Magic Link to Log in<br>3. Complete Profile (Bio, Name)<br>4. **Upload Profile Photo** | **Var:** Social Login (Google/GitHub) - *Start with Magic Link for MVP*<br>**Exc:** Photo too big (>5MB) -> Auto-resize or Error?<br>**Edge:** User exists but Profile incomplete |
 | [Fill Proposal] | MVP | 1. Enter Session Title<br>2. Enter Abstract/Description<br>3. Select Track & Format<br>4. Save Draft | **Pain:** Losing work on refresh -> Needs LocalStorage autosave<br>**Val:** Abstract too short/long |
-| [Co-Speaker Mgmt] | MVP | 1. Click "Add Co-Speaker"<br>2. Enter Co-Speaker Email<br>3. Generate & Send Invite Link | **Exc:** Co-speaker already has a session?<br>**Edge:** Co-speaker declines -> Notify Primary Speaker<br>**Risk:** Invite link expires |
+| [Co-Speaker Mgmt] | 2 | 1. Click "Add Co-Speaker"<br>2. Enter Co-Speaker Email<br>3. Generate & Send Invite Link | **Exc:** Co-speaker already has a session?<br>**Edge:** Co-speaker declines -> Notify Primary Speaker<br>**Risk:** Invite link expires |
 | [Submit] | MVP | 1. Review Summary<br>2. Click "Submit Final"<br>3. Receive Confirmation Email | **Exc:** Network error on submit -> Retry logic<br>**Post:** Lock editing after submission (unless "Edit" allowed until close) |
 | **4. Selection & Scheduling** | | | |
 | [Review & Rate] | MVP | 1. View List of Blinded Proposals<br>2. Rate 1-5 Stars<br>3. Add internal comment | **Var:** Sort by Track/Format<br>**Exc:** Tie-breaking logic?<br>**Risk:** Organizer bias (ensure blinding works) |
-| [Select Final List] | 2 | 1. Filter by Top Rated<br>2. Mark status "Accepted"<br>3. Mark status "Waitlist" / "Rejected" | **Vol:** Bulk select capabilities needed for large events<br>**Exc:** Selecting more talks than slots available (Warning?) |
+| [Select Final List] | MVP | 1. Filter by Top Rated<br>2. Mark status "Accepted"<br>3. Mark status "Waitlist" / "Rejected" | **Vol:** Bulk select capabilities needed for large events<br>**Exc:** Selecting more talks than slots available (Warning?) |
 | [Assign Slots] | 2 | 1. View Schedule Grid (Time x Room)<br>2. Drag accepted session to slot<br>3. Publish Schedule | **Con:** Double booking a speaker? (Warn user)<br>**Exc:** Room capacity mismatch |
 | **5. Acceptance & Logistics** | | | |
 | [Notify Speakers] | 2 | 1. Trigger "Send Decision Emails"<br>2. System filters Accepted vs Rejected templates<br>3. Send in batches | **Exc:** Email bounces<br>**Edge:** Speaker hasn't responded in X days |
 | [Speaker Confirm] | 2 | 1. Speaker clicks "Confirm Attendance"<br>2. Speaker enters Dietary Requirements<br>3. View Travel/Hotel Info Page | **Sad:** Speaker Declines -> Prompt to select from Waitlist<br>**Note:** Travel info is static Markdown/HTML for MVP |
+| **6. Event Wrap-up** | | | |
+| [Check-in] | 3 | 1. Admin view of all accepted speakers<br>2. Mark "Checked In"<br>3. Distribute badge (manual) | **Exc:** Speaker no-show<br>**Var:** QR Code check-in (Nice to have, not MVP) |
+| [Feedback] | 3 | 1. Send "Thank you" email to attendees<br>2. Link to external feedback form (Google Forms) | **Scope:** In-app feedback form is too complex for now. Use external link. |
 
 ## 3. Story Definition Template
 
