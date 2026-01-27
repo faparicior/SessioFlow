@@ -4,8 +4,9 @@
 Organize the brainstormed features into a logical sequence of releases to define the **Minimum Viable Product (MVP)** and subsequent increments. This ensures we deliver value early while managing technical risk.
 
 ## 7.1 Brainstormed Features (Initial List)
-*All features considered, derived from Brainstorming (Step 5).*
+*All features considered, derived from Brainstorming (Step 5) and Journey Mapping (Step 6).*
 
+* [x] **Setup Event (C4P Configuration)**: Create event, set dates, and open C4P (Found in Journey 1).
 * [x] **Collect Proposals (CfP)**: Public form for speakers to submit talks.
 * [x] **Review & Score Sessions**: Dashboard for organizers to rate submissions.
 * [x] **Automate Speaker Communications**: Email triggers for status changes.
@@ -24,34 +25,38 @@ Organize the brainstormed features into a logical sequence of releases to define
 
 ## 7.2 The Feature Sequencer (Release Planning)
 
-### 🌊 Wave 1: The Minimum Viable Product (MVP)
-*Features required to validate the core hypothesis: "A simple, free tool for non-profits to manage the full CfP lifecycle."*
+### 🌊 Wave 1: The Minimum Viable Product (MVP) - "Intake & Setup"
+*Features required to validate the core hypothesis: "A simple, free tool for non-profits to start collecting proposals."*
 
 | Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
 | :--- | :---: | :---: | :---: | :---: | :--- |
+| **Setup Event (C4P Configuration)** | E | $$$ | ♥ | TTT | @CoreTeam |
 | **Collect Proposals (CfP)** | E | $$$ | ♥♥♥ | TT | @CoreTeam |
-| **Review & Score Sessions** | E | $$$ | ♥ | TT | @CoreTeam |
 | **User Authentication** | EE | $$$ | ♥♥ | TT | @CoreTeam |
 | **Speaker Profile (Photo Upload)** | EE | $$ | ♥♥♥ | TT | @CoreTeam |
 
 **MVP Rationale:**
-This wave focuses strictly on the **Intake and Review** phase. It allows the Persona (Fernando) to launch the Call for Papers and gather content. We focus on the core flow: Submission -> Review -> Scoring. Co-Speaker management is deferred to simplify the initial release. Scheduling and Mass Communication are deferred to Wave 2.
+We prioritize the **Start of the Lifecycle**. Without "Event Setup" and "CfP Collection", nothing else matters. This MVP enables Fernando to Create an account -> Create an Event -> Share the link -> Receive Submissions. Reviewing and Scoring can technically wait until submissions arrive (Wave 2), reducing initial scope and risk.
 
-### 🌊 Wave 2: Operations & Ease of Use (Next Increment)
-*Features that streamline the workflow and improve the deployment experience.*
+### 🌊 Wave 2: Selection & Management (The "Closed CfP" Phase)
+*Features needed once the submission deadline passes.*
+
+| Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **Review & Score Sessions** | E | $$$ | ♥ | TT | @CoreTeam |
+| **Co-Speaker Management** | EE | $$ | ♥♥♥ | TTT | @CoreTeam |
+| **Bulk Update Session Status** | E | $$$ | ♥♥ | TTT | @CoreTeam |
+| **Automate Speaker Communications** | EE | $$$ | ♥♥♥ | T | @CoreTeam |
+
+**Rationale:**
+This wave addresses the "Middle" of the lifecycle. Once proposals are in, Fernando needs to review them. Co-speakers are added here to ensure the proposal data is complete before final selection.
+
+### 🌊 Wave 3: Execution & Logistics (The "Event Day" Phase)
+*Features required to publish the agenda and manage logistics.*
 
 | Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
 | :--- | :---: | :---: | :---: | :---: | :--- |
 | **Assign Schedule Slots** | EE | $$$ | ♥♥ | T | @CoreTeam |
-| **Automate Speaker Communications** | EE | $$$ | ♥♥♥ | T | @CoreTeam |
-| **Bulk Update Session Status** | E | $$$ | ♥♥ | TTT | @CoreTeam |
-| **Co-Speaker Management** | EE | $$ | ♥♥♥ | TTT | @CoreTeam |
-
-### 🌊 Wave 3: Scale & Ecosystem
-*Features that enable growth and external integrations.*
-
-| Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
-| :--- | :---: | :---: | :---: | :---: | :--- |
 | **Deploy with Standard Tools** | EE | $$ | ♥ | T | @CoreTeam |
 | **Speaker Travel & Info Dashboard** | EE | $ | ♥♥♥ | TT | @CoreTeam |
 | **Expose Public API** | EEE | $ | ♥ | TT | @CoreTeam |
