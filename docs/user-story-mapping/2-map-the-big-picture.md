@@ -6,10 +6,9 @@ Objective: Create the "spine" of your story map by arranging high-level user act
 
 Who is taking this journey and what is the trigger?
 
-- Primary User Persona: Fernando, the SQL and Spreadsheet Juggler (Volunteer Organizer)
-- Secondary Persona: Andrea, the Experienced Speaker
-- Trigger Event: A new conference is being organized, and the Call for Papers needs to be managed.
-- Ultimate Goal: Reduce administrative overhead by 70%, manage sessions efficiently, and provide a single source of truth for the event.
+- Primary User Persona: **Fernando, the Organizer**
+- Trigger Event: **Fernando decides to launch a Call for Papers for his upcoming conference.**
+- Ultimate Goal: **The schedule is published and speakers are confirmed.**
 
 ## 2 - The Backbone (Activities & Tasks)
 
@@ -19,34 +18,32 @@ Who is taking this journey and what is the trigger?
 
 | Sequence | User Activity <br>*(The Big Things)*<br>Aggregates tasks directed at a common goal | User Tasks <br>*(The Steps)*<br>The sequential actions users take to complete the activity | User Role <br>Who performs this? |
 | :--- | :--- | :--- | :--- |
-| 1 | **System Deployment**<br>(Getting the platform ready) | 1. Download the repository<br>2. Run startup script (docker-compose up) | Fernando (Organizer) |
-| 2 | **Event Configuration**<br>(Setting the rules) | 1. Define event details (Dates, Tracks)<br>2. Configure CfP open/close dates<br>3. Customize submission form | Fernando (Organizer) |
-| 3 | **Proposal Submission**<br>(Collecting content) | 1. Land on CfP page<br>2. Create account or log in<br>3. Fill in title, abstract, and upload photo<br>4. Invite co-speaker (optional)<br>5. Submit proposal | Andrea (Speaker) |
-| 4 | **Selection & Scheduling**<br>(Curating the program) | 1. Log in as Authorized Admin<br>2. Review and rate sessions<br>3. Select final list of talks<br>4. Assign rooms and time slots | Fernando (Organizer) |
-| 5 | **Acceptance & Logistics**<br>(Communicating results) | 1. Publish results (Send emails)<br>2. Click link in acceptance email<br>3. View travel guides and info<br>4. Confirm attendance | Fernando & Andrea |
-| 6 | **Event Wrap-up**<br>(Closing the loop) | 1. Check-in speakers (Day of event)<br>2. Collect attendee feedback<br>3. Send thank you notes | Fernando (Organizer) |
+| 1 | **Initial Setup (Deployment)**<br>(Getting the system ready) | 1. **Download source/repo**<br>2. **Configure environment variables** (DB, Auth codes)<br>3. **Run deployment script** (e.g. Docker up) | Fernando (Organizer) |
+| 2 | **Event Definition**<br>(Creating the specific C4P) | 1. **Log in as Admin**<br>2. **Create new event**<br>3. **Define submission dates**<br>4. **Publish C4P link** | Fernando (Organizer) |
+| 3 | **Proposal Submission**<br>(Speakers submit their talks) | 1. **Access public C4P page**<br>2. **Create speaker account**<br>3. **Fill profile details** (Bio, Photo)<br>4. **Submit talk proposal**<br>5. **Invite co-speaker** (Optional) | Andrea (Speaker) |
+| 4 | **Selection Process**<br>(Reviewing and choosing talks) | 1. **Close Call for Papers**<br>2. **Review submitted proposals**<br>3. **Rate/Score talks**<br>4. **Select final lineup** | Fernando (Organizer) |
+| 5 | **Program Scheduling**<br>(Building the agenda) | 1. **Define rooms and slots**<br>2. **Assign talks to slots**<br>3. **Publish draft schedule** | Fernando (Organizer) |
+| 6 | **Speaker Confirmation**<br>(Closing the loop) | 1. **Notify accepted speakers**<br>2. **View acceptance email**<br>3. **Confirm attendance**<br>4. **View travel info** | Fernando & Andrea |
 
 ## 3 - The "And Then..." Check
 
 Read the backbone aloud. Does it tell a coherent story? Use the conjunction "and then..." between steps to test the flow.
 
-- Narrative Check: First **Fernando deploys the system**, and then **he configures the event details**, and then **Andrea submits a proposal**, and then **Fernando selects the talks**, and then **publish results/logistics occur**, and finally **the event finishes with feedback**.
-- Missing Links: The previous gap (Deploy -> Submit) is now bridged by the Configuration step. The story now extends through the actual event execution.
-- Notes:
-    - **Deployment (Journey 4)** is a prerequisite step but essential for the Volunteer Organizer persona who needs a "simple checkout" equivalent for IT operations.
-    - **Co-Speaker Management** is handled within the Proposal Submission activity to address Andrea's pain point (slated for Wave 2).
+- Narrative Check: First the user **Deploys the System**, and then they **Define the Event**, and then speakers **Submit Proposals**, and then the organizer **Selects Talks**, and then they **Schedule the Program**, and then they **Confirm Speakers**.
+- Missing Links: Implied time gaps between Submission (Weeks 1-4) and Selection (Week 5).
+- Notes: The transition from Deployment to Usage assumes technical competence (Self-hosting).
 
 ## 4 - Multi-User/System Intersections
 
 Does the narrative require hand-offs between different users or systems?
 
 - Hand-off Points:
-    - **Submission -> Selection**: Andrea submits data -> Fernando accesses it.
-    - **Selection -> Acceptance**: Fernando triggers publication -> System notifies Andrea -> Andrea returns to platform.
+    - **Step 2 -> 3:** Fernando publishes link -> Andrea accesses link.
+    - **Step 3 -> 4:** Deadline passes -> Fernando closes CfP.
+    - **Step 5 -> 6:** Fernando triggers notification -> System sends email -> Andrea confirms.
 - System Actions:
-    - System handles co-speaker invite links.
-    - System sends automated emails (Received, Accepted).
-    - System updates status when Andrea confirms attendance.
+    - **System sends "Received" email** (after Proposal Submission).
+    - **System sends "Accepted" email** (after Selection).
 
 --------------------------------------------------------------------------------
 🔍 Quality Checklist for Step 2
