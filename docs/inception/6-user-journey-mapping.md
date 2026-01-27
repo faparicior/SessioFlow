@@ -5,7 +5,21 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 
 ---
 
-## 🗺️ Journey 1: Setup the Event (Fernando)
+## � The Event Lifecycle (The "Composite" View)
+*How the individual journeys connect over time*
+
+The user is asking about the "Composite Journey"—the fact that these interactions happen over time, separated by days or weeks. We manage this complexity by splitting them into distinct **Functional Journeys**, which are tied together by the **Event Status**.
+
+| Timeframe | Event Status | Active Persona | Active Journey |
+| :--- | :--- | :--- | :--- |
+| **Day 1** | `Draft` → `C4P Open` | Fernando | **Journey 1: Setup** |
+| **Weeks 1-4** | `C4P Open` | Andrea | **Journey 2: Submission** |
+| **Week 5** | `C4P Closed` → `Voting` | Fernando | **Journey 3: Selection** |
+| **Week 6** | `Published` | Both | **Journey 4: Acceptance** |
+
+---
+
+## �🗺️ Journey 1: Setup the Event (Fernando)
 
 **Persona:** Fernando, the Organizer
 **Goal:** Configure the event and open the Call for Papers (C4P Session).
@@ -41,10 +55,10 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 | Step | User Action | System Feature / Response | Pain Point Addressed |
 | :--- | :--- | :--- | :--- |
 | 1. | Fernando logs in (Authorized Admin). | **User Authentication**: Admin Role Check. | **Need 1:** Single platform. |
-| 2. | Fernando rates sessions. | **Review & Score Sessions**: Scoring UI. | **Pain 2:** Manual work in Excel. |
-| 3. | Fernando selects final list. | **Bulk Update Session Status**: Marks as "Accepted". | **Pain 1:** Repetitive work. |
-| 4. | Fernando assigns rooms/times. | **Assign Schedule Slots**: Drag-and-drop/Form. | **Need 1:** Single platform. |
-| 5. | Fernando double-checks logic. | *[Nice-to-have]* **Detect Schedule Conflicts**. | **Need 2:** Automated validation. |
+| 2. | Fernando **closes the CfP**. | **Collect Proposals (CfP)**: Status change to `Voting`. | |
+| 3. | Fernando rates sessions. | **Review & Score Sessions**: Scoring UI. | **Pain 2:** Manual work in Excel. |
+| 4. | Fernando selects final list. | **Bulk Update Session Status**: Marks as "Accepted". | **Pain 1:** Repetitive work. |
+| 5. | Fernando assigns rooms/times. | **Assign Schedule Slots**: Drag-and-drop/Form. | **Need 1:** Single platform. |
 
 ---
 
@@ -93,9 +107,9 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 ---
 
 ## Notes & Observations
-*   **Completeness:** The journeys cover the entire lifecycle from "Idea" (Proposal) to "Execution" (Schedule).
-*   **Gap Identified:** The **Public API** feature is a "Should-have" but doesn't have a direct *primary persona* journey mapped here. This is acceptable as it's an enabler for *other* developers/sites, but we should acknowledge it might be a lower priority if time is tight.
-*   **Critical Path:** Journeys 1, 2, 3, and 4 represents the "Core Value Loop". If any step here breaks, the event fails.
+*   **Composite Nature:** The journeys described above are **time-separated**. Journey 1 happens weeks before Journey 3. we treat them as separate "User Sessions" to make them buildable.
+*   **Gap Identified:** The **Public API** feature is a "Should-have" but doesn't have a direct *primary persona* journey mapped here. This is acceptable.
+*   **State Management:** The transition between Journey 2 (Submission) and Journey 3 (Selection) implies a "Close CfP" action which creates a new state in the system (Voting/Selection).
 
 ---
 
