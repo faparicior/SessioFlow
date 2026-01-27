@@ -5,7 +5,20 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 
 ---
 
-## 🗺️ Journey 1: Submitting a Talk (Andrea)
+## 🗺️ Journey 1: Setup the Event (Fernando)
+
+**Persona:** Fernando, the Organizer
+**Goal:** Configure the event and open the Call for Papers (C4P Session).
+
+| Step | User Action | System Feature / Response | Pain Point Addressed |
+| :--- | :--- | :--- | :--- |
+| 1. | Fernando logs in. | **User Authentication**: Shows Admin Dashboard. | **Need 1:** Single platform for all data. |
+| 2. | Fernando creates a new "C4P Session". | **Collect Proposals (CfP)**: Form to set Event Name/Dates. | **Pain 1:** Repetitive work to organize CfP. |
+| 3. | Fernando publishes the session. | **Collect Proposals (CfP)**: Generates and activates Public Link. | **Need 3:** Simple, intuitive interface. |
+
+---
+
+## 🗺️ Journey 2: Submitting a Talk (Andrea)
 
 **Persona:** Andrea, the Experienced Speaker
 **Goal:** Submit a session proposal with a colleague and get confirmation.
@@ -20,7 +33,7 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 
 ---
 
-## 🗺️ Journey 2: Selection & Program Creation (Fernando)
+## 🗺️ Journey 3: Selection & Program Creation (Fernando)
 
 **Persona:** Fernando, the Organizer
 **Goal:** Select the best talks and build the schedule efficiently.
@@ -35,7 +48,7 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 
 ---
 
-## 🗺️ Journey 3: Acceptance & Logistics (Andrea & Fernando)
+## 🗺️ Journey 4: Acceptance & Logistics (Andrea & Fernando)
 
 **Persona:** Andrea (Speaker) & Fernando (Organizer)
 **Goal:** Post-selection communication and event logistics.
@@ -49,7 +62,7 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 
 ---
 
-## 🗺️ Journey 4: Deployment (Fernando)
+## 🗺️ Journey 5: Deployment (Fernando)
 
 **Persona:** Fernando, the Organizer
 **Goal:** Get the system running without a DevOps team.
@@ -67,14 +80,14 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 
 | Feature Name | Priority | Used in Journey? |
 | :--- | :--- | :--- |
-| **Collect Proposals (CfP)** | Must-have | ✅ Journey 1, 2 |
-| **Review & Score Sessions** | Must-have | ✅ Journey 2 |
-| **Automate Speaker Communications** | Must-have | ✅ Journey 1, 3 |
-| **Assign Schedule Slots** | Must-have | ✅ Journey 2 |
-| **Co-Speaker Management** | Must-have | ✅ Journey 1 |
-| **Bulk Update Session Status** | Should-have | ✅ Journey 2 |
-| **Speaker Travel & Info Dashboard** | Should-have | ✅ Journey 3 |
-| **Deploy with Standard Tools** | Should-have | ✅ Journey 4 |
+| **Collect Proposals (CfP)** | Must-have | ✅ Journey 1, 2, 3 |
+| **Review & Score Sessions** | Must-have | ✅ Journey 3 |
+| **Automate Speaker Communications** | Must-have | ✅ Journey 2, 4 |
+| **Assign Schedule Slots** | Must-have | ✅ Journey 3 |
+| **Co-Speaker Management** | Must-have | ✅ Journey 2 |
+| **Bulk Update Session Status** | Should-have | ✅ Journey 3 |
+| **Speaker Travel & Info Dashboard** | Should-have | ✅ Journey 4 |
+| **Deploy with Standard Tools** | Should-have | ✅ Journey 5 |
 | **Expose Public API** | Should-have | ❌ (Targeted at 3rd party devs, not primary persona flow) |
 
 ---
@@ -82,7 +95,7 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 ## Notes & Observations
 *   **Completeness:** The journeys cover the entire lifecycle from "Idea" (Proposal) to "Execution" (Schedule).
 *   **Gap Identified:** The **Public API** feature is a "Should-have" but doesn't have a direct *primary persona* journey mapped here. This is acceptable as it's an enabler for *other* developers/sites, but we should acknowledge it might be a lower priority if time is tight.
-*   **Critical Path:** Journeys 1, 2, and 3 represents the "Core Value Loop". If any step here breaks, the event fails.
+*   **Critical Path:** Journeys 1, 2, 3, and 4 represents the "Core Value Loop". If any step here breaks, the event fails.
 
 ---
 
