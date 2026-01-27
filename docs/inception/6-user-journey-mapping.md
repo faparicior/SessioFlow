@@ -5,7 +5,7 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 
 ---
 
-## � The Event Lifecycle (The "Composite" View)
+## The Event Lifecycle (The "Composite" View)
 *How the individual journeys connect over time*
 
 The user is asking about the "Composite Journey"—the fact that these interactions happen over time, separated by days or weeks. We manage this complexity by splitting them into distinct **Functional Journeys**, which are tied together by the **Event Status**.
@@ -19,7 +19,7 @@ The user is asking about the "Composite Journey"—the fact that these interacti
 
 ---
 
-## �🗺️ Journey 1: Setup the Event (Fernando)
+## 🗺️ Journey 1: Setup the Event (Fernando)
 
 **Persona:** Fernando, the Organizer
 **Goal:** Configure the event and open the Call for Papers (C4P Session).
