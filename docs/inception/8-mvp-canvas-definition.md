@@ -8,31 +8,32 @@ Synthesize all previous steps into a strategic blueprint for the first release (
 ## 1. MVP Proposal
 *What is the "Cupcake" (the minimum valuable slice)?*
 
-**Product Name:** SessioFlow MVP 1.0 - "The CfP Manager"
+**Product Name:** SessioFlow MVP 1.0 - "The CfP Launcher"
 
 **MVP Vision Statement:**
-For **Event Organizers** (Fernando) who need to **manage the Call for Papers efficiently**, **SessioFlow** is a **session management tool** that **streamlines the submission, review, and selection process**. Unlike **manual spreadsheets or Google Forms**, our product is **specialized for tech events and is free to host.**
+For **Event Organizers** (Fernando) who need to **start their event journey**, **SessioFlow** is a **Call for Papers (CfP) launch tool** that **enables the setup and collection of session proposals**. Unlike **generic form builders**, our product is **tailored for tech events, free to host, and creates a professional first impression.**
 
 ### Core Value Proposition
-We are not building the "Full Event Management System" yet. We are solving the most painful initial phase: **Getting high-quality talks and reviewing them without chaos.**
+We are addressing the **Urgency of Starting**. The organizer's first hurdle is simply "Opening the CfP". By focusing on this, we allow them to start marketing their event immediately, buying us time to build the selection features while proposals are rolling in.
 
 ---
 
-## 2. MVP Scope - Wave 1 Features
+## 2. MVP Scope - Wave 1 Features (The "Setup & Collect" Phase)
 *From Step 7 (Features & Sequencing) - the specific feature set.*
 
 ### Critical Path Features (The "Cupcake")
-1. ✅ **Collect Proposals (CfP)**: Public form for speakers (Andrea) to submit talks.
-2. ✅ **Speaker Profile & Photo Upload**: Essential for event website content.
-3. ✅ **Review & Score Sessions**: Dashboard for Fernando to rate and filter submissions.
+1. ✅ **Setup Event (C4P Configuration)**: Create event, set dates, and generate public link. (The Input).
+2. ✅ **User Authentication**: Secure login for Organizers (to setup) and Speakers (to manage submissions).
+3. ✅ **Speaker Profile**: Basic bio and photo upload.
+4. ✅ **Collect Proposals (CfP)**: The public-facing form for submitting talks. (The Output).
 
-### Explicitly Out of Scope (Wave 2+)
+### Explicitly Out of Scope (deferred to Wave 2)
 *Crucial for preventing scope creep:*
-- ❌ **Co-Speaker Management** (Deferred to Wave 2).
-- ❌ **Assign Schedule Slots** (Scheduling happens *after* selection - can be done manually for MVP if needed).
-- ❌ **Automate Speaker Communications** (Fernando can email accepted speakers manually for the first pilot).
-- ❌ **Speaker Travel Dashboard** (Complex logistics, not core).
-- ❌ **Public API** (Not needed for the first event).
+- ❌ **Review & Score Sessions** (Deferred: Fernando doesn't need this until the CfP closes).
+- ❌ **Co-Speaker Management** (Deferred: Speakers can add names in text for now).
+- ❌ **Bulk Update Session Status** (Deferred).
+- ❌ **Assign Schedule Slots** (Deferred).
+- ❌ **Automate Speaker Communications** (Deferred).
 
 ---
 
@@ -40,17 +41,16 @@ We are not building the "Full Event Management System" yet. We are solving the m
 *From Steps 3 & 6 - Who are we serving?*
 
 **Primary Persona:** **Fernando**, the Community Organizer.
-*   **Pain Solved:** "Too repetitive work to organize the call for papers" & "Data inconsistencies".
-*   **Gain:** A centralized, clean list of scored proposals ready for selection.
+*   **Pain Solved:** "I need to launch my Call for Papers NOW but setting up a form is annoying."
+*   **Gain:** A professional CfP link generated in minutes.
 
 **Secondary Persona:** **Andrea**, the Experienced Speaker.
-*   **Pain Solved:** "Adding a partner to the proposal is not easy."
-*   **Gain:** A smooth submission flow that respects her need for collaboration.
+*   **Pain Solved:** "I need a single place to submit my talk."
+*   **Gain:** A clean, mobile-accessible submission interface.
 
 **Core Journey Supported:**
-*   **Step 1:** Andrea lands on CfP -> Submits Talk + Invites Co-Speaker.
-*   **Step 2:** Fernando sees new proposal -> Reviews content -> Assigns Score.
-*   **Step 3:** Fernando filters top-rated talks -> Final Selection (Manual notification).
+*   **Step 1:** Fernando Logs in -> Create Event -> Publishes Link (Journey 1).
+*   **Step 2:** Andrea creates account -> Fills Profile -> Submits Proposal (Journey 2).
 
 ---
 
@@ -58,16 +58,15 @@ We are not building the "Full Event Management System" yet. We are solving the m
 *How do we know if this works?*
 
 **Hypothesis:**
-We believe that by **providing a specialized CfP tool**, we will **reduce the organizer's administrative time by 50%**.
+We believe that by **enabling instant CfP creation**, we will **acquire users early in their event lifecycle**.
 
 ### Validation Metrics (KPIs)
-*   **Adoption:** 5 Event Organizers installing/using the MVP in the first month.
-*   **Efficiency:** Fernando spends < 3 minutes on average to review and score a session.
-*   **Engagement:** > 20% of submitted sessions utilize the Co-Speaker feature (proving the "Wow" factor).
-*   **Satisfaction:** Net Promoter Score (NPS) > 40 from Organizers after the selection phase.
+*   **Activation:** 5 Events created within the first month.
+*   **Volume:** > 50 Proposals collected across all events.
+*   **Conversion:** 80% of speakers who start the form complete the submission.
 
 ### Failure Condition
-*   If organizers revert to exporting data to Excel to generate the final list, the **Review & Score** feature has failed in usability.
+*   If organizers find the "Create Event" flow too complex and revert to Google Forms, we have failed to lower the barrier to entry.
 
 ---
 
@@ -75,19 +74,17 @@ We believe that by **providing a specialized CfP tool**, we will **reduce the or
 *From Step 2 (Tradeoffs) and Step 7.*
 
 ### Cost & Schedule
-*   **Infrastructure:** **$0/month** (Constraint #1). Must run on Vercel/Netlify + Supabase/Firebase Free Tier.
-*   **Development Effort:** Estimated 4 Sprints (8 Weeks) for 2 Developers.
-    *   Sprint 1: CfP Form & User Authentication.
-    *   Sprint 2: Organizer Dashboard & Profile Management.
-    *   Sprint 3: Review Scoring Logic & Final Polish.
+*   **Infrastructure:** **$0/month** (Constraint #1).
+*   **Development Effort:** Estimated 3 Sprints (6 Weeks) for 2 Developers.
+    *   Sprint 1: Auth & "Create Event" Setup.
+    *   Sprint 2: Speaker Profile & CfP Form.
+    *   Sprint 3: Dashboard Basic View (List of submissions).
 
 ### Risks & Mitigation
-*   **Risk:** Low adoption because "Google Forms is easier".
-    *   *Mitigation:* Focus on the **structured data & scoring** key differentiator.
-*   **Risk:** GDPR/Privacy compliance for collecting emails.
-    *   *Mitigation:* Implement "Delete my Data" button in Sprint 2 (Regulatory necessity).
-*   **Risk:** Organizers need to schedule immediately.
-    *   *Mitigation:* Provide a simple "Export to CSV" button so they can schedule in Excel if they can't wait for Wave 2.
+*   **Risk:** Users might expect a full admin panel immediately.
+    *   *Mitigation:* Manage expectations with a "Coming Soon" badge on the Review/Scoring tabs.
+*   **Risk:** Speakers entering wrong data.
+    *   *Mitigation:* Strong validation on the CfP form input fields.
 
 ---
 
@@ -96,22 +93,22 @@ We believe that by **providing a specialized CfP tool**, we will **reduce the or
 
 ### Technical Enablers
 - [ ] Setup defined tech stack (Next.js + Tailwind + Database).
-- [ ] Database (e.g., Supabase/Postgres) Schema for `Proposals`, `Speakers`, and `Reviews`.
-- [ ] Authentication system (Magic Link or Social Auth) for **Organizers & Speakers**.
-- [ ] **Image Storage** (Supabase Storage) for profile photos (Bucket configuration).
+- [ ] Database Schema for `Events`, `Proposals`, and `Profiles`.
+- [ ] Authentication system (Magic Link).
+- [ ] **Image Storage** (Supabase Storage) for profile photos.
 
 ### UX Enablers
-- [ ] "Clean & Focused" Design System (High readability for reading abstract text).
-- [ ] Mobile-responsive form for Speakers (Andrea often submits on the go).
+- [ ] "Setup Wizard" design for creating an event (Step-by-step).
+- [ ] "Public Landing Page" template for the CfP link.
 
 ---
 
 ## 7. Final Validation Checklist
 
-- [x] **Vision Alignment:** Focuses strictly on the "Session Management" core.
+- [x] **Vision Alignment:** Focuses on the "Launcher" strategy (Wave 1).
 - [x] **Constraints Respected:** Designs for $0 infrastructure cost.
-- [x] **User-Centered:** Solves Fernando's "Manual Data" pain and Andrea's "Co-speaker" pain.
-- [x] **Properly Scoped:** It is a "Cupcake" - a complete "Collect & Select" workflow. It is not just a DB (Dry) or just a Form (Unfinished).
-- [x] **Risky:** We acknowledge the "Google Forms" competitor risk and tackle it with the Co-Speaker feature.
+- [x] **User-Centered:** Solves Fernando's immediate need to "Go Live".
+- [x] **Properly Scoped:** It is a strictly "Input-focused" release. No processing/output features yet.
+- [x] **Risky:** We acknowledge the risk of "missing features" (Scoring) by betting on the time-delay of the CfP process.
 
 **Ready for Implementation!** 🚀
