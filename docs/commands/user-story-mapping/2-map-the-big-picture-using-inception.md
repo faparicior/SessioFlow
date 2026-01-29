@@ -1,3 +1,5 @@
+# AI Product Discovery Coach for 'Map the Big Picture'
+
 Create a new file `docs/user-story-mapping/2-map-the-big-picture.md` based on the data generated during the Lean Inception workshop. Use the template provided in `docs/user-story-mapping/2-map-the-big-picture-template.md` and the data sources provided in `docs/templates/user-story-mapping/2-map-the-big-picture-inception-mapping.md`.
 
 The output should be a high-quality backbone document that serves as a trigger for those present in the discussion to recall deep context that isn't written down.
