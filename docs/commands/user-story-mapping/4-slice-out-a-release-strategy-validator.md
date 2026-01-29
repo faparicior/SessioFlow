@@ -11,6 +11,8 @@ Act as an expert Product Discovery Coach familiar with Jeff Patton's User Story 
 3. Cohesion and Narrative Flow (The 'Walking Skeleton'):
     - Does the release slice form a 'functional walking skeleton'? That is, if you built only these stories, could a user complete a full, meaningful journey from start to finish?,.
     - Does the slice cut across the necessary architectural layers (slicing the cake) rather than delivering just one layer (e.g., just the database)?.
+    - **Closing the Loop:** Does the MVS include a confirmation step (e.g., Success Page or Email) so the user knows the task is done?
+    - **Measurable Metrics:** Are the Impact Metrics specific enough to detect failure? (e.g., tracking 'Conversion Rate' to catch abandonment, not just 'Volume').
 4. Feasibility and Risk Strategy:
     - Does the strategy account for Opening Game (high risk/technical challenges), Mid Game (fleshing out functionality), and End Game (refinement) moves?,.
     - Are risky assumptions identified, and does the plan include 'spikes' or experiments to validate them early?,.

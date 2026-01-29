@@ -9,7 +9,10 @@ Before selecting stories, define the success criteria for this specific slice. D
 - **Release Name:** [e.g., "The Pilot," "The MVP," or "The Executive Dashboard Update"]
 - **Target Audience:** [Who are we satisfying with this specific release?]
 - **Desired Outcome:** [What human behavior will change? e.g., "Users can complete a purchase without calling support."]
-- **Impact Metric:** [How will we measure success? e.g., "Support calls drop by 20%."]
+- **Impact Metric:**
+  - **Activation:** [e.g., "5 Events created"]
+  - **Volume:** [e.g., ">50 Proposals collected"]
+  - **Conversion:** [e.g., "80% completion rate"]
 
 ## 2. The Minimum Viable Solution (MVS)
 
