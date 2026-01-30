@@ -1,6 +1,6 @@
 # Slice Out a Development Strategy
 
-Objective: Break the Minimum Viable Solution (MVS) defined in Step 4 into three tactical stages of development. The goal is to learn fast, mitigate risk early, and avoid a "big bang" integration at the end.
+Objective: Break the Minimum Viable Solution (MVS) defined in Step 4 (and validated in Step 5) into three tactical stages of development. The goal is to learn fast, mitigate risk early, and avoid a "big bang" integration at the end.
 
 ## 1. Risk Assessment
 
