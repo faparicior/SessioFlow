@@ -11,7 +11,11 @@ Act as an expert Product Discovery Coach familiar with Jeff Patton's 'Plan to Le
 3. Measurable Success Signals:
     - Are the success metrics defined as observable user behaviors (e.g., 'users click the button', 'users complete the task unassisted') rather than vague feelings (e.g., 'users like it')?,.
     - Is there a clear threshold for success/failure defined before the experiment is run?.
-4. The Pivot Logic:
+4. **Persona Alignment:**
+    - Does the experiment target the correct Persona? (e.g., Testing 'Setup Friction' with the *Organizer*, not the *Speaker*).
+5. **Timeboxing:**
+    - Is each experiment time-bound? Does it look like it can be completed in hours or days, not weeks?
+6. **The Pivot Logic:**
     - Does the 'Go/No-Go' section explicitly allow for the possibility of failure? Does it define what happens if the data proves the solution is wrong (e.g., pivot, iterate, or kill the idea)?,.
 
 ## Output Request

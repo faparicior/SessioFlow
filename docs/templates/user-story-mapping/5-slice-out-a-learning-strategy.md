@@ -15,11 +15,11 @@ Look at the Release Slice (Step 4). What do we believe to be true that, if wrong
 
 Slice the map even thinner. What is the smallest thing we can make or do to test the assumptions above?
 
-| Assumption | Experiment / Method | Success Signal (Metric) |
-| :--- | :--- | :--- |
-| [e.g. Users want export] | [e.g. Fake Door test: Add a button that says "feature coming soon" and count clicks] | [e.g. >10% of users click the button] |
-| [e.g. They can use it] | [e.g. Paper Prototype Walkthrough with 5 users] | [e.g. 4/5 users complete the task without help] |
-| [e.g. Tech feasibility] | [e.g. Technical Spike / PoC] | [e.g. Data retrieval < 200ms] |
+| Assumption | Experiment / Method (Persona: **Target**) | Timebox | Success Signal (Metric) |
+| :--- | :--- | :--- | :--- |
+| [e.g. Users want export] | [e.g. Fake Door test: Add a button that says "feature coming soon" and count clicks] <br>*(Target: [Persona Name])* | [e.g. 2 Days] | [e.g. >10% of users click the button] |
+| [e.g. They can use it] | [e.g. Paper Prototype Walkthrough with 5 users] <br>*(Target: [Persona Name])* | [e.g. 4 Hours] | [e.g. 4/5 users complete the task without help] |
+| [e.g. Tech feasibility] | [e.g. Technical Spike / PoC] <br>*(Target: Senior Dev)* | [e.g. 1 Day] | [e.g. Data retrieval < 200ms] |
 
 ## 3. The "Go/No-Go" Gate
 
