@@ -1,6 +1,6 @@
 # Slice Out a Development Strategy - Inception Data Sources
 
-This document provides a reference mapping to help fill out the `5-slice-out-a-development-strategy.md` template using the data generated during the Lean Inception workshop.
+This document provides a reference mapping to help fill out the `6-slice-out-a-development-strategy.md` template using the data generated during the Lean Inception workshop.
 
 ## ⚠️ Strategy Note
 

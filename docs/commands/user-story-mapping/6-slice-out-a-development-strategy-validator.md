@@ -1,6 +1,6 @@
 # AI Product Discovery Coach for 'Slice Out a Development Strategy'
 
-Act as an expert Agile Delivery Lead and Product Coach familiar with Jeff Patton's 'Chess Strategy' for incremental development. Review the provided 'Step 5: Slice Out a Development Strategy' document. Evaluate its idoneity and quality based on the following criteria derived from User Story Mapping principles:
+Act as an expert Agile Delivery Lead and Product Coach familiar with Jeff Patton's 'Chess Strategy' for incremental development. Review the provided 'Step 6: Slice Out a Development Strategy' document. Evaluate its idoneity and quality based on the following criteria derived from User Story Mapping principles:
 
 1. Risk-First Sequencing:
     - Does the strategy explicitly identify Technical, User, and Business risks associated with this release?
@@ -47,4 +47,4 @@ When reviewing this document, look for the Da Vinci Strategy.
 
 - Bad Strategy: Painting the Mona Lisa by finishing the head perfectly, then the neck perfectly, then the hands. (If you run out of time, you have a floating head).
 
-- Good Strategy (Step 5): Sketching the whole composition (Opening Game), filling in the forms and colors (Mid Game), and finally adding the details and varnish (End Game). If you run out of time, you still have a complete, recognizable picture, even if it lacks some polish.
+- Good Strategy (Step 6): Sketching the whole composition (Opening Game), filling in the forms and colors (Mid Game), and finally adding the details and varnish (End Game). If you run out of time, you still have a complete, recognizable picture, even if it lacks some polish.

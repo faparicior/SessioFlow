@@ -72,7 +72,7 @@ Does the "Opening Game" fit into the first few sprints?
 
 --------------------------------------------------------------------------------
 
-🔍 Quality Checklist for Step 5
+🔍 Quality Checklist for Step 6
 
 - [ ] **Walking Skeleton:** Does the "Opening Game" slice cut through the entire architecture (UI, Logic, Database) rather than just building one layer?
 - [ ] **Risk First:** Did we schedule the highest-risk stories in the Opening Game?
