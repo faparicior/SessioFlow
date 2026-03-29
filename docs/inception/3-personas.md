@@ -52,38 +52,38 @@ Define the primary persona(s) who will use the product. Understanding who we're 
 
 | Attribute | Details |
 | :--- | :--- |
-| **Age & Demographics** | [e.g., 28-35 years old, urban professional] |
-| **Role/Job Title** | [e.g., Mid-level Data Analyst at a SaaS company] |
-| **Experience Level** | [e.g., 3-5 years in data analysis, intermediate tech skills] |
-| **Work Environment** | [e.g., Hybrid office, uses laptop and desktop, often in meetings] |
+| **Age & Demographics** | [35 years old, urban] |
+| **Role/Job Title** | [Volunteer Organizer] |
+| **Experience Level** | [First year as a volunteer. Not used to the tools and processes] |
+| **Work Environment** | [Full remote. Asynchronous work and a meet with the group each 15 days] |
 
 ### Goals & Motivations
 *What does this persona want to achieve?*
-- **Primary Goal:** [e.g., Generate accurate reports quickly without manual data manipulation]
-- **Secondary Goal:** [e.g., Gain credibility with stakeholders through reliable insights]
-- **What motivates them:** [e.g., Recognition for delivering high-quality work efficiently]
+- **Primary Goal:** [Have a more easy to use centralized tool with intuitive UI ]
+- **Secondary Goal:** [Automate some manual task (email, calendar...)]
+- **What motivates them:** [Simplify the organization before the event]
 
 ### Pain Points & Frustrations
 *What problems do they currently face?*
-- ❌ **Pain 1:** [e.g., Spending hours manually combining data from different sources]
-- ❌ **Pain 2:** [e.g., Data inconsistencies leading to errors in reports]
-- ❌ **Pain 3:** [e.g., Lack of confidence in the tools they currently use]
+- ❌ **Pain 1:** [Not being able to export the data to be used in other tools]
+- ❌ **Pain 2:** [Having many tools ]
+- ❌ **Pain 3:** [Not a very intuitive interface ]
 
 ### Needs & Expectations
 *What does this persona need from our product?*
-- ✅ **Need 1:** [e.g., A single platform that integrates all data sources]
-- ✅ **Need 2:** [e.g., Automated data validation to catch errors early]
-- ✅ **Need 3:** [e.g., Simple, intuitive interface that doesn't require training]
+- ✅ **Need 1:** [Easy to use tool interface ]
+- ✅ **Need 2:** [Integrated with other tools (e.g. web) or able to export data in different formats ]
+- ✅ **Need 3:** [Get reports from the talks to facilitate decisions ]
 
 ### Tech Savviness
-- [ ] Beginner (needs hand-holding, prefers simple interfaces)
+- [x] Beginner (needs hand-holding, prefers simple interfaces)
 - [ ] Intermediate (comfortable with standard tools, learns quickly)
 - [ ] Advanced (power user, wants customization and shortcuts)
 
 ### Quote
 > "[A memorable quote that captures their mindset or main frustration]"
 > 
-> *Example: "I just need to see the data, not spend half my day fighting with it."*
+> *Example: "I just need to a simple and easy to use application to manage talks and export information."*
 
 ---
 
