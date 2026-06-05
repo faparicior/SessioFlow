@@ -3,7 +3,8 @@
 **Generated:** 2026-06-05  
 **Source:** Lean Inception Workshop Artifacts (docs/inception/)  
 **Template:** docs/adr/TEMPLATE.md  
-**Validator:** docs/commands/adr/2-ADR-validator.md
+**Validator:** docs/commands/adr/2-ADR-validator.md  
+**Summary Template:** docs/adr/TEMPLATE-ADR_GENERATION_SUMMARY.md
 
 ---
 

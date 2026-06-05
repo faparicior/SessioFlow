@@ -1,6 +1,9 @@
 # ADR Traceability Matrix
 
-This document maps each Architectural Decision Record (ADR) to its sources in the Lean Inception workshop artifacts, providing complete traceability from business vision to technical implementation.
+**Template Version:** 1.0  
+**Template:** docs/adr/TEMPLATE-TRACEABILITY_MATRIX.md  
+**Based On:** Lean Inception Workshop Methodology  
+**Purpose:** Maps each Architectural Decision Record (ADR) to its sources in the Lean Inception workshop artifacts, providing complete traceability from business vision to technical implementation.
 
 ---
 
