@@ -380,7 +380,7 @@
 | 006 | Use RESTful API Design | Brainstorming (Public API) | Product Goals |
 | 007 | Use Zod for Validation | MVP Canvas (Validation Risk) | Personas, Features |
 | 008 | Implement Comprehensive Testing Strategy | Product Goals (2, 3) | MVP Canvas (Risks) |
-| 009 | Use Feature-Based Project Structure | AGENTS.md (Project Structure) | Personas, MVP Timeline |
+| 009 | Adopt Domain-Driven Design Structure | MVP Canvas (Technical Enablers) | Personas, Long-term Maintainability |
 | 010 | Use Tailwind CSS for Styling | MVP Canvas (UX Enablers) | Trade-offs, Personas |
 | 011 | Use Resend for Email Communications | Features (Automate Communications) | User Journeys |
 | 012 | Implement CI/CD with GitHub Actions | MVP Canvas (Cost Constraint) | Trade-offs, Personas |
