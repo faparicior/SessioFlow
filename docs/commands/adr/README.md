@@ -10,11 +10,11 @@ This guide provides a quick reference for working with Architecture Decision Rec
 
 | Command | When to Use | Template | Output |
 |---------|-------------|----------|--------|
-| **1-generate-adrs-from-inception.md** | Starting a new project or phase | `TEMPLATE.md` | Individual ADR files |
-| **2-ADR-validator.md** | After creating each ADR | `TEMPLATE-ADR_VALIDATOR.md` | Quality assessment |
-| **3-generate-adr-summary.md** | After generating all ADRs | `TEMPLATE-ADR_GENERATION_SUMMARY.md` | ADR_GENERATION_SUMMARY.md |
-| **4-generate-traceability-matrix.md** | After validation | `TEMPLATE-TRACEABILITY_MATRIX.md` | TRACEABILITY_MATRIX.md |
-| **5-analyze-adr-alternatives.md** | Every 6-12 months or before major features | `TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md` + `TEMPLATE-EXECUTIVE_SUMMARY.md` | ADR_ALTERNATIVES_ANALYSIS.md + EXECUTIVE_SUMMARY.md |
+| **1-generate-adrs-from-inception.md** | Starting a new project or phase | `_templates/TEMPLATE.md` | Individual ADR files |
+| **2-ADR-validator.md** | After creating each ADR | `_templates/TEMPLATE-ADR_VALIDATOR.md` | Quality assessment |
+| **3-generate-adr-summary.md** | After generating all ADRs | `_templates/TEMPLATE-ADR_GENERATION_SUMMARY.md` | ADR_GENERATION_SUMMARY.md |
+| **4-generate-traceability-matrix.md** | After validation | `_templates/TEMPLATE-TRACEABILITY_MATRIX.md` | TRACEABILITY_MATRIX.md |
+| **5-analyze-adr-alternatives.md** | Every 6-12 months or before major features | `_templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md` + `_templates/TEMPLATE-EXECUTIVE_SUMMARY.md` | ADR_ALTERNATIVES_ANALYSIS.md + EXECUTIVE_SUMMARY.md |
 
 ---
 
@@ -111,11 +111,11 @@ cd docs/commands/adr
 | File | Location |
 |------|----------|
 | ADRs | `docs/adr/0XX-*.md` |
-| Templates | `docs/adr/TEMPLATE.md` |
+| Templates | `_templates/TEMPLATE.md` |
 | Commands | `docs/commands/adr/` |
 | Inception Artifacts | `docs/inception/` |
-| Analysis Output | `docs/adr/ADR_ALTERNATIVES_ANALYSIS.md` |
-| Executive Summary | `docs/adr/EXECUTIVE_SUMMARY.md` |
+| Analysis Output | `_reports/ADR_ALTERNATIVES_ANALYSIS.md` |
+| Executive Summary | `_reports/EXECUTIVE_SUMMARY.md` |
 
 ---
 
@@ -161,7 +161,7 @@ cd docs/commands/adr
 
 ## Resources
 
-- **ADR Templates**: `docs/adr/TEMPLATE.md`
+- **ADR Templates**: `_templates/TEMPLATE.md`
 - **Validation Criteria**: `docs/commands/adr/2-ADR-validator.md`
 - **Alternatives Analysis**: `docs/commands/adr/5-analyze-adr-alternatives.md`
 - **Current ADRs**: `docs/adr/0XX-*.md`

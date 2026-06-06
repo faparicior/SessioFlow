@@ -181,7 +181,7 @@ Based on the analysis, provide actionable next steps:
 
 ## Output Format
 
-Generate a markdown document following the template in `docs/adr/TEMPLATE-ADR_GENERATION_SUMMARY.md` with these sections:
+Generate a markdown document following the template in `_templates/TEMPLATE-ADR_GENERATION_SUMMARY.md` with these sections:
 
 ### 1. Header
 ```markdown
@@ -189,9 +189,9 @@ Generate a markdown document following the template in `docs/adr/TEMPLATE-ADR_GE
 
 **Generated:** [YYYY-MM-DD]
 **Source:** [Inception Artifacts Location]
-**Template:** docs/adr/TEMPLATE.md
+**Template:** _templates/TEMPLATE.md
 **Validator:** docs/commands/adr/2-ADR-validator.md
-**Summary Template:** docs/adr/TEMPLATE-ADR_GENERATION_SUMMARY.md
+**Summary Template:** _templates/TEMPLATE-ADR_GENERATION_SUMMARY.md
 ```
 
 ### 2. Executive Summary
@@ -276,9 +276,9 @@ Before finalizing the summary:
 
 **Generated:** 2026-06-05
 **Source:** Lean Inception Workshop Artifacts (docs/inception/)
-**Template:** docs/adr/TEMPLATE.md
+**Template:** _templates/TEMPLATE.md
 **Validator:** docs/commands/adr/2-ADR-validator.md
-**Summary Template:** docs/adr/TEMPLATE-ADR_GENERATION_SUMMARY.md
+**Summary Template:** _templates/TEMPLATE-ADR_GENERATION_SUMMARY.md
 
 ---
 
@@ -303,7 +303,7 @@ This ADR generation effort analyzed all 8 steps of the Lean Inception workshop..
 
 ## Final Deliverable
 
-Save the generated summary to: **`docs/adr/ADR_GENERATION_SUMMARY.md`**
+Save the generated summary to: **`_reports/ADR_GENERATION_SUMMARY.md`**
 
 Ensure it follows the template structure and includes all required sections with accurate data extracted from the actual ADR files.
 

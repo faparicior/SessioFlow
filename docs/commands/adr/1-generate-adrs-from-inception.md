@@ -84,7 +84,7 @@ Look for decisions needed in these categories:
 
 ### Phase 3: Generate ADRs
 
-For **each identified architectural decision**, create an ADR following the template in `docs/adr/TEMPLATE.md`:
+For **each identified architectural decision**, create an ADR following the template in `_templates/TEMPLATE.md`:
 
 #### Mandatory ADR Quality Standards
 
@@ -242,7 +242,7 @@ After generating all ADRs, provide:
 Before submitting your ADR generation work:
 
 - [ ] All inception files in `docs/inception/` have been reviewed
-- [ ] Each ADR follows `docs/adr/TEMPLATE.md` structure exactly
+- [ ] Each ADR follows `_templates/TEMPLATE.md` structure exactly
 - [ ] Each ADR passes `docs/commands/adr/2-ADR-validator.md` criteria (≥Medium compliance)
 - [ ] Traceability matrix connects each ADR to specific inception artifacts
 - [ ] No ADRs contradict inception constraints or scope

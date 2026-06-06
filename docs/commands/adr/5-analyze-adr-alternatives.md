@@ -208,18 +208,18 @@ Create actionable recommendations based on your analysis.
 #### Required Output Documents
 
 **1. Main Analysis Document:**
-- **Template:** `docs/adr/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`
-- **Save as:** `docs/adr/ADR_ALTERNATIVES_ANALYSIS.md`
+- **Template:** `_templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`
+- **Save as:** `_reports/ADR_ALTERNATIVES_ANALYSIS.md`
 - **Contents:** Complete analysis of all ADRs with alternatives comparison
 
 **2. Executive Summary:**
-- **Template:** `docs/adr/TEMPLATE-EXECUTIVE_SUMMARY.md`
-- **Save as:** `docs/adr/EXECUTIVE_SUMMARY.md`
+- **Template:** `_templates/TEMPLATE-EXECUTIVE_SUMMARY.md`
+- **Save as:** `_reports/EXECUTIVE_SUMMARY.md`
 - **Contents:** High-level findings and recommendations for stakeholders
 
 **See also:**
-- `docs/adr/README_TEMPLATES.md` - Template reference guide
-- `docs/adr/ADR_TEMPLATE_SYSTEM_SUMMARY.md` - Complete system overview
+- `_templates/README_TEMPLATES.md` - Template reference guide
+- `_templates/ADR_TEMPLATE_SYSTEM_SUMMARY.md` - Complete system overview
 
 #### Recommendation Categories
 
@@ -249,12 +249,12 @@ Create actionable recommendations based on your analysis.
 
 Follow the structure defined in the templates:
 
-**Deliverable 1:** `docs/adr/ADR_ALTERNATIVES_ANALYSIS.md`
-- Use the complete structure from `docs/adr/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`
+**Deliverable 1:** `_reports/ADR_ALTERNATIVES_ANALYSIS.md`
+- Use the complete structure from `_templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`
 - Includes: Executive Summary, Summary Table, Detailed Analysis, Cross-Cutting Themes, Recommendations, Emerging Technologies
 
-**Deliverable 2:** `docs/adr/EXECUTIVE_SUMMARY.md`
-- Use the complete structure from `docs/adr/TEMPLATE-EXECUTIVE_SUMMARY.md`
+**Deliverable 2:** `_reports/EXECUTIVE_SUMMARY.md`
+- Use the complete structure from `_templates/TEMPLATE-EXECUTIVE_SUMMARY.md`
 - Includes: Overview, Overall Assessment, Key Findings, Top 5 Recommendations, Risk Assessment, Next Steps
 
 See the templates for complete section details and formatting requirements.
@@ -430,8 +430,8 @@ Run this analysis when:
 
 ## Final Deliverables
 
-1. **Main Analysis Document**: `docs/adr/ADR_ALTERNATIVES_ANALYSIS.md`
-2. **Executive Summary**: `docs/adr/EXECUTIVE_SUMMARY.md`
+1. **Main Analysis Document**: `_reports/ADR_ALTERNATIVES_ANALYSIS.md`
+2. **Executive Summary**: `_reports/EXECUTIVE_SUMMARY.md`
 3. **Research Notes**: Save all fetched content and search results
 4. **Recommendations**: Clear, actionable next steps
 5. **Monitoring Plan**: Technologies to watch and when to re-evaluate

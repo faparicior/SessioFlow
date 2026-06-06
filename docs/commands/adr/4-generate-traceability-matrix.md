@@ -236,14 +236,14 @@ Create a summary table showing primary and secondary sources for each ADR:
 
 ## Output Format
 
-Generate a markdown document following the template in `docs/adr/TEMPLATE-TRACEABILITY_MATRIX.md`:
+Generate a markdown document following the template in `_templates/TEMPLATE-TRACEABILITY_MATRIX.md`:
 
 ### 1. Header
 ```markdown
 # ADR Traceability Matrix
 
 **Template Version:** 1.0
-**Template:** docs/adr/TEMPLATE-TRACEABILITY_MATRIX.md
+**Template:** _templates/TEMPLATE-TRACEABILITY_MATRIX.md
 **Based On:** Lean Inception Workshop Methodology
 **Purpose:** Maps each ADR to inception artifacts for complete traceability
 ```
@@ -387,7 +387,7 @@ Before finalizing the traceability matrix:
 
 ## Final Deliverable
 
-Save the generated traceability matrix to: **`docs/adr/TRACEABILITY_MATRIX.md`**
+Save the generated traceability matrix to: **`_reports/TRACEABILITY_MATRIX.md`**
 
 Ensure it follows the template structure and includes complete traceability for every ADR with accurate references to inception artifacts.
 

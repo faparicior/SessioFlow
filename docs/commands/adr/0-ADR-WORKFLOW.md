@@ -51,16 +51,16 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 | # | Document | Purpose | Output |
 |---|----------|---------|--------|
 | **0** | `0-ADR-WORKFLOW.md` | This overview document | N/A |
-| **1** | `1-generate-adrs-from-inception.md` | Analyze inception artifacts and generate individual ADRs | `docs/adr/0XX-*.md` files (use `TEMPLATE.md`) |
-| **2** | `2-ADR-validator.md` | Validate ADR quality against criteria | Quality assessment (use `TEMPLATE-ADR_VALIDATOR.md`) |
-| **3** | `3-generate-adr-summary.md` | Create comprehensive ADR generation summary | `ADR_GENERATION_SUMMARY.md` (use `TEMPLATE-ADR_GENERATION_SUMMARY.md`) |
-| **4** | `4-generate-traceability-matrix.md` | Map ADRs to inception artifacts | `TRACEABILITY_MATRIX.md` (use `TEMPLATE-TRACEABILITY_MATRIX.md`) |
+| **1** | `1-generate-adrs-from-inception.md` | Analyze inception artifacts and generate individual ADRs | `docs/adr/0XX-*.md` files (use `_templates/TEMPLATE.md`) |
+| **2** | `2-ADR-validator.md` | Validate ADR quality against criteria | Quality assessment (use `_templates/TEMPLATE-ADR_VALIDATOR.md`) |
+| **3** | `3-generate-adr-summary.md` | Create comprehensive ADR generation summary | `ADR_GENERATION_SUMMARY.md` (use `_templates/TEMPLATE-ADR_GENERATION_SUMMARY.md`) |
+| **4** | `4-generate-traceability-matrix.md` | Map ADRs to inception artifacts | `TRACEABILITY_MATRIX.md` (use `_templates/TEMPLATE-TRACEABILITY_MATRIX.md`) |
 
 ### ADR Analysis Commands
 
 | # | Document | Purpose | Output |
 |---|----------|---------|--------|
-| **5** | `5-analyze-adr-alternatives.md` | Research current alternatives and best practices for existing ADRs | `ADR_ALTERNATIVES_ANALYSIS.md` + `EXECUTIVE_SUMMARY.md` (use `TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md` + `TEMPLATE-EXECUTIVE_SUMMARY.md`) |
+| **5** | `5-analyze-adr-alternatives.md` | Research current alternatives and best practices for existing ADRs | `ADR_ALTERNATIVES_ANALYSIS.md` + `EXECUTIVE_SUMMARY.md` (use `_templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md` + `_templates/TEMPLATE-EXECUTIVE_SUMMARY.md`) |
 
 ---
 
@@ -68,9 +68,9 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 
 | Template | Location | Used By |
 |----------|----------|---------|
-| **Individual ADR Template** | `docs/adr/TEMPLATE.md` | All ADR files (001-014) |
-| **Summary Template** | `docs/adr/TEMPLATE-ADR_GENERATION_SUMMARY.md` | ADR Generation Summary |
-| **Traceability Template** | `docs/adr/TEMPLATE-TRACEABILITY_MATRIX.md` | Traceability Matrix |
+| **Individual ADR Template** | `_templates/TEMPLATE.md` | All ADR files (001-014) |
+| **Summary Template** | `_templates/TEMPLATE-ADR_GENERATION_SUMMARY.md` | ADR Generation Summary |
+| **Traceability Template** | `_templates/TEMPLATE-TRACEABILITY_MATRIX.md` | Traceability Matrix |
 
 ---
 
@@ -80,7 +80,7 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 **Command:** `1-generate-adrs-from-inception.md`
 
 **Templates:**
-- `docs/adr/TEMPLATE.md` - Individual ADR format
+- `_templates/TEMPLATE.md` - Individual ADR format
 
 **Input:**
 - Lean Inception workshop artifacts (`docs/inception/`)
@@ -100,7 +100,7 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 **Command:** `2-ADR-validator.md`
 
 **Template:**
-- `docs/adr/TEMPLATE-ADR_VALIDATOR.md` - Quality assessment template
+- `_templates/TEMPLATE-ADR_VALIDATOR.md` - Quality assessment template
 
 **Input:**
 - Generated ADR files from Phase 1
@@ -122,7 +122,7 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 **Command:** `3-generate-adr-summary.md`
 
 **Template:**
-- `docs/adr/TEMPLATE-ADR_GENERATION_SUMMARY.md` - Summary report format
+- `_templates/TEMPLATE-ADR_GENERATION_SUMMARY.md` - Summary report format
 
 **Input:**
 - All validated ADR files
@@ -137,7 +137,7 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 6. Generate recommendations
 
 **Output:**
-- `docs/adr/ADR_GENERATION_SUMMARY.md`
+- `_reports/ADR_GENERATION_SUMMARY.md`
 
 ---
 
@@ -145,7 +145,7 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 **Command:** `4-generate-traceability-matrix.md`
 
 **Template:**
-- `docs/adr/TEMPLATE-TRACEABILITY_MATRIX.md` - Traceability matrix format
+- `_templates/TEMPLATE-TRACEABILITY_MATRIX.md` - Traceability matrix format
 
 **Input:**
 - All validated ADR files
@@ -159,7 +159,7 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 5. Analyze coverage metrics
 
 **Output:**
-- `docs/adr/TRACEABILITY_MATRIX.md`
+- `_reports/TRACEABILITY_MATRIX.md`
 
 ---
 
@@ -171,8 +171,8 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 - Current technology landscape and best practices
 
 **Templates:**
-- `docs/adr/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md` - Main analysis document
-- `docs/adr/TEMPLATE-EXECUTIVE_SUMMARY.md` - Executive summary
+- `_templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md` - Main analysis document
+- `_templates/TEMPLATE-EXECUTIVE_SUMMARY.md` - Executive summary
 
 **Process:**
 1. Inventory all ADRs by category
@@ -182,8 +182,8 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 5. Generate actionable recommendations
 
 **Output:**
-- `docs/adr/ADR_ALTERNATIVES_ANALYSIS.md` - Comprehensive analysis
-- `docs/adr/EXECUTIVE_SUMMARY.md` - Executive summary with key findings
+- `_reports/ADR_ALTERNATIVES_ANALYSIS.md` - Comprehensive analysis
+- `_reports/EXECUTIVE_SUMMARY.md` - Executive summary with key findings
 
 **When to Run:**
 - Before starting major new features (Wave 2+)
@@ -246,7 +246,7 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 
 ### Gate 1: ADR Generation Complete
 - [ ] All ADRs generated from inception artifacts
-- [ ] Each ADR follows `TEMPLATE.md` structure
+- [ ] Each ADR follows `_templates/TEMPLATE.md` structure
 - [ ] ADR numbering is sequential (001, 002, etc.)
 
 ### Gate 2: Quality Validation Passed
@@ -287,13 +287,13 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 | Artifact | Location | Description |
 |----------|----------|-------------|
 | Individual ADRs | `docs/adr/0XX-*.md` | Architectural decision records |
-| ADR Template | `docs/adr/TEMPLATE.md` | Standard ADR format |
-| Summary Template | `docs/adr/TEMPLATE-ADR_GENERATION_SUMMARY.md` | Summary report format |
-| Traceability Template | `docs/adr/TEMPLATE-TRACEABILITY_MATRIX.md` | Matrix format |
-| Generation Summary | `docs/adr/ADR_GENERATION_SUMMARY.md` | Comprehensive overview |
-| Traceability Matrix | `docs/adr/TRACEABILITY_MATRIX.md` | ADR-to-inception mapping |
-| Alternatives Analysis | `docs/adr/ADR_ALTERNATIVES_ANALYSIS.md` | Current best practices evaluation |
-| Executive Summary | `docs/adr/EXECUTIVE_SUMMARY.md` | High-level findings and recommendations |
+| ADR Template | `_templates/TEMPLATE.md` | Standard ADR format |
+| Summary Template | `_templates/TEMPLATE-ADR_GENERATION_SUMMARY.md` | Summary report format |
+| Traceability Template | `_templates/TEMPLATE-TRACEABILITY_MATRIX.md` | Matrix format |
+| Generation Summary | `_reports/ADR_GENERATION_SUMMARY.md` | Comprehensive overview |
+| Traceability Matrix | `_reports/TRACEABILITY_MATRIX.md` | ADR-to-inception mapping |
+| Alternatives Analysis | `_reports/ADR_ALTERNATIVES_ANALYSIS.md` | Current best practices evaluation |
+| Executive Summary | `_reports/EXECUTIVE_SUMMARY.md` | High-level findings and recommendations |
 
 ---
 
