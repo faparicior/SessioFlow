@@ -1,0 +1,28 @@
+{
+  "name": "dependency-audit",
+  "description": "Scan the codebase for current dependency versions, query npm for latest, then review against releases to identify security patches, upgrades, and deprecations. Returns a prioritized upgrade action plan.",
+  "version": 1,
+  "task": "Audit dependencies for newer versions",
+  "chain": [
+    {
+      "agent": "scout",
+      "model": "vllm-local-supervised/Intel/Qwen3.5-122B-A10B-int4-AutoRound",
+      "as": "scout",
+      "task": "Extract the current dependency versions from package.json (both dependencies and devDependencies). Return the exact declared version strings for each package. Focus on: next, react, react-dom, typescript, tailwindcss, @tailwindcss/postcss, @types/node, @types/react, @types/react-dom, eslint-config-xo-react, xo, and any others listed."
+    },
+    {
+      "agent": "delegate",
+      "model": "vllm-local-supervised/Intel/Qwen3.5-122B-A10B-int4-AutoRound",
+      "as": "worker",
+      "outputMode": "inline",
+      "task": "Run these npm commands and return ALL output verbatim — do not summarize:\n\n1. npm outdated --json\n2. npm ls --depth=0\n3. For each of these packages, run: npm view <package> version: next, react, react-dom, @tailwindcss/postcss, tailwindcss, @types/node, @types/react, @types/react-dom, typescript, xo, eslint-config-xo-react\n\nReturn all raw output exactly as commands produce it."
+    },
+    {
+      "agent": "reviewer",
+      "model": "vllm-local-supervised/Intel/Qwen3.5-122B-A10B-int4-AutoRound",
+      "outputMode": "inline",
+      "output": "dependency-audit-resume.md",
+      "task": "Review the dependency audit findings and produce a prioritized upgrade plan.\n\nYou have two sources of data:\n1. Current versions (from scout)\n2. npm lookup results with latest published versions and npm outdated output\n\nIdentify:\n1. Packages with available security patches (check npm advisory data or known CVEs)\n2. Outdated major/minor versions with newer releases\n3. Deprecated packages or patterns\n4. Upgrade recommendations with effort estimates and risk level\n\nReturn a prioritized action plan with:\n- Exact current → target versions\n- npm install commands for each change\n- Risk level (critical/high/medium/low)\n- Effort estimate (none/low/medium/high)\n\nOnly recommend upgrades where npm returned a newer version than current. Do NOT recommend versions that don't exist or that you can't verify."
+    }
+  ]
+}
