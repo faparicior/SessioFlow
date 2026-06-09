@@ -80,3 +80,10 @@ sequenceDiagram
     "itemId": "uuid",
     "quantity": "integer > 0"
   }
+  ```
+
+* **Enforced Business Rules:**
+  * [BR-[XXX]](../business-rules/BR-[XXX]-[rule-name].md): [Short business rule active title]
+
+* **Enforced Invariants:**
+  * [INV-[XXX]](../invariants/INV-[XXX]-[invariant-name].md): [Short invariant strict title]

@@ -61,5 +61,10 @@ Your task is to analyze the provided documentation/code, identify the strict **I
 
 * **2026-06-09:** Invariant extracted from source documentation.
 
+**Output Path:**
+Write the results in: `docs/product/bounded-contexts/{bounded-context-name}/invariants/INV-[XXX]-[invariant-name].md`
+
+Where `{bounded-context-name}` is the kebab-case name of the bounded context (e.g., `event`, `submission`, `review`, `scheduling`, or any future context)
+
 ---
-Go ahead and extract all the system invariants from the input provided.
+Go ahead and extract all the system invariants from the input provided using the template above.

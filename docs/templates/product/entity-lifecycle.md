@@ -42,6 +42,15 @@ stateDiagram-v2
 * **`[STATE_NAME_3]`**: The terminal successful state of the entity. (e.g., `COMPLETED`).
 * **`[STATE_NAME_4]`**: The entity is dead/archived and can no longer transition. (e.g., `CANCELLED`).
 
+## 🔒 Invariants & Business Rules
+*Relative links to the business rules and invariants enforced by this entity.*
+
+* **Invariants:**
+  * [INV-[XXX]](../invariants/INV-[XXX]-[invariant-name].md): [Short invariant strict title]
+
+* **Business Rules:**
+  * [BR-[XXX]](../business-rules/BR-[XXX]-[rule-name].md): [Short business rule active title]
+
 ---
 
 ## 🔗 Linked User Stories & Flows

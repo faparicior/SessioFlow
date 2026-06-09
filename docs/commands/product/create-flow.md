@@ -35,3 +35,10 @@ The Mermaid sequence diagram and Step-by-Step Walkthrough table MUST be aligned:
 Write the result in: `docs/product/bounded-contexts/{bounded-context-name}/flows/journey-[XX]-[feature-name].md`
 
 Where `{bounded-context-name}` is the kebab-case name of the bounded context (e.g., `event`, `submission`, `review`, `scheduling`, or any future context)
+
+**Business Rules & Invariants Extraction:**
+During flow creation, you MUST identify all business rules and invariants that govern the steps, alternative paths, validations, or edge cases of this user flow.
+1. Use the templates provided at `docs/templates/product/business-rules.md` and `docs/templates/product/invariants.md`.
+2. Extract each identified business rule to: `docs/product/bounded-contexts/{bounded-context-name}/business-rules/BR-[XXX]-[rule-name].md`.
+3. Extract each identified invariant to: `docs/product/bounded-contexts/{bounded-context-name}/invariants/INV-[XXX]-[invariant-name].md`.
+4. Ensure the generated user flow document links to these extracted files under its **Technical Notes & Validation Rules** section using relative markdown links (e.g., `../business-rules/BR-[XXX]-[rule-name].md`).

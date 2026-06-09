@@ -43,3 +43,10 @@ The Mermaid state machine diagram and the State Definitions/Transition Matrix MU
 Write the result in: `docs/product/bounded-contexts/{bounded-context-name}/entities/{entity-name}.md`
 
 Where `{bounded-context-name}` is the kebab-case name of the bounded context (e.g., `event`, `submission`, `review`, `scheduling`, or any future context)
+
+**Business Rules & Invariants Extraction:**
+During entity lifecycle creation, you MUST identify all business rules and invariants that govern the entity's state machine, transitions, domain methods, or value objects.
+1. Use the templates provided at `docs/templates/product/business-rules.md` and `docs/templates/product/invariants.md`.
+2. Extract each identified business rule to: `docs/product/bounded-contexts/{bounded-context-name}/business-rules/BR-[XXX]-[rule-name].md`.
+3. Extract each identified invariant to: `docs/product/bounded-contexts/{bounded-context-name}/invariants/INV-[XXX]-[invariant-name].md`.
+4. Ensure the generated entity lifecycle document links to these extracted files under its **Invariants & Business Rules** section using relative markdown links (e.g., `../business-rules/BR-[XXX]-[rule-name].md`).

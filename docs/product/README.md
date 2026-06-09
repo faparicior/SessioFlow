@@ -5,30 +5,42 @@ This directory contains the Domain-Driven Design (DDD) model for SessioFlow, ali
 ## 📁 Directory Structure
 
 ```
-docs/product/
-├── README.md                          # This file
-├── bounded-contexts/                  # DDD Bounded Contexts
-│   ├── event/                         # Event Bounded Context
-│   │   ├── entities/                  # Event, CfpConfig
-│   │   ├── value-objects/             # EventId, EventName, CfpConfig, etc.
-│   │   └── flows/                     # Journey 01: Setup Event
-│   ├── submission/                    # Submission Bounded Context
-│   │   ├── entities/                  # Submission, Speaker
-│   │   ├── value-objects/             # SubmissionId, Title, Abstract
-│   │   └── flows/                     # Journey 02: Submit Proposal
-│   ├── review/                        # Review Bounded Context
-│   │   ├── entities/                  # Review, Reviewer, Score
-│   │   ├── value-objects/             # ReviewId, Criteria, Rating
-│   │   └── flows/                     # Journey 03: Review Sessions
-│   └── scheduling/                    # Scheduling Bounded Context
-│       ├── entities/                  # Schedule, TimeSlot, Room
-│       ├── value-objects/             # SlotId, Conflict, Availability
-│       └── flows/                     # Journey 04: Acceptance & Logistics
-├── shared/                            # Shared Kernel (cross-cutting concerns)
-│   └── value-objects/                 # DateTimeRange, Email, etc.
-└── templates/                         # Documentation templates
-    ├── flows.md                       # User Flow template
-    └── entity-lifecycle.md            # Entity Lifecycle template
+docs/
+├── product/
+│   ├── README.md                          # This file
+│   ├── bounded-contexts/                  # DDD Bounded Contexts
+│   │   ├── event/                         # Event Bounded Context
+│   │   │   ├── entities/                  # Event, CfpConfig
+│   │   │   ├── value-objects/             # EventId, EventName, CfpConfig, etc.
+│   │   │   ├── flows/                     # Journey 01: Setup Event
+│   │   │   ├── business-rules/            # Business Rules (BR-XXX)
+│   │   │   └── invariants/                # System Invariants (INV-XXX)
+│   │   ├── submission/                    # Submission Bounded Context
+│   │   │   ├── entities/                  # Submission, Speaker
+│   │   │   ├── value-objects/             # SubmissionId, Title, Abstract
+│   │   │   ├── flows/                     # Journey 02: Submit Proposal
+│   │   │   ├── business-rules/            # Business Rules (BR-XXX)
+│   │   │   └── invariants/                # System Invariants (INV-XXX)
+│   │   ├── review/                        # Review Bounded Context
+│   │   │   ├── entities/                  # Review, Reviewer, Score
+│   │   │   ├── value-objects/             # ReviewId, Criteria, Rating
+│   │   │   ├── flows/                     # Journey 03: Review Sessions
+│   │   │   ├── business-rules/            # Business Rules (BR-XXX)
+│   │   │   └── invariants/                # System Invariants (INV-XXX)
+│   │   └── scheduling/                    # Scheduling Bounded Context
+│   │       ├── entities/                  # Schedule, TimeSlot, Room
+│   │       ├── value-objects/             # SlotId, Conflict, Availability
+│   │       ├── flows/                     # Journey 04: Acceptance & Logistics
+│   │       ├── business-rules/            # Business Rules (BR-XXX)
+│   │       └── invariants/                # System Invariants (INV-XXX)
+│   └── shared/                            # Shared Kernel (cross-cutting concerns)
+│       └── value-objects/                 # DateTimeRange, Email, etc.
+└── templates/                             # Documentation templates
+    └── product/
+        ├── flows.md                       # User Flow template
+        ├── entity-lifecycle.md            # Entity Lifecycle template
+        ├── business-rules.md              # Business Rules template
+        ├── invariants.md                  # Invariants template
 ```
 
 ## 🏗️ Domain Model by Bounded Context
@@ -79,6 +91,8 @@ docs/product/
 |----------|---------|----------|
 | [flows.md](../templates/product/flows.md) | User journey flow documentation | `bounded-contexts/*/flows/` |
 | [entity-lifecycle.md](../templates/product/entity-lifecycle.md) | Entity state and behavior | `bounded-contexts/*/entities/` |
+| [business-rules.md](../templates/product/business-rules.md) | Business logic and policies | `bounded-contexts/*/business-rules/` |
+| [invariants.md](../templates/product/invariants.md) | Unbreakable data integrity constraints | `bounded-contexts/*/invariants/` |
 
 ## 🎯 DDD Principles Applied
 
