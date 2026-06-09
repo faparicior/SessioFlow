@@ -6,6 +6,7 @@ Use the exact Markdown layout provided at "docs/templates/product/entity-lifecyc
 - **Entity Name:** [Domain noun/entity name]
 - **Aggregate Role:** [Root Entity or Child Entity]
 - **Domain Context:** [Bounded context or domain area]
+- **Bounded Context:** [Identify the bounded context for this entity]
 - **Related Entities:** [List related entities in the aggregate]
 - **Value Objects:** [List value objects used by this entity]
 - **State Machine:** [List all possible states]
@@ -27,5 +28,7 @@ After generating the entity lifecycle document, review the project's Architectur
 - [ ] State definitions are clear and unambiguous
 - [ ] Validation rules are comprehensive
 
-**Output:**
-Write the result in docs/product/entities/{entity-name}.md
+**Output Path:**
+Write the result in: `docs/product/bounded-contexts/{bounded-context-name}/entities/{entity-name}.md`
+
+Where `{bounded-context-name}` is the kebab-case name of the bounded context (e.g., `event`, `submission`, `review`, `scheduling`, or any future context)
