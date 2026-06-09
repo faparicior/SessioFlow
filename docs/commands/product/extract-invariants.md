@@ -3,7 +3,17 @@ You are an expert Domain-Driven Design (DDD) Architect and Software Modeling Spe
 Your task is to analyze the provided documentation/code, identify the strict **Invariants** (the unbreakable data consistency rules), and document them using the specific structure requested.
 
 ### Definition for Context:
-*   **Invariant:** A condition or rule that MUST always hold true within a specific domain boundary (the Aggregate Root). If an invariant is violated, the data becomes corrupt or illegal. There are no workflow fallbacks or asynchronous alternatives; any attempt to break an invariant must result in an immediate transaction rejection or error.
+
+**Business Rule vs Invariant:**
+
+| Aspect | Business Rule | Invariant |
+|--------|--------------|-----------|
+| **Scope** | Broad (Workflows, policies, formulas) | Strict (Data integrity, state constraints) |
+| **Strictness** | Can have exceptions or asynchronous fallbacks | Absolute. Cannot be violated under any circumstance |
+| **Enforcement** | Can be handled by UI, Workflows, or Domain Services | Must be protected synchronously inside the Aggregate Root |
+| **If Violated** | The business handles the exception (e.g., charge a late fee) | The system is in an illegal state (transaction must rollback) |
+
+*Focus exclusively on invariants - the unbreakable state constraints that MUST be enforced inside the Aggregate Root. Filter out general business rules (like discounts, notifications, or routing logic).*
 
 ---
 

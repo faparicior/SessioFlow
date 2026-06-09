@@ -4,6 +4,7 @@
 * **Bounded Context:** [e.g., Event Management Bounded Context]
 * **Aggregate Root:** [e.g., `Event` Aggregate]
 * **Data Integrity Risk:** [e.g., Overbooking, Corrupt State, Financial/Inventory Discrepancy]
+* **Invariant Type:** Strict constraint (must be protected inside Aggregate Root, no fallbacks)
 
 ---
 
@@ -11,6 +12,12 @@
 *An absolute statement of truth that must hold true at all times within the Aggregate boundary. There are no "if-else workflows" or "fallbacks" here—violating this means transaction failure.*
 
 > **Invariant:** [e.g., The number of `ConfirmedTickets` can never exceed the `TotalCapacity` of the Event.]
+
+**Note:** Unlike a business rule, this invariant:
+- MUST be enforced synchronously inside the Aggregate Root
+- CANNOT have exceptions or fallbacks
+- MUST result in immediate transaction rollback if violated
+- If violated, the system enters an illegal state
 
 ## 2. Technical Context & State Boundary
 *Define exactly which fields, value objects, or entities inside the Aggregate Root are involved in maintaining this consistency.*

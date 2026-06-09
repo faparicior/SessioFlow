@@ -4,6 +4,7 @@
 * **Domain Context:** [e.g., Billing Bounded Context / Notification Subdomain]
 * **Business Owner:** [Product Owner / Stakeholder name]
 * **Last Reviewed:** YYYY-MM-DD
+* **Rule Type:** Business Rule (not an invariant - can have exceptions/fallbacks)
 
 ---
 
@@ -11,6 +12,8 @@
 *A clear, single-sentence definition of the business policy written in plain language using the Ubiquitous Language.*
 
 > **Rule:** When [Trigger Event happens], then [Apply this Policy/Calculation], otherwise [Fallback Action].
+
+**Note:** Unlike an invariant, this rule can have exceptions, fallbacks, or asynchronous handling. Violation does not require transaction rollback.
 
 ## 2. Business Context & Rationale
 *Why does this rule exist? What business metric, legal requirement, or operational workflow drives this policy?*
