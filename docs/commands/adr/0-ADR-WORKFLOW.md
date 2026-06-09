@@ -55,6 +55,7 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 | **2** | `2-ADR-validator.md` | Validate ADR quality against criteria | Quality assessment (use `_templates/TEMPLATE-ADR_VALIDATOR.md`) |
 | **3** | `3-generate-adr-summary.md` | Create comprehensive ADR generation summary | `ADR_GENERATION_SUMMARY.md` (use `_templates/TEMPLATE-ADR_GENERATION_SUMMARY.md`) |
 | **4** | `4-generate-traceability-matrix.md` | Map ADRs to inception artifacts | `TRACEABILITY_MATRIX.md` (use `_templates/TEMPLATE-TRACEABILITY_MATRIX.md`) |
+| **6** | `6-update-adr-readme.md` | Update README.md index with new/modified ADRs | Updated `docs/adr/README.md` |
 
 ### ADR Analysis Commands
 
@@ -205,10 +206,13 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 # Step 2: Validate each ADR
 # Use criteria from: docs/commands/adr/2-ADR-validator.md
 
-# Step 3: Generate summary
+# Step 3: Update README index
+# Follow instructions in: docs/commands/adr/6-update-adr-readme.md
+
+# Step 4: Generate summary
 # Follow instructions in: docs/commands/adr/3-generate-adr-summary.md
 
-# Step 4: Create traceability matrix
+# Step 5: Create traceability matrix
 # Follow instructions in: docs/commands/adr/4-generate-traceability-matrix.md
 ```
 
@@ -248,6 +252,7 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 - [ ] All ADRs generated from inception artifacts
 - [ ] Each ADR follows `_templates/TEMPLATE.md` structure
 - [ ] ADR numbering is sequential (001, 002, etc.)
+- [ ] `docs/adr/README.md` index is updated with new ADR
 
 ### Gate 2: Quality Validation Passed
 - [ ] Each ADR scores ≥ Medium on validator criteria
@@ -319,14 +324,20 @@ The ADR lifecycle consists of **two workflows**: initial generation and ongoing 
 1. Determine next ADR number
 2. Follow `1-generate-adrs-from-inception.md` for format
 3. Validate with `2-ADR-validator.md`
-4. Update summary to include new ADR
-5. Add traceability section for new ADR
+4. Update `docs/adr/README.md` index:
+   - Add new ADR to the Quick Reference table
+   - Add to appropriate category section
+   - Update statistics (total count)
+   - Update "Last Updated" date
+5. Update summary to include new ADR
+6. Add traceability section for new ADR
 
 ### Periodic Review
 1. Run `5-analyze-adr-alternatives.md` every 6-12 months
 2. Update ADRs if better alternatives are found
 3. Document rationale for keeping current decisions
 4. Track emerging technologies for future consideration
+5. Review and update `docs/adr/README.md` categories if needed
 
 ---
 

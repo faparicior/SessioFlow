@@ -169,9 +169,26 @@ For each ADR, document:
 - This decision mitigates: [specific risks from inception]
 ```
 
-### 3. Summary Report
+### 3. README Index Update
 
-After generating all ADRs, provide:
+Update `docs/adr/README.md` to include the new ADR:
+
+```markdown
+1. Add to Quick Reference table:
+   | [XXX](0XX-decision-name.md) | Decision Title | Status | Date |
+
+2. Add to appropriate category section:
+   ### Category Name
+   - **XXX** - Brief description
+
+3. Update statistics at the bottom:
+   - **Total ADRs**: [new count]
+   - Update "Last Updated" date
+```
+
+### 4. Summary Report
+
+After generating all ADRs and updating the README, provide:
 
 ```markdown
 ## ADR Generation Summary
@@ -248,6 +265,7 @@ Before submitting your ADR generation work:
 - [ ] No ADRs contradict inception constraints or scope
 - [ ] Summary report shows comprehensive architectural coverage
 - [ ] ADR numbering continues from existing sequence in `docs/adr/`
+- [ ] **`docs/adr/README.md` index has been updated with new ADR**
 - [ ] Language is clear, objective, and accessible (not just for architects)
 
 ---
