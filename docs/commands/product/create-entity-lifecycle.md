@@ -28,6 +28,17 @@ After generating the entity lifecycle document, review the project's Architectur
 - [ ] State definitions are clear and unambiguous
 - [ ] Validation rules are comprehensive
 
+**Mermaid Diagram & State Definition Consistency:**
+The Mermaid state machine diagram and the State Definitions/Transition Matrix MUST be aligned:
+
+1. **State Completeness:** Every state shown in the Mermaid diagram must have a corresponding definition in the State Definitions section
+2. **Transition Completeness:** Every transition arrow in the Mermaid diagram must be documented in the State Transition Matrix
+3. **State Names:** Use consistent naming (e.g., `DRAFT`, `CFP_OPEN`, not `draft`, `active`)
+4. **Trigger Alignment:** The triggering actions/events in the Mermaid diagram must match the "Event / Trigger" column in the State Transition Matrix
+5. **Target State Alignment:** The target states in the Mermaid diagram must match the "Target State" column in the State Transition Matrix
+6. **Domain Methods:** If domain methods are shown in the Mermaid (e.g., `Event.publishCfp()`), they must be documented in the Domain Behavior section
+7. **Terminal States:** All terminal states (states with no outgoing transitions) should be clearly identified in State Definitions
+
 **Output Path:**
 Write the result in: `docs/product/bounded-contexts/{bounded-context-name}/entities/{entity-name}.md`
 

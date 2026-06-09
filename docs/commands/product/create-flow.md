@@ -22,6 +22,15 @@ After generating the flow document, review the project's Architecture Decision R
 - [ ] Repository pattern is used for data access
 - [ ] Input validation uses schema validation
 
+**Mermaid Diagram & Walkthrough Consistency:**
+The Mermaid sequence diagram and Step-by-Step Walkthrough table MUST be aligned:
+
+1. **Step Numbering:** Each step in the walkthrough table should correspond to a logical action in the Mermaid diagram
+2. **Sequence Alignment:** The order of steps in the table must match the sequence shown in the Mermaid diagram
+3. **Completeness:** Every major action in the Mermaid diagram should have a corresponding step in the walkthrough
+4. **Detail Level:** The walkthrough should provide additional detail for each Mermaid interaction (User Action, System Reaction, Domain/Entity Impact)
+5. **Numbering Strategy:** Use sequential numbering (1, 2, 3, ...) where each number represents a distinct action/interaction in the flow
+
 **Output Path:**
 Write the result in: `docs/product/bounded-contexts/{bounded-context-name}/flows/journey-[XX]-[feature-name].md`
 
