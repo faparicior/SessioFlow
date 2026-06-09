@@ -25,10 +25,10 @@ EventAggregate (Root)
 ### Value Objects Used
 | Value Object | Purpose | Referenced Doc |
 |--------------|---------|----------------|
-| `CfpStartDate` | CfP window start date | [[value-objects/cfp-start-date]] |
-| `CfpEndDate` | CfP window end date | [[value-objects/cfp-end-date]] |
-| `MaxSubmissions` | Maximum submission limit (optional) | [[value-objects/max-submissions]] |
-| `CfpStatus` | Active/Inactive status | [[value-objects/cfp-status]] |
+| `CfpStartDate` | CfP window start date | [[../value-objects/cfp-start-date]] |
+| `CfpEndDate` | CfP window end date | [[../value-objects/cfp-end-date]] |
+| `MaxSubmissions` | Maximum submission limit (optional) | [[../value-objects/max-submissions]] |
+| `CfpStatus` | Active/Inactive status | [[../value-objects/cfp-status]] |
 
 ---
 
@@ -115,10 +115,10 @@ export interface EventRepository {
 ## 🔗 Linked User Stories & Flows
 *Relative links to the User Stories/Flows that interact with or trigger mutations on this entity.*
 
-* [[../../product/flows/journey-01-setup-event.md]]: Creates `CfpConfig` with `ACTIVE` state
-* [[../../product/flows/journey-02-submit-proposal.md]]: Submissions only accepted when `ACTIVE`
-* [[../../product/flows/journey-03-review-sessions.md]]: Review only possible when `CLOSED`
-* [[../../product/flows/journey-04-acceptance-logistics.md]]: Archives when event completes
+* [[../../flows/journey-01-setup-event.md]]: Creates `CfpConfig` with `ACTIVE` state
+* [[../../flows/journey-02-submit-proposal.md]]: Submissions only accepted when `ACTIVE`
+* [[../../flows/journey-03-review-sessions.md]]: Review only possible when `CLOSED`
+* [[../../flows/journey-04-acceptance-logistics.md]]: Archives when event completes
 
 ---
 
@@ -136,9 +136,9 @@ export interface EventRepository {
 
 | Document | Purpose |
 |----------|---------|
-| [[value-objects/cfp-start-date]] | CfP start date value object |
-| [[value-objects/cfp-end-date]] | CfP end date value object |
-| [[value-objects/cfp-status]] | CfP status enum value object |
-| [[value-objects/max-submissions]] | Maximum submission limit value object |
+| [[../value-objects/cfp-start-date]] | CfP start date value object |
+| [[../value-objects/cfp-end-date]] | CfP end date value object |
+| [[../value-objects/cfp-status]] | CfP status enum value object |
+| [[../value-objects/max-submissions]] | Maximum submission limit value object |
 | [[event.md]] | Parent Event aggregate documentation |
 | [[../../adr/009-adopt-domain-driven-design-structure.md]] | DDD architecture decision |

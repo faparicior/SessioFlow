@@ -142,9 +142,9 @@ export interface EventRepository {
 ## 🔗 Linked User Stories & Flows
 *Relative links to the User Stories/Flows that interact with or trigger mutations on this entity.*
 
-* [[../../product/flows/journey-01-setup-event.md]]: Triggers `Event.create()` → `Event.publishCfp()`
-* [[../../product/flows/journey-03-review-sessions.md]]: Triggers `Event.closeCfp()` → `Event.startReview()` → `Event.completeSelection()`
-* [[../../product/flows/journey-04-acceptance-logistics.md]]: Triggers `Event.publishSchedule()` → `Event.complete()`
+* [[../value-objects/event-id]]: Triggers `Event.create()` → `Event.publishCfp()`
+* [[../../flows/journey-03-review-sessions.md]]: Triggers `Event.closeCfp()` → `Event.startReview()` → `Event.completeSelection()`
+* [[../../flows/journey-04-acceptance-logistics.md]]: Triggers `Event.publishSchedule()` → `Event.complete()`
 
 ---
 
@@ -167,9 +167,9 @@ export interface EventRepository {
 
 | Document | Purpose |
 |----------|---------|
-| [[value-objects/event-id]] | Unique identifier value object |
-| [[value-objects/event-name]] | Event title value object |
-| [[value-objects/event-slug]] | URL-safe slug value object |
-| [[value-objects/event-status]] | State enum value object |
-| [[value-objects/cfp-config]] | CfP configuration value object |
+| [[../value-objects/event-id]] | Unique identifier value object |
+| [[../value-objects/event-name]] | Event title value object |
+| [[../value-objects/event-slug]] | URL-safe slug value object |
+| [[../value-objects/event-status]] | State enum value object |
+| [[../value-objects/cfp-config]] | CfP configuration value object |
 | [[../../adr/009-adopt-domain-driven-design-structure.md]] | DDD architecture decision |
