@@ -1,5 +1,20 @@
 # Entity: Event
 
+## 🛡️ ADR Compliance Checklist
+After generating the entity lifecycle document, review the project's Architecture Decision Records (ADRs) to ensure alignment with established architectural decisions.
+
+- [x] Entity is properly designated as Aggregate Root or Child Entity
+- [x] Value Objects encapsulate validation and business rules
+- [x] Domain behavior is exposed through methods (not data setters)
+- [x] State transitions are explicit and validated
+- [x] Domain events are published on state changes
+- [x] Repository interfaces are defined for data access
+- [x] Entity invariants are documented and enforced
+- [x] Entity links to relevant User Flows / Journeys
+- [x] Domain events are documented with triggers and side effects
+- [x] State definitions are clear and unambiguous
+- [x] Validation rules are comprehensive
+
 ## 📋 Definition & Context
 * **Description:** Represents a Call for Papers (CfP) event organized by a user. Contains all configuration, settings, and metadata for a single event lifecycle from creation through completion.
 * **Aggregate Root:** ✅ Yes (Event is the aggregate root; manages consistency boundary for CfP configuration, sessions, and schedules)
@@ -107,6 +122,18 @@ stateDiagram-v2
 
 ---
 
+## 📐 Mermaid Diagram & State Definition Consistency
+
+This entity lifecycle document follows the consistency guidelines:
+
+1. **State Completeness:** Every state shown in the Mermaid diagram has a corresponding definition in the State Definitions section
+2. **Transition Completeness:** Every transition arrow in the Mermaid diagram is documented in the State Transition Matrix
+3. **State Names:** Consistent naming using uppercase (e.g., `DRAFT`, `CFP_OPEN`)
+4. **Trigger Alignment:** The triggering actions/events in the Mermaid diagram match the "Event / Trigger" column in the State Transition Matrix
+5. **Target State Alignment:** The target states in the Mermaid diagram match the "Target State" column in the State Transition Matrix
+6. **Domain Methods:** Domain methods shown in the Mermaid (e.g., `Event.publishCfp()`) are documented in the Domain Behavior section
+7. **Terminal States:** Terminal states (`DELETED`, `COMPLETED`) are clearly identified in State Definitions
+
 ## 🔍 State Definitions
 *Detailed criteria for what each state means in plain English.*
 
@@ -136,6 +163,24 @@ export interface EventRepository {
   delete(id: EventId): Promise<void>;
 }
 ```
+
+---
+
+## 🔒 Invariants & Business Rules
+*Links to the business rules and invariants enforced by this entity.*
+
+**Invariants:**
+* [INV-001](../invariants/INV-001-state-transition-validity.md): Event State Transitions Must Follow State Machine
+* [INV-002](../invariants/INV-002-cfp-date-order.md): Cfp End Date Must Be After Start Date
+* [INV-003](../invariants/INV-003-slug-uniqueness.md): Event Slug Must Be Unique Across All Events
+* [INV-004](../invariants/INV-004-session-scoring-before-scheduling.md): All Sessions Must Be Scored Before Selection Can Be Completed
+* [INV-005](../invariants/INV-005-session-assignment-before-publishing.md): All Accepted Sessions Must Be Assigned Before Schedule Can Be Published
+
+**Business Rules:**
+* [BR-001](../business-rules/BR-001-cfp-dates-validation.md): CfP Dates Must Be Valid
+* [BR-002](../business-rules/BR-002-event-name-validation.md): Event Name Must Meet Requirements
+* [BR-003](../business-rules/BR-003-slug-uniqueness.md): Event Slug Must Be Unique
+* [BR-004](../business-rules/BR-004-free-tier-event-limit.md): Free Tier Event Creation Limit
 
 ---
 

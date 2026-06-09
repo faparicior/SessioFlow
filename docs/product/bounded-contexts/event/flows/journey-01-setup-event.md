@@ -1,5 +1,14 @@
 # Journey 01: Setup Event (C4P Configuration)
 
+## 🛡️ ADR Compliance Checklist
+After generating the flow document, review the project's Architecture Decision Records (ADRs) to ensure alignment with established architectural decisions.
+
+- [x] Entity mutations use domain methods rather than direct property setters
+- [x] State transitions match entity lifecycle state machine
+- [x] Domain events are published on state changes
+- [x] Repository pattern is used for data access
+- [x] Input validation uses schema validation
+
 ## 📋 Overview
 * **As a:** Event Organizer (Fernando)
 * **I want to:** Create a new event and configure its Call for Papers (CfP) settings
@@ -200,6 +209,18 @@ WITH CHECK (organizer_id = auth.uid());
 | `cfpUrl` | `{baseUrl}/cfp/{slug}` (e.g., `https://sessioflow.app/cfp/my-event-2026`) |
 | `status` | `CFP_OPEN` upon creation (after `publishCfp()` call) |
 
+### Enforced Business Rules
+
+* [BR-001](../business-rules/BR-001-cfp-dates-validation.md): CfP Dates Must Be Valid
+* [BR-002](../business-rules/BR-002-event-name-validation.md): Event Name Must Meet Requirements
+* [BR-003](../business-rules/BR-003-slug-uniqueness.md): Event Slug Must Be Unique
+* [BR-004](../business-rules/BR-004-free-tier-event-limit.md): Free Tier Event Creation Limit
+
+### Enforced Invariants
+
+* [INV-002](../invariants/INV-002-cfp-date-order.md): Cfp End Date Must Be After Start Date
+* [INV-003](../invariants/INV-003-slug-uniqueness.md): Event Slug Must Be Unique Across All Events
+
 ### Domain Events Published
 
 | Event | Triggered By | Side Effects |
@@ -208,6 +229,16 @@ WITH CHECK (organizer_id = auth.uid());
 | `CfpOpened` | `Event.publishCfp()` | Send welcome email to organizer, notify subscribers |
 
 ---
+
+## 📝 Mermaid Diagram & Walkthrough Consistency
+
+This flow document follows the consistency guidelines:
+
+1. **Step Numbering:** Each step in the walkthrough table corresponds to a logical action in the Mermaid diagram
+2. **Sequence Alignment:** The order of steps matches the sequence shown in the Mermaid diagram
+3. **Completeness:** Every major action in the Mermaid diagram has a corresponding step in the walkthrough
+4. **Detail Level:** The walkthrough provides additional detail for each Mermaid interaction
+5. **Numbering Strategy:** Sequential numbering (1-17) where each number represents a distinct action/interaction
 
 ## 🔗 Linked Documentation
 

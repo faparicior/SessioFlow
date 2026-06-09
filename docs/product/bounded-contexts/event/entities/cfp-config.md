@@ -1,5 +1,20 @@
 # Entity: CfpConfig
 
+## 🛡️ ADR Compliance Checklist
+After generating the entity lifecycle document, review the project's Architecture Decision Records (ADRs) to ensure alignment with established architectural decisions.
+
+- [x] Entity is properly designated as Aggregate Root or Child Entity
+- [x] Value Objects encapsulate validation and business rules
+- [x] Domain behavior is exposed through methods (not data setters)
+- [x] State transitions are explicit and validated
+- [x] Domain events are published on state changes
+- [x] Repository interfaces are defined for data access
+- [x] Entity invariants are documented and enforced
+- [x] Entity links to relevant User Flows / Journeys
+- [x] Domain events are documented with triggers and side effects
+- [x] State definitions are clear and unambiguous
+- [x] Validation rules are comprehensive
+
 ## 📋 Definition & Context
 * **Description:** Configuration settings for a Call for Papers (CfP) submission window. Defines the submission period, rules, and settings for how speakers can submit proposals to an event.
 * **Aggregate Relationship:** Child Entity of `Event` Aggregate (not a root entity)
@@ -84,6 +99,18 @@ stateDiagram-v2
 
 ---
 
+## 📐 Mermaid Diagram & State Definition Consistency
+
+This entity lifecycle document follows the consistency guidelines:
+
+1. **State Completeness:** Every state shown in the Mermaid diagram has a corresponding definition in the State Definitions section
+2. **Transition Completeness:** Every transition arrow in the Mermaid diagram is documented in the State Transition Matrix
+3. **State Names:** Consistent naming using uppercase (e.g., `ACTIVE`, `CLOSED`)
+4. **Trigger Alignment:** The triggering actions/events in the Mermaid diagram match the "Event / Trigger" column in the State Transition Matrix
+5. **Target State Alignment:** The target states in the Mermaid diagram match the "Target State" column in the State Transition Matrix
+6. **Domain Methods:** Domain methods shown in the Mermaid (e.g., `Event.closeCfp()`) are documented in the Domain Behavior section
+7. **Terminal States:** Terminal states (`ARCHIVED`) are clearly identified in State Definitions
+
 ## 🔍 State Definitions
 *Detailed criteria for what each state means in plain English.*
 
@@ -109,6 +136,18 @@ export interface EventRepository {
   // No separate CfpConfigRepository needed
 }
 ```
+
+---
+
+## 🔒 Invariants & Business Rules
+*Links to the business rules and invariants enforced by this entity.*
+
+**Invariants:**
+* [INV-002](../invariants/INV-002-cfp-date-order.md): Cfp End Date Must Be After Start Date
+
+**Business Rules:**
+* [BR-001](../business-rules/BR-001-cfp-dates-validation.md): CfP Dates Must Be Valid
+* [BR-005](../business-rules/BR-005-cfp-submission-when-active.md): Submissions Only Accepted When CfP Is Active
 
 ---
 

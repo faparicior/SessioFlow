@@ -21,39 +21,56 @@
 * **Transactional Boundary:** Enforced synchronously during any command that alters ticket state or event capacity.
 
 ## 3. Enforcement Logic & Edge Cases
-*Specify the exact condition under which the operation must fail.*
+*Specify the exact condition under which the operation must fail using Gherkin scenarios to illustrate how the aggregate root guards this boundary.*
 
-```typescript
-// Conceptual Enforcement inside the Aggregate Root
-class Event extends AggregateRoot {
-  private capacity: number;
-  private tickets: Ticket[];
+### Gherkin Scenarios
 
-  public issueTicket(ticket: Ticket): void {
-    const confirmedCount = this.tickets.filter(t => t.isConfirmed()).length;
-    
-    // Protection of the invariant
-    if (confirmedCount + 1 > this.capacity) {
-      throw new EventCapacityExceededException(this.id, this.capacity);
-    }
-    
-    this.tickets.push(ticket);
-  }
-}
+```gherkin
+Scenario: Attempting to violate the invariant
+  Given [precondition state describing the current valid state]
+  When [action or command that would violate the invariant]
+  Then [system rejects the operation with [SpecificDomainException]]
+  And [no state changes occur]
+  And [database transaction is rolled back]
 ```
 
 ### Critical Edge Cases Handled:
-* **Capacity Reduction:** What happens if an Organizer tries to lower the event capacity *below* the current number of confirmed tickets? (The `updateCapacity()` method must reject the command).
-* **Concurrency:** If two users buy a ticket simultaneously, the aggregate locking mechanism (e.g., Optimistic Concurrency Control via a `version` column) must guarantee this check happens serially.
+* **Edge Case 1:** [Describe critical edge case, e.g., "Capacity Reduction: What happens if an Organizer tries to lower the event capacity *below* the current number of confirmed tickets?"]
+* **Edge Case 2:** [Describe concurrency challenge, e.g., "If two users attempt conflicting operations simultaneously, the aggregate locking mechanism must guarantee serial execution"]
 
 ## 4. Failure Response (Exception Handling)
-*What happens when this invariant is triggered? Invariants always result in a rejected transaction and a domain exception.*
+*What happens when this invariant is violated? Invariants always result in a rejected transaction and a domain exception.*
 
-* **Domain Exception:** `EventCapacityExceededException`
-* **HTTP/API Mapping:** `409 Conflict` or `422 Unprocessable Entity`
+* **Domain Exception:** `[SpecificDomainException]`
+* **HTTP/API Mapping:** `[e.g., 409 Conflict or 422 Unprocessable Entity]`
 * **Rollback Behavior:** Complete database transaction rollback. No state is persisted.
 
-## 5. History & Evolution
+## 5. Test Cases
+*Concrete test scenarios that verify the invariant is enforced at the integration test level.*
+
+### Positive Test (Invariant Holds)
+```gherkin
+Scenario: Valid operation that respects the invariant
+  Given [valid precondition state]
+  When [legitimate action is performed]
+  Then [operation succeeds]
+  And [invariant remains satisfied]
+  And [appropriate domain event is published if applicable]
+```
+
+### Negative Test (Invariant Violation Blocked)
+```gherkin
+Scenario: Attempted violation of the invariant
+  Given [precondition state]
+  When [action that would violate the invariant]
+  Then [system throws [SpecificDomainException]]
+  And [HTTP response is [4xx error code]]
+  And [database transaction is rolled back]
+  And [no state changes are persisted]
+  And [user receives clear error message explaining the violation]
+```
+
+## 6. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
-* **YYYY-MM-DD:** Invariant defined alongside the introduction of ticket purchasing.
+* **YYYY-MM-DD:** Invariant defined alongside [related feature/entity introduction].
