@@ -1,10 +1,11 @@
-# US-[ID]: [Feature/Flow Title]
+# Journey [XX]: [Feature/Flow Title]
 
 ## 📋 Overview
 * **As a:** [User Role / Persona]
 * **I want to:** [Action they want to take]
 * **So that:** [The value or outcome they receive]
-* **Epic / Parent Feature:** [e.g., Epic-01: Checkout Redesign]
+* **Source:** Inception Step 6 - User Journey Mapping (Journey [X])
+* **Related Feature:** [Feature Name] from Wave [X] ([MVP/Phase])
 * **Impacted Entities:** 
   * [[entity-name-1]] (e.g., `Order` changes from `Draft` -> `Pending`)
   * [[entity-name-2]] (e.g., `Inventory` item quantity decrements)
@@ -12,7 +13,7 @@
 ---
 
 ## 🗺️ Visual Flow & Sequence
-*Use this Mermaid section to map out the happy path step-by-step. It natively renders in GitHub, GitLab, and Obsidian.*
+*Use this Mermaid section to map out the happy path step-by-step based on the journey from Inception Step 6. Natively renders in GitHub, GitLab, and Obsidian.*
 
 ```mermaid
 sequenceDiagram
