@@ -13,13 +13,17 @@ Key decisions that shape the SessioFlow architecture:
 | ADR | Status | Description |
 |-----|--------|-------------|
 | [ADR-002](./docs/adr/002-use-supabase-for-backend-and-database.md) | Proposed | Use Supabase for Backend and Database |
+| [ADR-002-Amendment](./docs/adr/002-supabase-backend-amendment-ddd-abstraction.md) | **Amendment** | DDD Abstraction Layer for Vendor Independence |
 | [ADR-002a](./docs/adr/_to-discuss/002a-supabase-vendor-lock-in-alternatives.md) | Under Discussion | Supabase Vendor Lock-in and Self-Hosted Alternatives |
-| [ADR-002b](./docs/adr/_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md) | Under Discussion | Authentication Strategy and Vendor Abstraction with DDD |
-| [ADR-002-Amendment](./docs/adr/002-supabase-backend-amendment-ddd-abstraction.md) | Proposed | Amendment: DDD Abstraction Layer for Vendor Independence |
+| [ADR-002b](./docs/adr/_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md) | **Under Discussion** | Authentication Strategy and Vendor Abstraction with DDD |
+| [ADR-004-Amendment](./docs/adr/004-magic-link-authentication-amendment.md) | **Amendment** | Magic Link Auth with DDD Abstraction |
+| [ADR-005-Amendment](./docs/adr/005-supabase-storage-amendment.md) | **Amendment** | Storage with DDD Abstraction |
 | [ADR-009](./docs/adr/009-adopt-domain-driven-design-structure.md) | Proposed | Adopt Domain-Driven Design (DDD) Structure |
+| [ADR-011-Amendment](./docs/adr/011-resend-email-amendment.md) | Optional | Email Abstraction (Deferred) |
 
 **Latest Decisions:**
 - **Authentication Strategy (ADR-002b)**: Implement DDD ports & adapters pattern for vendor-agnostic authentication
+- **Storage Strategy (ADR-005 Amendment)**: Supabase Storage with DDD abstraction (swappable to Cloudflare R2)
 - **DDD Architecture (ADR-009)**: Adopt Domain-Driven Design structure for long-term maintainability
 - **Hybrid Approach (ADR-002 Amendment)**: Consider Supabase Database + Auth0 + DDD abstraction for MVP
 
@@ -27,7 +31,7 @@ Key decisions that shape the SessioFlow architecture:
 
 ## 🏗️ Project Structure
 
-SessioFlow follows Domain-Driven Design (DDD) principles:
+SessioFlow follows Domain-Driven Design (DDD) principles with vendor abstraction layers:
 
 ```
 src/
@@ -36,7 +40,13 @@ src/
 │   │   ├── entities/           # User, Session
 │   │   ├── value-objects/      # UserId, Email, Role
 │   │   ├── services/           # Auth rules, validation
-│   │   └── repositories/       # IAuthProvider interface
+│   │   └── repositories/       # IAuthProvider interface (port)
+│   ├── storage/                # Storage bounded context
+│   │   ├── entities/           # File, UploadResult
+│   │   ├── value-objects/      # FileId, ContentType
+│   │   └── repositories/       # IStorageProvider interface (port)
+│   ├── email/                  # Email bounded context (optional)
+│   │   └── repositories/       # IEmailProvider interface (port)
 │   ├── event/                  # Event bounded context
 │   ├── submission/             # Submission bounded context
 │   ├── review/                 # Review bounded context
@@ -44,6 +54,8 @@ src/
 │
 ├── application/                # Application layer (use cases)
 │   ├── auth/                   # Login, logout, get-current-user
+│   ├── storage/                # Upload-profile-photo, get-file-url
+│   ├── email/                  # Send-welcome-email, send-notification
 │   ├── event/                  # Create-event, publish-cfp
 │   ├── submission/             # Submit-proposal, get-submission
 │   ├── review/                 # Assign-reviewers, submit-review
@@ -51,7 +63,21 @@ src/
 │
 ├── infrastructure/             # Infrastructure layer (implementations)
 │   ├── database/               # Repository implementations
-│   └── external/               # External services (Auth0, NextAuth, etc.)
+│   │   ├── event-repository.ts
+│   │   ├── submission-repository.ts
+│   │   └── review-repository.ts
+│   └── external/               # External service adapters
+│       ├── auth/
+│       │   ├── auth0-provider.ts
+│       │   ├── nextauth-provider.ts
+│       │   └── supabase-auth-adapter.ts
+│       ├── storage/
+│       │   ├── supabase-storage-adapter.ts
+│       │   ├── cloudflare-r2-adapter.ts
+│       │   └── minio-adapter.ts
+│       └── email/
+│           ├── resend-email-adapter.ts
+│           └── sendgrid-email-adapter.ts
 │
 └── interfaces/                 # Interface layer (entry points)
     ├── web/                    # Next.js pages and components
@@ -62,13 +88,44 @@ src/
 
 ## 🛠️ Tech Stack
 
+### Core Technologies
 - **Frontend**: Next.js 14+ (App Router)
-- **Language**: TypeScript
-- **Database**: PostgreSQL (Supabase or self-hosted)
-- **Authentication**: Auth0 / NextAuth (swappable via DDD abstraction)
+- **Language**: TypeScript (strict mode)
+- **Database**: PostgreSQL (Supabase or swappable alternative)
+- **Authentication**: Auth0 / NextAuth / Supabase (swappable via DDD abstraction)
 - **Storage**: Supabase Storage / Cloudflare R2 (swappable via DDD abstraction)
+- **Email**: Resend (with optional abstraction)
 - **Testing**: Vitest (unit), Playwright (E2E)
-- **Architecture**: Domain-Driven Design (DDD)
+- **Architecture**: Domain-Driven Design (DDD) with Ports & Adapters
+
+### Vendor Abstraction Pattern
+
+All external dependencies use DDD abstraction to enable vendor independence:
+
+```typescript
+// Domain layer defines the interface
+interface IAuthProvider {
+  login(credentials): Promise<User>;
+  logout(token): Promise<void>;
+  getCurrentUser(token): Promise<User | null>;
+}
+
+// Infrastructure layer implements the interface
+class Auth0Provider implements IAuthProvider { ... }
+class NextAuthProvider implements IAuthProvider { ... }
+class SupabaseAuthAdapter implements IAuthProvider { ... }
+
+// Application layer uses only the interface
+class LoginUseCase {
+  constructor(private provider: IAuthProvider) {}
+}
+```
+
+**Benefits:**
+- ✅ Swap providers with 8-14 hours effort (vs 52-112 hours)
+- ✅ Vendor lock-in reduced by 85%
+- ✅ Easy testing with mock implementations
+- ✅ Can optimize costs by switching providers
 
 ---
 
@@ -79,6 +136,7 @@ src/
 - Node.js 18+ or Bun
 - PostgreSQL database (Supabase or self-hosted)
 - Auth provider (Auth0, NextAuth, or custom)
+- Storage provider (Supabase Storage, Cloudflare R2, or MinIO)
 
 ### Installation
 
@@ -113,10 +171,22 @@ AUTH0_CLIENT_SECRET=your-client-secret
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-secret
 
-# Storage (if using Cloudflare R2)
+# Alternative: Supabase Auth
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+
+# Storage (Supabase example)
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your-service-key
+
+# Alternative: Cloudflare R2
 R2_ACCOUNT_ID=your-account-id
 R2_ACCESS_KEY_ID=your-access-key
 R2_SECRET_ACCESS_KEY=your-secret-key
+R2_BUCKET_NAME=your-bucket
+
+# Email (Resend example)
+RESEND_API_KEY=re_your-api-key
 ```
 
 ---
@@ -216,9 +286,18 @@ interface IAuthProvider {
   getCurrentUser(token): Promise<User | null>;
 }
 
+interface IStorageProvider {
+  upload(file): Promise<UploadResult>;
+  download(path): Promise<Buffer>;
+  getUrl(path): Promise<string>;
+  delete(path): Promise<void>;
+}
+
 // Infrastructure implements the contract
 class Auth0Provider implements IAuthProvider { ... }
 class NextAuthProvider implements IAuthProvider { ... }
+class SupabaseStorageAdapter implements IStorageProvider { ... }
+class CloudflareR2Adapter implements IStorageProvider { ... }
 
 // Application uses only the interface
 class LoginUseCase {
@@ -251,11 +330,20 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## 🔗 Resources
 
+### Architecture Documentation
 - [ADR Documentation](./docs/adr/)
 - [DDD Implementation Guide](./docs/adr/009-adopt-domain-driven-design-structure.md)
 - [Authentication Strategy](./docs/adr/_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md)
+- [Auth Implementation (Amendment)](./docs/adr/004-magic-link-authentication-amendment.md)
+- [Storage Strategy (Amendment)](./docs/adr/005-supabase-storage-amendment.md)
 - [Supabase Integration](./docs/adr/002-use-supabase-for-backend-and-database.md)
+
+### External References
 - [Pretalx (Reference CfP Platform)](https://pretalx.com/)
+- [Auth0 Documentation](https://auth0.com/docs)
+- [NextAuth.js Documentation](https://authjs.dev)
+- [Supabase Documentation](https://supabase.com/docs)
+- [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
 
 ---
 
@@ -265,3 +353,27 @@ For questions or issues:
 - Open an issue on GitHub
 - Review existing ADRs for architectural context
 - Check the [docs](./docs/) for detailed information
+
+---
+
+## 🎯 Quick Start Guide
+
+### For New Developers
+
+1. **Read ADR-009**: Understand the DDD architecture
+2. **Read ADR-002b**: Understand authentication strategy
+3. **Set up environment**: Follow installation instructions above
+4. **Run tests**: `npm test` to verify setup
+5. **Start coding**: Follow DDD patterns in existing code
+
+### For Technical Decision Makers
+
+1. **Review ADR-002 Amendment**: Understand vendor abstraction benefits
+2. **Review ADR-004 Amendment**: Auth implementation details
+3. **Review ADR-005 Amendment**: Storage implementation details
+4. **Consider trade-offs**: Speed vs. flexibility, vendor lock-in vs. development time
+
+---
+
+**Last Updated**: 2026-06-11
+**Maintained By**: Technical Team

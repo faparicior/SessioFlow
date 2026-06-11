@@ -15,16 +15,20 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [002b](_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md) | **Authentication Strategy with DDD** | Under Discussion | 2026-06-11 |
 | [003](003-use-docker-compose-for-deployment.md) | Use Docker Compose for Deployment | Proposed | 2026-06-05 |
 | [004](004-implement-magic-link-authentication.md) | Implement Magic Link Authentication | Proposed | 2026-06-05 |
+| [004-Amendment](004-magic-link-authentication-amendment.md) | **Amendment: Auth with DDD Abstraction** | Proposed | 2026-06-11 |
 | [005](005-use-supabase-storage-for-files.md) | Use Supabase Storage for Files | Proposed | 2026-06-05 |
+| [005-Amendment](005-supabase-storage-amendment.md) | **Amendment: Storage with DDD Abstraction** | Proposed | 2026-06-11 |
 | [006](006-use-restful-api-design.md) | Use RESTful API Design | Proposed | 2026-06-05 |
 | [007](007-use-zod-for-validation.md) | Use Zod for Validation | Proposed | 2026-06-05 |
 | [008](008-implement-comprehensive-testing-strategy.md) | Implement Comprehensive Testing Strategy | Proposed | 2026-06-05 |
 | [009](009-adopt-domain-driven-design-structure.md) | Adopt Domain-Driven Design Structure | Proposed | 2026-06-06 |
 | [010](010-use-tailwind-css-for-styling.md) | Use Tailwind CSS for Styling | Proposed | 2026-06-05 |
 | [011](011-use-resend-for-email-communications.md) | Use Resend for Email Communications | Proposed | 2026-06-05 |
+| [011-Amendment](011-resend-email-amendment.md) | **Amendment: Optional Email Abstraction** | Optional | 2026-06-11 |
 | [012](012-implement-ci-cd-with-github-actions.md) | Implement CI/CD with GitHub Actions | Proposed | 2026-06-05 |
 | [013](013-adopt-typescript-with-strict-mode.md) | Adopt TypeScript with Strict Mode | Proposed | 2026-06-05 |
 | [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | Proposed | 2026-06-05 |
+| [Impact Analysis](_to-discuss/adr-impact-analysis-002b.md) | **ADR-002b Impact Analysis** | Reference | 2026-06-11 |
 
 ---
 
@@ -43,29 +47,34 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 - **002a** - **Supabase Vendor Lock-in Analysis**
 - **002b** - **Authentication Strategy with DDD Abstraction**
 - **004** - Auth Method: Magic Links
+- **004-Amendment** - **Auth with DDD Abstraction**
+
+### 💾 Data & Storage
+- **005** - File Storage: Supabase Storage
+- **005-Amendment** - **Storage with DDD Abstraction**
+- **002a** - Database Alternatives Analysis
+
+### 📧 Communication
+- **011** - Email Service: Resend
+- **011-Amendment** - **Optional Email Abstraction**
+
+### 🔌 API Design
+- **006** - API Architecture: RESTful Design
 
 ### 🏗️ Infrastructure & Deployment
 - **003** - Containerization: Docker Compose
 - **012** - CI/CD: GitHub Actions
 
-### 💾 Data & Storage
-- **005** - File Storage: Supabase Storage
-- **002a** - Database Alternatives Analysis
-
-### 🔌 API Design
-- **006** - API Architecture: RESTful Design
-
 ### 🧪 Development Practices
 - **008** - Testing Strategy: Comprehensive Testing
 - **009** - Code Organization: Domain-Driven Design
-- **011** - Email Service: Resend
 - **014** - UI Components: shadcn-ui
 
 ---
 
 ## Key Architectural Decisions
 
-### 🔥 Authentication Strategy (Latest: ADR-002b)
+### 🔥 Authentication Strategy (Latest: ADR-002b + ADR-004 Amendment)
 
 **Decision:** Implement DDD ports & adapters pattern for vendor-agnostic authentication
 
@@ -107,6 +116,22 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 
 ---
 
+### 📁 File Storage (ADR-005 + Amendment)
+
+**Decision:** Supabase Storage with DDD abstraction
+
+**Updated Rationale:**
+- ✅ Start with Supabase free tier (1GB)
+- ✅ Can migrate to Cloudflare R2 (10GB, no egress fees) with 8-14 hours
+- ✅ Consistent abstraction pattern with auth
+- ✅ Vendor independence for storage layer
+
+**Migration Cost:**
+- With DDD: **8-14 hours**
+- Without DDD: **52-112 hours**
+
+---
+
 ### 🏛️ Architecture Pattern (ADR-009)
 
 **Decision:** Domain-Driven Design (DDD) Structure
@@ -122,8 +147,21 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 ```
 src/
 ├── domains/              # Business logic (vendor-agnostic)
+│   ├── auth/             # IAuthProvider interface
+│   ├── storage/          # IStorageProvider interface
+│   ├── email/            # IEmailProvider interface (optional)
+│   ├── event/
+│   ├── submission/
+│   ├── review/
+│   └── scheduling/
 ├── application/          # Use cases
 ├── infrastructure/       # External service implementations
+│   ├── external/
+│   │   ├── auth0-provider.ts
+│   │   ├── supabase-auth-adapter.ts
+│   │   ├── cloudflare-r2-adapter.ts
+│   │   └── resend-email-adapter.ts
+│   └── database/
 └── interfaces/          # UI and API entry points
 ```
 
@@ -145,8 +183,8 @@ src/
 - Look for ADRs in **Infrastructure & Deployment**
 - Examples: Docker Compose, GitHub Actions
 
-**Authentication:**
-- Look for ADRs in **Authentication & Security**
+**Authentication & Storage:**
+- Look for ADRs in **Authentication & Security** and **Data & Storage**
 - Examples: Auth0, NextAuth, Supabase Auth, DDD Abstraction
 
 ### Understanding ADR Status
@@ -156,6 +194,7 @@ src/
 | **Proposed** | Decision is under consideration |
 | **Accepted** | Decision has been approved and implemented |
 | **Under Discussion** | Decision is being actively debated |
+| **Optional** | Decision is optional, can be deferred |
 | **Deprecated** | Decision is no longer valid |
 | **Superseded** | Decision has been replaced by a newer ADR |
 
@@ -204,10 +243,11 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 17 (including amendments and discussions) |
+| **Total ADRs** | 20 (including amendments and discussions) |
 | **Proposed** | 14 |
 | **Under Discussion** | 2 |
-| **Amendments** | 1 |
+| **Amendments** | 4 |
+| **Optional** | 1 |
 | **Date Range** | 2026-06-05 to 2026-06-11 |
 | **Most Active Category** | Core Technology Stack (6 decisions) |
 
@@ -221,11 +261,14 @@ Each ADR follows this structure:
 1. **ADR-009**: Understand the DDD architecture
 2. **ADR-002 + Amendment**: Learn about database and vendor abstraction
 3. **ADR-002b**: Understand authentication strategy
+4. **ADR-004 Amendment**: Auth implementation details
+5. **ADR-005 Amendment**: Storage implementation details
 
 **Quick Facts:**
 - Frontend: Next.js with TypeScript
 - Backend: Supabase PostgreSQL (or swappable alternative)
 - Auth: Auth0 with DDD abstraction (swappable to NextAuth)
+- Storage: Supabase Storage with DDD abstraction (swappable to R2)
 - Architecture: Domain-Driven Design
 - Testing: Vitest + Playwright
 
@@ -234,6 +277,8 @@ Each ADR follows this structure:
 **Critical Decisions:**
 - **ADR-002b**: Authentication strategy with DDD abstraction (85% migration cost reduction)
 - **ADR-002 Amendment**: Updated Supabase decision with DDD mitigation
+- **ADR-004 Amendment**: Auth implementation with abstraction
+- **ADR-005 Amendment**: Storage implementation with abstraction
 - **ADR-009**: DDD architecture for long-term maintainability
 
 **Trade-offs Considered:**
