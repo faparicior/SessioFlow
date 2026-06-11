@@ -29,8 +29,8 @@ This ADR extends the Domain-Driven Design (DDD) structure established in **ADR-0
 
 | ADR-009 Layer | ADR-002b Component | Purpose |
 |---------------|-------------------|---------|
-| **Domain** | `IAuthProvider` interface, `User` entity | Business logic, vendor-agnostic |
-| **Application** | `AuthService` use cases | Orchestrate authentication flows |
+| **Domain** | `AuthProvider` interface, `User` entity | Business logic, vendor-agnostic |
+| **Application** | `LoginUseCase`, `LogoutUseCase` | Orchestrate authentication flows |
 | **Infrastructure** | `Auth0Provider`, `NextAuthProvider` | SDK implementations |
 | **Interfaces** | Auth pages, API routes | User-facing entry points |
 
@@ -52,7 +52,7 @@ src/
 │       ├── services/
 │       │   └── auth-rules.ts         # Domain rules (password policy, etc.)
 │       └── repositories/
-│           └── i-auth-provider.ts    # Repository interface (port)
+│           └── auth-provider.ts      # AuthProvider interface (port)
 │
 ├── application/
 │   └── auth/
@@ -63,8 +63,8 @@ src/
 │
 ├── infrastructure/
 │   └── external/
-│       ├── auth0-provider.ts         # Auth0 adapter (implements IAuthProvider)
-│       ├── nextauth-provider.ts      # NextAuth adapter (implements IAuthProvider)
+│       ├── auth0-provider.ts         # Auth0 adapter (implements AuthProvider)
+│       ├── nextauth-provider.ts      # NextAuth adapter (implements AuthProvider)
 │       └── auth-service.ts           # Email, OAuth integrations
 │
 └── interfaces/
@@ -86,9 +86,9 @@ src/
 
 ADR-009 established DDD to prevent business logic leakage and enable long-term maintainability. For authentication specifically, DDD provides:
 
-1. **Repository Pattern**: `IAuthProvider` is a repository interface (same pattern as `EventRepository`, `SubmissionRepository`)
+1. **Repository Pattern**: `AuthProvider` is a repository interface (same pattern as `EventRepository`, `SubmissionRepository`)
 2. **Infrastructure Isolation**: Auth SDKs (Auth0, NextAuth) live **only** in infrastructure layer
-3. **Application Services**: `AuthService` orchestrates flows without knowing the provider
+3. **Application Services**: Use cases orchestrate flows without knowing the provider
 4. **Domain Purity**: Business logic depends only on domain types (`User`, `Session`), not SDK types
 
 **Result:** Swapping Auth0 for NextAuth requires changes **only** in:
@@ -236,23 +236,33 @@ export const auth = betterAuth({
 ### Step 1: Define the Port (Repository Interface)
 
 ```typescript
-// domains/auth/repositories/i-auth-provider.ts
-export interface IUser {
+// domains/auth/repositories/auth-provider.ts
+export interface User {
   id: string;
   email: string;
   name?: string;
   role: string;
 }
 
-export interface IAuthProvider {
-  login(credentials: LoginCredentials): Promise<IUser>;
+export interface LoginCredentials {
+  email: string;
+  password?: string;
+}
+
+export interface AuthProvider {
+  login(credentials: LoginCredentials): Promise<User>;
   logout(token: string): Promise<void>;
-  getCurrentUser(token: string): Promise<IUser | null>;
+  getCurrentUser(token: string): Promise<User | null>;
   verifyToken(token: string): Promise<boolean>;
 }
 ```
 
 **This is a repository interface** following the same pattern as `EventRepository`, `SubmissionRepository` in ADR-009.
+
+**TypeScript Naming Convention:**
+- Use descriptive names without "I" prefix (e.g., `AuthProvider`, not `IAuthProvider`)
+- Implementations use provider-specific names (e.g., `Auth0Provider`, `NextAuthProvider`)
+- This follows TypeScript/JavaScript community conventions
 
 ---
 
@@ -260,13 +270,13 @@ export interface IAuthProvider {
 
 ```typescript
 // infrastructure/external/auth0-provider.ts
-import { IAuthProvider, IUser } from '@/domains/auth/repositories/i-auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
 import { auth0Client } from '@/lib/auth0';
 
-export class Auth0Provider implements IAuthProvider {
+export class Auth0Provider implements AuthProvider {
   constructor(private auth0Client: typeof auth0Client) {}
 
-  async login(credentials: LoginCredentials): Promise<IUser> {
+  async login(credentials: LoginCredentials): Promise<User> {
     // Auth0-specific implementation
     await this.auth0Client.loginWithRedirect();
     const data = await this.auth0Client.getUser();
@@ -284,7 +294,7 @@ export class Auth0Provider implements IAuthProvider {
     await this.auth0Client.logout({ federated: true });
   }
 
-  async getCurrentUser(token: string): Promise<IUser | null> {
+  async getCurrentUser(token: string): Promise<User | null> {
     const data = await this.auth0Client.getUser();
     if (!data) return null;
     
@@ -315,12 +325,12 @@ export class Auth0Provider implements IAuthProvider {
 
 ```typescript
 // infrastructure/external/nextauth-provider.ts
-import { IAuthProvider, IUser } from '@/domains/auth/repositories/i-auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
 import { getServerSession, signIn, signOut } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 
-export class NextAuthProvider implements IAuthProvider {
-  async login(credentials: LoginCredentials): Promise<IUser> {
+export class NextAuthProvider implements AuthProvider {
+  async login(credentials: LoginCredentials): Promise<User> {
     // NextAuth-specific implementation
     const session = await signIn('credentials', {
       redirect: false,
@@ -345,7 +355,7 @@ export class NextAuthProvider implements IAuthProvider {
     await signOut({ redirect: false });
   }
 
-  async getCurrentUser(token: string): Promise<IUser | null> {
+  async getCurrentUser(token: string): Promise<User | null> {
     const session = await getServerSession(authOptions);
     
     if (!session?.user) return null;
@@ -376,11 +386,11 @@ export class NextAuthProvider implements IAuthProvider {
 
 // BEFORE (Auth0)
 import { Auth0Provider } from '@/infrastructure/external/auth0-provider';
-export const authProvider: IAuthProvider = new Auth0Provider(auth0Client);
+export const authProvider: AuthProvider = new Auth0Provider(auth0Client);
 
 // AFTER (NextAuth) - ONE LINE CHANGE
 import { NextAuthProvider } from '@/infrastructure/external/nextauth-provider';
-export const authProvider: IAuthProvider = new NextAuthProvider();
+export const authProvider: AuthProvider = new NextAuthProvider();
 ```
 
 **That's it. One line. Domain code never changes.**
@@ -391,10 +401,12 @@ export const authProvider: IAuthProvider = new NextAuthProvider();
 
 ```typescript
 // application/auth/login.ts
-export class LoginUseCase {
-  constructor(private provider: IAuthProvider) {}
+import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
 
-  async execute(credentials: LoginCredentials) {
+export class LoginUseCase {
+  constructor(private provider: AuthProvider) {}
+
+  async execute(credentials: LoginCredentials): Promise<User> {
     const user = await this.provider.login(credentials);
     // Business logic here - never touches Auth0 or NextAuth
     return user;
@@ -434,7 +446,7 @@ For SessioFlow's MVP goals (6-week timeline, $0 budget, vendor independence):
 ├─────────────────────────────────────────────────────────┤
 │  Pattern: DDD Ports & Adapters (Anti-Corruption Layer) │
 │  Initial Provider: Auth0 (Free Tier - 25K MAU)         │
-│  Domain: IAuthProvider interface (vendor-agnostic)     │
+│  Domain: AuthProvider interface (vendor-agnostic)      │
 │  Future: Swap to NextAuth/Better Auth with 1-day effort│
 └─────────────────────────────────────────────────────────┘
 ```
@@ -454,9 +466,9 @@ For SessioFlow's MVP goals (6-week timeline, $0 budget, vendor independence):
 
 ### Phase 1: Implement with Abstraction (Week 1)
 
-1. Define `IAuthProvider` interface (2 hours)
+1. Define `AuthProvider` interface (2 hours)
 2. Create Auth0 adapter (4-6 hours)
-3. Build AuthService using interface (4-6 hours)
+3. Build use cases using interface (4-6 hours)
 4. Write adapter tests (3-4 hours)
 5. **Total: 13-18 hours**
 
@@ -507,7 +519,7 @@ For SessioFlow's MVP goals (6-week timeline, $0 budget, vendor independence):
 ### For MVP Launch (6-week timeline):
 
 **Use Auth0 with DDD abstraction:**
-1. Implement `IAuthProvider` interface
+1. Implement `AuthProvider` interface
 2. Create Auth0 adapter
 3. Launch with Auth0 Free Tier (25K MAU)
 4. If product succeeds, migrate to self-hosted later (1-2 days)
@@ -561,7 +573,7 @@ For SessioFlow's MVP goals (6-week timeline, $0 budget, vendor independence):
 - [ ] Review with technical team
 - [ ] Assess team's DDD/hexagonal architecture experience
 - [ ] Decide on initial auth provider (Auth0 vs self-hosted)
-- [ ] Create `IAuthProvider` interface specification
+- [ ] Create `AuthProvider` interface specification
 - [ ] Make final decision by [DATE]
 
 ---
@@ -584,7 +596,7 @@ This ADR directly implements the DDD principles established in ADR-009:
 
 | ADR-009 Principle | ADR-002b Implementation |
 |-------------------|------------------------|
-| **Repository Pattern** | `IAuthProvider` interface |
+| **Repository Pattern** | `AuthProvider` interface |
 | **Infrastructure Layer** | `Auth0Provider`, `NextAuthProvider` implementations |
 | **Application Layer** | `LoginUseCase`, `LogoutUseCase` |
 | **Domain Layer** | `User` entity, `UserId` value object |

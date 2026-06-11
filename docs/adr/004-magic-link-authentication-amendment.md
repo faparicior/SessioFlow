@@ -26,7 +26,7 @@ The original ADR-004 assumed:
 ### New Reality with DDD Abstraction
 
 With ADR-002b's DDD pattern:
-- **All authentication** flows through `IAuthProvider` interface
+- **All authentication** flows through `AuthProvider` interface
 - **Supabase Auth** becomes one implementation (adapter)
 - **Migration cost** reduced from 52-112 hours to 8-14 hours
 - **Provider independence** - can swap without touching business logic
@@ -60,14 +60,14 @@ With DDD abstraction (ADR-002b), the authentication strategy provides optimal fl
 │  - LoginUseCase                                         │
 │  - LogoutUseCase                                        │
 │  - GetCurrentUserUseCase                                │
-│  - Depends only on: IAuthProvider interface             │
+│  - Depends only on: AuthProvider interface              │
 └─────────────────────────────────────────────────────────┘
                          ▲
                          │ depends on abstraction
                          │
 ┌────────────────────────┴─────────────────────────────────┐
 │  Domain Layer (Port)                                      │
-│  - IAuthProvider interface                                │
+│  - AuthProvider interface                                 │
 │  - User entity (domain type)                              │
 │  - LoginCredentials value object                          │
 └────────────────────────┬─────────────────────────────────┘
@@ -85,8 +85,8 @@ With DDD abstraction (ADR-002b), the authentication strategy provides optimal fl
 ### Domain Interface (Port)
 
 ```typescript
-// domains/auth/repositories/i-auth-provider.ts
-export interface IUser {
+// domains/auth/repositories/auth-provider.ts
+export interface User {
   id: string;
   email: string;
   name?: string;
@@ -99,12 +99,12 @@ export interface LoginCredentials {
   provider?: 'magic-link' | 'google' | 'github';
 }
 
-export interface IAuthProvider {
+export interface AuthProvider {
   /**
    * Authenticate user and return user data
    * Supports magic links, OAuth, and credentials
    */
-  login(credentials: LoginCredentials): Promise<IUser>;
+  login(credentials: LoginCredentials): Promise<User>;
   
   /**
    * Terminate user session
@@ -114,7 +114,7 @@ export interface IAuthProvider {
   /**
    * Get current user from token/session
    */
-  getCurrentUser(token: string): Promise<IUser | null>;
+  getCurrentUser(token: string): Promise<User | null>;
   
   /**
    * Verify token validity
@@ -127,7 +127,7 @@ export interface IAuthProvider {
 
 ```typescript
 // infrastructure/external/supabase-auth-adapter.ts
-import { IAuthProvider, IUser, LoginCredentials } from '@/domains/auth/repositories/i-auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -135,8 +135,8 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY!
 );
 
-export class SupabaseAuthAdapter implements IAuthProvider {
-  async login(credentials: LoginCredentials): Promise<IUser> {
+export class SupabaseAuthAdapter implements AuthProvider {
+  async login(credentials: LoginCredentials): Promise<User> {
     if (credentials.provider === 'magic-link') {
       // Magic link flow
       const { data, error } = await supabase.auth.signInWithOtp({
@@ -167,7 +167,7 @@ export class SupabaseAuthAdapter implements IAuthProvider {
     await supabase.auth.signOut();
   }
   
-  async getCurrentUser(token: string): Promise<IUser | null> {
+  async getCurrentUser(token: string): Promise<User | null> {
     const { data: { user }, error } = await supabase.auth.getUser(token);
     
     if (error || !user) return null;
@@ -185,7 +185,7 @@ export class SupabaseAuthAdapter implements IAuthProvider {
     return user !== null && error === null;
   }
   
-  private async getCurrentUserFromSession(): Promise<IUser> {
+  private async getCurrentUserFromSession(): Promise<User> {
     const { data: { user }, error } = await supabase.auth.getUser();
     
     if (error || !user) {
@@ -206,12 +206,12 @@ export class SupabaseAuthAdapter implements IAuthProvider {
 
 ```typescript
 // application/auth/login-use-case.ts
-import { IAuthProvider, IUser, LoginCredentials } from '@/domains/auth/repositories/i-auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
 
 export class LoginUseCase {
-  constructor(private authProvider: IAuthProvider) {}
+  constructor(private authProvider: AuthProvider) {}
   
-  async execute(credentials: LoginCredentials): Promise<IUser> {
+  async execute(credentials: LoginCredentials): Promise<User> {
     // Business logic for login
     // Never touches Supabase SDK directly
     const user = await this.authProvider.login(credentials);
@@ -228,15 +228,15 @@ export class LoginUseCase {
 
 ```typescript
 // app/config/auth-config.ts
-import { IAuthProvider } from '@/domains/auth/repositories/i-auth-provider';
+import { AuthProvider } from '@/domains/auth/repositories/auth-provider';
 import { SupabaseAuthAdapter } from '@/infrastructure/external/supabase-auth-adapter';
 
 // Current implementation
-export const authProvider: IAuthProvider = new SupabaseAuthAdapter();
+export const authProvider: AuthProvider = new SupabaseAuthAdapter();
 
 // Future migration: Just change this one line
-// export const authProvider: IAuthProvider = new Auth0Provider();
-// export const authProvider: IAuthProvider = new NextAuthProvider();
+// export const authProvider: AuthProvider = new Auth0Provider();
+// export const authProvider: AuthProvider = new NextAuthProvider();
 ```
 
 ---
@@ -276,7 +276,7 @@ export const authProvider: IAuthProvider = new SupabaseAuthAdapter();
 **Trigger:** Need enterprise features or better pricing at scale
 
 **Effort:** 8-14 hours
-1. Create `Auth0Provider` implementing `IAuthProvider` (4-6 hours)
+1. Create `Auth0Provider` implementing `AuthProvider` (4-6 hours)
 2. Update composition root (0.5 hours)
 3. Test new provider (2-3 hours)
 4. Deploy (0.5 hours)
@@ -292,7 +292,7 @@ export const authProvider: IAuthProvider = new SupabaseAuthAdapter();
 **Trigger:** Want self-hosted auth with PostgreSQL
 
 **Effort:** 8-14 hours
-1. Create `NextAuthProvider` implementing `IAuthProvider` (4-6 hours)
+1. Create `NextAuthProvider` implementing `AuthProvider` (4-6 hours)
 2. Update composition root (0.5 hours)
 3. Test new provider (2-3 hours)
 4. Deploy (0.5 hours)
@@ -333,7 +333,7 @@ export const authProvider: IAuthProvider = new SupabaseAuthAdapter();
 **Next Steps:**
 - [ ] Review with technical team
 - [ ] Approve DDD abstraction pattern for authentication
-- [ ] Implement `IAuthProvider` interface
+- [ ] Implement `AuthProvider` interface
 - [ ] Create SupabaseAuthAdapter
 - [ ] Document migration procedures
 
@@ -346,11 +346,11 @@ export const authProvider: IAuthProvider = new SupabaseAuthAdapter();
 ```typescript
 // tests/unit/auth/login-use-case.test.ts
 import { LoginUseCase } from '@/application/auth/login-use-case';
-import { IAuthProvider, IUser } from '@/domains/auth/repositories/i-auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
 
 // Mock provider for testing
-class MockAuthProvider implements IAuthProvider {
-  async login(credentials: LoginCredentials): Promise<IUser> {
+class MockAuthProvider implements AuthProvider {
+  async login(credentials: LoginCredentials): Promise<User> {
     return {
       id: 'test-user-id',
       email: credentials.email,
@@ -360,7 +360,7 @@ class MockAuthProvider implements IAuthProvider {
   }
   
   async logout(token: string): Promise<void> {}
-  async getCurrentUser(token: string): Promise<IUser | null> { return null; }
+  async getCurrentUser(token: string): Promise<User | null> { return null; }
   async verifyToken(token: string): Promise<boolean> { return true; }
 }
 

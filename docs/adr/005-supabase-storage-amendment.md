@@ -86,7 +86,7 @@ With DDD abstraction (ADR-002b), the storage strategy provides optimal flexibili
 ### Domain Interface (Port)
 
 ```typescript
-// domains/storage/repositories/i-storage-provider.ts
+// domains/storage/repositories/storage-provider.ts
 export interface FileMetadata {
   id: string;
   filename: string;
@@ -110,7 +110,7 @@ export interface UploadFileResult {
   metadata: FileMetadata;
 }
 
-export interface IStorageProvider {
+export interface StorageProvider {
   /**
    * Upload a file to storage
    */
@@ -159,7 +159,7 @@ const supabase = createClient(
 
 const BUCKET_NAME = 'sessioflow-files';
 
-export class SupabaseStorageAdapter implements IStorageProvider {
+export class SupabaseStorageAdapter implements StorageProvider {
   async upload(request: UploadFileRequest): Promise<UploadFileResult> {
     const { data, error } = await supabase.storage
       .from(BUCKET_NAME)
@@ -261,7 +261,7 @@ import {
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-export class CloudflareR2Adapter implements IStorageProvider {
+export class CloudflareR2Adapter implements StorageProvider {
   private client: S3Client;
   private bucket: string;
   
@@ -369,13 +369,13 @@ export class CloudflareR2Adapter implements IStorageProvider {
 
 ```typescript
 // application/storage/upload-profile-photo-use-case.ts
-import { IStorageProvider, UploadFileRequest } from '@/domains/storage/repositories/i-storage-provider';
+import { StorageProvider, UploadFileRequest } from '@/domains/storage/repositories/storage-provider';
 
 export class UploadProfilePhotoUseCase {
   private MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
   private ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
   
-  constructor(private storageProvider: IStorageProvider) {}
+  constructor(private storageProvider: StorageProvider) {}
   
   async execute(file: Buffer, ownerId: string): Promise<UploadFileResult> {
     // Validate file

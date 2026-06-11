@@ -40,13 +40,13 @@ src/
 │   │   ├── entities/           # User, Session
 │   │   ├── value-objects/      # UserId, Email, Role
 │   │   ├── services/           # Auth rules, validation
-│   │   └── repositories/       # IAuthProvider interface (port)
+│   │   └── repositories/       # AuthProvider interface (port)
 │   ├── storage/                # Storage bounded context
 │   │   ├── entities/           # File, UploadResult
 │   │   ├── value-objects/      # FileId, ContentType
-│   │   └── repositories/       # IStorageProvider interface (port)
+│   │   └── repositories/       # StorageProvider interface (port)
 │   ├── email/                  # Email bounded context (optional)
-│   │   └── repositories/       # IEmailProvider interface (port)
+│   │   └── repositories/       # EmailProvider interface (port)
 │   ├── event/                  # Event bounded context
 │   ├── submission/             # Submission bounded context
 │   ├── review/                 # Review bounded context
@@ -104,20 +104,28 @@ All external dependencies use DDD abstraction to enable vendor independence:
 
 ```typescript
 // Domain layer defines the interface
-interface IAuthProvider {
+interface AuthProvider {
   login(credentials): Promise<User>;
   logout(token): Promise<void>;
   getCurrentUser(token): Promise<User | null>;
 }
 
+interface StorageProvider {
+  upload(file): Promise<UploadResult>;
+  download(path): Promise<Buffer>;
+  getUrl(path): Promise<string>;
+  delete(path): Promise<void>;
+}
+
 // Infrastructure layer implements the interface
-class Auth0Provider implements IAuthProvider { ... }
-class NextAuthProvider implements IAuthProvider { ... }
-class SupabaseAuthAdapter implements IAuthProvider { ... }
+class Auth0Provider implements AuthProvider { ... }
+class NextAuthProvider implements AuthProvider { ... }
+class SupabaseStorageAdapter implements StorageProvider { ... }
+class CloudflareR2Adapter implements StorageProvider { ... }
 
 // Application layer uses only the interface
 class LoginUseCase {
-  constructor(private provider: IAuthProvider) {}
+  constructor(private provider: AuthProvider) {}
 }
 ```
 
@@ -280,13 +288,13 @@ All external dependencies are accessed through repository interfaces:
 
 ```typescript
 // Domain defines the contract
-interface IAuthProvider {
+interface AuthProvider {
   login(credentials): Promise<User>;
   logout(token): Promise<void>;
   getCurrentUser(token): Promise<User | null>;
 }
 
-interface IStorageProvider {
+interface StorageProvider {
   upload(file): Promise<UploadResult>;
   download(path): Promise<Buffer>;
   getUrl(path): Promise<string>;
@@ -294,14 +302,14 @@ interface IStorageProvider {
 }
 
 // Infrastructure implements the contract
-class Auth0Provider implements IAuthProvider { ... }
-class NextAuthProvider implements IAuthProvider { ... }
-class SupabaseStorageAdapter implements IStorageProvider { ... }
-class CloudflareR2Adapter implements IStorageProvider { ... }
+class Auth0Provider implements AuthProvider { ... }
+class NextAuthProvider implements AuthProvider { ... }
+class SupabaseStorageAdapter implements StorageProvider { ... }
+class CloudflareR2Adapter implements StorageProvider { ... }
 
 // Application uses only the interface
 class LoginUseCase {
-  constructor(private provider: IAuthProvider) {}
+  constructor(private provider: AuthProvider) {}
 }
 ```
 

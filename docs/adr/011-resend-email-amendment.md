@@ -95,7 +95,7 @@ The original ADR-011 selected Resend for email communications with:
 ### Domain Interface (Port)
 
 ```typescript
-// domains/email/repositories/i-email-provider.ts
+// domains/email/repositories/email-provider.ts
 export interface EmailAddress {
   email: string;
   name?: string;
@@ -123,7 +123,7 @@ export interface EmailSendResult {
   status: 'sent' | 'queued' | 'failed';
 }
 
-export interface IEmailProvider {
+export interface EmailProvider {
   /**
    * Send an email message
    */
@@ -164,7 +164,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export class ResendEmailAdapter implements IEmailProvider {
+export class ResendEmailAdapter implements EmailProvider {
   async send(message: EmailMessage): Promise<EmailSendResult> {
     const to = message.to.map(addr => ({
       email: addr.email,
@@ -275,7 +275,7 @@ import { SendGridMail, SendGrid } from '@sendgrid/mail';
 
 SendGridMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
-export class SendGridEmailAdapter implements IEmailProvider {
+export class SendGridEmailAdapter implements EmailProvider {
   async send(message: EmailMessage): Promise<EmailSendResult> {
     const msg: SendGridMail.MailDataRequired = {
       to: message.to.map(addr => ({
@@ -345,10 +345,10 @@ export class SendGridEmailAdapter implements IEmailProvider {
 
 ```typescript
 // application/email/send-proposal-notification-use-case.ts
-import { IEmailProvider, EmailMessage } from '@/domains/email/repositories/i-email-provider';
+import { EmailProvider, EmailMessage } from '@/domains/email/repositories/email-provider';
 
 export class SendProposalNotificationUseCase {
-  constructor(private emailProvider: IEmailProvider) {}
+  constructor(private emailProvider: EmailProvider) {}
   
   async execute(
     speakerEmail: string, 
