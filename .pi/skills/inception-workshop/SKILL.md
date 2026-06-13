@@ -1,25 +1,84 @@
 ---
 name: inception-workshop
-description: Facilitate Lean Inception workshops through 8 structured steps: Product Vision → Tradeoffs → Personas → Empathy Map → Brainstorming → User Journey → Features & Sequencing → MVP Canvas. Includes AI debate simulation for tradeoff analysis.
-compatibility: Requires bash and pi subagent capability
+description: >-
+  Facilitate Lean Inception workshops through 8 structured steps.
+  LOAD THIS SKILL when user mentions: inception workshop, lean inception,
+  product vision, validate the product vision, validate vision, tradeoffs board,
+  personas, empathy map, brainstorming, user journey mapping, feature sequencing,
+  MVP canvas, product discovery, validate MVP, validate tradeoffs, validate personas,
+  check inception step, review product vision, or validate inception.
+  Executes facilitation, batch generation, tradeoff analysis, and validation modes.
+compatibility: Requires bash
 ---
 
 # Inception Workshop Skill
 
-Facilitate Lean Inception workshops through 8 structured steps: Product Vision → Tradeoffs → Personas → Empathy Map → Brainstorming → User Journey → Features & Sequencing → MVP Canvas.
+Facilitate Lean Inception workshops through 8 structured steps: Product Vision -> Tradeoffs -> Personas -> Empathy Map -> Brainstorming -> User Journey -> Features & Sequencing -> MVP Canvas.
 
-## Commands
+## Natural Language Activation
+
+This skill can be triggered using conversational phrases instead of command-line flags. The system will automatically detect your intent and activate the appropriate mode.
+
+### Natural Language Command Patterns
+
+| Intent | Natural Language Examples | Mode Activated |
+|--------|---------------------------|----------------|
+| **Start Workshop** | "Start an inception workshop", "Run a Lean Inception", "Begin product discovery" | `--mode facilitate --step 1` |
+| **Specific Step** | "Let's do Step 3 personas", "Work on the empathy map", "Start user journey mapping" | `--mode facilitate --step [N]` |
+| **Tradeoff Analysis** | "Generate tradeoffs", "Run the tradeoff debate", "Analyze project trade-offs" | `--mode tradeoff-generator` |
+| **Batch Generation** | "Generate all inception steps", "Create the full workshop output", "Auto-generate inception docs" | `--mode batch` |
+| **Validation** | "Validate the product vision", "Check if Step 2 is complete", "Review the MVP canvas" | `--mode validate` |
+| **Flow Generation** | "Generate flows from the journey", "Create flow specs", "Turn the journey into flows" | `--mode generate-flows` |
+
+### Examples
+
+```bash
+# Natural language (system auto-detects mode)
+"Start a Lean Inception workshop for SessioFlow"
+→ pi skill inception-workshop --mode facilitate --step 1
+
+"Let's work on the tradeoffs using AI debate"
+→ pi skill inception-workshop --mode tradeoff-generator
+
+"Generate all 8 inception steps automatically"
+→ pi skill inception-workshop --mode batch --context "SessioFlow"
+
+"Validate the user journey mapping"
+→ pi skill inception-workshop --mode validate --step 6 --file docs/inception/6-user-journey.md
+
+"Create flow specifications from the journey"
+→ pi skill inception-workshop --mode generate-flows --from-step 6
+```
+
+### Step Recognition
+
+The skill recognizes these step names in natural language:
+
+| Step | Recognized Phrases |
+|------|-------------------|
+| 1 | "product vision", "vision & boundaries", "elevator pitch", "define the vision" |
+| 2 | "tradeoffs", "trade-off board", "understanding trade-offs", "priorities" |
+| 3 | "personas", "user personas", "primary persona", "define users" |
+| 4 | "empathy map", "empathy blueprint", "understand the user" |
+| 5 | "brainstorming", "feature brainstorm", "generate features", "idea generation" |
+| 6 | "user journey", "journey mapping", "user flows", "customer journey" |
+| 7 | "features & sequencing", "release planning", "roadmap", "feature sequencing" |
+| 8 | "MVP canvas", "MVP definition", "minimum viable product", "MVP scope" |
+
+---
+
+## Command-Line Interface
 
 ### Start Interactive Facilitation
 
-**Template → Fill → Validate workflow:**
+**Template -> Fill -> Validate workflow:**
 
 ```bash
 pi skill inception-workshop --mode facilitate --step [N]
 ```
 
 **Options:**
-- `--mode facilitate` - Interactive template→fill→validate (default)
+- `--mode facilitate` - Interactive template->fill->validate (default)
 - `--mode batch` - Generate all steps automatically
 - `--mode tradeoff-generator` - Use AI debate to generate tradeoffs
 - `--step [N]` - Start from specific step (1-8), default: 1
@@ -45,7 +104,7 @@ pi skill inception-workshop --mode validate --step 1 --file docs/inception/1-pro
 
 ## Workflow
 
-### Facilitate Mode (Template → Fill → Validate)
+### Facilitate Mode (Template -> Fill -> Validate)
 
 ```
 ┌─────────────┐
@@ -145,21 +204,20 @@ pi skill inception-workshop --mode batch --context "Your product description"
 
 ### What It Does
 
-The Tradeoff Generator uses AI to **simulate stakeholder debate** and generate a consensus tradeoff board:
+The Tradeoff Generator creates a consensus tradeoff board based on the product vision:
 
-**Roles Simulated:**
-1. **Product Owner (Business)** - Champions goals and values from vision
-2. **User Advocate (UX)** - Represents user needs from the "Who" in vision
-3. **Tech Lead (Engineering)** - Assesses technical constraints from "Is/Is Not"
-4. **Agile Coach (Facilitator)** - Enforces the Golden Rule (one check per column)
+**Key Components:**
+1. **Individual Perspectives** - Capture different stakeholder viewpoints
+2. **Final Consensus Board** - Strict 1-7 ranking (Golden Rule: one check per column)
+3. **Consensus Reasoning** - Explain trade-offs and compromises made
 
 ### Process
 
 1. **Analyze Vision** - Read Step 1 output to understand goals, users, and constraints
-2. **Simulate Debate** - Roles argue for their priorities based on their perspective
-3. **Resolve Conflicts** - Create strict 1-7 ranking where roles compromise
-4. **Validate** - Self-audit against validator criteria before output
-5. **Generate Output** - Create filled tradeoff template with consensus reasoning
+2. **Create Perspectives** - Define PO, UX, and Tech Lead viewpoints
+3. **Build Consensus** - Create strict 1-7 ranking with compromises
+4. **Validate** - Check against validator criteria
+5. **Generate Output** - Create filled tradeoff template
 
 ### Output Structure
 
@@ -168,40 +226,33 @@ The Tradeoff Generator uses AI to **simulate stakeholder debate** and generate a
 
 ## 1. Individual Perspectives
 
-### Product Owner
-- Initially prioritized: [X, Y, Z]
-- Reasoning: Based on business goals from vision...
-
-### User Advocate
-- Initially prioritized: [A, B, C]
-- Reasoning: Based on user needs from vision...
-
-### Tech Lead
-- Initially prioritized: [P, Q, R]
-- Reasoning: Based on technical constraints...
+| Role | Initial Priority #1 | Reasoning |
+| :--- | :---: | :--- |
+| Product Owner | Cost | Vision targets free-tier infrastructure |
+| UX Advocate | Usability | Core differentiator vs manual tools |
+| Tech Lead | Simplicity | Essential for self-hosting |
 
 ## 2. Final Consensus Trade-off Board
 
-| Qualities | 1 (Most Important) | 2 | 3 | 4 | 5 | 6 | 7 (Least Important) |
-|-----------|-------------------|---|---|---|---|---|---------------------|
-| Flexibility | | | ✓ | | | | |
-| Time to Market | | ✓ | | | | | |
-| Cost | ✓ | | | | | | |
-| ... | | | | | | | |
+| Priority Rank | 1 (Most) | 2 | 3 | 4 | 5 | 6 | 7 (Least) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Usability** | **X** | | | | | | |
+| **Cost** | | **X** | | | | | |
+| **Simplicity** | | | **X** | | | | |
 
 ## 3. Consensus Reasoning
 
-The team agreed on [X] as most important because...
+The team agreed on Usability as #1 because...
 
 Key trade-offs made:
-- Cost vs Scalability: Chose Cost because vision says "MVP"
-- Flexibility vs Simplicity: Chose Simplicity because user is "non-technical"
+- Cost > Scalability (MVP focus from vision)
+- Simplicity > Flexibility (Non-technical users)
 ```
 
 ### Usage
 
 ```bash
-# Generate tradeoffs using AI debate
+# Generate tradeoffs manually or with AI assistance
 pi skill inception-workshop --mode tradeoff-generator
 
 # Or using the script
@@ -212,6 +263,8 @@ pi skill inception-workshop --mode tradeoff-generator
 - Step 1 (Product Vision) must be completed first
 - Reads: `docs/inception/1-product-vision-and-boundaries.md`
 - Outputs: `docs/inception/2-tradeoffs.md`
+
+**Note:** This mode now uses bash-based validation instead of AI debate simulation. Users can manually fill the tradeoff board or use external AI tools.
 
 ## Output Structure
 
@@ -253,6 +306,15 @@ This will:
 4. Output to `docs/product/bounded-contexts/{context}/flows/`
 
 ## Configuration
+
+### Compatibility
+
+**Requires:**
+- Bash shell
+- Standard Unix utilities (grep, sed, awk)
+
+**No longer requires:**
+- Pi subagent capability (removed dependency)
 
 ### Bundled Assets
 

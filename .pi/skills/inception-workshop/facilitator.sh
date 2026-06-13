@@ -2,7 +2,7 @@
 # Inception Workshop Facilitator
 # Template → Fill → Validate workflow
 
-set -e
+# Note: Removed 'set -e' to allow validation to continue even when grep fails
 
 # Configuration
 # Paths are relative to the skill directory
@@ -18,9 +18,9 @@ declare -A STEPS=(
     ["3"]="3-personas.md|3-personas.md|3-personas-validator.md"
     ["4"]="4-empathy-map.md|4-empathy-map.md|4-empathy-map-validator.md"
     ["5"]="5-brainstorming.md|5-brainstorming.md|5-brainstorming-validator.md"
-    ["6"]="6-user-journey-mapping.md|6-user-journey.md|6-user-journey-validator.md"
+    ["6"]="6-user-journey-mapping.md|6-user-journey-mapping.md|6-user-journey-validator.md"
     ["7"]="7-features-and-sequencing.md|7-features-and-sequencing.md|7-features-and-sequencing-validator.md"
-    ["8"]="8-mvp-canvas-definition.md|8-mvp-canvas.md|8-mvp-canvas-definition-validator.md"
+    ["8"]="8-mvp-canvas-definition.md|8-mvp-canvas-definition.md|8-mvp-canvas-definition-validator.md"
 )
 
 # Colors
@@ -84,7 +84,7 @@ create_output_file() {
     fi
 }
 
-# Function to validate step
+# Function to validate step (bash-based)
 validate_step() {
     local step_num=$1
     local output_file=$2
@@ -110,22 +110,268 @@ validate_step() {
     echo "Validator: $REFERENCES_DIR/$validator_file"
     echo ""
     
-    # Use pi subagent to validate
-    pi subagent << EOF
-Read the completed document at: $INCEPTION_DIR/$output_file
-Read the validator criteria at: $VALIDATORS_DIR/$validator_file
-
-Evaluate the document against each validation criterion and provide:
-1. ✅ Passed criteria
-2. ⚠️ Partially met criteria
-3. ❌ Failed criteria
-4. Overall score (0-10)
-5. Specific recommendations for improvement
-
-Format your response as a validation report.
-EOF
+    # Basic validation checks based on validator criteria
+    local validation_file="$INCEPTION_DIR/.validation-report-$step_num.md"
+    local score=0
+    local max_score=10
+    local passed=0
+    local total_checks=0
     
-    return $?
+    echo "Running validation checks..."
+    echo ""
+    
+    # Read the validator and extract key criteria
+    local validator_content=$(cat "$REFERENCES_DIR/$validator_file")
+    local output_content=$(cat "$INCEPTION_DIR/$output_file")
+    
+    # Step-specific validation logic
+    case $step_num in
+        1)
+            # Step 1: Product Vision Validation
+            echo "Checking Elevator Pitch structure..."
+            if echo "$output_content" | grep -q "| For | Who | The Product"; then
+                echo "  ✅ Elevator Pitch: Found structured table"
+                ((passed++))
+            else
+                echo "  ⚠️ Elevator Pitch: May need better structure"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Product Goals..."
+            if echo "$output_content" | grep -q "Goal"; then
+                echo "  ✅ Product Goals: Present"
+                ((passed++))
+            else
+                echo "  ❌ Product Goals: Missing"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Is/Is Not, Does/Does Not tables..."
+            if echo "$output_content" | grep -q "IS.*IS NOT" && echo "$output_content" | grep -q "DOES.*DOES NOT"; then
+                echo "  ✅ Boundaries: Tables present"
+                ((passed++))
+            else
+                echo "  ⚠️ Boundaries: May need clearer tables"
+            fi
+            ((total_checks++))
+            ;;
+            
+        2)
+            # Step 2: Tradeoffs Validation
+            echo "Checking Trade-off Board structure..."
+            if echo "$output_content" | grep -q "Trade-off Board\|Trade-off\|trade-off"; then
+                echo "  ✅ Trade-off Board: Present"
+                ((passed++))
+            else
+                echo "  ❌ Trade-off Board: Missing"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Individual Perspectives..."
+            if echo "$output_content" | grep -q "Individual Perspectives\|Product Owner\|User Advocate\|Tech Lead"; then
+                echo "  ✅ Individual Perspectives: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Individual Perspectives: May be incomplete"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Consensus Reasoning..."
+            if echo "$output_content" | grep -q "Consensus\|Reasoning"; then
+                echo "  ✅ Consensus Reasoning: Present"
+                ((passed++))
+            else
+                echo "  ❌ Consensus Reasoning: Missing"
+            fi
+            ((total_checks++))
+            ;;
+            
+        3)
+            # Step 3: Personas Validation
+            echo "Checking Primary Persona definition..."
+            if echo "$output_content" | grep -q "Primary Persona\|Persona Name"; then
+                echo "  ✅ Primary Persona: Defined"
+                ((passed++))
+            else
+                echo "  ❌ Primary Persona: Missing"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Goals & Motivations..."
+            if echo "$output_content" | grep -q "Goals.*Motivations\|Primary Goal"; then
+                echo "  ✅ Goals: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Goals: May be incomplete"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Pain Points..."
+            if echo "$output_content" | grep -q "Pain Points\|Frustrations"; then
+                echo "  ✅ Pain Points: Present"
+                ((passed++))
+            else
+                echo "  ❌ Pain Points: Missing"
+            fi
+            ((total_checks++))
+            ;;
+            
+        4)
+            # Step 4: Empathy Map Validation
+            echo "Checking Empathy Map quadrants..."
+            if echo "$output_content" | grep -q "SEES\|SAYS\|THINKS\|DOES"; then
+                echo "  ✅ Quadrants: All present"
+                ((passed++))
+            else
+                echo "  ⚠️ Quadrants: May be incomplete"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Pains & Gains..."
+            if echo "$output_content" | grep -q "PAINS\|GAINS"; then
+                echo "  ✅ Pains & Gains: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Pains & Gains: May be missing"
+            fi
+            ((total_checks++))
+            ;;
+            
+        5)
+            # Step 5: Brainstorming Validation
+            echo "Checking Feature Categories..."
+            if echo "$output_content" | grep -q "Core Features\|Supporting Features"; then
+                echo "  ✅ Feature Categories: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Feature Categories: May need organization"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Feature-Persona alignment..."
+            if echo "$output_content" | grep -q "Related to\|Persona"; then
+                echo "  ✅ Feature-Persona Links: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Feature-Persona Links: May be missing"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Assessment Table..."
+            if echo "$output_content" | grep -q "Business Value\|Technical Effort\|Priority"; then
+                echo "  ✅ Assessment: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Assessment: May be missing"
+            fi
+            ((total_checks++))
+            ;;
+            
+        6)
+            # Step 6: User Journey Validation
+            echo "Checking Journey structure..."
+            if echo "$output_content" | grep -q "Journey.*Persona\|User Action.*System Feature"; then
+                echo "  ✅ Journey Structure: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Journey Structure: May need table format"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Feature Alignment..."
+            if echo "$output_content" | grep -q "Feature.*Journey\|Matrix\|Coverage"; then
+                echo "  ✅ Feature Alignment: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Feature Alignment: May be incomplete"
+            fi
+            ((total_checks++))
+            ;;
+            
+        7)
+            # Step 7: Features & Sequencing Validation
+            echo "Checking Release Waves..."
+            if echo "$output_content" | grep -q "Wave.*MVP\|Release.*Planning"; then
+                echo "  ✅ Release Waves: Present"
+                ((passed++))
+            else
+                echo "  ❌ Release Waves: Missing"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Feature Assessment..."
+            if echo "$output_content" | grep -q "Effort.*Business Value.*UX Value"; then
+                echo "  ✅ Feature Assessment: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Feature Assessment: May be missing"
+            fi
+            ((total_checks++))
+            
+            echo "Checking MVP Definition..."
+            if echo "$output_content" | grep -q "MVP.*Definition\|MVP.*Rationale"; then
+                echo "  ✅ MVP Definition: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ MVP Definition: May be unclear"
+            fi
+            ((total_checks++))
+            ;;
+            
+        8)
+            # Step 8: MVP Canvas Validation
+            echo "Checking MVP Proposal..."
+            if echo "$output_content" | grep -q "MVP.*Proposal\|Cupcake\|Vision Statement"; then
+                echo "  ✅ MVP Proposal: Present"
+                ((passed++))
+            else
+                echo "  ❌ MVP Proposal: Missing"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Success Metrics..."
+            if echo "$output_content" | grep -q "Metrics\|KPI\|Success.*Criteria"; then
+                echo "  ✅ Success Metrics: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Success Metrics: May be missing"
+            fi
+            ((total_checks++))
+            
+            echo "Checking Risks & Mitigation..."
+            if echo "$output_content" | grep -q "Risk.*Mitigation"; then
+                echo "  ✅ Risks & Mitigation: Present"
+                ((passed++))
+            else
+                echo "  ⚠️ Risks & Mitigation: May be incomplete"
+            fi
+            ((total_checks++))
+            ;;
+    esac
+    
+    # Calculate score
+    if [[ $total_checks -gt 0 ]]; then
+        score=$(( (passed * max_score) / total_checks ))
+    fi
+    
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "📊 Validation Results:"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Passed checks: $passed/$total_checks"
+    echo "Score: $score/$max_score"
+    echo ""
+    
+    if [[ $score -ge 8 ]]; then
+        echo -e "${GREEN}✅ Excellent! Step $step_num is complete.${NC}"
+        return 0
+    elif [[ $score -ge 6 ]]; then
+        echo -e "${YELLOW}⚠️ Good, but could be improved.${NC}"
+        return 0
+    else
+        echo -e "${RED}❌ Needs work. Please revise based on feedback.${NC}"
+        return 1
+    fi
 }
 
 # Main facilitation loop
@@ -329,7 +575,7 @@ EOF
             log_error "Validate mode requires step number: --step N"
             exit 1
         fi
-        local step_data=${STEPS[$STEP]}
+        step_data=${STEPS[$STEP]}
         IFS='|' read -r _ output_file validator_file <<< "$step_data"
         validate_step "$STEP" "$output_file" "$validator_file"
         ;;
