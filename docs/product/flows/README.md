@@ -1,0 +1,174 @@
+# User Flows & Journeys
+
+**Primary entry point for understanding user journeys** across SessioFlow's bounded contexts.
+
+Each flow represents a complete user story from start to finish, spanning one or more bounded contexts.
+
+## 🗺️ Flow Catalog
+
+| ID | Journey Name | Primary Bounded Context | Related Contexts | Status |
+|:---|:-------------|:----------------------|:-----------------|:-------|
+| **J01** | [Setup Event (CfP Configuration)](../bounded-contexts/event/flows/journey-01-setup-event.md) | Event | — | ✅ Defined |
+| **J02** | [Submit Proposal](../bounded-contexts/submission/flows/journey-02-submit-proposal.md) | Submission | Event | ⏳ Pending |
+| **J03** | [Review Sessions](../bounded-contexts/review/flows/journey-03-review-sessions.md) | Review | Submission | ⏳ Pending |
+| **J04** | [Acceptance & Logistics](../bounded-contexts/scheduling/flows/journey-04-acceptance-logistics.md) | Scheduling | Event, Submission | ⏳ Pending |
+
+---
+
+## 📋 Flow Details
+
+### Journey 01: Setup Event (CfP Configuration)
+
+**As a** Event Organizer  
+**I want to** Create a new event and configure its Call for Papers (CfP) settings  
+**So that** I can share a submission link with potential speakers and start collecting proposals
+
+**📄 Detailed Documentation (includes all diagrams):**  
+→ [View Full Flow Specification](../bounded-contexts/event/flows/journey-01-setup-event.md)
+
+**Includes:**
+- Sequence diagram with error paths
+- Flowchart with decision points
+- State diagram (Event lifecycle)
+
+**Bounded Contexts Involved:**
+- **Event** (Primary) - Event aggregate, CfpConfig entity
+
+---
+
+### Journey 02: Submit Proposal
+
+**As a** Speaker  
+**I want to** Submit a talk proposal to an event's CfP  
+**So that** I can be considered for the event program
+
+**📄 Detailed Documentation (when created, will include):**  
+→ [Flow Spec Location](../bounded-contexts/submission/flows/journey-02-submit-proposal.md) *(not yet created)*
+
+**Should include:**
+- Sequence diagram with error paths
+- Flowchart
+- State diagram (Submission lifecycle)
+
+**Bounded Contexts Involved:**
+- **Submission** (Primary) - Submission aggregate, Speaker entity
+- **Event** (Referenced) - Event status validation
+
+---
+
+### Journey 03: Review Sessions
+
+**As a** Organizer/Reviewer  
+**I want to** Review and score submitted proposals  
+**So that** I can select the best talks for the event
+
+**📄 Detailed Documentation (when created, will include):**  
+→ [Flow Spec Location](../bounded-contexts/review/flows/journey-03-review-sessions.md) *(not yet created)*
+
+**Should include:**
+- Sequence diagram with error paths
+- Flowchart
+- State diagram (Review lifecycle)
+
+**Bounded Contexts Involved:**
+- **Review** (Primary) - Review aggregate, Reviewer entity
+- **Submission** (Referenced) - Submission data access
+
+---
+
+### Journey 04: Acceptance & Logistics
+
+**As a** Organizer  
+**I want to** Accept submissions and publish the event schedule  
+**So that** speakers know their acceptance status and time slots
+
+**📄 Detailed Documentation (when created, will include):**  
+→ [Flow Spec Location](../bounded-contexts/scheduling/flows/journey-04-acceptance-logistics.md) *(not yet created)*
+
+**Should include:**
+- Sequence diagram with error paths
+- Flowchart
+- State diagram (Schedule lifecycle)
+
+**Bounded Contexts Involved:**
+- **Scheduling** (Primary) - Schedule aggregate, TimeSlot entity
+- **Event** (Referenced) - Event status updates
+- **Submission** (Referenced) - Submission status updates
+
+---
+
+## 🔗 Cross-Context Flow Diagram
+
+This diagram shows how journeys connect across bounded contexts:
+
+```mermaid
+flowchart TB
+    subgraph Organizer["Organizer Journey"]
+        J01[J01: Setup Event]
+        J03[J03: Review Sessions]
+        J04[J04: Acceptance & Logistics]
+    end
+
+    subgraph Speaker["Speaker Journey"]
+        J02[J02: Submit Proposal]
+    end
+
+    subgraph EventBC["Event Bounded Context"]
+        E[Event Aggregate]
+        CFP[CfpConfig]
+    end
+
+    subgraph SubmissionBC["Submission Bounded Context"]
+        S[Submission Aggregate]
+        SP[Speaker]
+    end
+
+    subgraph ReviewBC["Review Bounded Context"]
+        R[Review Aggregate]
+        RV[Reviewer]
+    end
+
+    subgraph ScheduleBC["Scheduling Bounded Context"]
+        SCH[Schedule Aggregate]
+        TS[TimeSlot]
+    end
+
+    J01 --> E
+    J01 --> CFP
+    J02 --> S
+    J02 -.-> E
+    J03 --> R
+    J03 -.-> S
+    J04 --> SCH
+    J04 -.-> E
+    J04 -.-> S
+
+    style Organizer fill:#e1f5fe
+    style Speaker fill:#fff3e0
+    style EventBC fill:#f3e5f5
+    style SubmissionBC fill:#e8f5e9
+    style ReviewBC fill:#fff8e1
+    style ScheduleBC fill:#fce4ec
+```
+
+---
+
+## 📊 Flow Status Legend
+
+| Status | Meaning |
+|:------:|:--------|
+| ✅ | Fully documented with flow spec and visual map |
+| ⏳ | Flow identified, documentation pending |
+| 🔄 | Under review or revision |
+
+---
+
+## 📚 Related Documentation
+
+- [Domain Model](../README.md) - Bounded contexts, aggregates, and DDD structure
+- [Flow Specification Template](../../templates/product/flows.md) - Template for creating flow docs
+
+---
+
+**Last Updated:** 2026-06-13  
+**Total Journeys:** 4 (1 documented, 3 pending)

@@ -23,40 +23,76 @@ After generating the flow document, review the project's Architecture Decision R
 ---
 
 ## 🗺️ Visual Flow & Sequence
-*Maps the sequence of user actions, domain behavior, and system reactions for Journey 1. Follows DDD patterns per ADR-009. Natively renders in GitHub, GitLab, and Obsidian.*
+*Maps the sequence of user actions, domain behavior, and system reactions for Journey 1. Follows DDD patterns per ADR-009. Includes error paths and alternative flows.*
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as Organizer
-    participant UI as Frontend / UI
+    actor Organizer
+    participant UI as Frontend
     participant API as Application Service
-    participant DB as Repository / Database
+    participant Domain as Event Aggregate
+    participant DB as Repository
+    participant Email as Email Service
 
-    User->>UI: Navigates to "Create Event" form
-    UI->>API: GET /auth/me (verify authentication)
-    API-->>UI: Returns user session with organizerId
-    User->>UI: Fills event details (name, dates, description)
-    UI->>API: POST /api/v1/events (payload with event data)
+    Note over Organizer, Email: Journey 01: Setup Event Flow
+
+    Organizer->>UI: Click "Create New Event"
+    UI->>API: GET /auth/me
+    API-->>UI: Return organizerId
+
+    Organizer->>UI: Fill event form<br/>(name, dates, description)
+    UI->>UI: Client-side Zod validation
     
-    Note over API: Application Service Layer
-    API->>API: Validate payload with Zod Schema
-    API->>DB: EventRepository.findBySlug(slug) - Check uniqueness
-    DB-->>API: Returns null (slug available)
-    
-    Note over API: Domain Layer - Event Aggregate
-    API->>API: Generate EventId (UUIDv4)
-    API->>API: Create Event domain object<br/>Event.create(id, validatedData)
-    API->>API: Event.publishCfp() - Open CfP
-    Note over API: Publishes Domain Event: CfpOpened
-    
-    API->>DB: EventRepository.save(event)
-    DB-->>API: Acknowledges persistence
-    API->>API: Publish EventCreated domain event
-    API->>API: Send welcome email (async)
-    
-    API-->>UI: Returns 201 Created (Event + CfP URL)
-    UI-->>User: Redirects to Event Dashboard with shareable CfP link
+    rect rgb(232, 245, 233)
+        note right of UI: Happy Path - All Valid
+        Organizer->>UI: Click "Create Event"
+        UI->>API: POST /api/v1/events
+        API->>API: Validate payload with Zod
+        API->>DB: Check slug uniqueness
+        DB-->>API: Slug available
+        
+        API->>Domain: Event.create(id, data)
+        Note over Domain: Event state: DRAFT
+        API->>Domain: Event.publishCfp()
+        Note over Domain: Event state: CFP_OPEN<br/>CfpConfig created: ACTIVE
+        
+        Domain->>Domain: Publish EventCreated<br/>CfpOpened events
+        API->>DB: Save Event aggregate
+        DB-->>API: Persisted
+        
+        API->>Email: Send welcome email (async)
+        API-->>UI: 201 Created + CfP URL
+        UI-->>Organizer: Redirect to Dashboard<br/>with CfP link
+    end
+
+    rect rgb(255, 235, 238)
+        note right of UI: Error Path - Validation Failed
+        Organizer->>UI: Submit invalid data
+        UI->>API: POST /api/v1/events
+        API->>API: Validate payload
+        API-->>UI: 400 Bad Request + errors
+        UI-->>Organizer: Show inline errors
+    end
+
+    rect rgb(255, 235, 238)
+        note right of API: Error Path - Duplicate Slug
+        API->>DB: Check slug uniqueness
+        DB-->>API: Slug exists
+        API-->>UI: 409 Conflict
+        UI-->>Organizer: Suggest alternative slug
+    end
+
+    rect rgb(255, 235, 238)
+        note right of Domain: Error Path - Business Rule Violation
+        API->>Domain: Event.create()
+        Domain->>Domain: Check free tier limit
+        Domain-->>API: FreeTierLimitExceeded
+        API-->>UI: 403 Forbidden + upgrade prompt
+    end
+
+    Note over Organizer, Email: Domain Events Published
+    Note right of Domain: EventCreated → Analytics<br/>CfpOpened → Welcome Email
 ```
 
 ---
@@ -227,6 +263,93 @@ WITH CHECK (organizer_id = auth.uid());
 |-------|--------------|--------------|
 | `EventCreated` | `Event.create()` | Log event creation, initialize analytics |
 | `CfpOpened` | `Event.publishCfp()` | Send welcome email to organizer, notify subscribers |
+
+---
+
+## 🔄 Alternative Flow (Flowchart)
+
+Shows decision points and error handling paths:
+
+```mermaid
+flowchart TB
+    Start([Organizer Starts]) --> Form[Fill Event Form]
+    Form --> Validate{Client Validation}
+    
+    Validate -->|Invalid| Error1[Show Inline Errors]
+    Error1 --> Form
+    
+    Validate -->|Valid| Submit[Submit Form]
+    Submit --> ServerValidate{Server Validation}
+    
+    ServerValidate -->|Invalid| Error2[Return Validation Errors]
+    Error2 --> Form
+    
+    ServerValidate -->|Valid| CheckSlug{Slug Unique?}
+    CheckSlug -->|No| Error3[Suggest Alternative]
+    Error3 --> Form
+    
+    CheckSlug -->|Yes| CreateEvent[Create Event Aggregate]
+    CreateEvent --> PublishCfp[Publish CfP]
+    
+    PublishCfp --> CheckTier{Free Tier Limit?}
+    CheckTier -->|Exceeded| Error4[Show Upgrade Prompt]
+    Error4 --> EndFail([Create Failed])
+    
+    CheckTier -->|OK| SaveDB[(Save to Database)]
+    SaveDB --> PublishEvents[Publish Domain Events]
+    
+    PublishEvents --> SendEmail[Send Welcome Email]
+    SendEmail --> Success[Redirect to Dashboard]
+    
+    Success --> EndSuccess([CfP Link Generated])
+    
+    style CreateEvent fill:#e1f5fe
+    style PublishCfp fill:#e8f5e9
+    style PublishEvents fill:#fff3e0
+    style Success fill:#c8e6c9
+    style Error1 fill:#ffcdd2
+    style Error2 fill:#ffcdd2
+    style Error3 fill:#ffcdd2
+    style Error4 fill:#ffcdd2
+```
+
+---
+
+## 📊 Entity State Diagram
+
+Shows the Event entity lifecycle:
+
+```mermaid
+stateDiagram-v2
+    [*] --> NotCreated
+    NotCreated --> Draft: Create Event
+    Draft --> CfpOpen: publishCfp()
+    CfpOpen --> CfpClosed: closeCfp()
+    CfpClosed --> CfpOpen: reopenCfp()
+    CfpOpen --> Published: publishSchedule()
+    CfpClosed --> Published: publishSchedule()
+    Published --> Completed: eventEnds
+    
+    note right of Draft
+        Event created with
+        basic details
+    end note
+    
+    note right of CfpOpen
+        CfP active, accepting
+        submissions
+    end note
+    
+    note right of Published
+        Schedule published,
+        speakers notified
+    end note
+    
+    style Draft fill:#e3f2fd
+    style CfpOpen fill:#c8e6c9
+    style CfpClosed fill:#fff9c4
+    style Published fill:#e1bee7
+```
 
 ---
 

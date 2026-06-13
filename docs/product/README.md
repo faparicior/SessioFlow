@@ -8,6 +8,8 @@ This directory contains the Domain-Driven Design (DDD) model for SessioFlow, ali
 docs/
 ├── product/
 │   ├── README.md                          # This file
+│   ├── flows/                             # 🎯 User Flow Entry Points
+│   │   └── README.md                      # Flow catalog with journey summaries
 │   ├── bounded-contexts/                  # DDD Bounded Contexts
 │   │   ├── event/                         # Event Bounded Context
 │   │   │   ├── entities/                  # Event, CfpConfig
@@ -84,6 +86,13 @@ docs/
 | **Submission** | Event | References EventId (published API) |
 | **Review** | Submission | References SubmissionId (aggregate boundary) |
 | **Scheduling** | Event, Submission | References EventId and accepted SubmissionIds |
+
+## 🗺️ User Flows
+
+User journeys span multiple bounded contexts. See [flows/README.md](./flows/README.md) for:
+- Complete journey documentation
+- Visual flow diagrams (sequence, flowchart, state)
+- Cross-context relationships
 
 ## 📚 Documentation Templates
 
