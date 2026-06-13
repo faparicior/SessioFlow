@@ -98,10 +98,17 @@ User journeys span multiple bounded contexts. See [flows/README.md](./flows/READ
 
 | Template | Purpose | Location |
 |----------|---------|----------|
-| [flows.md](../templates/product/flows.md) | User journey flow documentation | `bounded-contexts/*/flows/` |
+| [flows.md](../templates/product/flows.md) | User journey flow documentation (with 3 diagrams) | `bounded-contexts/*/flows/` |
 | [entity-lifecycle.md](../templates/product/entity-lifecycle.md) | Entity state and behavior | `bounded-contexts/*/entities/` |
 | [business-rules.md](../templates/product/business-rules.md) | Business logic and policies | `bounded-contexts/*/business-rules/` |
 | [invariants.md](../templates/product/invariants.md) | Unbreakable data integrity constraints | `bounded-contexts/*/invariants/` |
+
+## 🛠️ Guidelines
+
+| Guide | Purpose | Location |
+|-------|---------|----------|
+| [Flow Documentation Structure](./guidelines/flow-documentation-structure.md) | How to create comprehensive flow specs | `guidelines/` |
+| [Business Rules vs Invariants](./guidelines/business-rules-vs-invariants.md) | When to use BR vs INV | `guidelines/` |
 
 ## 🎯 DDD Principles Applied
 

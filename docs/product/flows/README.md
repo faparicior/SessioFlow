@@ -8,12 +8,27 @@ Each flow represents a complete user story from start to finish, spanning one or
 
 | ID | Journey Name | Primary Bounded Context | Related Contexts | Status |
 |:---|:-------------|:----------------------|:-----------------|:-------|
-| **J01** | [Setup Event (CfP Configuration)](../bounded-contexts/event/flows/journey-01-setup-event.md) | Event | — | ✅ Defined |
+| **J01** | [Setup Event (CfP Configuration)](../bounded-contexts/event/flows/journey-01-setup-event.md) | Event | — | ✅ Complete |
 | **J02** | [Submit Proposal](../bounded-contexts/submission/flows/journey-02-submit-proposal.md) | Submission | Event | ⏳ Pending |
 | **J03** | [Review Sessions](../bounded-contexts/review/flows/journey-03-review-sessions.md) | Review | Submission | ⏳ Pending |
 | **J04** | [Acceptance & Logistics](../bounded-contexts/scheduling/flows/journey-04-acceptance-logistics.md) | Scheduling | Event, Submission | ⏳ Pending |
 
 ---
+
+## 📊 Documentation Structure
+
+Each journey's complete documentation is in a **single file** that includes:
+
+1. **Overview** - User story and impacted entities
+2. **Sequence Diagram** - System interactions with error paths
+3. **Flowchart** - Decision points and branching logic
+4. **State Diagram** - Entity lifecycle visualization
+5. **Step-by-Step Walkthrough** - Detailed action/reaction table
+6. **Acceptance Criteria** - Gherkin scenarios
+7. **Edge Cases** - Business logic, technical, and validation failures
+8. **Technical Notes** - API specs, validation schemas, DB constraints
+
+**No separate flow map files** - all diagrams are embedded in the flow specification.
 
 ## 📋 Flow Details
 
