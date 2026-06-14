@@ -1,0 +1,18 @@
+{
+  "eval_id": "eval-002",
+  "eval_name": "batch-generation-all-steps",
+  "prompt": "Generate all 8 steps of an inception workshop for SessioFlow automatically",
+  "assertions": [
+    {
+      "id": "all-steps-generated",
+      "description": "All 8 step files are created",
+      "type": "file-count",
+      "expected": 8
+    },
+    {
+      "id": "consistency",
+      "description": "All steps reference the same product name and core concepts",
+      "type": "cross-file-consistency"
+    }
+  ]
+}

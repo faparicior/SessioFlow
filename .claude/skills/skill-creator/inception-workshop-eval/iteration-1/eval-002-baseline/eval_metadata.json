@@ -1,0 +1,6 @@
+{
+  "eval_id": "eval-002",
+  "eval_name": "batch-generation-all-steps",
+  "prompt": "Generate all 8 steps of an inception workshop for SessioFlow automatically",
+  "assertions": []
+}

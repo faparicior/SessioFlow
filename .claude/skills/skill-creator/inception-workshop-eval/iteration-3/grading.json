@@ -1,0 +1,48 @@
+{
+  "eval-001-with-skill": [
+    {
+      "text": "Elevator pitch completeness",
+      "passed": true,
+      "evidence": "Found 7/7 required components"
+    },
+    {
+      "text": "Clear boundaries defined",
+      "passed": true,
+      "evidence": "Found 4/4 boundary definitions"
+    },
+    {
+      "text": "Measurable goals defined",
+      "passed": true,
+      "evidence": "Found 4 goals"
+    }
+  ],
+  "eval-002-with-skill": [
+    {
+      "text": "All 8 inception steps generated",
+      "passed": true,
+      "evidence": "Found 8 files"
+    },
+    {
+      "text": "Consistent product naming across steps",
+      "passed": true,
+      "evidence": "1-product-vision.md: Product name found 6 times with title and no intro; 2-tradeoffs.md: Product name found 8 times with title and no intro; 3-personas.md: Product name found 6 times with title and no intro..."
+    }
+  ],
+  "eval-003-with-skill": [
+    {
+      "text": "Multiple stakeholder perspectives",
+      "passed": true,
+      "evidence": "Found 4/4 stakeholder perspectives"
+    },
+    {
+      "text": "Strict 1-7 ranking (golden rule)",
+      "passed": true,
+      "evidence": "Golden rule validated: one check per column"
+    },
+    {
+      "text": "Consensus reasoning provided",
+      "passed": true,
+      "evidence": "Found 4/3 reasoning indicators"
+    }
+  ]
+}

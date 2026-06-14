@@ -1,0 +1,26 @@
+{
+  "eval_id": "eval-003",
+  "eval_name": "tradeoff-analysis-ai-debate",
+  "prompt": "Run the tradeoff analysis for SessioFlow using AI debate",
+  "assertions": [
+    {
+      "id": "stakeholder-perspectives",
+      "description": "Includes at least 3 distinct stakeholder perspectives",
+      "type": "count",
+      "field": "perspectives",
+      "min": 3
+    },
+    {
+      "id": "strict-ranking",
+      "description": "Tradeoff board has strict 1-7 ranking with one item per column",
+      "type": "validation",
+      "rule": "golden-rule"
+    },
+    {
+      "id": "consensus-reasoning",
+      "description": "Provides reasoning for tradeoff decisions",
+      "type": "file-contains",
+      "expected": ["Consensus", "trade-off", "agreed"]
+    }
+  ]
+}

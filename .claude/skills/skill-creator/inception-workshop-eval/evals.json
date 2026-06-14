@@ -1,0 +1,23 @@
+{
+  "skill_name": "inception-workshop",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Start a Lean Inception workshop for SessioFlow, a Call-for-Papers platform. Let's begin with Step 1: Product Vision.",
+      "expected_output": "Should create a product vision document with elevator pitch, problem/solution statement, target users, and clear boundaries",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Generate all 8 steps of an inception workshop for SessioFlow automatically",
+      "expected_output": "Should create all 8 inception documents in docs/inception/ with coherent content across all steps",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Run the tradeoff analysis for SessioFlow using AI debate",
+      "expected_output": "Should simulate stakeholder perspectives (PO, UX, Tech Lead) and produce a consensus tradeoff board with strict 1-7 ranking",
+      "files": []
+    }
+  ]
+}

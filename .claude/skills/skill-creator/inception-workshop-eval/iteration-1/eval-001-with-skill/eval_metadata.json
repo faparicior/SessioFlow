@@ -1,0 +1,26 @@
+{
+  "eval_id": "eval-001",
+  "eval_name": "step-1-product-vision-facilitation",
+  "prompt": "Start a Lean Inception workshop for SessioFlow, a Call-for-Papers platform. Let's begin with Step 1: Product Vision.",
+  "assertions": [
+    {
+      "id": "completeness",
+      "description": "Product vision includes all 5 elevator pitch components",
+      "type": "file-contains",
+      "expected": ["For", "Who", "The Product", "Is a", "That", "Unlike", "Our Product"]
+    },
+    {
+      "id": "boundaries",
+      "description": "Product has clear Is/Is Not and Does/Does Not definitions",
+      "type": "file-contains",
+      "expected": ["The Product IS", "The Product IS NOT", "The Product DOES", "The Product DOES NOT"]
+    },
+    {
+      "id": "goals",
+      "description": "Product includes at least 3 measurable goals",
+      "type": "count",
+      "field": "goals",
+      "min": 3
+    }
+  ]
+}
