@@ -5,16 +5,28 @@
     "subagents": {
         "agentOverrides": {
             "scout": {
-                "model": "xxxmodel"
+                "model": "Qwen/Qwen3.6-35B-A3B-FP8",
+                "fallbackModels": [
+                    "Qwen/Qwen3.6-35B-A3B-FP8"
+                ]
             },
             "planner": {
-                "model": "xxxmodel"
+                "model": "Intel/Qwen3.5-122B-A10B-int4-AutoRound",
+                "fallbackModels": [
+                    "Qwen/Qwen3.6-35B-A3B-FP8"
+                ]
             },
             "worker": {
-                "model": "xxxmodel"
+                "model": "Qwen/Qwen3-Coder-Next-FP8",
+                "fallbackModels": [
+                    "Qwen/Qwen3.6-35B-A3B-FP8"
+                ]
             },
             "reviewer": {
-                "model": "xxxmodel"
+                "model": "Intel/Qwen3.5-122B-A10B-int4-AutoRound",
+                "fallbackModels": [
+                    "Qwen/Qwen3.6-35B-A3B-FP8"
+                ]
             }
         }
     }
