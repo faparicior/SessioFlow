@@ -8,7 +8,6 @@ description: >-
   MVP canvas, product discovery, validate MVP, validate tradeoffs, validate personas,
   check inception step, review product vision, or validate inception.
   Executes facilitation, batch generation, tradeoff analysis, and validation modes.
-compatibility: Requires bash
 ---
 
 # Inception Workshop Skill
@@ -106,81 +105,37 @@ pi skill inception-workshop --mode validate --step 1 --file docs/inception/1-pro
 
 ### Facilitate Mode (Template -> Fill -> Validate)
 
-```
-┌─────────────┐
-│   Step N    │
-│  Template   │
-└──────┬──────┘
-       │
-       v
-┌─────────────┐
-│ Create      │
-│ Output File │
-└──────┬──────┘
-       │
-       v
-┌─────────────┐
-│ User Fills  │
-│ & Commits   │
-└──────┬──────┘
-       │
-       v
-┌─────────────┐
-│   Validate  │
-│  Against    │
-│  Criteria   │
-└──────┬──────┘
-       │
-       v
-┌─────────────┐
-│  Score ≥ 8? │──No──> Provide Feedback
-└──────┬──────┘
-       │ Yes
-       v
-┌─────────────┐
-│ Proceed to  │
-│ Step N+1    │
-└─────────────┘
-```
+The agent should:
+1. Read the template file from `templates/`
+2. Create the output file in `docs/inception/`
+3. Prompt the user to fill the document
+4. When ready, validate against the validator criteria
+5. Provide feedback and scoring
+6. Proceed to next step if score ≥ 8
+
+**Implementation:** Use read/write/edit tools to manage files, provide interactive guidance to the user.
 
 ### Tradeoff Generator Mode (AI Debate)
 
-**Special mode for Step 2 only** - Simulates stakeholder debate to generate tradeoff analysis:
+**Special mode for Step 2 only** - The agent simulates stakeholder debate to generate tradeoff analysis:
 
-```
-┌─────────────────────┐
-│ Read Vision (Step 1)│
-└───────┬─────────────┘
-        │
-        v
-┌─────────────────────┐
-│ Simulate Debate:    │
-│ - Product Owner     │
-│ - User Advocate     │
-│ - Tech Lead         │
-│ - Agile Coach       │
-└───────┬─────────────┘
-        │
-        v
-┌─────────────────────┐
-│ Generate Consensus  │
-│ Trade-off Board     │
-└───────┬─────────────┘
-        │
-        v
-┌─────────────────────┐
-│ Validate Against    │
-│ Quality Criteria    │
-└───────┬─────────────┘
-        │
-        v
-┌─────────────────────┐
-│ Output: 2-tradeoffs │
-│ .md                 │
-└─────────────────────┘
-```
+**Agent Implementation:**
+1. Read Step 1 (Product Vision) from `docs/inception/1-product-vision-and-boundaries.md`
+2. Simulate 4 stakeholder perspectives (PO, UX Advocate, Tech Lead, Agile Coach)
+3. Generate individual priority perspectives based on the vision
+4. Synthesize consensus tradeoff board with strict 1-7 ranking
+5. Validate against validator criteria
+6. Output to `docs/inception/2-tradeoffs.md`
+
+**Note:** The agent should generate the debate content internally, presenting each stakeholder viewpoint and then synthesizing consensus.
 
 ### Batch Mode
+
+**Agent Implementation:**
+1. Parse the context/product description
+2. Sequentially generate all 8 steps using templates
+3. Create output files in `docs/inception/`
+4. Validate each step and report scores
 
 ```bash
 # All 8 steps generated automatically
@@ -252,11 +207,8 @@ Key trade-offs made:
 ### Usage
 
 ```bash
-# Generate tradeoffs manually or with AI assistance
+# Generate tradeoffs with AI debate simulation
 pi skill inception-workshop --mode tradeoff-generator
-
-# Or using the script
-.pi/skills/inception-workshop/facilitator.sh tradeoff
 ```
 
 **Requirements:**
@@ -264,7 +216,7 @@ pi skill inception-workshop --mode tradeoff-generator
 - Reads: `docs/inception/1-product-vision-and-boundaries.md`
 - Outputs: `docs/inception/2-tradeoffs.md`
 
-**Note:** This mode now uses bash-based validation instead of AI debate simulation. Users can manually fill the tradeoff board or use external AI tools.
+**Note:** This mode uses the agent to simulate stakeholder debate perspectives and create consensus tradeoffs directly.
 
 ## Output Structure
 
@@ -310,11 +262,8 @@ This will:
 ### Compatibility
 
 **Requires:**
-- Bash shell
-- Standard Unix utilities (grep, sed, awk)
-
-**No longer requires:**
-- Pi subagent capability (removed dependency)
+- Standard Pi toolset (read, write, edit, bash)
+- No external dependencies
 
 ### Bundled Assets
 
@@ -505,4 +454,4 @@ All flows include:
 ---
 
 **Version:** 1.0.0  
-**Last Updated:** 2026-06-13
+**Last Updated:** 2026-06-14
