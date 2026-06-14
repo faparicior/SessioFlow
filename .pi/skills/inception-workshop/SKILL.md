@@ -14,6 +14,11 @@ description: >-
 
 Facilitate Lean Inception workshops through 8 structured steps: Product Vision -> Tradeoffs -> Personas -> Empathy Map -> Brainstorming -> User Journey -> Features & Sequencing -> MVP Canvas.
 
+**Critical Quality Rules:**
+- **Product Name Consistency**: Use the exact product name consistently throughout all documents. Include it in titles, introductions, and key sections. After establishing context, use pronouns or "the system" naturally. Focus on clarity, not forced repetition.
+- **Boundary Definitions**: MUST include at least 4 items in EACH of the 4 boundary columns (IS, IS NOT, DOES, DOES NOT) - this is non-negotiable.
+- **Tradeoff Golden Rule**: Exactly ONE check (X) per priority column. If you have 7 priorities, you must have exactly 7 X marks total.
+
 ## Natural Language Activation
 
 This skill can be triggered using conversational phrases instead of command-line flags. The system will automatically detect your intent and activate the appropriate mode.
@@ -91,7 +96,7 @@ pi skill inception-workshop --mode facilitate
 # Start from Step 6 (Journey Mapping)
 pi skill inception-workshop --mode facilitate --step 6
 
-# Generate all steps automatically
+# Generate all 8 steps automatically
 pi skill inception-workshop --mode batch --context "SessioFlow: Call-for-Papers platform"
 
 # Use AI debate to generate tradeoffs (Step 2 only)
@@ -123,23 +128,30 @@ The agent should:
 1. Read Step 1 (Product Vision) from `docs/inception/1-product-vision-and-boundaries.md`
 2. Simulate 4 stakeholder perspectives (PO, UX Advocate, Tech Lead, Agile Coach)
 3. Generate individual priority perspectives based on the vision
-4. Synthesize consensus tradeoff board with strict 1-7 ranking
-5. Validate against validator criteria
-6. Output to `docs/inception/2-tradeoffs.md`
+4. Synthesize consensus tradeoff board with STRICT 1-7 ranking
+5. **VERIFY**: Count X marks - must be exactly 7 (one per column). If not, fix immediately.
+6. Validate against validator criteria
+7. Output to `docs/inception/2-tradeoffs.md`
 
 **Note:** The agent should generate the debate content internally, presenting each stakeholder viewpoint and then synthesizing consensus.
 
 ### Batch Mode
 
 **Agent Implementation:**
-1. Parse the context/product description
+1. Parse the context/product description - EXTRACT the exact product name
 2. Sequentially generate all 8 steps using templates
-3. Create output files in `docs/inception/`
-4. Validate each step and report scores
+3. **Product Name Guidelines:**
+   - Include the product name in titles and document headers
+   - Use the product name in introductions and key sections
+   - After establishing context, use "the system", "the platform", or pronouns naturally
+   - Maintain consistency - don't switch between different names
+   - Prioritize natural readability over forced repetition
+4. Create output files in `docs/inception/`
+5. Validate each step and report scores
 
 ```bash
 # All 8 steps generated automatically
-pi skill inception-workshop --mode batch --context "Your product description"
+pi skill inception-workshop --mode batch --context "SessioFlow: Call-for-Papers platform"
 ```
 
 ## Step Mapping
@@ -163,7 +175,7 @@ The Tradeoff Generator creates a consensus tradeoff board based on the product v
 
 **Key Components:**
 1. **Individual Perspectives** - Capture different stakeholder viewpoints
-2. **Final Consensus Board** - Strict 1-7 ranking (Golden Rule: one check per column)
+2. **Final Consensus Board** - STRICT 1-7 ranking (Golden Rule: one check per column)
 3. **Consensus Reasoning** - Explain trade-offs and compromises made
 
 ### Process
@@ -171,8 +183,9 @@ The Tradeoff Generator creates a consensus tradeoff board based on the product v
 1. **Analyze Vision** - Read Step 1 output to understand goals, users, and constraints
 2. **Create Perspectives** - Define PO, UX, and Tech Lead viewpoints
 3. **Build Consensus** - Create strict 1-7 ranking with compromises
-4. **Validate** - Check against validator criteria
-5. **Generate Output** - Create filled tradeoff template
+4. **VERIFY GOLDEN RULE** - Count X marks: must be EXACTLY 7 (one per priority column)
+5. **Validate** - Check against validator criteria
+6. **Generate Output** - Create filled tradeoff template
 
 ### Output Structure
 
@@ -194,6 +207,8 @@ The Tradeoff Generator creates a consensus tradeoff board based on the product v
 | **Usability** | **X** | | | | | | |
 | **Cost** | | **X** | | | | | |
 | **Simplicity** | | | **X** | | | | |
+
+⚠️ **GOLDEN RULE CHECK**: Count all X marks above. There must be EXACTLY 7 (one per column).
 
 ## 3. Consensus Reasoning
 
@@ -336,7 +351,7 @@ Skill: Validating Step 1...
 
 **Validation Results:**
 ✅ Elevator Pitch: Complete (5/5 components)
-✅ Is/Is Not: Clear boundaries
+✅ Is/Is Not: Clear boundaries (4+ items per column)
 ⚠️ Metrics: Could be more specific
 
 **Score: 8.5/10**
@@ -363,12 +378,13 @@ Simulating stakeholder debate...
 
 🎭 **Tech Lead:** "The 'Is/Is Not' says this is NOT a complex enterprise system, so I can accept lower Flexibility for faster delivery."
 
-🎭 **Agile Coach:** "Remember the Golden Rule - only one check per column. Let's find consensus."
+🎭 **AgileCoach:** "Remember the Golden Rule - only one check per column. Let's find consensus."
 
 ---
 
 Generating consensus trade-off board...
 
+✅ GOLDEN RULE VERIFIED: Exactly 7 X marks (one per column)
 ✅ Tradeoff analysis complete!
 
 **Generated:** docs/inception/2-tradeoffs.md
@@ -453,5 +469,10 @@ All flows include:
 
 ---
 
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-14
+**Version:** 3.0.0  
+**Last Updated:** 2026-06-14  
+**Changes from v2.0:**
+- Refined product name guidance: consistency and clarity over forced repetition
+- Removed arbitrary "10+ mentions per document" requirement
+- Added guidance for natural language usage after establishing context
+- Maintained critical quality rules for boundaries and tradeoff golden rule
