@@ -1,0 +1,25 @@
+{
+  "eval_id": "eval-008",
+  "eval_name": "mvp-canvas-online-learning",
+  "prompt": "Define the MVP canvas for an online learning platform called SkillUp that offers coding courses with mentorship",
+  "assertions": [
+    {
+      "id": "mvp-components",
+      "description": "Includes problem statement, solution, MVP scope, success metrics, assumptions, and risks",
+      "type": "file-contains",
+      "expected": ["Problem", "Solution", "MVP", "Metrics", "Assumptions", "Risks"]
+    },
+    {
+      "id": "launch-criteria",
+      "description": "Includes clear launch criteria and readiness checklist",
+      "type": "file-contains",
+      "expected": ["Launch", "Criteria", "Checklist"]
+    },
+    {
+      "id": "product-name-consistency",
+      "description": "Product name SkillUp used consistently throughout",
+      "type": "file-contains",
+      "expected": ["SkillUp"]
+    }
+  ]
+}

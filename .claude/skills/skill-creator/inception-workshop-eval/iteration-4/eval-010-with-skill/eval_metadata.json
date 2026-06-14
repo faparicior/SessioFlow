@@ -1,0 +1,24 @@
+{
+  "eval_id": "eval-010",
+  "eval_name": "batch-generation-taskflow",
+  "prompt": "Generate all inception steps for TaskFlow, a project management tool designed for remote teams with async communication features",
+  "assertions": [
+    {
+      "id": "all-steps-generated",
+      "description": "All 8 inception step files are created",
+      "type": "file-count",
+      "expected": 8
+    },
+    {
+      "id": "consistency",
+      "description": "All steps reference the same product name and core concepts",
+      "type": "cross-file-consistency"
+    },
+    {
+      "id": "product-name-consistency",
+      "description": "Product name TaskFlow used consistently throughout",
+      "type": "file-contains",
+      "expected": ["TaskFlow"]
+    }
+  ]
+}

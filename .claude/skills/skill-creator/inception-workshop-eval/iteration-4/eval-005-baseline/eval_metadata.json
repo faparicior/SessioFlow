@@ -1,0 +1,6 @@
+{
+  "eval_id": "eval-005",
+  "eval_name": "user-journey-healthcare-portal",
+  "prompt": "Generate user journey mapping for a healthcare patient portal called HealthConnect where patients can book appointments and view medical records",
+  "assertions": []
+}

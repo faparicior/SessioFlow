@@ -18,6 +18,48 @@
       "prompt": "Run the tradeoff analysis for SessioFlow using AI debate",
       "expected_output": "Should simulate stakeholder perspectives (PO, UX, Tech Lead) and produce a consensus tradeoff board with strict 1-7 ranking",
       "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Create personas for a food delivery app called QuickBite that connects local restaurants with customers",
+      "expected_output": "Should create detailed personas with profiles, goals, frustrations, behavior patterns, and quotes for different user types",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Generate user journey mapping for a healthcare patient portal called HealthConnect where patients can book appointments and view medical records",
+      "expected_output": "Should create journey maps with stages, actions, thoughts, feelings, and opportunities for multiple user personas",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Create an empathy map for elderly users (65+) trying to use a smart home device called HomeHub",
+      "expected_output": "Should capture what users say, think, do, and feel, with specific focus on accessibility and usability concerns for elderly users",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Generate features and sequencing for a fintech app called PayEasy that helps users manage subscriptions and recurring payments",
+      "expected_output": "Should create phased release plan with MVP scope, prioritized features, and clear sequencing rationale",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "Define the MVP canvas for an online learning platform called SkillUp that offers coding courses with mentorship",
+      "expected_output": "Should include problem statement, solution overview, MVP scope (in/out), success metrics, assumptions, risks, and launch criteria",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "Start an inception workshop for EcoTrack, a carbon footprint tracking app for individuals and small businesses",
+      "expected_output": "Should create product vision with clear elevator pitch, measurable goals, and explicit IS/IS NOT, DOES/DOES NOT boundaries",
+      "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "Generate all inception steps for TaskFlow, a project management tool designed for remote teams with async communication features",
+      "expected_output": "Should create all 8 documents with consistent product naming and coherent progression from vision to MVP",
+      "files": []
     }
   ]
 }

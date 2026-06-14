@@ -1,0 +1,26 @@
+{
+  "eval_id": "eval-005",
+  "eval_name": "user-journey-healthcare-portal",
+  "prompt": "Generate user journey mapping for a healthcare patient portal called HealthConnect where patients can book appointments and view medical records",
+  "assertions": [
+    {
+      "id": "journey-count",
+      "description": "Creates at least 2 distinct user journeys",
+      "type": "count",
+      "field": "journeys",
+      "min": 2
+    },
+    {
+      "id": "journey-completeness",
+      "description": "Each journey includes stages, actions, thoughts, feelings, and opportunities",
+      "type": "validation",
+      "rule": "complete-journey"
+    },
+    {
+      "id": "product-name-consistency",
+      "description": "Product name HealthConnect used consistently throughout",
+      "type": "file-contains",
+      "expected": ["HealthConnect"]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "eval_id": "eval-004",
+  "eval_name": "personas-food-delivery-app",
+  "prompt": "Create personas for a food delivery app called QuickBite that connects local restaurants with customers",
+  "assertions": [
+    {
+      "id": "persona-count",
+      "description": "Creates at least 3 distinct personas",
+      "type": "count",
+      "field": "personas",
+      "min": 3
+    },
+    {
+      "id": "persona-completeness",
+      "description": "Each persona includes profile, goals, frustrations, behavior patterns, and quote",
+      "type": "validation",
+      "rule": "complete-persona"
+    },
+    {
+      "id": "product-name-consistency",
+      "description": "Product name QuickBite used consistently throughout",
+      "type": "file-contains",
+      "expected": ["QuickBite"]
+    }
+  ]
+}

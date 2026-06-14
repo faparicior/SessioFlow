@@ -1,0 +1,184 @@
+{
+  "EVAL-001 (Product Vision - SessioFlow)": [
+    {
+      "text": "Elevator pitch completeness",
+      "passed": true,
+      "evidence": "Found 7/7"
+    },
+    {
+      "text": "Clear boundaries defined",
+      "passed": true,
+      "evidence": "Found 4/4"
+    },
+    {
+      "text": "Measurable goals defined",
+      "passed": true,
+      "evidence": "Found 4 goals"
+    }
+  ],
+  "EVAL-002 (Batch Generation - SessioFlow)": [
+    {
+      "text": "All 8 inception steps generated",
+      "passed": true,
+      "evidence": "Found 8 files"
+    },
+    {
+      "text": "Consistent product naming",
+      "passed": true,
+      "evidence": "SessioFlow mentioned 25 times"
+    }
+  ],
+  "EVAL-003 (Tradeoff Analysis - SessioFlow)": [
+    {
+      "text": "Multiple stakeholder perspectives",
+      "passed": true,
+      "evidence": "Found 4/4"
+    },
+    {
+      "text": "Strict 1-7 ranking (golden rule)",
+      "passed": true,
+      "evidence": "Golden rule validated"
+    },
+    {
+      "text": "Consensus reasoning provided",
+      "passed": true,
+      "evidence": "Found 4/3"
+    }
+  ],
+  "EVAL-004 (Personas - QuickBite)": [
+    {
+      "text": "At least 3 personas created",
+      "passed": true,
+      "evidence": "Found 3 personas"
+    },
+    {
+      "text": "Persona completeness",
+      "passed": true,
+      "evidence": "Found 5/5 sections"
+    },
+    {
+      "text": "Product name consistency",
+      "passed": true,
+      "evidence": "QuickBite found 6 times"
+    }
+  ],
+  "EVAL-005 (User Journey - HealthConnect)": [
+    {
+      "text": "At least 2 user journeys",
+      "passed": true,
+      "evidence": "Found 3 journeys"
+    },
+    {
+      "text": "Journey completeness",
+      "passed": true,
+      "evidence": "Found 4/4 sections"
+    },
+    {
+      "text": "Product name consistency",
+      "passed": true,
+      "evidence": "HealthConnect found 6 times"
+    }
+  ],
+  "EVAL-006 (Empathy Map - HomeHub)": [
+    {
+      "text": "All 4 empathy quadrants",
+      "passed": true,
+      "evidence": "Found 4/4 quadrants"
+    },
+    {
+      "text": "Elderly user focus",
+      "passed": true,
+      "evidence": "Found 4 elderly-related terms"
+    },
+    {
+      "text": "Product name consistency",
+      "passed": true,
+      "evidence": "HomeHub found 3 times"
+    }
+  ],
+  "EVAL-007 (Features - PayEasy)": [
+    {
+      "text": "Phased release plan",
+      "passed": true,
+      "evidence": "Found 4 phases"
+    },
+    {
+      "text": "Feature prioritization",
+      "passed": true,
+      "evidence": "Found 4 priority indicators"
+    },
+    {
+      "text": "Product name consistency",
+      "passed": true,
+      "evidence": "PayEasy found 28 times"
+    }
+  ],
+  "EVAL-008 (MVP Canvas - SkillUp)": [
+    {
+      "text": "MVP components included",
+      "passed": true,
+      "evidence": "Found 6/6 components"
+    },
+    {
+      "text": "Launch criteria included",
+      "passed": true,
+      "evidence": "Found 4 launch indicators"
+    },
+    {
+      "text": "Product name consistency",
+      "passed": true,
+      "evidence": "SkillUp found 55 times"
+    }
+  ],
+  "EVAL-009 (Product Vision - EcoTrack)": [
+    {
+      "text": "Elevator pitch completeness",
+      "passed": true,
+      "evidence": "Found 7/7"
+    },
+    {
+      "text": "Clear boundaries defined",
+      "passed": true,
+      "evidence": "Found 4/4"
+    },
+    {
+      "text": "Product name consistency",
+      "passed": true,
+      "evidence": "EcoTrack found 10 times"
+    }
+  ],
+  "EVAL-010 (Batch Generation - TaskFlow)": [
+    {
+      "text": "All 8 inception steps generated",
+      "passed": true,
+      "evidence": "Found 8 files"
+    },
+    {
+      "text": "Consistent product naming",
+      "passed": true,
+      "evidence": "TaskFlow mentioned 108 times"
+    }
+  ],
+  "EVAL-011 (Brainstorming - GreenSpace)": [
+    {
+      "text": "At least 20 feature ideas",
+      "passed": true,
+      "evidence": "Found 69 features"
+    },
+    {
+      "text": "Affinity grouping included",
+      "passed": true,
+      "evidence": "Found 3 grouping indicators"
+    },
+    {
+      "text": "Prioritization included",
+      "passed": true,
+      "evidence": "Found 4 priority indicators"
+    },
+    {
+      "text": "Product name consistency",
+      "passed": true,
+      "evidence": "GreenSpace found 10 times"
+    }
+  ]
+}

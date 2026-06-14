@@ -1,0 +1,6 @@
+{
+  "eval_id": "eval-010",
+  "eval_name": "batch-generation-taskflow",
+  "prompt": "Generate all inception steps for TaskFlow, a project management tool designed for remote teams with async communication features",
+  "assertions": []
+}

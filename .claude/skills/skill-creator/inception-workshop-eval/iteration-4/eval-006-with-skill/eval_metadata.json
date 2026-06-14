@@ -1,0 +1,25 @@
+{
+  "eval_id": "eval-006",
+  "eval_name": "empathy-map-elderly-smart-home",
+  "prompt": "Create an empathy map for elderly users (65+) trying to use a smart home device called HomeHub",
+  "assertions": [
+    {
+      "id": "empathy-quadrants",
+      "description": "Includes all 4 empathy quadrants (Says, Thinks, Does, Feels)",
+      "type": "file-contains",
+      "expected": ["SAYS", "THINKS", "DOES", "FEELS"]
+    },
+    {
+      "id": "elderly-focus",
+      "description": "Addresses specific concerns of elderly users (accessibility, usability)",
+      "type": "file-contains",
+      "expected": ["accessibility", "difficulty", "confusing", "help"]
+    },
+    {
+      "id": "product-name-consistency",
+      "description": "Product name HomeHub used consistently throughout",
+      "type": "file-contains",
+      "expected": ["HomeHub"]
+    }
+  ]
+}

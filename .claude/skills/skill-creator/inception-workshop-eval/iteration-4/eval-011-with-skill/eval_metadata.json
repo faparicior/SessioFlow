@@ -1,0 +1,32 @@
+{
+  "eval_id": "eval-011",
+  "eval_name": "brainstorming-step-independence",
+  "prompt": "Generate a brainstorming session for GreenSpace, a plant care app that helps users keep their houseplants healthy with reminders and care tips",
+  "assertions": [
+    {
+      "id": "feature-count",
+      "description": "Generates at least 20 feature ideas",
+      "type": "count",
+      "field": "features",
+      "min": 20
+    },
+    {
+      "id": "affinity-grouping",
+      "description": "Includes affinity grouping/categories for features",
+      "type": "file-contains",
+      "expected": ["Category", "Grouping", "Features"]
+    },
+    {
+      "id": "prioritization",
+      "description": "Includes MoSCoW or similar prioritization",
+      "type": "file-contains",
+      "expected": ["Must", "Should", "Could", "Won't", "Priority"]
+    },
+    {
+      "id": "product-name-consistency",
+      "description": "Product name GreenSpace used consistently",
+      "type": "file-contains",
+      "expected": ["GreenSpace"]
+    }
+  ]
+}

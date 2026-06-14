@@ -1,0 +1,6 @@
+{
+  "eval_id": "eval-007",
+  "eval_name": "features-sequencing-fintech-app",
+  "prompt": "Generate features and sequencing for a fintech app called PayEasy that helps users manage subscriptions and recurring payments",
+  "assertions": []
+}

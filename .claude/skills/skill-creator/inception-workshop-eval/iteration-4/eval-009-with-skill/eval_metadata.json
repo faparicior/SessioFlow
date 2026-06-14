@@ -1,0 +1,25 @@
+{
+  "eval_id": "eval-009",
+  "eval_name": "product-vision-carbon-tracking",
+  "prompt": "Start an inception workshop for EcoTrack, a carbon footprint tracking app for individuals and small businesses",
+  "assertions": [
+    {
+      "id": "elevator-pitch",
+      "description": "Includes complete elevator pitch with all 7 components",
+      "type": "file-contains",
+      "expected": ["For", "Who", "The Product", "Is a", "That", "Unlike", "Our Product"]
+    },
+    {
+      "id": "boundaries",
+      "description": "Defines clear IS/IS NOT and DOES/DOES NOT boundaries",
+      "type": "file-contains",
+      "expected": ["IS", "IS NOT", "DOES", "DOES NOT"]
+    },
+    {
+      "id": "product-name-consistency",
+      "description": "Product name EcoTrack used consistently throughout",
+      "type": "file-contains",
+      "expected": ["EcoTrack"]
+    }
+  ]
+}

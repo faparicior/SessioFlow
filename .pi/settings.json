@@ -1,5 +1,21 @@
 {
     "skills": [
         "../.claude/skills"
-    ]
+    ],
+    "subagents": {
+        "agentOverrides": {
+            "scout": {
+                "model": "xxxmodel"
+            },
+            "planner": {
+                "model": "xxxmodel"
+            },
+            "worker": {
+                "model": "xxxmodel"
+            },
+            "reviewer": {
+                "model": "xxxmodel"
+            }
+        }
+    }
 }

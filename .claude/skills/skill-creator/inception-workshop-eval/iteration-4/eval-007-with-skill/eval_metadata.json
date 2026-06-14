@@ -1,0 +1,25 @@
+{
+  "eval_id": "eval-007",
+  "eval_name": "features-sequencing-fintech-app",
+  "prompt": "Generate features and sequencing for a fintech app called PayEasy that helps users manage subscriptions and recurring payments",
+  "assertions": [
+    {
+      "id": "phased-plan",
+      "description": "Includes phased release plan with MVP, automation, and enhancement phases",
+      "type": "file-contains",
+      "expected": ["Phase", "MVP", "Week"]
+    },
+    {
+      "id": "prioritization",
+      "description": "Features are prioritized (P0, P1, P2 or Must/Should/Could)",
+      "type": "file-contains",
+      "expected": ["Priority", "P0", "P1", "Must"]
+    },
+    {
+      "id": "product-name-consistency",
+      "description": "Product name PayEasy used consistently throughout",
+      "type": "file-contains",
+      "expected": ["PayEasy"]
+    }
+  ]
+}

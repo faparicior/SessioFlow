@@ -1,0 +1,6 @@
+{
+  "eval_id": "eval-006",
+  "eval_name": "empathy-map-elderly-smart-home",
+  "prompt": "Create an empathy map for elderly users (65+) trying to use a smart home device called HomeHub",
+  "assertions": []
+}
