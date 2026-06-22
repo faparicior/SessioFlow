@@ -1,60 +1,140 @@
-# Inception Workshop Skill
+# Inception Workshop Agent Skill
 
-A pi skill for facilitating Lean Inception workshops through 8 structured steps.
+A platform-agnostic AI agent skill for facilitating Lean Inception workshops through 8 structured steps. This skill consists of templates, validators, and guidelines that enable any agentic software development environment (e.g., Claude Code, Cursor, Copilot, or Pi) to guide product discovery.
 
 ## Quick Start
 
-### Interactive Mode (Recommended)
+Since this skill is a collection of structured prompt definitions, templates, and reference validators, you can instruct any agentic development environment to execute it.
+
+### 1. In Claude Code, Cursor, or other AI Coding Agents
+
+Instruct your agent to execute the workshop using the files in this folder:
+
+*   **Interactive Facilitation (Step-by-Step)**:
+    > "Read the instructions in `.pi/skills/inception-workshop/SKILL.md` and facilitate Step 1 of the Lean Inception workshop."
+*   **Batch Mode (Automated Discovery)**:
+    > "Read `.pi/skills/inception-workshop/SKILL.md` and generate all 8 steps in batch mode for: [your product description]."
+*   **Tradeoff Debate Simulation (Step 2)**:
+    > "Read `.pi/skills/inception-workshop/SKILL.md` and run the tradeoff debate simulation based on the vision in `docs/inception/1-product-vision-and-boundaries.md`."
+
+### 2. In the Pi CLI Tool
+
+If you have the `pi` tool installed, you can use the built-in skill commands:
 
 ```bash
-# Start the facilitator
+# Start interactive facilitation from Step 1
 pi skill inception-workshop
 
-# Or run the script directly
-.pi/skills/inception-workshop/facilitator.sh
-```
-
-### Tradeoff Generator (Step 2 Special)
-
-```bash
-# Use AI debate to generate tradeoffs
-pi skill inception-workshop tradeoff
-
-# Or using the script
-.pi/skills/inception-workshop/facilitator.sh tradeoff
-```
-
-### Batch Mode
-
-```bash
-# Generate all steps automatically
+# Run batch generation for all 8 steps automatically
 pi skill inception-workshop batch "Your product description here"
+
+# Use AI debate simulation to generate tradeoffs (Step 2)
+pi skill inception-workshop tradeoff
 ```
 
 ## How It Works
 
-### Interactive Mode Flow
+### Inception Process & Workflow
 
+The Lean Inception workshop is a collaborative discovery process that aligns business goals and technical feasibility to define a Minimum Viable Product (MVP). This skill guides you through the 8 sequential steps, validates your outputs against strict quality criteria, and prepares your workspace for downstream development tasks.
+
+```mermaid
+flowchart TD
+    %% Styling Classes
+    classDef start fill:#f9f9fb,stroke:#cfd8dc,stroke-width:2px,color:#37474f,font-weight:bold;
+    classDef step fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px,color:#1a237e,font-weight:bold;
+    classDef process fill:#fffde7,stroke:#fbc02d,stroke-width:2px,color:#f57f17;
+    classDef decision fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px,color:#4a148c,font-weight:bold;
+    classDef output fill:#e8f5e9,stroke:#4caf50,stroke-width:2px,color:#2e7d32,font-weight:bold;
+    classDef mode fill:#e0f7fa,stroke:#00acc1,stroke-width:2px,color:#006064;
+
+    %% Entry Modes
+    Start([Start Lean Inception Workshop]):::start
+    Start --> ModeFacilitate["Interactive Mode<br/><code>--mode facilitate</code>"]:::mode
+    Start --> ModeBatch["Batch Mode<br/><code>--mode batch</code>"]:::mode
+    Start --> ModeTradeoff["Tradeoff Generator Mode<br/><code>--mode tradeoff-generator</code>"]:::mode
+
+    %% Inception Steps Sequence
+    subgraph WorkshopSteps["The 8 Lean Inception Steps"]
+        S1["Step 1: Product Vision & Boundaries<br/>(Vision pitch, IS/IS NOT/DOES/DOES NOT)"]:::step
+        S2["Step 2: Tradeoffs Board<br/>(Prioritize time, cost, simplicity, usability)"]:::step
+        S3["Step 3: User Personas<br/>(Profiles, pain points, motivations)"]:::step
+        S4["Step 4: Empathy Map<br/>(Say, think, do, feel)"]:::step
+        S5["Step 5: Feature Brainstorming<br/>(Persona-driven features)"]:::step
+        S6["Step 6: User Journey Mapping<br/>(Mapping features to user steps)"]:::step
+        S7["Step 7: Features & Sequencing<br/>(Release planning, waves & MVP cutoff)"]:::step
+        S8["Step 8: MVP Canvas<br/>(Consolidated strategic MVP blueprint)"]:::step
+
+        S1 --> S2
+        S2 --> S3
+        S3 --> S4
+        S4 --> S5
+        S5 --> S6
+        S6 --> S7
+        S7 --> S8
+    end
+
+    %% Interactive Loop per Step
+    ModeFacilitate --> S1
+    
+    subgraph StepLoop["Step Facilitation Loop"]
+        L_Load["1. Load template from templates/"]:::process
+        L_Create["2. Create/update draft in docs/inception/"]:::process
+        L_Edit["3. User fills out markdown file"]:::process
+        L_Validate["4. Run validation against quality criteria"]:::process
+        L_Check{"Is validation score >= 8.0?"}:::decision
+        L_Feedback["5. Provide feedback and review guidance"]:::process
+        L_Next["6. Mark complete & move to next step"]:::process
+
+        L_Load --> L_Create
+        L_Create --> L_Edit
+        L_Edit --> L_Validate
+        L_Validate --> L_Check
+        L_Check -- No --> L_Feedback
+        L_Feedback --> L_Edit
+        L_Check -- Yes --> L_Next
+    end
+
+    %% Mapping Step Execution to the loop (conceptual)
+    S1 -.-> |Loops per step| StepLoop
+    
+    %% AI Debate / Tradeoffs Special Mode
+    ModeTradeoff -->|AI Stakeholder Debate| S2
+    
+    %% Batch Mode Flow
+    ModeBatch -->|Auto-generate all| S1
+
+    %% Post-Inception Deliverables
+    S6 & S7 -->|generate-flows| FlowGen["Flow Specifications<br/>(Sequence, Flowchart & State diagrams)"]:::output
+    S8 -->|generate-adrs| ADRGen["Architectural Decisions (ADRs)<br/>docs/adr/0XX-*.md"]:::output
+    S8 --> DiscoveryDone([Discovery Phase Complete]):::start
 ```
-┌─────────────────────────────────────┐
-│  1. Agent creates template file     │
-└─────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────┐
-│  2. You fill the markdown file      │
-│     and commit to git               │
-└─────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────┐
-│  3. Agent validates against         │
-│     quality criteria                │
-└─────────────────────────────────────┘
-                 ↓
-┌─────────────────────────────────────┐
-│  4. If valid (≥8/10) → Next step   │
-│     If invalid → Provide feedback   │
-└─────────────────────────────────────┘
-```
+
+### Useful Information for Future Users
+
+To run the workshop successfully and ensure your documentation passes validation, please follow these guidelines and best practices:
+
+#### 1. Critical Quality Rules
+The facilitator uses strict validator files in `references/` to score your progress. Failing these rules will prevent you from moving to the next step:
+
+*   **Product Name Consistency (Step 1)**: Use the exact product name consistently throughout all files. After defining it in Step 1, you may use pronouns or "the platform" naturally, but do not alternate between different names (e.g., "SessioFlow" vs. "SessionFlow").
+*   **Boundary Definition Completeness (Step 1)**: You **must** define at least **4 items in each** of the four boundary columns: *IS*, *IS NOT*, *DOES*, and *DOES NOT*. This forces strict boundary mapping early on.
+*   **Tradeoff Board Constraints (Step 2)**: Standard prioritization uses a matrix of priorities (e.g., Cost, Usability, Scalability). Under the **Golden Rule**, you can have **exactly one checkmark (X) per priority column**. This enforces strict, un-compromised ranking (e.g., you cannot have two items marked as rank #1).
+
+#### 2. Process Scoring & Status
+Each step is evaluated on a 1-10 scale based on completeness, depth, and compliance with the validation checklist:
+*   **9.0 - 10.0 (Excellent)**: Automatically unlocked. Proceed directly to the next step.
+*   **8.0 - 8.9 (Good)**: Unlocked. Ready to proceed to the next step.
+*   **6.0 - 7.9 (Needs Work)**: Facilitator will give actionable feedback. Revise the file and type `ready` or run validate again.
+*   **Below 6.0 (Poor)**: Critical details are missing. High-priority feedback will be given; significant edits are required.
+
+#### 3. Post-Inception Integration
+A successful Lean Inception workshop creates a bridge directly to architecture and coding:
+*   **Flow Specifications**: Once you complete Step 6 (User Journey Mapping) and Step 7 (Sequencing), you can instruct your AI coding agent to generate flow specifications:
+    > "Read docs/inception/6-user-journey.md and docs/inception/7-features-and-sequencing.md. For each MVP feature, create a flow specification using docs/templates/product/flows.md."
+    *(If using the Pi CLI tool, you can also run `pi skill inception-workshop --mode generate-flows --from-step 6`)*. This will automatically map your user journeys into structured flows containing **Sequence Diagrams**, **Flowcharts**, and **State Lifecycle Diagrams**.
+*   **Architectural Decision Records (ADRs)**: Use the output of Step 8 (MVP Canvas) and the product vision boundaries to write formal [ADRs](file:///home/fernando/src/sessioflow/docs/commands/adr/1-generate-adrs-from-inception.md) documenting decisions like DB stack, state management, and framework choices.
+
 
 ## Usage
 
@@ -64,11 +144,8 @@ pi skill inception-workshop batch "Your product description here"
 # Start from Step 1
 pi skill inception-workshop
 
-# Start from a specific step
+# Start from a specific step (e.g., Step 6)
 pi skill inception-workshop 6
-
-# Using the script directly
-.pi/skills/inception-workshop/facilitator.sh
 ```
 
 ### Tradeoff Generator (Step 2 Special)
@@ -78,9 +155,6 @@ pi skill inception-workshop 6
 ```bash
 # Generate tradeoffs using AI debate
 pi skill inception-workshop tradeoff
-
-# Or using the script
-.pi/skills/inception-workshop/facilitator.sh tradeoff
 ```
 
 **What it does:**
@@ -98,9 +172,6 @@ pi skill inception-workshop tradeoff
 ```bash
 # Generate all 8 steps at once
 pi skill inception-workshop batch "SessioFlow: Call-for-Papers platform for event organizers"
-
-# Or using the script
-.pi/skills/inception-workshop/facilitator.sh batch "Your product context"
 ```
 
 ### Validate a Specific Step
@@ -108,9 +179,6 @@ pi skill inception-workshop batch "SessioFlow: Call-for-Papers platform for even
 ```bash
 # Validate Step 1
 pi skill inception-workshop validate 1
-
-# Or using the script
-.pi/skills/inception-workshop/facilitator.sh validate 1
 ```
 
 ## Step Reference
@@ -134,8 +202,15 @@ pi skill inception-workshop validate 1
 
 ## Integration with Flow Documentation
 
-After completing Step 6 (User Journey), you can automatically generate flow specifications:
+After completing Step 6 (User Journey) and Step 7 (Sequencing), you can generate detailed flow specifications by prompting your AI coding agent (or running the Pi CLI subagent):
 
+**AI Agent Prompt:**
+> "Read docs/inception/6-user-journey.md and docs/inception/7-features-and-sequencing.md. For each MVP feature, create a flow specification using docs/templates/product/flows.md. Make sure to:
+> 1. Include 3 diagrams (sequence, flowchart, state).
+> 2. Extract business rules and invariants.
+> 3. Save the outputs to docs/product/bounded-contexts/{context}/flows/"
+
+**Using Pi CLI Subagent:**
 ```bash
 pi subagent << 'EOF'
 Read docs/inception/6-user-journey.md and docs/inception/7-features-and-sequencing.md
@@ -161,9 +236,12 @@ EOF
 
 ### Tradeoff Generator (AI Debate Simulation)
 
-```
-> pi skill inception-workshop tradeoff
+**Prompt / CLI Command:**
+> "Run the tradeoff debate simulation using the vision in docs/inception/1-product-vision-and-boundaries.md"
+*(Or: `pi skill inception-workshop tradeoff`)*
 
+**Output:**
+```
 Skill: Tradeoff Generator (AI Debate Simulation)
 
 Reading: docs/inception/1-product-vision-and-boundaries.md
@@ -198,9 +276,12 @@ Ready to proceed to Step 3: Personas? (yes/no)
 
 ### Interactive Session
 
-```
-> pi skill inception-workshop
+**Prompt / CLI Command:**
+> "Facilitate Step 1 of the inception workshop"
+*(Or: `pi skill inception-workshop`)*
 
+**Output:**
+```
 🚀 Starting Step 1...
 
 ========================================
@@ -229,9 +310,12 @@ When ready for validation, type: ready
 
 ### Batch Mode Output
 
-```
-> pi skill inception-workshop batch "SessioFlow platform"
+**Prompt / CLI Command:**
+> "Generate all 8 steps of the Lean Inception workshop in batch mode for SessioFlow platform"
+*(Or: `pi skill inception-workshop batch "SessioFlow platform"`)*
 
+**Output:**
+```
 🤖 Batch Mode: Generating all 8 steps...
 
 Step 1: 1-product-vision-and-boundaries.md... ✓
