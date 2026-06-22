@@ -225,6 +225,7 @@ After generating all ADRs and updating the README, provide:
 ✅ **Think Holistically**: Consider how decisions interact (e.g., Next.js + Vercel alignment)
 ✅ **Be Specific**: Reference actual inception quotes (e.g., "Andrea often submits on the go")
 ✅ **Balance Depth & Pragmatism**: ADRs should be thorough but not over-engineered for MVP scope
+✅ **Think Holistically:** Consider how decisions interact across documents. No ADR should contradict another.
 
 ### DON'T
 ❌ **Don't introduce new requirements**: Only formalize what's implied by inception
