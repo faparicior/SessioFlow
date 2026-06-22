@@ -1,6 +1,6 @@
 # BDD Specifications Repository
 
-Comprehensive Behavior-Driven Development documentation for SessionFlow.
+Comprehensive Behavior-Driven Development documentation for SessioFlow.
 
 ---
 

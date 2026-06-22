@@ -52,7 +52,7 @@ Feature: Create Event Successfully
     And the slug should be generated as "annual-tech-conference-2024-{8-char-uuid}"
     And a unique public UUID should be assigned
     And the organizer should be redirected to the event dashboard
-    And the event should have status "draft"
+    And the event should have status "DRAFT"
     And default settings should be created with:
       | Setting | Value |
       | allow_co_speakers | false |
@@ -259,7 +259,7 @@ export interface Event {
   cfp_end_date: string;
   event_start_date: string;
   event_end_date: string;
-  status: 'draft' | 'cfp_open' | 'cfp_closed' | 'published' | 'archived';
+  status: 'DRAFT' | 'CFP_OPEN' | 'CFP_CLOSED' | 'REVIEWING' | 'SCHEDULED' | 'PUBLISHED' | 'COMPLETED' | 'DELETED';
   organizer_id: string;
   created_at: string;
   updated_at: string;
@@ -492,4 +492,4 @@ function CreateEventWizard() {
 
 **Estimated Effort**: 3 sprints (6 weeks) for 2 developers
 
-**Next Related Feature**: FEAT-002: Speaker Proposal Submission
+**Next Related Feature**: FEAT-002: User Authentication
