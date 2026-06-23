@@ -202,27 +202,38 @@ src/
 
 ## Related Documentation
 
-### Command Documents
-- [Generate ADRs from Inception](../commands/adr/1-generate-adrs-from-inception.md)
-- [Validate ADR Quality](../commands/adr/2-ADR-validator.md)
-- [Generate ADR Summary](../commands/adr/3-generate-adr-summary.md)
-- [Generate Traceability Matrix](../commands/adr/4-generate-traceability-matrix.md)
-- [Analyze ADR Alternatives](../commands/adr/5-analyze-adr-alternatives.md)
+### Command Documents & Skill
+The ADR workflow is managed via the `adr-manager` Pi Skill. The skill assets are located in:
+- **Skill Configuration & Guide**: [.pi/skills/adr-manager/](../../.pi/skills/adr-manager/)
+- **Command Guides (References)**: [.pi/skills/adr-manager/references/](../../.pi/skills/adr-manager/references/)
+- **Templates**: [.pi/skills/adr-manager/templates/](../../.pi/skills/adr-manager/templates/)
 
 ### Supporting Documents
 - [ADR Structure Guide](STRUCTURE.md)
-- [Template Directory](_templates/README.md)
 - [Analysis Reports](_reports/README.md)
 
 ---
 
-## Creating New ADRs
+## Creating & Managing ADRs
 
-1. Follow the workflow in `docs/commands/adr/0-ADR-WORKFLOW.md`
-2. Use the template: `cp _templates/TEMPLATE.md docs/adr/XXX-decision-name.md`
-3. Fill in the decision details following the template structure
-4. Validate using `TEMPLATE-ADR_VALIDATOR.md`
-5. Place in this directory with sequential numbering
+You can manage ADRs using conversational commands with the AI or the Pi CLI:
+
+1. **Activate the Skill**: Ask the AI: *"Create a new ADR using the adr-manager skill"* or run:
+   ```bash
+   pi skill adr-manager --mode generate
+   ```
+2. **Review & Validate**: Once drafted, validate it using:
+   ```bash
+   pi skill adr-manager --mode validate --file docs/adr/0XX-your-decision.md
+   ```
+3. **Propose an Amendment**: To modify or refine an existing active decision:
+   ```bash
+   pi skill adr-manager --mode amend --file docs/adr/0XX-your-decision.md
+   ```
+4. **Link & Index**: Run the index update to rebuild index tables and statistics:
+   ```bash
+   pi skill adr-manager --mode index
+   ```
 
 ### ADR Template Structure
 
