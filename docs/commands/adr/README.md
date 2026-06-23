@@ -14,12 +14,18 @@ When starting a project or a new phase, the base architecture is generated from 
 flowchart TD
     Inception["Lean Inception Artifacts\n(docs/inception/)"] --> CMD1["1. Generate ADRs\n(1-generate-adrs-from-inception.md)"]
     CMD1 --> CreateADR["Create / Modify ADRs\n(docs/adr/0XX-*.md)"]
+    
+    Challenge["Challenge to existing ADR\n(Change/Feedback)"] --> CMD7["7. Generate Amendment\n(7-generate-adr-amendment.md)"]
+    CMD7 --> CreateAmend["Create Amendment ADR\n(docs/adr/0XX-*-amendment.md)"]
+    
     CreateADR --> CMD2["2. Validate ADRs\n(2-ADR-validator.md)"]
+    CreateAmend --> CMD2
     
     CMD2 --> CheckQuality{"Quality >= Medium?"}
     CheckQuality -->|No| CreateADR
+    CheckQuality -->|No - Amendment| CreateAmend
     
-    CheckQuality -->|Yes| ApprovedADR["Validated ADRs"]
+    CheckQuality -->|Yes| ApprovedADR["Validated ADRs / Amendments"]
     
     ApprovedADR --> CMD6["6. Index ADR\n(6-update-adr-readme.md)"]
     ApprovedADR --> CMD3["3. Summarize\n(3-generate-adr-summary.md)"]
@@ -30,10 +36,16 @@ flowchart TD
     CMD4 --> Trace["Create\n_reports/TRACEABILITY_MATRIX.md"]
 
     style Inception fill:#f9f,stroke:#333,stroke-width:2px
+    style Challenge fill:#f9f,stroke:#333,stroke-width:2px
     style ApprovedADR fill:#bbf,stroke:#333,stroke-width:2px
     style README fill:#bfb,stroke:#333,stroke-width:1px
     style Summary fill:#bfb,stroke:#333,stroke-width:1px
     style Trace fill:#bfb,stroke:#333,stroke-width:1px
+
+    linkStyle 2 stroke:#ff9f43,stroke-width:2px,stroke-dasharray: 5 5;
+    linkStyle 3 stroke:#ff9f43,stroke-width:2px,stroke-dasharray: 5 5;
+    linkStyle 5 stroke:#ff9f43,stroke-width:2px,stroke-dasharray: 5 5;
+    linkStyle 8 stroke:#ff9f43,stroke-width:2px,stroke-dasharray: 5 5;
 ```
 
 *   **1. Generation**: Follow [1-generate-adrs-from-inception.md](./1-generate-adrs-from-inception.md) to draft ADRs from Lean Inception artifacts using `_templates/TEMPLATE.md`.
@@ -41,6 +53,8 @@ flowchart TD
 *   **3. Summarization**: Generate the overall system health report with [3-generate-adr-summary.md](./3-generate-adr-summary.md).
 *   **4. Traceability**: Create mappings between business requirements and technical choices with [4-generate-traceability-matrix.md](./4-generate-traceability-matrix.md).
 *   **6. Indexing**: Update status and indices in the main ADR catalog with [6-update-adr-readme.md](./6-update-adr-readme.md).
+*   **7. Amendments**: Propose, write, and index modifications to existing decisions with [7-generate-adr-amendment.md](./7-generate-adr-amendment.md).
+
 
 ---
 
@@ -90,11 +104,14 @@ flowchart TD
     
     Reps --> Decision{"Is a decision change\nrequired?"}
     
-    Decision -->|Yes| Change["1. Create new ADR (Proposed)\n2. Mark current ADR as Superseded\n3. Update docs/adr/README.md"]
+    Decision -->|Yes: Full Replacement| Replace["1. Create new ADR (Proposed)\n2. Mark current ADR as Superseded\n3. Update docs/adr/README.md"]
+    Decision -->|Yes: Refinement/Delta| Amend["1. Run 7-generate-adr-amendment.md\n2. Link headers (Amends/Amended By)\n3. Update docs/adr/README.md"]
     Decision -->|No| Keep["Document retention rationale\nin the report"]
 
     style Trigger fill:#f9f,stroke:#333,stroke-width:2px
     style Reps fill:#bfb,stroke:#333,stroke-width:1px
+
+    linkStyle 6 stroke:#ff9f43,stroke-width:2px,stroke-dasharray: 5 5;
 ```
 
 #### Triggers & Cadence:
@@ -142,6 +159,40 @@ docs/adr/_reports/
 1. **Create the replacement** (if applicable) as a new ADR in `Proposed` state, then transition to `Accepted`.
 2. **Update status**: Change the status of the original ADR to `Superseded` (referencing the new one, e.g., *"Superseded by ADR-015"*) or `Deprecated`.
 3. **Update the index**: Modify the table in [docs/adr/README.md](../../adr/README.md) reflecting the status change.
+
+### How to Challenge and Amend an Existing ADR
+When a decision needs to be modified or refined (e.g., adding an abstraction layer to mitigate vendor lock-in) rather than completely replaced, you create an **Amendment** rather than a full replacement.
+
+#### 1. Challenge & Propose
+*   Identify the original ADR number to challenge (e.g., `002` for Supabase).
+*   Create a new file in `docs/adr/` with the original number as prefix followed by `-amendment` (e.g., `docs/adr/002-supabase-backend-amendment-ddd-abstraction.md`).
+*   Copy `_templates/TEMPLATE.md` to format the amendment.
+
+#### 2. Link Header Metadata
+*   In the **new Amendment ADR** header, specify:
+    ```markdown
+    Amends: [ADR-002](002-use-supabase-for-backend-and-database.md)
+    Status: Proposed
+    ```
+*   In the **original ADR** header, add:
+    ```markdown
+    Amended By: [002-Amendment](002-supabase-backend-amendment-ddd-abstraction.md)
+    ```
+
+#### 3. Review & Validate
+*   Draft the context (what changed/the challenge), options considered, and chosen solution.
+*   Validate the amendment against [2-ADR-validator.md](./2-ADR-validator.md).
+
+#### 4. Accept & Summarize
+Once the amendment is approved:
+1.  Set the amendment status to `Accepted`.
+2.  Update the Quick Reference table in [docs/adr/README.md](../../adr/README.md) to index the amendment.
+3.  Add the amendment under its category section in the main index.
+4.  Update the **Statistics** block in `docs/adr/README.md`:
+    *   Increment the **Total ADRs** count.
+    *   Increment the **Amendments** count.
+    *   Update the "Last Updated" date.
+
 
 ### Common Development Scenarios
 
