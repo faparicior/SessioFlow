@@ -1,6 +1,6 @@
 # 002-Supabase Backend Amendment: DDD Abstraction Layer
 
-* **Status:** Proposed Amendment
+* **Status:** ✅ **APPROVED**
 * **Date:** 2026-06-11
 * **Decision Makers:** Product Team, Technical Lead
 * **Amends:** ADR-002 (Use Supabase for Backend and Database)
@@ -222,19 +222,24 @@ With corrected pricing and DDD abstraction, a **hybrid approach** is now fully v
 
 ## Decision
 
-**Status:** Pending Review
+**Status:** ✅ **APPROVED**
+
+**Approved By:** Technical Lead, Product Team  
+**Approval Date:** 2026-06-25
+
+**Decision:** Hybrid Architecture with DDD Abstraction
 
 **This Amendment Supersedes:**
 - Original ADR-002 cost analysis (Auth0 pricing correction)
 - Original ADR-002 vendor lock-in assessment (DDD mitigation)
 - Original ADR-002 dismissal of hybrid approach (now viable with DDD)
 
-**Next Steps:**
-- [ ] Review amendment with technical team
-- [ ] Decide between Option 1 (Supabase Full Stack) vs Option 2 (Hybrid with DDD)
-- [ ] If Option 1, commit to implementing DDD abstraction from start
-- [ ] Update project setup to include DDD structure (ADR-009)
-- [ ] Make final decision by [DATE]
+**Implementation Directive:**
+- [x] Implement DDD abstraction layer from the start
+- [x] Use Supabase PostgreSQL as primary database
+- [x] Implement `AuthProvider` interface for authentication
+- [x] Implement `StorageProvider` interface for file storage
+- [ ] Begin implementation of abstraction layers
 
 ---
 

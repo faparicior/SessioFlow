@@ -1,6 +1,6 @@
 # 005-Supabase Storage Amendment: DDD Abstraction
 
-* **Status:** Proposed Amendment
+* **Status:** ✅ **APPROVED**
 * **Date:** 2026-06-11
 * **Decision Makers:** Product Team, Technical Lead
 * **Amends:** ADR-005 (Use Supabase Storage for Files)
@@ -27,7 +27,7 @@ The original ADR-005 assumed:
 ### New Reality with DDD Abstraction
 
 With ADR-002b's DDD pattern:
-- **All file operations** flow through `IStorageProvider` interface
+- **All file operations** flow through `StorageProvider` interface
 - **Supabase Storage** becomes one implementation (adapter)
 - **Migration cost** reduced from 52-112 hours to 8-14 hours
 - **Provider independence** - can swap to Cloudflare R2, MinIO, or AWS S3
@@ -61,14 +61,14 @@ With DDD abstraction (ADR-002b), the storage strategy provides optimal flexibili
 │  - UploadProfilePhotoUseCase                            │
 │  - GetProfilePhotoUrlUseCase                            │
 │  - DeleteFileUseCase                                    │
-│  - Depends only on: IStorageProvider interface          │
+│  - Depends only on: StorageProvider interface          │
 └─────────────────────────────────────────────────────────┘
                          ▲
                          │ depends on abstraction
                          │
 ┌────────────────────────┴─────────────────────────────────┐
 │  Domain Layer (Port)                                      │
-│  - IStorageProvider interface                             │
+│  - StorageProvider interface                             │
 │  - File metadata (FileId, ContentType, Size)             │
 │  - UploadResult, FileUrl value objects                    │
 └────────────────────────┬─────────────────────────────────┘
@@ -145,11 +145,11 @@ export interface StorageProvider {
 ```typescript
 // infrastructure/external/supabase-storage-adapter.ts
 import { 
-  IStorageProvider, 
+  StorageProvider, 
   FileMetadata,
   UploadFileRequest,
   UploadFileResult 
-} from '@/domains/storage/repositories/i-storage-provider';
+} from '@/domains/storage/repositories/storage-provider';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -253,11 +253,11 @@ export class SupabaseStorageAdapter implements StorageProvider {
 ```typescript
 // infrastructure/external/cloudflare-r2-adapter.ts
 import { 
-  IStorageProvider, 
+  StorageProvider, 
   FileMetadata,
   UploadFileRequest,
   UploadFileResult 
-} from '@/domains/storage/repositories/i-storage-provider';
+} from '@/domains/storage/repositories/storage-provider';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
@@ -429,15 +429,15 @@ export class UploadProfilePhotoUseCase {
 
 ```typescript
 // app/config/storage-config.ts
-import { IStorageProvider } from '@/domains/storage/repositories/i-storage-provider';
+import { StorageProvider } from '@/domains/storage/repositories/storage-provider';
 import { SupabaseStorageAdapter } from '@/infrastructure/external/supabase-storage-adapter';
 
 // Current implementation
-export const storageProvider: IStorageProvider = new SupabaseStorageAdapter();
+export const storageProvider: StorageProvider = new SupabaseStorageAdapter();
 
 // Future migration: Just change this one line
-// export const storageProvider: IStorageProvider = new CloudflareR2Adapter();
-// export const storageProvider: IStorageProvider = new MinioAdapter();
+// export const storageProvider: StorageProvider = new CloudflareR2Adapter();
+// export const storageProvider: StorageProvider = new MinioAdapter();
 ```
 
 ---
@@ -482,7 +482,7 @@ export const storageProvider: IStorageProvider = new SupabaseStorageAdapter();
 - S3-compatible API
 
 **Effort:** 8-14 hours
-1. Create `CloudflareR2Adapter` implementing `IStorageProvider` (4-6 hours)
+1. Create `CloudflareR2Adapter` implementing `StorageProvider` (4-6 hours)
 2. Update composition root (0.5 hours)
 3. Migrate existing files (2-3 hours)
 4. Test new provider (2-3 hours)
@@ -499,7 +499,7 @@ export const storageProvider: IStorageProvider = new SupabaseStorageAdapter();
 **Trigger:** Need full data control for self-hosted deployments
 
 **Effort:** 8-14 hours
-1. Create `MinioAdapter` implementing `IStorageProvider` (4-6 hours)
+1. Create `MinioAdapter` implementing `StorageProvider` (4-6 hours)
 2. Update composition root (0.5 hours)
 3. Test new provider (2-3 hours)
 4. Deploy (0.5 hours)
@@ -546,19 +546,24 @@ export const storageProvider: IStorageProvider = new SupabaseStorageAdapter();
 
 ## Decision
 
-**Status:** Pending Review
+**Status:** ✅ **APPROVED**
+
+**Approved By:** Technical Lead, Product Team  
+**Approval Date:** 2026-06-25
+
+**Decision:** Storage with DDD Abstraction
 
 **This Amendment Supersedes:**
 - Original ADR-005 assumption of tight Supabase Storage coupling
 - Migration cost estimates (updated from 52-112 hours to 8-14 hours)
 - Vendor lock-in assessment (reduced from High to Low)
 
-**Next Steps:**
-- [ ] Review with technical team
-- [ ] Approve DDD abstraction pattern for storage
-- [ ] Implement `IStorageProvider` interface
-- [ ] Create SupabaseStorageAdapter
-- [ ] Document migration procedures
+**Implementation Directive:**
+- [x] Implement `StorageProvider` interface as the storage port
+- [x] Create vendor-specific adapters (SupabaseStorageAdapter, CloudflareR2Adapter, etc.)
+- [x] All file operations must go through the abstraction
+- [x] Application layer depends only on `StorageProvider` interface
+- [ ] Begin implementation of storage abstraction
 
 ---
 
@@ -569,10 +574,10 @@ export const storageProvider: IStorageProvider = new SupabaseStorageAdapter();
 ```typescript
 // tests/unit/storage/upload-profile-photo.test.ts
 import { UploadProfilePhotoUseCase } from '@/application/storage/upload-profile-photo-use-case';
-import { IStorageProvider, UploadFileRequest, UploadFileResult } from '@/domains/storage/repositories/i-storage-provider';
+import { StorageProvider, UploadFileRequest, UploadFileResult } from '@/domains/storage/repositories/storage-provider';
 
 // Mock provider for testing
-class MockStorageProvider implements IStorageProvider {
+class MockStorageProvider implements StorageProvider {
   uploadCalls: UploadFileRequest[] = [];
   
   async upload(request: UploadFileRequest): Promise<UploadFileResult> {

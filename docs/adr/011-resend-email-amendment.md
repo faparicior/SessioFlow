@@ -1,6 +1,6 @@
 # 011-Resend Email Amendment: Optional Abstraction
 
-* **Status:** Proposed Amendment (Optional)
+* **Status:** ✅ **APPROVED (Optional)**
 * **Date:** 2026-06-11
 * **Decision Makers:** Product Team, Technical Lead
 * **Amends:** ADR-011 (Use Resend for Email Communications)
@@ -70,14 +70,14 @@ The original ADR-011 selected Resend for email communications with:
 │  - SendWelcomeEmailUseCase                              │
 │  - SendProposalNotificationUseCase                      │
 │  - SendStatusUpdateUseCase                              │
-│  - Depends only on: IEmailProvider interface            │
+│  - Depends only on: EmailProvider interface            │
 └─────────────────────────────────────────────────────────┘
                          ▲
                          │ depends on abstraction
                          │
 ┌────────────────────────┴─────────────────────────────────┐
 │  Domain Layer (Port)                                      │
-│  - IEmailProvider interface                               │
+│  - EmailProvider interface                               │
 │  - Email message (To, From, Subject, Body, Attachments)  │
 │  - EmailResult (sentAt, messageId)                        │
 └────────────────────────┬─────────────────────────────────┘
@@ -154,12 +154,12 @@ export interface EmailProvider {
 ```typescript
 // infrastructure/external/resend-email-adapter.ts
 import { 
-  IEmailProvider, 
+  EmailProvider, 
   EmailMessage,
   EmailSendResult,
   EmailAddress,
   EmailAttachment 
-} from '@/domains/email/repositories/i-email-provider';
+} from '@/domains/email/repositories/email-provider';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -267,10 +267,10 @@ export class ResendEmailAdapter implements EmailProvider {
 ```typescript
 // infrastructure/external/sendgrid-email-adapter.ts
 import { 
-  IEmailProvider, 
+  EmailProvider, 
   EmailMessage,
   EmailSendResult 
-} from '@/domains/email/repositories/i-email-provider';
+} from '@/domains/email/repositories/email-provider';
 import { SendGridMail, SendGrid } from '@sendgrid/mail';
 
 SendGridMail.setApiKey(process.env.SENDGRID_API_KEY!);
@@ -393,15 +393,15 @@ export class SendProposalNotificationUseCase {
 
 ```typescript
 // app/config/email-config.ts
-import { IEmailProvider } from '@/domains/email/repositories/i-email-provider';
+import { EmailProvider } from '@/domains/email/repositories/email-provider';
 import { ResendEmailAdapter } from '@/infrastructure/external/resend-email-adapter';
 
 // Current implementation
-export const emailProvider: IEmailProvider = new ResendEmailAdapter();
+export const emailProvider: EmailProvider = new ResendEmailAdapter();
 
 // Future migration: Just change this one line
-// export const emailProvider: IEmailProvider = new SendGridEmailAdapter();
-// export const emailProvider: IEmailProvider = new MailgunEmailAdapter();
+// export const emailProvider: EmailProvider = new SendGridEmailAdapter();
+// export const emailProvider: EmailProvider = new MailgunEmailAdapter();
 ```
 
 ---
@@ -445,7 +445,7 @@ export const emailProvider: IEmailProvider = new ResendEmailAdapter();
 - Consistency with auth/storage patterns desired
 
 **Migration Cost (If Added Later):**
-- Create `IEmailProvider` interface: 2-3 hours
+- Create `EmailProvider` interface: 2-3 hours
 - Create Resend adapter: 2-3 hours
 - Create alternative adapter: 4-6 hours
 - Update composition root: 0.5 hours
@@ -480,26 +480,31 @@ export const emailProvider: IEmailProvider = new ResendEmailAdapter();
 
 ## Decision
 
-**Status:** Optional - Pending Review
+**Status:** ✅ **APPROVED (Optional)**
+
+**Approved By:** Technical Lead, Product Team  
+**Approval Date:** 2026-06-25
+
+**Decision:** Email Abstraction - Deferred Implementation
 
 **Recommendation:** **Defer email abstraction until needed**
 
 **Rationale:**
 - Lower priority than auth and storage abstractions
 - Resend free tier sufficient for MVP
-- Can be added later with minimal cost
+- Can be added later with minimal cost (~15 hours)
 - Saves 10 hours for MVP timeline
 
-**If Approved:**
-- [ ] Implement `IEmailProvider` interface
-- [ ] Create ResendEmailAdapter
-- [ ] Update application services to use abstraction
-- [ ] Write tests with mock provider
-
-**If Deferred:**
-- [ ] Document the option for future implementation
+**Implementation Directive:**
+- [ ] **DEFERRED:** Do NOT implement email abstraction during MVP
+- [ ] Use Resend directly for MVP email functionality
+- [ ] Document the `EmailProvider` interface pattern for future use
 - [ ] Monitor email volume and costs
-- [ ] Re-evaluate post-MVP if needed
+- [ ] Re-evaluate post-MVP if any triggers are met:
+  - [ ] Resend pricing changes unfavorably
+  - [ ] Volume exceeds free tier consistently
+  - [ ] Need for A/B testing email providers
+  - [ ] Desire for architectural consistency
 
 ---
 

@@ -10,21 +10,21 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 |---|----------|--------|------|
 | [001](001-use-nextjs-as-frontend-framework.md) | Use Next.js as Frontend Framework | Proposed | 2026-06-05 |
 | [002](002-use-supabase-for-backend-and-database.md) | Use Supabase for Backend and Database | Proposed | 2026-06-05 |
-| [002-Amendment](002-supabase-backend-amendment-ddd-abstraction.md) | **Amendment: DDD Abstraction Layer** | Proposed | 2026-06-11 |
+| [002-Amendment](002-supabase-backend-amendment-ddd-abstraction.md) | **Amendment: DDD Abstraction Layer** | ✅ **Approved** | 2026-06-11 |
 | [002a](_to-discuss/002a-supabase-vendor-lock-in-alternatives.md) | Supabase Vendor Lock-in Alternatives | Under Discussion | 2026-06-09 |
 | [002b](_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md) | **Authentication Strategy with DDD** | Under Discussion | 2026-06-11 |
 | [003](003-use-docker-compose-for-deployment.md) | Use Docker Compose for Deployment | Proposed | 2026-06-05 |
 | [004](004-implement-magic-link-authentication.md) | Implement Magic Link Authentication | Proposed | 2026-06-05 |
-| [004-Amendment](004-magic-link-authentication-amendment.md) | **Amendment: Auth with DDD Abstraction** | Proposed | 2026-06-11 |
+| [004-Amendment](004-magic-link-authentication-amendment.md) | **Amendment: Auth with DDD Abstraction** | ✅ **Approved** | 2026-06-11 |
 | [005](005-use-supabase-storage-for-files.md) | Use Supabase Storage for Files | Proposed | 2026-06-05 |
-| [005-Amendment](005-supabase-storage-amendment.md) | **Amendment: Storage with DDD Abstraction** | Proposed | 2026-06-11 |
+| [005-Amendment](005-supabase-storage-amendment.md) | **Amendment: Storage with DDD Abstraction** | ✅ **Approved** | 2026-06-11 |
 | [006](006-use-restful-api-design.md) | Use RESTful API Design | Proposed | 2026-06-05 |
 | [007](007-use-zod-for-validation.md) | Use Zod for Validation | Proposed | 2026-06-05 |
 | [008](008-implement-comprehensive-testing-strategy.md) | Implement Comprehensive Testing Strategy | Proposed | 2026-06-05 |
 | [009](009-adopt-domain-driven-design-structure.md) | Adopt Domain-Driven Design Structure | Proposed | 2026-06-06 |
 | [010](010-use-tailwind-css-for-styling.md) | Use Tailwind CSS for Styling | Proposed | 2026-06-05 |
 | [011](011-use-resend-for-email-communications.md) | Use Resend for Email Communications | Proposed | 2026-06-05 |
-| [011-Amendment](011-resend-email-amendment.md) | **Amendment: Optional Email Abstraction** | Optional | 2026-06-11 |
+| [011-Amendment](011-resend-email-amendment.md) | **Amendment: Optional Email Abstraction** | ✅ **Approved (Optional)** | 2026-06-11 |
 | [012](012-implement-ci-cd-with-github-actions.md) | Implement CI/CD with GitHub Actions | Proposed | 2026-06-05 |
 | [013](013-adopt-typescript-with-strict-mode.md) | Adopt TypeScript with Strict Mode | Proposed | 2026-06-05 |
 | [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | Proposed | 2026-06-05 |

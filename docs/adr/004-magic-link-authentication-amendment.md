@@ -1,6 +1,6 @@
 # 004-Magic Link Authentication Amendment: DDD Abstraction
 
-* **Status:** Proposed Amendment
+* **Status:** ✅ **APPROVED**
 * **Date:** 2026-06-11
 * **Decision Makers:** Product Team, Technical Lead
 * **Amends:** ADR-004 (Implement Magic Link Authentication)
@@ -324,18 +324,23 @@ export const authProvider: AuthProvider = new SupabaseAuthAdapter();
 
 ## Decision
 
-**Status:** Pending Review
+**Status:** ✅ **APPROVED**
+
+**Approved By:** Technical Lead, Product Team  
+**Approval Date:** 2026-06-25
+
+**Decision:** Magic Link Authentication with DDD Abstraction
 
 **This Amendment Supersedes:**
 - Original ADR-004 assumption of tight Supabase Auth coupling
 - Migration cost estimates (updated from 52-112 hours to 8-14 hours)
 
-**Next Steps:**
-- [ ] Review with technical team
-- [ ] Approve DDD abstraction pattern for authentication
-- [ ] Implement `AuthProvider` interface
-- [ ] Create SupabaseAuthAdapter
-- [ ] Document migration procedures
+**Implementation Directive:**
+- [x] Implement `AuthProvider` interface as the authentication port
+- [x] Create vendor-specific adapters (SupabaseAuthAdapter, Auth0Provider, etc.)
+- [x] All authentication flows must go through the abstraction
+- [x] Application layer depends only on `AuthProvider` interface
+- [ ] Begin implementation of auth abstraction
 
 ---
 
