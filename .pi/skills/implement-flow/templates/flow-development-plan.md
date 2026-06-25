@@ -9,7 +9,7 @@
 
 ## 🎯 Overview
 
-This document outlines the development plan for implementing **[Flow Name]** in SessioFlow.
+This document outlines the development plan for implementing **[Flow Name]**.
 
 **Flow Description:** [Brief description of the user journey or flow]
 
@@ -24,17 +24,15 @@ This document outlines the development plan for implementing **[Flow Name]** in 
 
 ---
 
-## 📋 Prerequisites (Already Decided in ADRs)
+## 📋 Prerequisites
+
+*Note: Add relevant ADRs that apply to this flow/feature.*
 
 | ADR | Decision | Status | Impact |
 |-----|----------|--------|--------|
-| 001 | Next.js (App Router) | ✅ Approved | Frontend framework |
-| 002-01 | Supabase with DDD Abstraction | ✅ Approved | Database backend |
-| 006 | RESTful API Design | ✅ Approved | API structure |
-| 007 | Zod Validation | ✅ Approved | Input validation |
-| 008 | Comprehensive Testing | ✅ Approved | Testing strategy |
-| 009 | Domain-Driven Design | ✅ Approved | Project structure |
-| 013 | TypeScript Strict Mode | ✅ Approved | Type safety |
+| [ADR-XXX] | [Decision name] | ✅ Approved | [Impact area] |
+| [ADR-XXX] | [Decision name] | ✅ Approved | [Impact area] |
+| [ADR-XXX] | [Decision name] | ✅ Approved | [Impact area] |
 
 ---
 

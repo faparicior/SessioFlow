@@ -66,7 +66,7 @@ This skill guides feature implementation through flow-driven analysis, planning,
 
 **Purpose:** Define individual feature requirements, implementation scope, and acceptance criteria within a flow.
 
-**Template:** `.pi/skills/implement-flow/templates/feature-spec.md`
+**Template:** `.pi/skills/implement-flow/templates/feature-specification.md`
 
 ---
 
@@ -87,6 +87,10 @@ This skill guides feature implementation through flow-driven analysis, planning,
 | Flow Documentation | `docs/product/bounded-contexts/[context]/flows/[flow-name].md` |
 | AGENTS.md | **Project conventions and quality standards** |
 | ADRs | `docs/adr/` - Architectural decisions |
+
+**Templates:**
+- Flow Plan Template: `.pi/skills/implement-flow/templates/flow-development-plan.md`
+- Feature Spec Template: `.pi/skills/implement-flow/templates/feature-specification.md`
 
 **Reference**: See AGENTS.md for code style, testing guidelines, and definition of done.
 
