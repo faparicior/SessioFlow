@@ -1,6 +1,6 @@
 # 002b-Authentication Strategy and Vendor Abstraction
 
-* **Status:** Under Discussion
+* **Status:** ✅ **ACCEPTED**
 * **Date:** 2026-06-11
 * **Decision Makers:** Product Team, Technical Lead
 * **Related:** ADR-002 (Supabase Backend), ADR-002a (Supabase Vendor Lock-in Alternatives), **ADR-009 (Domain-Driven Design Structure)**
@@ -567,14 +567,27 @@ For SessioFlow's MVP goals (6-week timeline, $0 budget, vendor independence):
 
 ## Decision
 
-**Status:** Pending Discussion
+**Status:** ✅ **ACCEPTED**
 
-**Next Steps:**
-- [ ] Review with technical team
-- [ ] Assess team's DDD/hexagonal architecture experience
-- [ ] Decide on initial auth provider (Auth0 vs self-hosted)
-- [ ] Create `AuthProvider` interface specification
-- [ ] Make final decision by [DATE]
+**Approved By:** Technical Lead, Product Team  
+**Approval Date:** 2026-06-25
+
+**Decision:** Auth0 with DDD Abstraction
+
+**Rationale:**
+1. **Speed:** 30-minute setup vs 2-4 weeks for self-hosted authentication
+2. **Free Tier:** 25,000 MAU (sufficient for MVP)
+3. **Security:** Enterprise-grade (SOC2, HIPAA, GDPR) without security expertise required
+4. **Internet Available:** Team can work with cloud services
+5. **Vendor Independence:** DDD abstraction enables migration to NextAuth or other providers in 8-14 hours
+
+**Implementation Directive:**
+- [x] Implement `AuthProvider` interface as the authentication port
+- [x] Create Auth0Provider adapter as initial implementation
+- [x] All authentication flows must go through the abstraction
+- [x] Application layer depends only on `AuthProvider` interface
+- [x] Document migration procedures to NextAuth or other providers if needed
+- [ ] Begin implementation of auth abstraction
 
 ---
 

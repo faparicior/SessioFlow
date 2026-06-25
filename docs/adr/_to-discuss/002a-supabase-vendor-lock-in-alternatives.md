@@ -1,6 +1,6 @@
 # 002a-Supabase Vendor Lock-in and Self-Hosted Alternatives
 
-* **Status:** Under Discussion
+* **Status:** ✅ **ACCEPTED**
 * **Date:** 2026-06-09
 * **Decision Makers:** Product Team, Technical Lead
 * **Supersedes:** ADR-002 (Use Supabase for Backend and Database)
@@ -479,10 +479,23 @@ class PostgresEventRepository implements EventRepository {
 
 ## Decision
 
-**Status:** Pending Discussion
+**Status:** ✅ **ACCEPTED**
 
-**Next Steps:**
-- [ ] Review with technical team
-- [ ] Assess team's DevOps capabilities
-- [ ] Evaluate MVP timeline constraints
-- [ ] Make final decision by [DATE]
+**Approved By:** Technical Lead, Product Team  
+**Approval Date:** 2026-06-25
+
+**Decision:** Supabase PostgreSQL with DDD Abstraction Layer
+
+**Rationale:**
+1. **Speed to Market:** Supabase provides complete backend in 1-2 weeks vs 4-6 weeks for self-hosted
+2. **Local Development:** Excellent support via Supabase CLI and Docker
+3. **Cost:** $0/month free tier (500MB DB, 50K MAU, 1GB storage)
+4. **Vendor Independence:** DDD abstraction reduces migration cost from 156-336 hours to 24-42 hours
+5. **Internet Available:** Team can work with cloud services (not restricted to offline-only)
+
+**Implementation Directive:**
+- [x] Use Supabase PostgreSQL as primary database
+- [x] Implement DDD abstraction layer for database access
+- [x] Create repository interfaces for all data access
+- [x] Document migration procedures to self-hosted PostgreSQL if needed
+- [ ] Begin implementation of database abstraction

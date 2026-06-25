@@ -11,8 +11,8 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [001](001-use-nextjs-as-frontend-framework.md) | Use Next.js as Frontend Framework | Proposed | 2026-06-05 |
 | [002](002-use-supabase-for-backend-and-database.md) | Use Supabase for Backend and Database | Proposed | 2026-06-05 |
 | [002-Amendment](002-supabase-backend-amendment-ddd-abstraction.md) | **Amendment: DDD Abstraction Layer** | ✅ **Approved** | 2026-06-11 |
-| [002a](_to-discuss/002a-supabase-vendor-lock-in-alternatives.md) | Supabase Vendor Lock-in Alternatives | Under Discussion | 2026-06-09 |
-| [002b](_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md) | **Authentication Strategy with DDD** | Under Discussion | 2026-06-11 |
+| [002a](_to-discuss/002a-supabase-vendor-lock-in-alternatives.md) | Supabase Vendor Lock-in Alternatives | ✅ **Accepted** | 2026-06-09 |
+| [002b](_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md) | **Authentication Strategy with DDD** | ✅ **Accepted** | 2026-06-11 |
 | [003](003-use-docker-compose-for-deployment.md) | Use Docker Compose for Deployment | Proposed | 2026-06-05 |
 | [004](004-implement-magic-link-authentication.md) | Implement Magic Link Authentication | Proposed | 2026-06-05 |
 | [004-Amendment](004-magic-link-authentication-amendment.md) | **Amendment: Auth with DDD Abstraction** | ✅ **Approved** | 2026-06-11 |
@@ -266,36 +266,33 @@ Each ADR follows this structure:
 
 ## Key Decisions Summary
 
-### For New Developers
+### Final Architecture Stack (Approved 2026-06-25)
 
-**Start Here:**
-1. **ADR-009**: Understand the DDD architecture
-2. **ADR-002 + Amendment**: Learn about database and vendor abstraction
-3. **ADR-002b**: Understand authentication strategy
-4. **ADR-004 Amendment**: Auth implementation details
-5. **ADR-005 Amendment**: Storage implementation details
+**Database:** Supabase PostgreSQL with DDD Abstraction
+- Free Tier: 500MB DB, 50K MAU, 1GB Storage
+- Local Dev: Supabase CLI + Docker
+- Migration Cost: 8-14 hours
 
-**Quick Facts:**
-- Frontend: Next.js with TypeScript
-- Backend: Supabase PostgreSQL (or swappable alternative)
-- Auth: Auth0 with DDD abstraction (swappable to NextAuth)
-- Storage: Supabase Storage with DDD abstraction (swappable to R2)
-- Architecture: Domain-Driven Design
-- Testing: Vitest + Playwright
+**Authentication:** Auth0 with DDD Abstraction
+- Free Tier: 25,000 MAU
+- Setup: 30 minutes
+- Migration Cost: 8-14 hours
 
-### For Technical Decision Makers
+**Storage:** Cloudflare R2 with DDD Abstraction
+- Free Tier: 10GB, NO egress fees
+- Local Dev: MinIO for testing
+- Migration Cost: 8-14 hours
 
-**Critical Decisions:**
-- **ADR-002b**: Authentication strategy with DDD abstraction (85% migration cost reduction)
-- **ADR-002 Amendment**: Updated Supabase decision with DDD mitigation
-- **ADR-004 Amendment**: Auth implementation with abstraction
-- **ADR-005 Amendment**: Storage implementation with abstraction
-- **ADR-009**: DDD architecture for long-term maintainability
+**Email:** Resend (abstraction optional)
+- Free Tier: 3,000 emails/month
+- Abstraction: Deferred until needed
 
-**Trade-offs Considered:**
-- Speed vs. Flexibility (Auth0 vs. Self-hosted)
-- Vendor Lock-in vs. Development Time (Supabase vs. Hybrid)
-- Complexity vs. Maintainability (DDD vs. Simpler patterns)
+**Architecture:** DDD with Ports & Adapters
+- Reduces migration cost by 85%
+- All external dependencies swappable
+- Consistent pattern across all layers
+
+**Total MVP Cost:** $0/month
 
 ---
 
