@@ -255,46 +255,14 @@ Each ADR follows this structure:
 | Metric | Count |
 |--------|-------|
 | **Total ADRs** | 20 (including amendments and discussions) |
-| **Proposed** | 14 |
-| **Under Discussion** | 2 |
+| **Proposed** | 10 |
+| **Accepted** | 6 |
 | **Amendments** | 4 |
 | **Optional** | 1 |
-| **Date Range** | 2026-06-05 to 2026-06-11 |
+| **Date Range** | 2026-06-05 to 2026-06-25 |
 | **Most Active Category** | Core Technology Stack (6 decisions) |
 
 ---
 
-## Key Decisions Summary
-
-### Final Architecture Stack (Approved 2026-06-25)
-
-**Database:** Supabase PostgreSQL with DDD Abstraction
-- Free Tier: 500MB DB, 50K MAU, 1GB Storage
-- Local Dev: Supabase CLI + Docker
-- Migration Cost: 8-14 hours
-
-**Authentication:** Auth0 with DDD Abstraction
-- Free Tier: 25,000 MAU
-- Setup: 30 minutes
-- Migration Cost: 8-14 hours
-
-**Storage:** Cloudflare R2 with DDD Abstraction
-- Free Tier: 10GB, NO egress fees
-- Local Dev: MinIO for testing
-- Migration Cost: 8-14 hours
-
-**Email:** Resend (abstraction optional)
-- Free Tier: 3,000 emails/month
-- Abstraction: Deferred until needed
-
-**Architecture:** DDD with Ports & Adapters
-- Reduces migration cost by 85%
-- All external dependencies swappable
-- Consistent pattern across all layers
-
-**Total MVP Cost:** $0/month
-
----
-
-**Last Updated**: 2026-06-11
+**Last Updated**: 2026-06-25
 **Maintained By**: Technical Team

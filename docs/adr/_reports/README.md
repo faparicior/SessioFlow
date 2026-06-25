@@ -10,6 +10,7 @@ This directory contains generated reports and analysis documents for Architectur
 | [`TRACEABILITY_MATRIX.md`](./TRACEABILITY_MATRIX.md) | Maps ADRs to business requirements | After ADR generation |
 | [`ADR_ALTERNATIVES_ANALYSIS.md`](./ADR_ALTERNATIVES_ANALYSIS.md) | Comprehensive analysis of ADR alternatives | Every 6-12 months |
 | [`EXECUTIVE_SUMMARY.md`](./EXECUTIVE_SUMMARY.md) | High-level summary for stakeholders | After alternatives analysis |
+| [`free-tier-comparison.md`](./free-tier-comparison.md) | Free tier analysis for MVP services | Research reference |
 
 ## Report Categories
 
@@ -24,6 +25,11 @@ Created during periodic alternatives analysis:
 
 - **ADR_ALTERNATIVES_ANALYSIS.md** - Detailed evaluation of each ADR against current best practices
 - **EXECUTIVE_SUMMARY.md** - Stakeholder-friendly summary with key findings and recommendations
+
+### Reference Documents
+Research and reference materials:
+
+- **free-tier-comparison.md** - Comprehensive analysis of free tier services for MVP development
 
 ## Usage
 
