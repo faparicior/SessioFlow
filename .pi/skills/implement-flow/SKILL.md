@@ -44,21 +44,37 @@ This skill guides feature implementation through flow-driven analysis, planning,
 
 ---
 
-## 📝 Planning Template
+## 📝 Planning Templates
 
-**Development Plan Location**: Created alongside flow markdown files
+### Flow-Level Plan
 
-**Naming Convention**: `[flow-filename]-plan.md`
+**Location:** Created alongside flow markdown files
 
-**Example**: For `journey-01-setup-event.md`, create `journey-01-setup-event-plan.md`
+**Naming Convention:** `[flow-filename]-plan.md`
 
-Use this template to:
-- Break features into incremental implementation phases
-- Track progress and dependencies
-- Define success criteria
-- Document architectural decisions
+**Example:** For `journey-01-setup-event.md`, create `journey-01-setup-event-plan.md`
 
-*Note: Code should follow existing project patterns. Review `src/` and AGENTS.md for conventions.*
+**Purpose:** Track implementation of ALL features within a flow, validate E2E completion, and manage dependencies between features.
+
+### Feature-Level Specification
+
+**Location:** `docs/product/bounded-contexts/[context]/flows/features/`
+
+**Naming Convention:** `feature-[feature-name].md`
+
+**Example:** `feature-event-basics.md`, `feature-cfp-management.md`
+
+**Purpose:** Define individual feature requirements, implementation scope, and acceptance criteria within a flow.
+
+**Template:** `.pi/skills/implement-flow/templates/feature-spec.md`
+
+---
+
+**Workflow:**
+1. Read flow documentation
+2. Create feature specifications for each feature in the flow
+3. Create flow-level development plan that tracks all features
+4. Implement features incrementally, updating both feature spec and flow plan
 
 ---
 
@@ -66,8 +82,9 @@ Use this template to:
 
 | File | Purpose |
 |------|---------|
-| Development Plan | `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md` |
-| Flow Specs | `docs/product/bounded-contexts/[context]/flows/[flow-name].md` |
+| Flow Development Plan | `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md` |
+| Feature Specification | `docs/product/bounded-contexts/[context]/flows/features/feature-[name].md` |
+| Flow Documentation | `docs/product/bounded-contexts/[context]/flows/[flow-name].md` |
 | AGENTS.md | **Project conventions and quality standards** |
 | ADRs | `docs/adr/` - Architectural decisions |
 
