@@ -16,8 +16,8 @@ After generating the flow document, review the project's Architecture Decision R
 * **Source:** Inception Step 6 - User Journey Mapping (Journey 1)
 * **Related Feature:** Setup Event (C4P Configuration) from Wave 1 (MVP)
 * **Impacted Entities:** 
-  * [[../entities/event]] (e.g., `Event` created with `DRAFT` -> `CFP_OPEN` status)
-  * [[../entities/cfp-config]] (e.g., `CfpConfig` created with submission dates and settings)
+  * [Event Entity](../entities/event.md) (e.g., `Event` created with `DRAFT` -> `CFP_OPEN` status)
+  * [CfpConfig Entity](../entities/cfp-config.md) (e.g., `CfpConfig` created with submission dates and settings)
 * **Bounded Context:** Event
 
 ---
@@ -367,11 +367,11 @@ This flow document follows the consistency guidelines:
 
 | Document | Relationship |
 |----------|--------------|
-| [[../entities/event]] | Event entity lifecycle and state machine |
-| [[../entities/cfp-config]] | CfpConfig child entity lifecycle |
-| [[../value-objects/event-id]] | Event identifier value object |
-| [[../value-objects/event-status]] | Event status enum value object |
-| [[../../adr/009-adopt-domain-driven-design-structure.md]] | DDD architecture decision |
-| [[../../adr/006-use-restful-api-design.md]] | RESTful API design decision |
-| [[../../adr/007-use-zod-for-validation.md]] | Zod validation strategy |
-| [[../../adr/002-use-supabase-for-backend-and-database.md]] | Supabase and RLS decision |
+| [Event Entity](../entities/event.md) | Event entity lifecycle and state machine |
+| [CfpConfig Entity](../entities/cfp-config.md) | CfpConfig child entity lifecycle |
+| [EventId Value Object](../value-objects/event-id.md) | Event identifier value object |
+| [EventStatus Value Object](../value-objects/event-status.md) | Event status enum value object |
+| [ADR-002: Use Supabase for Backend](../../../../adr/002-00-use-supabase-for-backend-and-database.md) | Supabase and RLS decision |
+| [ADR-006: Use RESTful API Design](../../../../adr/006-use-restful-api-design.md) | RESTful API design decision |
+| [ADR-007: Use Zod for Validation](../../../../adr/007-use-zod-for-validation.md) | Zod validation strategy |
+| [ADR-009: Adopt DDD Structure](../../../../adr/009-adopt-domain-driven-design-structure.md) | DDD architecture decision |
