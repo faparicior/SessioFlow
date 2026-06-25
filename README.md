@@ -141,6 +141,46 @@ flowchart TB
 
 ---
 
+#### What Feeds Entity Lifecycle Creation?
+
+Entity lifecycle documentation is created from **multiple input sources**:
+
+| Document | What It Provides | Example |
+|----------|-----------------|---------|
+| **Flow Documentation** (Primary) | Entity behaviors, state transitions, domain methods | Flow shows `Event.publishCfp()` → Entity needs `publishCfp()` method |
+| **Journey Mapping** (Step 6) | Entity requirements from user needs | "Create event" → Need Event entity |
+| **Features & Sequencing** (Step 7) | Feature scope and entity relationships | "CfP Management" → Need Event + CfpConfig entities |
+| **MVP Canvas** (Step 8) | Entity constraints and priorities | MVP scope limits Event to 5 states |
+
+**Extraction Process:**
+
+```
+Flow: Journey 01 - Setup Event
+    ↓
+Identifies: Event entity with states DRAFT → CFP_OPEN
+    ↓
+Reveals: Methods create(), publishCfp(), closeCfp()
+    ↓
+Creates: event.md with state machine and domain methods
+    ↓
+Extracts: INV-001 (state machine), BR-001 (date validation)
+```
+
+**Why Flow First?**
+
+- Flows **reveal** what entities are actually needed
+- Flows show **how** entities behave in real scenarios
+- Flows identify **which** state transitions matter
+- Flows expose **edge cases** that become invariants
+
+**Entity Lifecycle Template Uses:**
+- State Machine from flow transitions
+- Domain Methods from flow steps
+- Constraints from flow validations
+- Business Rules from flow edge cases
+
+---
+
 #### Business Rules & Invariants Extraction
 
 **Both flows and entities automatically extract Business Rules (BR) and Invariants (INV) during creation.**
