@@ -1,14 +1,26 @@
-# [Feature Name] - Development Plan
+# [Flow Name] - Development Plan
 
 * **Date:** YYYY-MM-DD
 * **Status:** 📋 **Planning Phase**
-* **Context:** [Feature Context] (see [README](./README.md))
+* **Flow:** [Flow filename] (e.g., `journey-01-setup-event.md`)
+* **Context:** [Bounded Context] (see [README](./README.md))
 
 ---
 
 ## 🎯 Overview
 
-This document outlines the development plan for implementing the **[Feature Name]** in SessioFlow. [Feature description].
+This document outlines the development plan for implementing **[Flow Name]** in SessioFlow.
+
+**Flow Description:** [Brief description of the user journey or flow]
+
+**Related Flow Documentation:** See `flows/[flow-filename].md` for complete user journey details.
+
+**Associated Features:**
+| Feature | Description | Status |
+|---------|-------------|--------|
+| [Feature 1] | [Brief description] | 📋 Planned |
+| [Feature 2] | [Brief description] | 📋 Planned |
+| ... | ... | ... |
 
 ---
 
@@ -26,7 +38,7 @@ This document outlines the development plan for implementing the **[Feature Name
 
 ---
 
-## 🏗️ DDD Structure - [Feature Context]
+## 🏗️ DDD Structure - [Bounded Context]
 
 ### Project Layout
 
@@ -78,38 +90,38 @@ src/
 
 ---
 
-## 🗺️ [Entity] Lifecycle (State Machine)
+## 🗺️ [Primary Entity] Lifecycle (State Machine)
 
-[Include state machine diagram]
+[Include state machine diagram for the main entity in this flow]
 
 ---
 
 ## 📦 Implementation Phases
 
-### Phase 1: Core Domain (Week 1)
+### Phase 1: Core Domain
 
 **Goal:** Implement domain model with entities, value objects, and domain services.
 
 #### Tasks
 
-1. **Value Objects (Days 1-2)**
+1. **Value Objects**
    - [ ] `[ValueObject1]` - [description]
    - [ ] `[ValueObject2]` - [description]
    - [ ] `[ValueObject3]` - [description]
    - [ ] ... (up to 8 value objects)
 
-2. **Entity: [EntityName] (Day 3)**
+2. **Entity: [EntityName]**
    - [ ] Implement aggregate root with state machine
    - [ ] Domain methods: `method1()`, `method2()`, etc.
    - [ ] Domain events: `EventCreated`, `EventUpdated`, etc.
    - [ ] Invariants: [list invariants]
 
-3. **Entity: [ChildEntityName] (Day 4)**
+3. **Entity: [ChildEntityName]**
    - [ ] Child entity with [states]
    - [ ] Methods: `method1()`, `method2()`
    - [ ] Invariants: [list invariants]
 
-4. **Domain Services (Day 5)**
+4. **Domain Services**
    - [ ] `[DomainService]` - business rule validation
    - [ ] [business rule] check
    - [ ] [business rule] check
@@ -123,22 +135,22 @@ src/
 
 ---
 
-### Phase 2: Domain Interfaces (Week 2)
+### Phase 2: Domain Interfaces
 
 **Goal:** Implement repository interfaces and domain event system.
 
 #### Tasks
 
-1. **Repository Interface (Day 1)**
+1. **Repository Interface**
    - [ ] `[Entity]Repository` interface in `domains/[context]/repositories/`
    - [ ] Methods: `findById`, `findBySlug`, `findBy[Field]`, `findByStatus`, `save`, `delete`
 
-2. **Domain Event System (Day 2)**
+2. **Domain Event System**
    - [ ] Create domain event types
    - [ ] Event publisher interface
    - [ ] Event listeners setup
 
-3. **Domain Exception System (Day 3)**
+3. **Domain Exception System**
    - [ ] Custom error classes:
      - [ ] `Invalid[Entity]Error`
      - [ ] `Invalid[ChildEntity]Error`
@@ -153,27 +165,27 @@ src/
 
 ---
 
-### Phase 3: Infrastructure & Application (Week 2-3)
+### Phase 3: Infrastructure & Application
 
 **Goal:** Implement database layer and use cases.
 
 #### Tasks
 
-1. **Database Schema (Day 1)**
+1. **Database Schema**
    - [ ] `[resources]` table with RLS
    - [ ] `[child-table]` table with foreign keys
 
-2. **Supabase Client Setup (Day 2)**
+2. **Supabase Client Setup**
    - [ ] `infrastructure/database/supabase-client.ts`
    - [ ] RLS policies for [context] isolation
    - [ ] Row-level security setup
 
-3. **Repository Implementation (Days 3-4)**
+3. **Repository Implementation**
    - [ ] `[Entity]Repository` with all methods
    - [ ] Transaction support for aggregate persistence
    - [ ] Soft delete handling
 
-4. **Use Cases (Days 5-6)**
+4. **Use Cases**
    - [ ] `[CreateResource]` use case
    - [ ] `[UpdateResource]` use case
    - [ ] `[DeleteResource]` use case
@@ -188,25 +200,25 @@ src/
 
 ---
 
-### Phase 4: RESTful API (Week 4)
+### Phase 4: RESTful API
 
 **Goal:** Implement API endpoints following RESTful conventions.
 
 #### Tasks
 
-1. **API Structure (Day 1)**
+1. **API Structure**
    - [ ] `/api/v1/[resource]s` - GET, POST
    - [ ] `/api/v1/[resource]s/:id` - GET, PATCH, DELETE
    - [ ] Error response format
 
-2. **Resource Endpoints (Days 2-3)**
+2. **Resource Endpoints**
    - [ ] `GET /api/v1/[resource]s` - List resources
    - [ ] `POST /api/v1/[resource]s` - Create resource
    - [ ] `GET /api/v1/[resource]s/:id` - Get resource details
    - [ ] `PATCH /api/v1/[resource]s/:id` - Update resource
    - [ ] `DELETE /api/v1/[resource]s/:id` - Delete resource
 
-3. **Authentication (Day 4)**
+3. **Authentication**
    - [ ] Verify user authorization
    - [ ] RLS integration
    - [ ] Error responses
@@ -219,19 +231,19 @@ src/
 
 ---
 
-### Phase 5: Frontend (Week 4)
+### Phase 5: Frontend
 
 **Goal:** Implement Next.js pages and components.
 
 #### Tasks
 
-1. **Resource List & Creation (Days 1-2)**
+1. **Resource List & Creation**
    - [ ] `/dashboard/[resource]s` - List resources table
    - [ ] `/dashboard/[resource]s/new` - Resource creation form
    - [ ] Resource table with status badges
    - [ ] Zod form validation with React Hook Form
 
-2. **Resource Dashboard (Days 3-4)**
+2. **Resource Dashboard**
    - [ ] `/dashboard/[resource]s/[id]` - Resource overview
    - [ ] Resource status display
    - [ ] Quick actions
@@ -245,28 +257,28 @@ src/
 
 ---
 
-### Phase 6: Testing & Refinement (Week 5-6)
+### Phase 6: Testing & Refinement
 
-**Goal:** Achieve comprehensive test coverage and polish.
+**Goal:** Achieve comprehensive test coverage and validate flow completion.
 
 #### Tasks
 
-1. **Unit Tests (Week 5)**
+1. **Unit Tests**
    - [ ] Domain objects: 95% coverage
    - [ ] Use cases: 90% coverage
    - [ ] Value objects: 100% coverage
 
-2. **Integration Tests (Week 5)**
+2. **Integration Tests**
    - [ ] Complete [entity] lifecycle: DRAFT → COMPLETED
    - [ ] State transition validation
    - [ ] Error path testing
 
-3. **E2E Tests (Week 6)**
-   - [ ] Journey [X]: [Description]
-   - [ ] User journey: [Workflow]
+3. **E2E Tests**
+   - [ ] **Flow E2E:** [Flow Name] - Complete user journey validation
+   - [ ] Journey steps: [List key steps from flow documentation]
    - [ ] Error scenarios
 
-4. **Refinement (Week 6)**
+4. **Refinement**
    - [ ] Performance optimization
    - [ ] Error handling polish
    - [ ] Documentation updates
@@ -291,6 +303,13 @@ src/
 - Server-side validation in API routes
 - Zod schemas in `lib/validations/`
 
+### From Flow Documentation
+- Flow steps must be implemented in order
+- Each step may create/update entities
+- Flow validation ensures correct state transitions
+- E2E tests validate complete flow completion
+- Multiple features may contribute to a single flow
+
 ### From ADR-006 (REST)
 - Resource-based URLs
 - HTTP verbs for actions
@@ -310,6 +329,7 @@ src/
 - [ ] Can transition through all states to [final state]
 - [ ] Can [cancel/delete] [resource] ([allowed states] only)
 - [ ] All domain invariants enforced
+- [ ] All flow steps completed successfully
 
 ### Non-Functional
 - [ ] 95%+ test coverage for domain
@@ -322,12 +342,12 @@ src/
 
 ## 🔗 Related Documentation
 
-- [Feature Bounded Context README](./README.md)
+- [Bounded Context README](./README.md)
 - [Entity Documentation](./entities/[entity].md)
 - [Child Entity Documentation](./entities/[child-entity].md)
-- [Journey X: User Flow](./flows/journey-XX-[name].md)
+- **Flow Documentation:** [./flows/[flow-filename].md](./flows/[flow-filename].md)
 - [Architecture Decision Records](../../adr/)
 
 ---
 
-*This development plan is derived from the project's ADRs and domain specifications. It aligns with the 6-week MVP timeline and $0/month infrastructure constraint.*
+*This development plan is derived from the project's ADRs and domain specifications.*

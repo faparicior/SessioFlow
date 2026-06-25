@@ -1,21 +1,21 @@
 ---
-name: implement-features
+name: implement-flow
 description: >-
-  Implement new features following SessioFlow's DDD structure and development workflows.
+  Implement features following SessioFlow's DDD structure, flow-driven development, and workflows.
   LOAD THIS SKILL when user mentions: implement feature, add feature, create feature, 
   develop feature, build feature, implement [feature name], add [feature name], 
-  or any feature implementation task. Executes feature analysis, DDD implementation, 
-  testing, and development plan updates.
+  implement flow, develop flow, flow journey, or any feature/flow implementation task. 
+  Executes feature analysis, flow-driven DDD implementation, testing, and development plan updates.
 ---
 
-# Implement Features Skill
+# Implement Flow Skill
 
-This skill guides feature implementation through analysis, planning, and incremental development.
+This skill guides feature implementation through flow-driven analysis, planning, and incremental development.
 
 **Important**: Follow AGENTS.md for all code conventions, testing standards, and quality requirements.
 
-### Step 1: Understand the Feature
-- Read feature documentation in `docs/product/bounded-contexts/`
+### Step 1: Understand the Flow
+- Read flow documentation in `docs/product/bounded-contexts/[context]/flows/`
 - Identify which DDD layer(s) are affected
 - Check development plan for implementation phase
 
@@ -46,7 +46,11 @@ This skill guides feature implementation through analysis, planning, and increme
 
 ## 📝 Planning Template
 
-**Development Plan Template**: `.pi/skills/implement-features/templates/development-plan.md`
+**Development Plan Location**: Created alongside flow markdown files
+
+**Naming Convention**: `[flow-filename]-plan.md`
+
+**Example**: For `journey-01-setup-event.md`, create `journey-01-setup-event-plan.md`
 
 Use this template to:
 - Break features into incremental implementation phases
@@ -62,8 +66,8 @@ Use this template to:
 
 | File | Purpose |
 |------|---------|
-| Development Plan | `docs/product/bounded-contexts/[context]/DEVELOPMENT-PLAN.md` |
-| Feature Specs | `docs/product/bounded-contexts/[context]/README.md` |
+| Development Plan | `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md` |
+| Flow Specs | `docs/product/bounded-contexts/[context]/flows/[flow-name].md` |
 | AGENTS.md | **Project conventions and quality standards** |
 | ADRs | `docs/adr/` - Architectural decisions |
 
