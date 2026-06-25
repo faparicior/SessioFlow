@@ -56,5 +56,5 @@ stateDiagram-v2
 ## 🔗 Linked User Stories & Flows
 *Relative links to the User Stories/Flows that interact with or trigger mutations on this entity.*
 
-* [[US-101-example-flow]]: Triggers transition from `None` -> `DRAFT`
-* [[US-202-example-payment]]: Triggers transition from `PENDING` -> `PAID` or `CANCELLED`
+* [US-101 Example Flow](../flows/US-101-example-flow.md): Triggers transition from `None` -> `DRAFT`
+* [US-202 Example Payment](../flows/US-202-example-payment.md): Triggers transition from `PENDING` -> `PAID` or `CANCELLED`
