@@ -1,10 +1,10 @@
 # 002-00-Use Supabase for Backend and Database
 
-* **Status:** Proposed
+* **Status:** ⚠️ **SUPERSEDED**
 * **Date:** 2026-06-05
 * **Decision Makers:** Product Team, Technical Lead
-* **Supersedes:** N/A
-* **Amended By:** N/A
+* **Superseded By:** ADR-002-01 (Use Supabase Amendment: DDD Abstraction Layer)
+* **Amended By:** ADR-002-01, ADR-002-02, ADR-002-03
 
 ## Context and Problem Statement
 
@@ -32,11 +32,20 @@ The MVP Canvas explicitly identifies "Technical Enablers" including database sch
 3. **Self-hosted PostgreSQL + Custom Auth API**
 4. **PlanetScale + Auth0 + Cloud Storage**
 
-## Decision Outcome
+## Decision Outcome (Historical)
 
-**Chosen Option:** "Supabase (PostgreSQL + Auth + Storage + RLS)"
+**Original Decision (2026-06-05):** "Supabase (PostgreSQL + Auth + Storage + RLS)"
 
-**Justification:**
+**⚠️ NOTE:** This decision has been **amended** by ADR-002-01. The original analysis contained errors:
+- Auth0 pricing was incorrect (stated 7K MAU, actual 25K MAU free tier)
+- Vendor lock-in risk was overstated (DDD reduces migration cost by 85%)
+- Hybrid approach was dismissed prematurely (now viable with DDD)
+
+**See ADR-002-01 for updated decision and analysis.**
+
+---
+
+## Original Justification (Historical Context)
 Supabase is the optimal choice because it uniquely satisfies all critical constraints:
 
 1. **Cost Compliance**: Free tier includes 500MB database, 1GB file storage, and 50,000 monthly active users—sufficient for MVP validation metrics (5 events, 50+ proposals)

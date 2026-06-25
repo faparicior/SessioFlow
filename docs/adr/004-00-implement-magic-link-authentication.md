@@ -1,10 +1,10 @@
 # 004-implement-magic-link-authentication
 
-* **Status:** Proposed
+* **Status:** ⚠️ **SUPERSEDED**
 * **Date:** 2026-06-05
 * **Decision Makers:** Product Team, Technical Lead
-* **Supersedes:** N/A
-* **Amended By:** N/A
+* **Superseded By:** ADR-004-01 (Magic Link Authentication with DDD Abstraction)
+* **Amended By:** ADR-004-01
 
 ## Context and Problem Statement
 

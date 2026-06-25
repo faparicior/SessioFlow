@@ -8,29 +8,27 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 
 | # | Decision | Status | Date |
 |---|----------|--------|------|
-| [001](001-use-nextjs-as-frontend-framework.md) | Use Next.js as Frontend Framework | Proposed | 2026-06-05 |
-| [002-00](002-00-use-supabase-for-backend-and-database.md) | Use Supabase for Backend and Database | Proposed | 2026-06-05 |
+| [001](001-use-nextjs-as-frontend-framework.md) | Use Next.js as Frontend Framework | ✅ Approved | 2026-06-05 |
+| [002-00](002-00-use-supabase-for-backend-and-database.md) | Use Supabase for Backend and Database | ⚠️ Superseded | 2026-06-05 |
 | [002-01](002-01-use-supabase-amendment-ddd-abstraction.md) | **Amendment: DDD Abstraction Layer** | ✅ **Approved** | 2026-06-11 |
 | [002-02](002-02-use-supabase-analysis-vendor-lock-in.md) | Vendor Lock-in Alternatives Analysis | ✅ **Accepted** | 2026-06-09 |
 | [002-03](002-03-use-supabase-analysis-auth-strategy.md) | Authentication Strategy with DDD | ✅ **Accepted** | 2026-06-11 |
-| [002-04](002-04-use-supabase-impact-analysis.md) | Auth Strategy Impact Analysis | Reference | 2026-06-11 |
-| [003](003-use-docker-compose-for-deployment.md) | Use Docker Compose for Deployment | Proposed | 2026-06-05 |
-| [004-00](004-00-implement-magic-link-authentication.md) | Implement Magic Link Authentication | Proposed | 2026-06-05 |
+| [002-04](002-04-use-supabase-impact-analysis.md) | Impact Analysis on Other ADRs | ✅ **Completed** | 2026-06-11 |
+| [003](003-use-docker-compose-for-deployment.md) | Use Docker Compose for Deployment | ✅ Approved | 2026-06-05 |
+| [004-00](004-00-implement-magic-link-authentication.md) | Implement Magic Link Authentication | ⚠️ Superseded | 2026-06-05 |
 | [004-01](004-01-implement-magic-link-authentication-amendment-ddd-abstraction.md) | **Amendment: Auth with DDD Abstraction** | ✅ **Approved** | 2026-06-11 |
-| [005-00](005-00-use-supabase-storage-for-files.md) | Use Supabase Storage for Files | Proposed | 2026-06-05 |
+| [005-00](005-00-use-supabase-storage-for-files.md) | Use Supabase Storage for Files | ⚠️ Superseded | 2026-06-05 |
 | [005-01](005-01-use-supabase-storage-amendment-ddd-abstraction.md) | **Amendment: Storage with DDD Abstraction** | ✅ **Approved** | 2026-06-11 |
-| [006](006-use-restful-api-design.md) | Use RESTful API Design | Proposed | 2026-06-05 |
-| [007](007-use-zod-for-validation.md) | Use Zod for Validation | Proposed | 2026-06-05 |
-| [008](008-implement-comprehensive-testing-strategy.md) | Implement Comprehensive Testing Strategy | Proposed | 2026-06-05 |
-| [009](009-adopt-domain-driven-design-structure.md) | Adopt Domain-Driven Design Structure | Proposed | 2026-06-06 |
-| [010](010-use-tailwind-css-for-styling.md) | Use Tailwind CSS for Styling | Proposed | 2026-06-05 |
-| [011-00](011-00-use-resend-for-email-communications.md) | Use Resend for Email Communications | Proposed | 2026-06-05 |
+| [006](006-use-restful-api-design.md) | Use RESTful API Design | ✅ Approved | 2026-06-05 |
+| [007](007-use-zod-for-validation.md) | Use Zod for Validation | ✅ Approved | 2026-06-05 |
+| [008](008-implement-comprehensive-testing-strategy.md) | Implement Comprehensive Testing Strategy | ✅ Approved | 2026-06-05 |
+| [009](009-adopt-domain-driven-design-structure.md) | Adopt Domain-Driven Design Structure | ✅ **Approved** | 2026-06-06 |
+| [010](010-use-tailwind-css-for-styling.md) | Use Tailwind CSS for Styling | ✅ Approved | 2026-06-05 |
+| [011-00](011-00-use-resend-for-email-communications.md) | Use Resend for Email Communications | ⚠️ Superseded | 2026-06-05 |
 | [011-01](011-01-use-resend-email-amendment-optional-abstraction.md) | **Amendment: Optional Email Abstraction** | ✅ **Approved (Optional)** | 2026-06-11 |
-| [012](012-implement-ci-cd-with-github-actions.md) | Implement CI/CD with GitHub Actions | Proposed | 2026-06-05 |
-| [013](013-adopt-typescript-with-strict-mode.md) | Adopt TypeScript with Strict Mode | Proposed | 2026-06-05 |
-| [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | Proposed | 2026-06-05 |
-| [002-Auth-Impact](002-auth-strategy-impact-analysis.md) | Auth Strategy Impact Analysis | Reference | 2026-06-11 |
-| [Impact Analysis](_to-discuss/adr-impact-analysis-002b.md) | **ADR-002b Impact Analysis** | Reference | 2026-06-11 |
+| [012](012-implement-ci-cd-with-github-actions.md) | Implement CI/CD with GitHub Actions | ✅ Approved | 2026-06-05 |
+| [013](013-adopt-typescript-with-strict-mode.md) | Adopt TypeScript with Strict Mode | ✅ Approved | 2026-06-05 |
+| [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | ✅ Approved | 2026-06-05 |
 
 ---
 

@@ -1,6 +1,6 @@
 # 007-use-zod-for-validation
 
-* **Status:** Proposed
+* **Status:** ✅ **APPROVED**
 * **Date:** 2026-06-05
 * **Decision Makers:** Product Team, Technical Lead
 * **Supersedes:** N/A

@@ -1,6 +1,6 @@
 # 006-use-restful-api-design
 
-* **Status:** Proposed
+* **Status:** ✅ **APPROVED**
 * **Date:** 2026-06-05
 * **Decision Makers:** Product Team, Technical Lead
 * **Supersedes:** N/A

@@ -1,10 +1,10 @@
 # 009-adopt-domain-driven-design-structure
 
-* **Status:** Proposed
+* **Status:** ✅ **APPROVED**
 * **Date:** 2026-06-06
 * **Decision Makers:** Product Team, Technical Lead
 * **Supersedes:** ADR-009 (Feature-Based Colocation)
-* **Amended By:** N/A
+* **Amended By:** ADR-002-01 (Supabase DDD Abstraction), ADR-002-03 (Auth Strategy)
 
 ## Context and Problem Statement
 
@@ -35,6 +35,13 @@ The original MVP Canvas identified core features (submission, review, scheduling
 
 **Chosen Option:** "Domain-Driven Design (DDD) Structure"
 
+**Updated Rationale (2026-06-25):**
+ADR-002-01 analysis confirms DDD is **essential** for vendor independence, not just maintainability:
+- Reduces migration cost from 156-336 hours to 24-42 hours (85% reduction)
+- Enables hybrid architecture (Supabase DB + Auth0 + R2) at $0/month
+- Makes all external dependencies (auth, storage, database) swappable with 8-14 hours effort
+- Critical for MVP flexibility while maintaining $0 budget constraint
+
 **Justification:**
 DDD is the optimal choice because it provides long-term architectural stability for a domain-complex application:
 
@@ -59,12 +66,15 @@ DDD is the optimal choice because it provides long-term architectural stability 
   - Independent layers: Domain logic can be tested without UI or infrastructure
   - Team scaling: Bounded contexts reduce coordination overhead
   - Pretalx parity: Matches architecture of leading CfP platform
+  - **Vendor Independence:** Reduces migration cost by 85% (per ADR-002-01 analysis)
+  - **Hybrid Architecture:** Enables $0/month hybrid approach (Supabase DB + Auth0 + R2)
 
 * **Negative:**
   - Initial complexity: Requires DDD knowledge and discipline
   - More boilerplate: Entities, repositories, services add code volume
   - Steeper learning curve: New developers need DDD training
   - Over-engineering risk: Must resist adding unnecessary complexity
+  - **Upfront Investment:** 30-51 hours to implement all abstractions
 
 * **Risks:**
   - Team may struggle with DDD concepts initially

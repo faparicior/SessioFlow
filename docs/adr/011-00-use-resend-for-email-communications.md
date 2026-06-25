@@ -1,10 +1,10 @@
 # 011-use-resend-for-email-communications
 
-* **Status:** Proposed
+* **Status:** ⚠️ **SUPERSEDED**
 * **Date:** 2026-06-05
 * **Decision Makers:** Product Team, Technical Lead
-* **Supersedes:** N/A
-* **Amended By:** N/A
+* **Superseded By:** ADR-011-01 (Resend Email with Optional Abstraction)
+* **Amended By:** ADR-011-01
 
 ## Context and Problem Statement
 

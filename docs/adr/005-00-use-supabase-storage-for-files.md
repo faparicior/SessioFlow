@@ -1,10 +1,10 @@
 # 005-use-supabase-storage-for-files
 
-* **Status:** Proposed
+* **Status:** ⚠️ **SUPERSEDED**
 * **Date:** 2026-06-05
 * **Decision Makers:** Product Team, Technical Lead
-* **Supersedes:** N/A
-* **Amended By:** N/A
+* **Superseded By:** ADR-005-01 (Supabase Storage with DDD Abstraction)
+* **Amended By:** ADR-005-01
 
 ## Context and Problem Statement
 
