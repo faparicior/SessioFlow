@@ -85,6 +85,43 @@ SessioFlow provides two AI skills to help generate documentation:
 
 Both skills are self-contained with all templates and guidelines bundled.
 
+#### Business Rules & Invariants Extraction
+
+**Both flows and entities automatically extract Business Rules (BR) and Invariants (INV) during creation.**
+
+| Source | What It Extracts | Example |
+|--------|------------------|---------|
+| **Flow Creation** | Rules governing flow steps, validations, edge cases | `BR-001: Cfp Dates Must Be Valid` (from flow validation step) |
+| **Entity Lifecycle** | Rules governing state transitions, domain methods, constraints | `INV-001: Event State Must Follow State Machine` (from entity state machine) |
+
+**Process:**
+
+```
+Flow Creation:
+  Journey Steps → Identify validations/edge cases → Extract BRs/INVs → Link in flow
+
+Entity Lifecycle:
+  Entity Definition → Identify constraints/methods → Extract BRs/INVs → Link in entity
+```
+
+**Output Structure:**
+```
+docs/product/bounded-contexts/event/
+├── flows/
+│   └── journey-01-setup-event.md  → Links to: BR-001, INV-002
+├── entities/
+│   ├── event.md                   → Links to: INV-001, BR-004
+│   └── cfp-config.md              → Links to: INV-002, BR-001
+├── business-rules/
+│   ├── BR-001-cfp-dates-validation.md
+│   └── BR-004-free-tier-event-limit.md
+└── invariants/
+    ├── INV-001-event-state-machine.md
+    └── INV-002-cfp-date-order.md
+```
+
+**Note:** You don't create BRs/INVs separately - they're automatically extracted during flow and entity creation.
+
 ---
 
 ### Architecture Decision Records (ADRs)
