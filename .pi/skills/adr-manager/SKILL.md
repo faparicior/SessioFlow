@@ -141,6 +141,11 @@ Example: 002-02-use-supabase-analysis-vendor-lock-in.md
 ```
 {number}-{sequence}-{topic}-impact-analysis.md
 Example: 002-04-use-supabase-impact-analysis.md
+
+Impact analyses document the effects of a decision or amendment on other ADRs and should be created when:
+- A significant amendment is made (e.g., adding DDD abstraction)
+- A decision affects multiple other decisions
+- Cross-cutting concerns are identified
 ```
 
 ### Sequence Numbers
@@ -151,9 +156,25 @@ Example: 002-04-use-supabase-impact-analysis.md
 - `04` = Impact analysis
 - Continue incrementing for additional documents
 
+**Important:** Impact analyses (04) should be marked as "Completed" once all affected ADRs have been amended or documented.
+
+### Status Values
+| Status | Meaning | When to Use |
+|--------|---------|-------------|
+| **Proposed** | Under consideration | Initial creation, awaiting review |
+| **Accepted** | Approved and active | Decision is approved for implementation |
+| **Approved** | Same as Accepted | Alternative term for approved decisions |
+| **Completed** | Analysis/Impact document finished | Impact analyses, summaries, reports |
+| **Superseded** | Replaced by newer decision | Original decision has been amended or replaced |
+| **Rejected** | Not adopted | Decision was considered but rejected |
+| **Deprecated** | Obsolete | No direct replacement, but no longer valid |
+
+**Note:** "Accepted" and "Approved" are interchangeable. Use "Approved" for decisions and "Accepted" for analyses.
+
 ### Bundled Assets
 
 This skill includes all required templates and validators as bundled assets:
+
 
 ### Templates (in `templates/` directory)
 *   `templates/TEMPLATE.md` - Standard ADR structure
