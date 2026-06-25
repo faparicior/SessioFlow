@@ -1,4 +1,4 @@
-# 005-Supabase Storage Amendment: DDD Abstraction
+# 005-01-Use Supabase Storage Amendment: DDD Abstraction: DDD Abstraction
 
 * **Status:** ✅ **APPROVED**
 * **Date:** 2026-06-11

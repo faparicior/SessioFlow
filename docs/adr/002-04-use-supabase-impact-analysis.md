@@ -1,7 +1,7 @@
-# ADR-002b Impact Analysis
+# 002-04-Authentication Strategy Impact Analysis
 
 **Date:** 2026-06-11  
-**Analysis:** Impact of ADR-002b (Authentication Strategy with DDD Abstraction) on Existing ADRs
+**Analysis:** Impact of ADR-002-03 (Authentication Strategy with DDD Abstraction) on Existing ADRs
 
 ---
 

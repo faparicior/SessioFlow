@@ -1,10 +1,10 @@
-# 002b-Authentication Strategy and Vendor Abstraction
+# 002-03-Authentication Strategy and Vendor Abstraction Analysis
 
 * **Status:** ✅ **ACCEPTED**
 * **Date:** 2026-06-11
 * **Decision Makers:** Product Team, Technical Lead
-* **Related:** ADR-002 (Supabase Backend), ADR-002a (Supabase Vendor Lock-in Alternatives), **ADR-009 (Domain-Driven Design Structure)**
-* **Amended By:** N/A
+* **Related:** ADR-002 (Use Supabase for Backend and Database), ADR-009 (Domain-Driven Design Structure)
+* **Amends:** N/A
 
 ---
 

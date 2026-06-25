@@ -1,10 +1,10 @@
-# 004-Magic Link Authentication Amendment: DDD Abstraction
+# 004-01-Implement Magic Link Authentication Amendment: DDD Abstraction: DDD Abstraction
 
 * **Status:** ✅ **APPROVED**
 * **Date:** 2026-06-11
 * **Decision Makers:** Product Team, Technical Lead
 * **Amends:** ADR-004 (Implement Magic Link Authentication)
-* **Related:** ADR-002b (Authentication Strategy and Vendor Abstraction), ADR-009 (Domain-Driven Design Structure)
+* **Related:** ADR-002-03 (Authentication Strategy and Vendor Abstraction), ADR-009 (Domain-Driven Design Structure)
 
 ---
 

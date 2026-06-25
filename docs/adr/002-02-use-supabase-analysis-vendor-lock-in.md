@@ -1,10 +1,10 @@
-# 002a-Supabase Vendor Lock-in and Self-Hosted Alternatives
+# 002-02-Use Supabase Vendor Lock-in and Self-Hosted Alternatives Analysis
 
 * **Status:** ✅ **ACCEPTED**
 * **Date:** 2026-06-09
 * **Decision Makers:** Product Team, Technical Lead
-* **Supersedes:** ADR-002 (Use Supabase for Backend and Database)
-* **Amended By:** N/A
+* **Related:** ADR-002 (Use Supabase for Backend and Database)
+* **Amends:** N/A
 
 ---
 

@@ -102,14 +102,56 @@ pi skill adr-manager --mode [generate|validate|summary|traceability|alternatives
 *   **Purpose**: Refine an existing decision.
 *   **Process**:
     1. Read `references/7-generate-adr-amendment.md`.
-    2. Identify the target ADR and create a new file named `0XX-original-adr-name-amendment-description.md`.
+    2. Identify the target ADR and create a new file named `{num}-01-{topic}-amendment-{type}.md`.
     3. Copy the template from `templates/TEMPLATE-AMENDMENT.md` and complete it.
-    4. Set up the two-way links in the headers of both files (`Amends` and `Amended By`).
+    4. Set up the two-way links in the headers of both files (`Amends` / `Amended By`).
     5. Run `--mode index` to record the new amendment.
+
+### 8. Mode: Analyze (`--mode analyze`)
+*   **Purpose**: Create analysis documents for an ADR.
+*   **Process**:
+    1. Read `references/8-adr-naming-convention.md`.
+    2. Identify the target ADR and create a new file named `{num}-02-{topic}-analysis-{subtype}.md`.
+    3. Copy the template from `templates/TEMPLATE-ANALYSIS.md` and complete it.
+    4. Run `--mode index` to record the new analysis.
 
 ---
 
-## Bundled Assets
+## File Naming Conventions
+
+### Standard ADR Format
+```
+{number}-{sequence}-{topic}.md
+Example: 002-00-use-supabase-for-backend-and-database.md
+```
+
+### Amendment Format
+```
+{number}-{sequence}-{topic}-amendment-{type}.md
+Example: 002-01-use-supabase-amendment-ddd-abstraction.md
+```
+
+### Analysis Format
+```
+{number}-{sequence}-{topic}-analysis-{subtype}.md
+Example: 002-02-use-supabase-analysis-vendor-lock-in.md
+```
+
+### Impact Analysis Format
+```
+{number}-{sequence}-{topic}-impact-analysis.md
+Example: 002-04-use-supabase-impact-analysis.md
+```
+
+### Sequence Numbers
+- `00` = Original ADR
+- `01` = First amendment
+- `02` = First analysis document
+- `03` = Second analysis document
+- `04` = Impact analysis
+- Continue incrementing for additional documents
+
+### Bundled Assets
 
 This skill includes all required templates and validators as bundled assets:
 
@@ -131,6 +173,7 @@ This skill includes all required templates and validators as bundled assets:
 *   `references/5-analyze-adr-alternatives.md` - Stack evaluation rules
 *   `references/6-update-adr-readme.md` - Indexing rules
 *   `references/7-generate-adr-amendment.md` - Amendment proposal guidelines
+*   `references/8-adr-naming-convention.md` - File naming conventions (NEW)
 
 ---
 

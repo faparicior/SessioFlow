@@ -1,4 +1,4 @@
-# 002-Supabase Backend Amendment: DDD Abstraction Layer
+# 002-01-Use Supabase Backend Amendment: DDD Abstraction Layer
 
 * **Status:** ✅ **APPROVED**
 * **Date:** 2026-06-11

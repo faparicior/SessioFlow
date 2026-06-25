@@ -1,4 +1,4 @@
-# 002-use-supabase-for-backend-and-database
+# 002-00-Use Supabase for Backend and Database
 
 * **Status:** Proposed
 * **Date:** 2026-06-05
