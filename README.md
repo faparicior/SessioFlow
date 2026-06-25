@@ -6,6 +6,87 @@ A Call-for-Papers (CfP) platform built with Next.js, designed to help organizers
 
 ## 📚 Documentation
 
+### Documentation Generation Workflow
+
+When creating documentation for SessioFlow, follow this recommended order:
+
+```
+Step 1: Inception (Product Discovery)
+         ↓
+Step 2: Flow Documentation (Reveals Entities)
+         ↓
+Step 3: Entity Lifecycle (Define Entities)
+         ↓
+Step 4: More Flows (Reference Existing Entities)
+```
+
+#### Step-by-Step Process
+
+**1. Inception Phase** (`docs/inception/`)
+   - Complete Inception Steps 1-8 (Product Vision → MVP Canvas)
+   - **Step 6: User Journey Mapping** identifies all journeys (J1-J5)
+   - **Step 7: Features & Sequencing** defines MVP scope
+
+**2. Flow Documentation** (`docs/product/bounded-contexts/{context}/flows/`)
+   - Start with **Journey 1** (e.g., Setup Event)
+   - Use `create-flow-documentation` skill to generate flow specs
+   - Flow reveals which entities are needed (Event, CfpConfig, etc.)
+   - Extract Business Rules (BR-XXX) and Invariants (INV-XXX)
+
+**3. Entity Lifecycle Documentation** (`docs/product/bounded-contexts/{context}/entities/`)
+   - Create entity docs based on entities revealed in flows
+   - Use `create-entity-lifecycle` skill to generate entity specs
+   - Define state machines, transitions, and domain methods
+   - Extract additional BRs and INVs if needed
+
+**4. Additional Flows** (`docs/product/bounded-contexts/{context}/flows/`)
+   - Document remaining journeys (J2-J4)
+   - Reference existing entity lifecycle docs
+   - Extract BRs and INVs as needed
+
+#### Documentation Structure
+
+```
+docs/
+├── inception/                    # Inception workshop outputs
+│   ├── 1-product-vision-and-boundaries.md
+│   ├── 2-tradeoffs.md
+│   ├── 3-personas.md
+│   ├── 4-empathy-map.md
+│   ├── 5-brainstorming.md
+│   ├── 6-user-journey-mapping.md  ← START HERE
+│   ├── 7-features-and-sequencing.md
+│   └── 8-mvp-canvas-definition.md
+│
+└── product/                      # DDD documentation
+    ├── bounded-contexts/
+    │   └── event/
+    │       ├── flows/             ← Create flows first (reveals entities)
+    │       │   └── journey-01-setup-event.md
+    │       ├── entities/          ← Then create entities
+    │       │   ├── event.md
+    │       │   └── cfp-config.md
+    │       ├── business-rules/    ← Extracted from flows/entities
+    │       │   └── BR-001-*.md
+    │       └── invariants/        ← Extracted from flows/entities
+    │           └── INV-001-*.md
+    └── flows/                    # Flow catalog
+        └── README.md
+```
+
+#### AI Skills for Documentation
+
+SessioFlow provides two AI skills to help generate documentation:
+
+| Skill | Purpose | Triggers When You Say |
+|-------|---------|----------------------|
+| **create-flow-documentation** | Generate user journey flows | "Create flow for Journey 2", "Generate flow specification" |
+| **create-entity-lifecycle** | Generate entity specs | "Create entity lifecycle for Event", "Document the Submission entity" |
+
+Both skills are self-contained with all templates and guidelines bundled.
+
+---
+
 ### Architecture Decision Records (ADRs)
 
 Key decisions that shape the SessioFlow architecture:
