@@ -155,7 +155,5 @@ If you're unsure whether something is a business rule or invariant:
 
 ## References
 
-- [Business Rules Template](../../templates/product/business-rules.md)
-- [Invariants Template](../../templates/product/invariants.md)
-- [Extract Business Rules Command](../../commands/product/extract-business-rules.md)
-- [Extract Invariants Command](../../commands/product/extract-invariants.md)
+- [Business Rules Template](../templates/business-rules.md) (bundled)
+- [Invariants Template](../templates/invariants.md) (bundled)

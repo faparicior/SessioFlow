@@ -96,11 +96,10 @@ Complete flow spec (all diagrams inline)
 
 ## 🛠️ Templates & Commands
 
-- **Template:** `docs/templates/product/flows.md`
-- **Command:** `docs/commands/product/create-flow.md`
-- **Flow Catalog:** `docs/product/flows/README.md`
+- **Template:** `../templates/flows.md` (bundled)
+- **Flow Catalog:** `../../../docs/product/flows/README.md` (external)
 
-## 📝 Example Flow Structure
+## 📚 Related Documentation
 
 ```markdown
 # Journey 01: Setup Event (CfP Configuration)
@@ -149,13 +148,11 @@ stateDiagram-v2
 
 ## 🛠️ Technical Notes
 ...
-```
 
 ## 📚 Related Documentation
 
-- [Flow Template](../../templates/product/flows.md)
-- [Create Flow Command](../../commands/product/create-flow.md)
-- [Business Rules Guide](./business-rules-vs-invariants.md)
+- [Flow Template](../templates/flows.md) (bundled)
+- [Business Rules Guide](./business-rules-vs-invariants.md) (bundled)
 
 ---
 
