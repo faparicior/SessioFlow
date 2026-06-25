@@ -85,6 +85,62 @@ SessioFlow provides two AI skills to help generate documentation:
 
 Both skills are self-contained with all templates and guidelines bundled.
 
+#### Documentation Workflow Diagram
+
+```mermaid
+flowchart TB
+    subgraph Inception["Inception Phase"]
+        A["Inception Steps 1-8"] --> B["Step 6: User Journey Mapping"]
+        B --> C["Step 7: Features & Sequencing"]
+    end
+
+    subgraph FlowDocs["Flow Documentation"]
+        D["Create Flow 1<br/>(Journey 01: Setup Event)"] --> E["Extract BRs & INVs<br/>from flow steps"]
+        E --> F["journey-01-setup-event.md"]
+    end
+
+    subgraph EntityDocs["Entity Lifecycle Documentation"]
+        G["Create Entity Lifecycle<br/>(Event, CfpConfig)"] --> H["Extract BRs & INVs<br/>from entity constraints"]
+        H --> I["event.md, cfp-config.md"]
+    end
+
+    subgraph BRINV["Business Rules & Invariants"]
+        J["business-rules/BR-XXX-*.md"]
+        K["invariants/INV-XXX-*.md"]
+    end
+
+    subgraph AdditionalFlows["Additional Flows"]
+        L["Create Flow 2-4<br/>(Reference Existing Entities)"] --> M["journey-02-04.md"]
+    end
+
+    %% Connections
+    C --> D
+    F -.-> G
+    G -.-> L
+    E -.-> J
+    E -.-> K
+    H -.-> J
+    H -.-> K
+    M -.-> J
+    M -.-> K
+
+    %% Styling
+    style Inception fill:#e3f2fd
+    style FlowDocs fill:#c8e6c9
+    style EntityDocs fill:#fff9c4
+    style BRINV fill:#f3e5f5
+    style AdditionalFlows fill:#ffe0b2
+```
+
+**Legend:**
+- 🔵 **Inception** - User journey identification
+- 🟢 **Flow Docs** - Journey specifications with diagrams
+- 🟡 **Entity Docs** - Entity state machines and constraints
+- 🟣 **BR/INV** - Extracted business rules and invariants
+- 🟠 **Additional Flows** - Reference existing entities
+
+---
+
 #### Business Rules & Invariants Extraction
 
 **Both flows and entities automatically extract Business Rules (BR) and Invariants (INV) during creation.**
