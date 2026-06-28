@@ -58,13 +58,13 @@ npm run start            # Start production server
 src/
 ├── app/                    # Next.js routing only
 ├── domains/                # Business logic (vendor-agnostic)
-│   └── event/
-│       ├── entities/      # Event, Submission, Review
-│       ├── value-objects/ # EventId, EventName, CfpDates
+│   └── conference/
+│       ├── entities/      # Conference, Submission, Review
+│       ├── value-objects/ # ConferenceId, ConferenceName, CfpDates
 │       ├── services/      # Domain services
 │       └── repositories/  # Repository interfaces
 ├── application/            # Use cases
-│   └── event/             # CreateEvent, SubmitProposal
+│   └── conference/             # CreateConference, SubmitProposal
 ├── infrastructure/         # External implementations
 │   ├── external/          # Auth0, Resend, Cloudflare R2
 │   └── database/          # Supabase repositories
@@ -81,15 +81,15 @@ tests/                      # Unit, integration, and E2E tests
 ### TypeScript
 ```typescript
 // ✅ Good - Explicit types, arrow functions
-interface Event {
-  id: EventId;
-  name: EventName;
-  status: EventStatus;
+interface Conference {
+  id: ConferenceId;
+  name: ConferenceName;
+  status: ConferenceStatus;
 }
 
-export const createEvent = (input: CreateEventInput): Result<Event> => {
-  const validated = eventCreateSchema.parse(input);
-  return Result.ok(new Event(validated));
+export const createConference = (input: CreateConferenceInput): Result<Conference> => {
+  const validated = conferenceCreateSchema.parse(input);
+  return Result.ok(new Conference(validated));
 };
 
 // ❌ Bad - Implicit any, inconsistent style
@@ -133,18 +133,18 @@ try {
 
 ### Test Example
 ```typescript
-// tests/unit/event/event-name.test.ts
+// tests/unit/conference/conference-name.test.ts
 import { describe, it, expect } from 'vitest';
-import { EventName } from '@/domains/event/value-objects/event-name';
+import { ConferenceName } from '@/domains/conference/value-objects/conference-name';
 
-describe('EventName', () => {
-  it('creates valid event name', () => {
-    const result = EventName.create('Conference 2026');
+describe('ConferenceName', () => {
+  it('creates valid conference name', () => {
+    const result = ConferenceName.create('Tech Conference 2026');
     expect(result.isSuccess).toBe(true);
   });
 
   it('rejects too short name', () => {
-    const result = EventName.create('Ab');
+    const result = ConferenceName.create('Ab');
     expect(result.isFailure).toBe(true);
   });
 });

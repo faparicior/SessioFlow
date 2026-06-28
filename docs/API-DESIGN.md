@@ -21,8 +21,8 @@ SessioFlow follows RESTful API design principles with versioned endpoints.
 
 | Resource | Endpoint |
 |----------|----------|
-| Events | `/api/v1/events` |
-| Submissions | `/api/v1/events/{eventId}/submissions` |
+| Conferences | `/api/v1/conferences` |
+| Submissions | `/api/v1/conferences/{conferenceId}/submissions` |
 | Reviews | `/api/v1/submissions/{submissionId}/reviews` |
 | Users | `/api/v1/users` |
 
@@ -128,10 +128,10 @@ Authorization: Bearer <jwt_token>
 
 ## 📝 API Examples
 
-### Create Event
+### Create Conference
 
 ```http
-POST /api/v1/events
+POST /api/v1/conferences
 Content-Type: application/json
 Authorization: Bearer <token>
 
@@ -143,17 +143,17 @@ Authorization: Bearer <token>
 }
 ```
 
-### Get Event
+### Get Conference
 
 ```http
-GET /api/v1/events/evt_123
+GET /api/v1/conferences/conf_123
 Authorization: Bearer <token>
 ```
 
 ### Submit Proposal
 
 ```http
-POST /api/v1/events/evt_123/submissions
+POST /api/v1/conferences/conf_123/submissions
 Content-Type: application/json
 Authorization: Bearer <token>
 
@@ -168,7 +168,7 @@ Authorization: Bearer <token>
 ### List Submissions (with pagination)
 
 ```http
-GET /api/v1/events/evt_123/submissions?page=1&perPage=20
+GET /api/v1/conferences/conf_123/submissions?page=1&perPage=20
 Authorization: Bearer <token>
 ```
 
@@ -185,7 +185,7 @@ Authorization: Bearer <token>
 ### Example Query
 
 ```
-GET /api/v1/events?sort=createdAt&order=desc&page=1&perPage=10
+GET /api/v1/conferences?sort=createdAt&order=desc&page=1&perPage=10
 ```
 
 ## 🛡️ Validation
@@ -194,7 +194,7 @@ All inputs validated using Zod schemas:
 
 ```typescript
 // Example validation schema
-export const eventCreateSchema = z.object({
+export const conferenceCreateSchema = z.object({
   name: z.string().min(3).max(100),
   cfpStartDate: z.string().datetime(),
   cfpEndDate: z.string().datetime(),

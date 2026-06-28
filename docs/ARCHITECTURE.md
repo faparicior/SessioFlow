@@ -11,9 +11,9 @@ src/
 │   └── page.tsx
 │
 ├── domains/                # Business logic (vendor-agnostic)
-│   └── event/
-│       ├── entities/      # Event, Submission, Review (with identity)
-│       ├── value-objects/ # EventId, EventName, CfpDates, EventStatus
+│   └── conference/
+│       ├── entities/      # Conference, Submission, Review (with identity)
+│       ├── value-objects/ # ConferenceId, ConferenceName, CfpDates, ConferenceStatus
 │       ├── services/      # Domain services (business logic)
 │       └── repositories/  # Repository interfaces (ports)
 │
@@ -67,13 +67,13 @@ src/
 
 ### Entities
 ```typescript
-// Example: Event entity
-export class Event {
+// Example: Conference entity
+export class Conference {
   constructor(
-    public readonly id: EventId,
-    public readonly name: EventName,
-    public readonly slug: EventSlug,
-    public readonly status: EventStatus,
+    public readonly id: ConferenceId,
+    public readonly name: ConferenceName,
+    public readonly slug: ConferenceSlug,
+    public readonly status: ConferenceStatus,
     public readonly cfpStartDate: CfpStartDate,
     public readonly cfpEndDate: CfpEndDate,
     public readonly maxSubmissions: MaxSubmissions
@@ -83,14 +83,14 @@ export class Event {
 
 ### Value Objects
 ```typescript
-// Example: EventName value object
-export class EventName {
+// Example: ConferenceName value object
+export class ConferenceName {
   private constructor(private readonly value: string) {}
 
-  static create(name: string): Result<EventName> {
+  static create(name: string): Result<ConferenceName> {
     if (name.length < 3) return Result.fail('Name must be at least 3 characters');
     if (name.length > 100) return Result.fail('Name must be at most 100 characters');
-    return Result.ok(new EventName(name));
+    return Result.ok(new ConferenceName(name));
   }
 
   getValue(): string {
@@ -102,24 +102,24 @@ export class EventName {
 ### Repository Pattern
 ```typescript
 // Domain interface (port)
-export interface EventRepository {
-  findById(id: EventId): Promise<Event | null>;
-  findBySlug(slug: EventSlug): Promise<Event | null>;
-  save(event: Event): Promise<void>;
-  delete(id: EventId): Promise<void>;
+export interface ConferenceRepository {
+  findById(id: ConferenceId): Promise<Conference | null>;
+  findBySlug(slug: ConferenceSlug): Promise<Conference | null>;
+  save(conference: Conference): Promise<void>;
+  delete(id: ConferenceId): Promise<void>;
 }
 
 // Infrastructure implementation (adapter)
-export class SupabaseEventRepository implements EventRepository {
+export class SupabaseConferenceRepository implements ConferenceRepository {
   constructor(private db: DatabaseClient) {}
 
-  async findById(id: EventId): Promise<Event | null> {
-    const result = await this.db.from('events').select('*').eq('id', id.getValue()).single();
-    return result ? this.mapToEvent(result) : null;
+  async findById(id: ConferenceId): Promise<Conference | null> {
+    const result = await this.db.from('conferences').select('*').eq('id', id.getValue()).single();
+    return result ? this.mapToConference(result) : null;
   }
 
-  async save(event: Event): Promise<void> {
-    await this.db.from('events').upsert(this.mapFromEvent(event));
+  async save(conference: Conference): Promise<void> {
+    await this.db.from('conferences').upsert(this.mapFromConference(conference));
   }
 }
 ```

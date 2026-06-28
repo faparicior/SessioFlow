@@ -5,12 +5,12 @@ Map the sequence of steps that users (personas) take to achieve their goals. Thi
 
 ---
 
-## The Event Lifecycle (The "Composite" View)
+## The Conference Lifecycle (The "Composite" View)
 *How the individual journeys connect over time*
 
-The user is asking about the "Composite Journey"—the fact that these interactions happen over time, separated by days or weeks. We manage this complexity by splitting them into distinct **Functional Journeys**, which are tied together by the **Event Status**.
+The user is asking about the "Composite Journey"—the fact that these interactions happen over time, separated by days or weeks. We manage this complexity by splitting them into distinct **Functional Journeys**, which are tied together by the **Conference Status**.
 
-| Timeframe | Event Status | Active Persona | Active Journey |
+| Timeframe | Conference Status | Active Persona | Active Journey |
 | :--- | :--- | :--- | :--- |
 | **Day 1** | `Draft` → `C4P Open` | Fernando | **Journey 1: Setup** |
 | **Weeks 1-4** | `C4P Open` | Andrea | **Journey 2: Submission** |
@@ -19,15 +19,15 @@ The user is asking about the "Composite Journey"—the fact that these interacti
 
 ---
 
-## 🗺️ Journey 1: Setup the Event (Fernando)
+## 🗺️ Journey 1: Setup the Conference (Fernando)
 
 **Persona:** Fernando, the Organizer
-**Goal:** Configure the event and open the Call for Papers (C4P Session).
+**Goal:** Configure the conference and open the Call for Papers (C4P Session).
 
 | Step | User Action | System Feature / Response | Pain Point Addressed |
 | :--- | :--- | :--- | :--- |
 | 1. | Fernando logs in. | **User Authentication**: Shows Admin Dashboard. | **Need 1:** Single platform for all data. |
-| 2. | Fernando creates a new "C4P Session". | **Collect Proposals (CfP)**: Form to set Event Name/Dates. | **Pain 1:** Repetitive work to organize CfP. |
+| 2. | Fernando creates a new "C4P Session". | **Collect Proposals (CfP)**: Form to set Conference Name/Dates. | **Pain 1:** Repetitive work to organize CfP. |
 | 3. | Fernando publishes the session. | **Collect Proposals (CfP)**: Generates and activates Public Link. | **Need 3:** Simple, intuitive interface. |
 
 ---

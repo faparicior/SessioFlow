@@ -11,10 +11,10 @@ Synthesize all previous steps into a strategic blueprint for the first release (
 **Product Name:** SessioFlow MVP 1.0 - "The CfP Launcher"
 
 **MVP Vision Statement:**
-For **Event Organizers** (Fernando) who need to **start their event journey**, **SessioFlow** is a **Call for Papers (CfP) launch tool** that **enables the setup and collection of session proposals**. Unlike **generic form builders**, our product is **tailored for tech events, free to host, and creates a professional first impression.**
+For **Conference Organizers** (Fernando) who need to **start their conference journey**, **SessioFlow** is a **Call for Papers (CfP) launch tool** that **enables the setup and collection of session proposals**. Unlike **generic form builders**, our product is **tailored for tech conferences, free to host, and creates a professional first impression.**
 
 ### Core Value Proposition
-We are addressing the **Urgency of Starting**. The organizer's first hurdle is simply "Opening the CfP". By focusing on this, we allow them to start marketing their event immediately, buying us time to build the selection features while proposals are rolling in.
+We are addressing the **Urgency of Starting**. The organizer's first hurdle is simply "Opening the CfP". By focusing on this, we allow them to start marketing their conference immediately, buying us time to build the selection features while proposals are rolling in.
 
 ---
 
@@ -22,7 +22,7 @@ We are addressing the **Urgency of Starting**. The organizer's first hurdle is s
 *From Step 7 (Features & Sequencing) - the specific feature set.*
 
 ### Critical Path Features (The "Cupcake")
-1. ✅ **Setup Event (C4P Configuration)**: Create event, set dates, and generate public link. (The Input).
+1. ✅ **Setup Conference (C4P Configuration)**: Create conference, set dates, and generate public link. (The Input).
 2. ✅ **User Authentication**: Secure login for Organizers (to setup) and Speakers (to manage submissions).
 3. ✅ **Speaker Profile**: Basic bio and photo upload.
 4. ✅ **Collect Proposals (CfP)**: The public-facing form for submitting talks. (The Output).
@@ -40,7 +40,7 @@ We are addressing the **Urgency of Starting**. The organizer's first hurdle is s
 ## 3. Personas & Journey Alignment
 *From Steps 3 & 6 - Who are we serving?*
 
-**Primary Persona:** **Fernando**, the Community Organizer.
+**Primary Persona:** **Fernando**, the Conference Organizer.
 *   **Pain Solved:** "I need to launch my Call for Papers NOW but setting up a form is annoying."
 *   **Gain:** A professional CfP link generated in minutes.
 
@@ -49,7 +49,7 @@ We are addressing the **Urgency of Starting**. The organizer's first hurdle is s
 *   **Gain:** A clean, mobile-accessible submission interface.
 
 **Core Journey Supported:**
-*   **Step 1:** Fernando Logs in -> Create Event -> Publishes Link (Journey 1).
+*   **Step 1:** Fernando Logs in -> Create Conference -> Publishes Link (Journey 1).
 *   **Step 2:** Andrea creates account -> Fills Profile -> Submits Proposal (Journey 2).
 
 ---
@@ -58,15 +58,15 @@ We are addressing the **Urgency of Starting**. The organizer's first hurdle is s
 *How do we know if this works?*
 
 **Hypothesis:**
-We believe that by **enabling instant CfP creation**, we will **acquire users early in their event lifecycle**.
+We believe that by **enabling instant CfP creation**, we will **acquire users early in their conference lifecycle**.
 
 ### Validation Metrics (KPIs)
-*   **Activation:** 5 Events created within the first month.
-*   **Volume:** > 50 Proposals collected across all events.
+*   **Activation:** 5 Conferences created within the first month.
+*   **Volume:** > 50 Proposals collected across all conferences.
 *   **Conversion:** 80% of speakers who start the form complete the submission.
 
 ### Failure Condition
-*   If organizers find the "Create Event" flow too complex and revert to Google Forms, we have failed to lower the barrier to entry.
+*   If organizers find the "Create Conference" flow too complex and revert to Google Forms, we have failed to lower the barrier to entry.
 
 ---
 
@@ -76,7 +76,7 @@ We believe that by **enabling instant CfP creation**, we will **acquire users ea
 ### Cost & Schedule
 *   **Infrastructure:** **$0/month** (Constraint #1).
 *   **Development Effort:** Estimated 3 Sprints (6 Weeks) for 2 Developers.
-    *   Sprint 1: Auth & "Create Event" Setup.
+    *   Sprint 1: Auth & "Create Conference" Setup.
     *   Sprint 2: Speaker Profile & CfP Form.
     *   Sprint 3: Dashboard Basic View (List of submissions).
 
@@ -93,12 +93,12 @@ We believe that by **enabling instant CfP creation**, we will **acquire users ea
 
 ### Technical Enablers
 - [ ] Setup defined tech stack (Next.js + Tailwind + Database).
-- [ ] Database Schema for `Events`, `Proposals`, and `Profiles`.
+- [ ] Database Schema for `Conferences`, `Proposals`, and `Profiles`.
 - [ ] Authentication system (Magic Link).
 - [ ] **Image Storage** (Supabase Storage) for profile photos.
 
 ### UX Enablers
-- [ ] "Setup Wizard" design for creating an event (Step-by-step).
+- [ ] "Setup Wizard" design for creating a conference (Step-by-step).
 - [ ] "Public Landing Page" template for the CfP link.
 
 ---

@@ -11,18 +11,18 @@ SessioFlow uses a comprehensive testing strategy with multiple layers.
 - **Run**: `npm test` or `npx vitest run`
 
 ```typescript
-// tests/unit/event/event-name.test.ts
+// tests/unit/conference/conference-name.test.ts
 import { describe, it, expect } from 'vitest';
-import { EventName } from '@/domains/event/value-objects/event-name';
+import { ConferenceName } from '@/domains/conference/value-objects/conference-name';
 
-describe('EventName', () => {
-  it('creates valid event name', () => {
-    const result = EventName.create('Conference 2026');
+describe('ConferenceName', () => {
+  it('creates valid conference name', () => {
+    const result = ConferenceName.create('Tech Conference 2026');
     expect(result.isSuccess).toBe(true);
   });
 
   it('rejects too short name', () => {
-    const result = EventName.create('Ab');
+    const result = ConferenceName.create('Ab');
     expect(result.isFailure).toBe(true);
   });
 });
@@ -34,23 +34,23 @@ describe('EventName', () => {
 - **Framework**: Vitest + Testcontainers
 
 ```typescript
-// tests/integration/event-repository.test.ts
+// tests/integration/conference-repository.test.ts
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { SupabaseEventRepository } from '@/infrastructure/database/event-repository';
+import { SupabaseConferenceRepository } from '@/infrastructure/database/conference-repository';
 
-describe('SupabaseEventRepository', () => {
-  let repository: SupabaseEventRepository;
+describe('SupabaseConferenceRepository', () => {
+  let repository: SupabaseConferenceRepository;
 
   beforeAll(async () => {
     // Setup test database
-    repository = new SupabaseEventRepository(testDbClient);
+    repository = new SupabaseConferenceRepository(testDbClient);
   });
 
-  it('saves and retrieves event', async () => {
-    const event = createTestEvent();
-    await repository.save(event);
-    const retrieved = await repository.findById(event.id);
-    expect(retrieved).toEqual(event);
+  it('saves and retrieves conference', async () => {
+    const conference = createTestConference();
+    await repository.save(conference);
+    const retrieved = await repository.findById(conference.id);
+    expect(retrieved).toEqual(conference);
   });
 });
 ```
@@ -62,19 +62,19 @@ describe('SupabaseEventRepository', () => {
 - **Run**: `npm run test:e2e`
 
 ```typescript
-// tests/e2e/create-event.spec.ts
+// tests/e2e/create-conference.spec.ts
 import { test, expect } from '@playwright/test';
 
-test('user can create an event', async ({ page }) => {
-  await page.goto('/dashboard/events/new');
+test('user can create a conference', async ({ page }) => {
+  await page.goto('/dashboard/conferences/new');
   
-  await page.fill('[name="eventName"]', 'Tech Conference 2026');
+  await page.fill('[name="conferenceName"]', 'Tech Conference 2026');
   await page.fill('[name="cfpStartDate"]', '2026-01-01');
   await page.fill('[name="cfpEndDate"]', '2026-03-31');
   
   await page.click('[type="submit"]');
   
-  await expect(page).toHaveURL(/\/events\/\w+/);
+  await expect(page).toHaveURL(/\/conferences\/\w+/);
   await expect(page.locator('h1')).toContainText('Tech Conference 2026');
 });
 ```
@@ -92,13 +92,13 @@ npx vitest run
 npx vitest run --coverage
 
 # Run single test file
-npx vitest run tests/unit/event/event-name.test.ts
+npx vitest run tests/unit/conference/conference-name.test.ts
 
 # Run E2E tests
 npm run test:e2e
 
 # Run specific E2E test
-npx playwright test tests/e2e/create-event.spec.ts
+npx playwright test tests/e2e/create-conference.spec.ts
 
 # Run E2E with UI mode
 npx playwright test --ui
@@ -135,7 +135,7 @@ A task is complete when ALL of the following pass:
 **E2E Tests:**
 - ✅ Critical user journeys
 - ✅ Authentication flows
-- ✅ Event creation and management
+- ✅ Conference creation and management
 - ✅ Submission workflows
 - ✅ Review processes
 
