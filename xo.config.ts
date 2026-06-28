@@ -10,6 +10,7 @@ const xoConfig: FlatXoConfig = [
     files: ['src/**/*.{ts,tsx}'],
     rules: {
       '@stylistic/max-len': ['error', 100],
+      '@stylistic/curly-newline': 'off',
       'new-cap': 'off',
       'react/new-cap': 'off',
       // React 17+ JSX transform: no need to import React for JSX
