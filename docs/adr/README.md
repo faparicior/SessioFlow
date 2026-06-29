@@ -29,6 +29,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [012](012-implement-ci-cd-with-github-actions.md) | Implement CI/CD with GitHub Actions | ✅ Approved | 2026-06-05 |
 | [013](013-adopt-typescript-with-strict-mode.md) | Adopt TypeScript with Strict Mode | ✅ Approved | 2026-06-05 |
 | [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | ✅ Approved | 2026-06-05 |
+| [015](015-adopt-cqrs-pattern.md) | Adopt CQRS Pattern for Application Layer | ✅ **Approved** | 2026-06-29 |
 
 ---
 
@@ -69,6 +70,9 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 - **008** - Testing Strategy: Comprehensive Testing
 - **009** - Code Organization: Domain-Driven Design
 - **014** - UI Components: shadcn-ui
+
+### 🔄 Application Architecture
+- **015** - **CQRS Pattern for Application Layer**
 
 ---
 
@@ -256,15 +260,15 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 21 (including amendments and analyses) |
+| **Total ADRs** | 22 (including amendments and analyses) |
 | **Proposed** | 10 |
-| **Accepted** | 6 |
+| **Accepted** | 7 |
 | **Amendments** | 4 |
 | **Optional** | 1 |
-| **Date Range** | 2026-06-05 to 2026-06-25 |
+| **Date Range** | 2026-06-05 to 2026-06-29 |
 | **Most Active Category** | Core Technology Stack (6 decisions) |
 
 ---
 
-**Last Updated**: 2026-06-25
+**Last Updated**: 2026-06-29
 **Maintained By**: Technical Team

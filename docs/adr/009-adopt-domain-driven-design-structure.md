@@ -5,6 +5,7 @@
 * **Decision Makers:** Product Team, Technical Lead
 * **Supersedes:** ADR-009 (Feature-Based Colocation)
 * **Amended By:** ADR-002-01 (Supabase DDD Abstraction), ADR-002-03 (Auth Strategy)
+* **Related:** [ADR-015](015-adopt-cqrs-pattern.md) (CQRS Pattern)
 
 ## Context and Problem Statement
 
@@ -206,7 +207,7 @@ src/
 **Value Objects:** Immutable objects defined by attributes (Title, Abstract, Score)
 **Domain Services:** Business logic that doesn't belong to entities
 **Repository Interfaces:** Abstractions for data access (implemented in infrastructure, interfaces live in domain context)
-**Application Services:** Use cases that orchestrate domain objects
+**Application Services:** Use cases that orchestrate domain objects (see [ADR-015](015-adopt-cqrs-pattern.md) for CQRS pattern)
 **DTOs:** Data transfer objects for interfaces (API, UI)
 
 **Note on Structure:** Entities and repository interfaces live directly in their domain context folders for better colocation and discoverability. The `domain` folder (singular) contains all bounded contexts.
