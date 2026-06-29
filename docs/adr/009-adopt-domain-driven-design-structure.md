@@ -137,35 +137,36 @@ DDD is the optimal choice because it provides long-term architectural stability 
 
 ```typescript
 src/
-├── domains/                    # Domain layer (business logic)
-│   ├── event/                  # conference bounded context
-│   │   ├── entities/           # conference, session, track
-│   │   ├── value-objects/      # ConferenceId, SessionType, DateTimeRange
-│   │   ├── aggregates/         # ConferenceAggregate (consistency boundary)
-│   │   ├── services/           # Domain services (event rules)
-│   │   └── repositories/       # Repository interfaces
+├── domain/                     # Domain layer (business logic)
+│   ├── conference/             # Conference bounded context
+│   │   ├── conference.ts       # Conference entity
+│   │   ├── conference.repository.ts  # ConferenceRepository interface
+│   │   ├── value-objects/      # ConferenceId, ConferenceName, CfpDates, ConferenceStatus
+│   │   └── services/           # Domain services (conference rules)
 │   ├── submission/             # Submission bounded context
-│   │   ├── entities/           # Submission, Speaker
+│   │   ├── submission.ts       # Submission entity
+│   │   ├── speaker.ts          # Speaker entity
+│   │   ├── submission.repository.ts  # SubmissionRepository interface
 │   │   ├── value-objects/      # SubmissionId, Abstract, Title
-│   │   ├── aggregates/         # SubmissionAggregate
-│   │   ├── services/           # Submission validation rules
-│   │   └── repositories/       # SubmissionRepository interface
+│   │   └── services/           # Submission validation rules
 │   ├── review/                 # Review bounded context
-│   │   ├── entities/           # Review, Reviewer, Score
+│   │   ├── review.ts           # Review entity
+│   │   ├── reviewer.ts         # Reviewer entity
+│   │   ├── review.repository.ts  # ReviewRepository interface
 │   │   ├── value-objects/      # ReviewId, Criteria, Rating
-│   │   ├── services/           # Review algorithms, bias detection
-│   │   └── repositories/       # ReviewRepository interface
+│   │   └── services/           # Review algorithms, bias detection
 │   └── scheduling/             # Scheduling bounded context
-│       ├── entities/           # Schedule, TimeSlot, Room
+│       ├── schedule.ts         # Schedule entity
+│       ├── time-slot.ts        # TimeSlot entity
+│       ├── schedule.repository.ts  # ScheduleRepository interface
 │       ├── value-objects/      # SlotId, Conflict, Availability
-│       ├── services/           # Scheduling algorithms, conflict detection
-│       └── repositories/       # ScheduleRepository interface
+│       └── services/           # Scheduling algorithms, conflict detection
 │
 ├── application/                # Application layer (use cases)
-│   ├── event/                  # conference use cases
-│   │   ├── create-event.ts
+│   ├── conference/             # Conference use cases
+│   │   ├── create-conference.ts
 │   │   ├── publish-cfp.ts
-│   │   └── event-dto.ts
+│   │   └── conference-dto.ts
 │   ├── submission/             # Submission use cases
 │   │   ├── submit-proposal.ts
 │   │   ├── get-submission.ts
@@ -181,7 +182,7 @@ src/
 │
 ├── infrastructure/             # Infrastructure layer (implementation)
 │   ├── database/               # Supabase/PostgreSQL implementations
-│   │   ├── event-repository.ts
+│   │   ├── conference-repository.ts
 │   │   ├── submission-repository.ts
 │   │   ├── review-repository.ts
 │   │   └── scheduling-repository.ts
@@ -201,13 +202,14 @@ src/
 
 ### Key DDD Concepts Applied
 
-**Entities:** Objects with identity (Conference, Submission, Review, Schedule)
+**Entities:** Objects with identity that live in domain context folders (Conference, Submission, Review, Schedule)
 **Value Objects:** Immutable objects defined by attributes (Title, Abstract, Score)
-**Aggregates:** Consistency boundaries (ConferenceAggregate, SubmissionAggregate)
 **Domain Services:** Business logic that doesn't belong to entities
-**Repository Interfaces:** Abstractions for data access (implemented in infrastructure)
+**Repository Interfaces:** Abstractions for data access (implemented in infrastructure, interfaces live in domain context)
 **Application Services:** Use cases that orchestrate domain objects
 **DTOs:** Data transfer objects for interfaces (API, UI)
+
+**Note on Structure:** Entities and repository interfaces live directly in their domain context folders for better colocation and discoverability. The `domain` folder (singular) contains all bounded contexts.
 
 ## AI-Assisted DDD Development
 

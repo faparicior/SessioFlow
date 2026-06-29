@@ -85,7 +85,7 @@ With DDD abstraction (ADR-002b), the authentication strategy provides optimal fl
 ### Domain Interface (Port)
 
 ```typescript
-// domains/auth/repositories/auth-provider.ts
+// domain/auth/repositories/auth-provider.ts
 export interface User {
   id: string;
   email: string;
@@ -127,7 +127,7 @@ export interface AuthProvider {
 
 ```typescript
 // infrastructure/external/supabase-auth-adapter.ts
-import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domain/auth/repositories/auth-provider';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -206,7 +206,7 @@ export class SupabaseAuthAdapter implements AuthProvider {
 
 ```typescript
 // application/auth/login-use-case.ts
-import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domain/auth/repositories/auth-provider';
 
 export class LoginUseCase {
   constructor(private authProvider: AuthProvider) {}
@@ -228,7 +228,7 @@ export class LoginUseCase {
 
 ```typescript
 // app/config/auth-config.ts
-import { AuthProvider } from '@/domains/auth/repositories/auth-provider';
+import { AuthProvider } from '@/domain/auth/repositories/auth-provider';
 import { SupabaseAuthAdapter } from '@/infrastructure/external/supabase-auth-adapter';
 
 // Current implementation
@@ -351,7 +351,7 @@ export const authProvider: AuthProvider = new SupabaseAuthAdapter();
 ```typescript
 // tests/unit/auth/login-use-case.test.ts
 import { LoginUseCase } from '@/application/auth/login-use-case';
-import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domain/auth/repositories/auth-provider';
 
 // Mock provider for testing
 class MockAuthProvider implements AuthProvider {

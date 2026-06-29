@@ -42,7 +42,7 @@ This ensures consistency with the broader DDD architecture and leverages existin
 
 ```typescript
 src/
-├── domains/
+├── domain/
 │   └── auth/
 │       ├── entities/
 │       │   └── user.ts               # User entity with domain behavior
@@ -236,7 +236,7 @@ export const auth = betterAuth({
 ### Step 1: Define the Port (Repository Interface)
 
 ```typescript
-// domains/auth/repositories/auth-provider.ts
+// domain/auth/repositories/auth-provider.ts
 export interface User {
   id: string;
   email: string;
@@ -270,7 +270,7 @@ export interface AuthProvider {
 
 ```typescript
 // infrastructure/external/auth0-provider.ts
-import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domain/auth/repositories/auth-provider';
 import { auth0Client } from '@/lib/auth0';
 
 export class Auth0Provider implements AuthProvider {
@@ -325,7 +325,7 @@ export class Auth0Provider implements AuthProvider {
 
 ```typescript
 // infrastructure/external/nextauth-provider.ts
-import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domain/auth/repositories/auth-provider';
 import { getServerSession, signIn, signOut } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 
@@ -401,7 +401,7 @@ export const authProvider: AuthProvider = new NextAuthProvider();
 
 ```typescript
 // application/auth/login.ts
-import { AuthProvider, User, LoginCredentials } from '@/domains/auth/repositories/auth-provider';
+import { AuthProvider, User, LoginCredentials } from '@/domain/auth/repositories/auth-provider';
 
 export class LoginUseCase {
   constructor(private provider: AuthProvider) {}

@@ -146,14 +146,14 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 **Project Structure:**
 ```
 src/
-├── domains/              # Business logic (vendor-agnostic)
+├── domain/               # Business logic (vendor-agnostic)
 │   ├── auth/             # IAuthProvider interface
 │   ├── storage/          # IStorageProvider interface
 │   ├── email/            # IEmailProvider interface (optional)
-│   ├── event/
-│   ├── submission/
-│   ├── review/
-│   └── scheduling/
+│   ├── conference/       # Conference, Submission entities
+│   ├── submission/       # Submission entity
+│   ├── review/           # Review entity
+│   └── scheduling/       # Schedule entity
 ├── application/          # Use cases
 ├── infrastructure/       # External service implementations
 │   ├── external/
@@ -164,6 +164,8 @@ src/
 │   └── database/
 └── interfaces/          # UI and API entry points
 ```
+
+**Note:** Entities and repository interfaces live directly in their domain context folders (not in separate entities/ repositories/ subfolders). The `domain` folder uses singular form.
 
 ---
 

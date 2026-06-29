@@ -10,16 +10,17 @@ src/
 │   ├── layout.tsx
 │   └── page.tsx
 │
-├── domains/                # Business logic (vendor-agnostic)
+├── domain/                 # Business logic (vendor-agnostic)
 │   └── conference/
-│       ├── entities/      # Conference, Submission, Review (with identity)
+│       ├── conference.ts  # Conference entity
+│       ├── submission.ts  # Submission entity
 │       ├── value-objects/ # ConferenceId, ConferenceName, CfpDates, ConferenceStatus
 │       ├── services/      # Domain services (business logic)
 │       └── repositories/  # Repository interfaces (ports)
 │
 ├── application/            # Use cases and application services
-│   └── event/
-│       ├── create-event.ts
+│   └── conference/
+│       ├── create-conference.ts
 │       ├── submit-proposal.ts
 │       └── review-submission.ts
 │
@@ -30,7 +31,7 @@ src/
 │   │   ├── cloudflare-r2-adapter.ts
 │   │   └── resend-email-adapter.ts
 │   └── database/
-│       └── event-repository.ts
+│       └── conference-repository.ts
 │
 └── interfaces/            # UI and API entry points
     ├── web/

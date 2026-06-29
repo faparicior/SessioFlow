@@ -86,7 +86,7 @@ With DDD abstraction (ADR-002b), the storage strategy provides optimal flexibili
 ### Domain Interface (Port)
 
 ```typescript
-// domains/storage/repositories/storage-provider.ts
+// domain/storage/repositories/storage-provider.ts
 export interface FileMetadata {
   id: string;
   filename: string;
@@ -149,7 +149,7 @@ import {
   FileMetadata,
   UploadFileRequest,
   UploadFileResult 
-} from '@/domains/storage/repositories/storage-provider';
+} from '@/domain/storage/repositories/storage-provider';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -257,7 +257,7 @@ import {
   FileMetadata,
   UploadFileRequest,
   UploadFileResult 
-} from '@/domains/storage/repositories/storage-provider';
+} from '@/domain/storage/repositories/storage-provider';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
@@ -369,7 +369,7 @@ export class CloudflareR2Adapter implements StorageProvider {
 
 ```typescript
 // application/storage/upload-profile-photo-use-case.ts
-import { StorageProvider, UploadFileRequest } from '@/domains/storage/repositories/storage-provider';
+import { StorageProvider, UploadFileRequest } from '@/domain/storage/repositories/storage-provider';
 
 export class UploadProfilePhotoUseCase {
   private MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -429,7 +429,7 @@ export class UploadProfilePhotoUseCase {
 
 ```typescript
 // app/config/storage-config.ts
-import { StorageProvider } from '@/domains/storage/repositories/storage-provider';
+import { StorageProvider } from '@/domain/storage/repositories/storage-provider';
 import { SupabaseStorageAdapter } from '@/infrastructure/external/supabase-storage-adapter';
 
 // Current implementation
@@ -574,7 +574,7 @@ export const storageProvider: StorageProvider = new SupabaseStorageAdapter();
 ```typescript
 // tests/unit/storage/upload-profile-photo.test.ts
 import { UploadProfilePhotoUseCase } from '@/application/storage/upload-profile-photo-use-case';
-import { StorageProvider, UploadFileRequest, UploadFileResult } from '@/domains/storage/repositories/storage-provider';
+import { StorageProvider, UploadFileRequest, UploadFileResult } from '@/domain/storage/repositories/storage-provider';
 
 // Mock provider for testing
 class MockStorageProvider implements StorageProvider {

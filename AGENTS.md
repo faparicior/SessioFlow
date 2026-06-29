@@ -11,9 +11,9 @@ npm run dev              # Start Next.js dev server
 # Testing
 npm test                 # Run all tests (Vitest)
 npx vitest run           # Run Vitest tests
-npx vitest run tests/unit/event/*.test.ts  # Single test file
+npx vitest run tests/unit/conference/*.test.ts  # Single test file
 npm run test:e2e         # Run Playwright E2E tests
-npx playwright test tests/e2e/create-event.spec.ts  # Single E2E test
+npx playwright test tests/e2e/create-conference.spec.ts  # Single E2E test
 
 # Quality
 npm run typecheck        # TypeScript type checking (tsgo)
@@ -57,9 +57,10 @@ npm run start            # Start production server
 ```
 src/
 ├── app/                    # Next.js routing only
-├── domains/                # Business logic (vendor-agnostic)
+├── domain/                 # Business logic (vendor-agnostic)
 │   └── conference/
-│       ├── entities/      # Conference, Submission, Review
+│       ├── conference.ts  # Conference entity
+│       ├── submission.ts  # Submission entity
 │       ├── value-objects/ # ConferenceId, ConferenceName, CfpDates
 │       ├── services/      # Domain services
 │       └── repositories/  # Repository interfaces
@@ -106,15 +107,15 @@ const createEvent = (input) => {
 | Constants | UPPER_SNAKE_CASE | `MAX_EVENT_NAME_LENGTH` |
 | Types/Interfaces | PascalCase | `CreateEventInput`, `EventStatus` |
 | Files (components) | PascalCase | `CreateEventForm.tsx` |
-| Files (features) | kebab-case | `event-repository.ts` |
+| Files (features) | kebab-case | `conference-repository.ts` |
 
 ### Error Handling
 ```typescript
 // ✅ Good - Zod validation + standardized errors
 try {
-  const validated = eventCreateSchema.parse(input);
-  const event = await eventRepository.save(validated);
-  return { success: true, data: event };
+  const validated = conferenceCreateSchema.parse(input);
+  const conference = await conferenceRepository.save(validated);
+  return { success: true, data: conference };
 } catch (error) {
   if (error instanceof ZodError) {
     return { success: false, errors: error.flatten() };
@@ -255,8 +256,8 @@ See `docs/ADRS.md` for full decision history.
 [type]: [description in imperative mood]
 
 Examples:
-feat: add event creation endpoint
-fix: validate CFP dates in event form
+feat: add conference creation endpoint
+fix: validate CFP dates in conference form
 chore: update dependencies
 ```
 

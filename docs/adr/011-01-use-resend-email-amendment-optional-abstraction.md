@@ -95,7 +95,7 @@ The original ADR-011 selected Resend for email communications with:
 ### Domain Interface (Port)
 
 ```typescript
-// domains/email/repositories/email-provider.ts
+// domain/email/repositories/email-provider.ts
 export interface EmailAddress {
   email: string;
   name?: string;
@@ -159,7 +159,7 @@ import {
   EmailSendResult,
   EmailAddress,
   EmailAttachment 
-} from '@/domains/email/repositories/email-provider';
+} from '@/domain/email/repositories/email-provider';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -270,7 +270,7 @@ import {
   EmailProvider, 
   EmailMessage,
   EmailSendResult 
-} from '@/domains/email/repositories/email-provider';
+} from '@/domain/email/repositories/email-provider';
 import { SendGridMail, SendGrid } from '@sendgrid/mail';
 
 SendGridMail.setApiKey(process.env.SENDGRID_API_KEY!);
@@ -345,7 +345,7 @@ export class SendGridEmailAdapter implements EmailProvider {
 
 ```typescript
 // application/email/send-proposal-notification-use-case.ts
-import { EmailProvider, EmailMessage } from '@/domains/email/repositories/email-provider';
+import { EmailProvider, EmailMessage } from '@/domain/email/repositories/email-provider';
 
 export class SendProposalNotificationUseCase {
   constructor(private emailProvider: EmailProvider) {}
@@ -393,7 +393,7 @@ export class SendProposalNotificationUseCase {
 
 ```typescript
 // app/config/email-config.ts
-import { EmailProvider } from '@/domains/email/repositories/email-provider';
+import { EmailProvider } from '@/domain/email/repositories/email-provider';
 import { ResendEmailAdapter } from '@/infrastructure/external/resend-email-adapter';
 
 // Current implementation
