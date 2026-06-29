@@ -249,35 +249,56 @@ SessioFlow follows Domain-Driven Design (DDD) principles with vendor abstraction
 
 ```
 src/
-├── domains/                    # Domain layer (business logic)
+├── domain/                     # Domain layer (business logic)
 │   ├── auth/                   # Authentication bounded context
-│   │   ├── entities/           # User, Session
+│   │   ├── auth.provider.ts    # AuthProvider interface
+│   │   ├── user.ts             # User entity
 │   │   ├── value-objects/      # UserId, Email, Role
-│   │   ├── services/           # Auth rules, validation
-│   │   └── repositories/       # AuthProvider interface (port)
+│   │   └── services/           # Auth rules, validation
 │   ├── storage/                # Storage bounded context
-│   │   ├── entities/           # File, UploadResult
+│   │   ├── storage.provider.ts # StorageProvider interface
+│   │   ├── file.ts             # File entity
 │   │   ├── value-objects/      # FileId, ContentType
-│   │   └── repositories/       # StorageProvider interface (port)
+│   │   └── services/           # Storage rules
 │   ├── email/                  # Email bounded context (optional)
-│   │   └── repositories/       # EmailProvider interface (port)
-│   ├── event/                  # Event bounded context
+│   │   ├── email.provider.ts   # EmailProvider interface
+│   │   └── value-objects/      # EmailAddress, EmailTemplate
+│   ├── conference/             # Conference bounded context
+│   │   ├── conference.ts       # Conference entity
+│   │   ├── conference.repository.ts
+│   │   ├── value-objects/      # ConferenceId, ConferenceName, CfpDates
+│   │   └── services/           # Conference domain rules
 │   ├── submission/             # Submission bounded context
+│   │   ├── submission.ts       # Submission entity
+│   │   ├── speaker.ts          # Speaker entity
+│   │   ├── submission.repository.ts
+│   │   ├── value-objects/      # SubmissionId, Abstract, Title
+│   │   └── services/           # Submission validation rules
 │   ├── review/                 # Review bounded context
+│   │   ├── review.ts           # Review entity
+│   │   ├── reviewer.ts         # Reviewer entity
+│   │   ├── review.repository.ts
+│   │   ├── value-objects/      # ReviewId, Criteria, Rating
+│   │   └── services/           # Review algorithms, bias detection
 │   └── scheduling/             # Scheduling bounded context
+│       ├── schedule.ts         # Schedule entity
+│       ├── time-slot.ts        # TimeSlot entity
+│       ├── schedule.repository.ts
+│       ├── value-objects/      # SlotId, Conflict, Availability
+│       └── services/           # Scheduling algorithms, conflict detection
 │
 ├── application/                # Application layer (use cases)
 │   ├── auth/                   # Login, logout, get-current-user
 │   ├── storage/                # Upload-profile-photo, get-file-url
 │   ├── email/                  # Send-welcome-email, send-notification
-│   ├── event/                  # Create-event, publish-cfp
+│   ├── conference/             # Create-conference, publish-cfp
 │   ├── submission/             # Submit-proposal, get-submission
 │   ├── review/                 # Assign-reviewers, submit-review
 │   └── scheduling/             # Generate-schedule, detect-conflicts
 │
 ├── infrastructure/             # Infrastructure layer (implementations)
 │   ├── database/               # Repository implementations
-│   │   ├── event-repository.ts
+│   │   ├── conference-repository.ts
 │   │   ├── submission-repository.ts
 │   │   └── review-repository.ts
 │   └── external/               # External service adapters
@@ -290,8 +311,7 @@ src/
 │       │   ├── cloudflare-r2-adapter.ts
 │       │   └── minio-adapter.ts
 │       └── email/
-│           ├── resend-email-adapter.ts
-│           └── sendgrid-email-adapter.ts
+│           └── resend-email-adapter.ts
 │
 └── interfaces/                 # Interface layer (entry points)
     ├── web/                    # Next.js pages and components
