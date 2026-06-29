@@ -287,14 +287,61 @@ src/
 │       ├── value-objects/      # SlotId, Conflict, Availability
 │       └── services/           # Scheduling algorithms, conflict detection
 │
-├── application/                # Application layer (use cases)
-│   ├── auth/                   # Login, logout, get-current-user
-│   ├── storage/                # Upload-profile-photo, get-file-url
-│   ├── email/                  # Send-welcome-email, send-notification
-│   ├── conference/             # Create-conference, publish-cfp
-│   ├── submission/             # Submit-proposal, get-submission
-│   ├── review/                 # Assign-reviewers, submit-review
-│   └── scheduling/             # Generate-schedule, detect-conflicts
+├── application/                # Application layer (CQRS pattern)
+│   ├── auth/
+│   │   ├── commands/
+│   │   │   ├── login/
+│   │   │   │   ├── login.command.ts
+│   │   │   │   ├── login.handler.ts
+│   │   │   │   └── login.dto.ts
+│   │   │   └── logout/
+│   │   ├── queries/
+│   │   │   └── get-current-user/
+│   │   │       ├── get-current-user.query.ts
+│   │   │       ├── get-current-user.handler.ts
+│   │   │       └── get-current-user.dto.ts
+│   ├── storage/
+│   │   ├── commands/
+│   │   │   └── upload-file/
+│   │   └── queries/
+│   │       └── get-file-url/
+│   ├── email/
+│   │   └── commands/
+│   │       └── send-email/
+│   ├── conference/
+│   │   ├── commands/
+│   │   │   ├── create-conference/
+│   │   │   │   ├── create-conference.command.ts
+│   │   │   │   ├── create-conference.handler.ts
+│   │   │   │   └── create-conference.dto.ts
+│   │   │   ├── update-conference/
+│   │   │   └── publish-cfp/
+│   │   ├── queries/
+│   │   │   ├── get-conference/
+│   │   │   │   ├── get-conference.query.ts
+│   │   │   │   ├── get-conference.handler.ts
+│   │   │   │   └── get-conference.dto.ts
+│   │   │   └── list-conferences/
+│   │   └── conference-dto.ts                     # Shared DTOs
+│   ├── submission/
+│   │   ├── commands/
+│   │   │   ├── submit-proposal/
+│   │   │   │   ├── submit-proposal.command.ts
+│   │   │   │   ├── submit-proposal.handler.ts
+│   │   │   │   └── submit-proposal.dto.ts
+│   │   └── queries/
+│   │       └── get-submission/
+│   ├── review/
+│   │   ├── commands/
+│   │   │   ├── submit-review/
+│   │   │   └── assign-reviewers/
+│   │   └── queries/
+│   │       └── get-reviews/
+│   └── scheduling/
+│       ├── commands/
+│       │   └── generate-schedule/
+│       └── queries/
+│           └── get-schedule/
 │
 ├── infrastructure/             # Infrastructure layer (implementations)
 │   ├── database/               # Repository implementations
@@ -364,10 +411,62 @@ class LoginUseCase {
 ```
 
 **Benefits:**
-- ✅ Swap providers with 8-14 hours effort (vs 52-112 hours)
+- ✅ Swap providers with 8-14 hours effort (vs 52-336 hours)
 - ✅ Vendor lock-in reduced by 85%
 - ✅ Easy testing with mock implementations
 - ✅ Can optimize costs by switching providers
+
+### CQRS Pattern
+
+SessioFlow uses the Command Query Responsibility Segregation (CQRS) pattern for the application layer:
+
+```typescript
+// Command (Write Operation)
+export class CreateConferenceCommand {
+  constructor(
+    public readonly name: string,
+    public readonly slug: string,
+    public readonly cfpStartDate: Date,
+    public readonly cfpEndDate: Date
+  ) {}
+}
+
+export class CreateConferenceHandler {
+  constructor(
+    private conferenceRepository: ConferenceRepository,
+    private uuidGenerator: UuidGenerator
+  ) {}
+
+  async handle(command: CreateConferenceCommand): Promise<Result<CreateConferenceDto>> {
+    // 1. Validate command
+    // 2. Create domain entity
+    // 3. Persist to repository
+    // 4. Return response DTO
+  }
+}
+
+// Query (Read Operation)
+export class GetConferenceQuery {
+  constructor(public readonly id: string) {}
+}
+
+export class GetConferenceHandler {
+  constructor(private conferenceRepository: ConferenceRepository) {}
+
+  async handle(query: GetConferenceQuery): Promise<Result<GetConferenceDto>> {
+    // 1. Query repository
+    // 2. Map to response DTO
+    // 3. Return data (no side effects)
+  }
+}
+```
+
+**Benefits:**
+- ✅ Clear separation between read and write operations
+- ✅ Response DTOs provide stable API contracts
+- ✅ Independent optimization of reads and writes
+- ✅ Improved testability with single-responsibility handlers
+- ✅ Better alignment with DDD application layer
 
 ---
 
