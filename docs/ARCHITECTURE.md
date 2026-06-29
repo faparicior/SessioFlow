@@ -44,8 +44,8 @@ src/
 
 ### Domain Layer
 - **Pure business logic** with no external dependencies
-- Entities have identity (EventId, SubmissionId)
-- Value objects are immutable (EventName, CfpDates)
+- Entities have identity (ConferenceId, SubmissionId)
+- Value objects are immutable (ConferenceName, CfpDates)
 - Repository interfaces defined here, implemented in infrastructure
 
 ### Application Layer

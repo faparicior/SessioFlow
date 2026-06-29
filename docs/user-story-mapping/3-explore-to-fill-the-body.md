@@ -29,9 +29,9 @@ Before finalizing stories, play the "What-About" game for your major activities.
 
 ## 3. Story Definition Template
 
-### Story Card 1: Organizer Launches Event
+### Story Card 1: Organizer Launches Conference
 
-**Title:** Create and Publish Event
+**Title:** Create and Publish Conference
 
 **The Narrative (Who/What/Why):**
 As **Fernando (Organizer)**, I want to **configure key event details and generate a public link**, So that **I can start marketing my Call for Papers immediately.**
@@ -43,7 +43,7 @@ As **Fernando (Organizer)**, I want to **configure key event details and generat
 - [ ] Constraint: Slug must be URL-safe (no spaces/special chars).
 
 **Design/Technical Notes:**
-- **Dependencies:** Database table `Events`.
+- **Dependencies:** Database table `Conferences`.
 - **UI:** Simple single-column form. "Publish" toggle activates the public route.
 
 ---
@@ -81,7 +81,7 @@ As **Andrea (Speaker)**, I want to **submit my session details**, So that **I ca
 - [ ] Verify user can edit their submission while the CfP is open.
 
 **Design/Technical Notes:**
-- **Dependencies:** Database table `Proposals` linked to `Events`.
+- **Dependencies:** Database table `Proposals` linked to `Conferences`.
 - **UI:** Clean form with autosave (if possible) or "Stay on page" warning.
 
 ---

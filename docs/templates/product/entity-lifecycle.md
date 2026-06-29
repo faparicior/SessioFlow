@@ -13,11 +13,11 @@
 
 ```mermaid
 stateDiagram-v2
-    [*] --> [Initial_State] : [Triggering Action/Event]
-    [Initial_State] --> [Next_State] : [Successful Event]
+    [*] --> [Initial_State] : [Triggering Action/Conference]
+    [Initial_State] --> [Next_State] : [Successful Conference]
     [Initial_State] --> [Terminal_State_Failed] : [Failure/Cancellation]
     
-    [Next_State] --> [Final_State] : [Completion Event]
+    [Next_State] --> [Final_State] : [Completion Conference]
     [Final_State] --> [*]
 ```
 

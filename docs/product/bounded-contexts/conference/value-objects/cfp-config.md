@@ -46,8 +46,8 @@
 
 | Entity / Use Case | Usage |
 |-------------------|-------|
-| [[../entities/cfp-config.md]] | Embedded in Event aggregate |
-| [[../entities/event.md]] | Child entity of Event |
+| [[../entities/cfp-config.md]] | Embedded in Conference aggregate |
+| [[../entities/conference.md]] | Child entity of Conference |
 | [[../../application/use-cases/submit-proposal.ts]] | Check if submissions allowed |
 
 ---

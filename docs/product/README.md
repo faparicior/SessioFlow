@@ -11,10 +11,10 @@ docs/
 │   ├── flows/                             # 🎯 User Flow Entry Points
 │   │   └── README.md                      # Flow catalog with journey summaries
 │   ├── bounded-contexts/                  # DDD Bounded Contexts
-│   │   ├── event/                         # Event Bounded Context
-│   │   │   ├── entities/                  # Event, CfpConfig
-│   │   │   ├── value-objects/             # EventId, EventName, CfpConfig, etc.
-│   │   │   ├── flows/                     # Journey 01: Setup Event
+│   │   ├── conference/                    # Conference Bounded Context
+│   │   │   ├── entities/                  # Conference, CfpConfig
+│   │   │   ├── value-objects/             # ConferenceId, ConferenceName, CfpConfig, etc.
+│   │   │   ├── flows/                     # Journey 01: Setup Conference
 │   │   │   ├── business-rules/            # Business Rules (BR-XXX)
 │   │   │   └── invariants/                # System Invariants (INV-XXX)
 │   │   ├── submission/                    # Submission Bounded Context
@@ -47,13 +47,13 @@ docs/
 
 ## 🏗️ Domain Model by Bounded Context
 
-### Event Bounded Context
+### Conference Bounded Context
 | Type | Name | Description |
 |------|------|-------------|
-| **Aggregate Root** | Event | Main event with CfP configuration |
+| **Aggregate Root** | Conference | Main conference with CfP configuration |
 | **Child Entity** | CfpConfig | Call for Papers configuration |
-| **Value Objects** | EventId, EventName, EventSlug, EventStatus, CfpConfig, CfpStartDate, CfpEndDate, CfpStatus, MaxSubmissions | Domain concepts with behavior |
-| **Flows** | Journey 01: Setup Event | Create event and open CfP |
+| **Value Objects** | ConferenceId, ConferenceName, ConferenceSlug, ConferenceStatus, CfpConfig, CfpStartDate, CfpEndDate, CfpStatus, MaxSubmissions | Domain concepts with behavior |
+| **Flows** | Journey 01: Setup Conference | Create conference and open CfP |
 
 ### Submission Bounded Context
 | Type | Name | Description |
@@ -74,7 +74,7 @@ docs/
 ### Scheduling Bounded Context
 | Type | Name | Description |
 |------|------|-------------|
-| **Aggregate Root** | Schedule | Event schedule and time slots |
+| **Aggregate Root** | Schedule | Conference schedule and time slots |
 | **Child Entity** | TimeSlot, Room | Schedule components |
 | **Value Objects** | SlotId, Conflict, Availability | Scheduling concepts |
 | **Flows** | Journey 04: Acceptance & Logistics | Publish schedule and notify |
@@ -83,9 +83,9 @@ docs/
 
 | Context | Depends On | Relationship |
 |---------|------------|--------------|
-| **Submission** | Event | References EventId (published API) |
+| **Submission** | Conference | References ConferenceId (published API) |
 | **Review** | Submission | References SubmissionId (aggregate boundary) |
-| **Scheduling** | Event, Submission | References EventId and accepted SubmissionIds |
+| **Scheduling** | Conference, Submission | References ConferenceId and accepted SubmissionIds |
 
 ## 🗺️ User Flows
 
@@ -118,7 +118,7 @@ User journeys span multiple bounded contexts. See [flows/README.md](./flows/READ
 4. **Domain Behavior**: Entities expose methods like `publishCfp()`, `closeCfp()` instead of data setters
 5. **Domain Events**: State changes publish domain events (e.g., `CfpOpened`, `CfpClosed`)
 6. **Repository Pattern**: Data access abstracted through repository interfaces
-7. **Bounded Contexts**: Clear boundaries between Event, Submission, Review, and Scheduling domains
+7. **Bounded Contexts**: Clear boundaries between Conference, Submission, Review, and Scheduling domains
 
 ## 🔗 Related Documentation
 

@@ -1,4 +1,4 @@
-# Value Object: EventName
+# Value Object: ConferenceName
 
 ## 📋 Definition
 * **Description:** The display name/title of an event. Includes validation for length and content constraints.
@@ -25,7 +25,7 @@
 | Method | Purpose |
 |--------|---------|
 | `create(name: string)` | Create from validated string (throws on invalid input) |
-| `equals(other: EventName)` | Compare two EventName instances for equality |
+| `equals(other: ConferenceName)` | Compare two ConferenceName instances for equality |
 | `contains(search: string)` | Check if name contains a substring (case-insensitive) |
 | `toString()` | Convert to string representation |
 
@@ -35,7 +35,7 @@
 
 | Entity / Use Case | Usage |
 |-------------------|-------|
-| [[../entities/event.md]] | Property of Event aggregate |
+| [[../entities/conference.md]] | Property of Conference aggregate |
 | [[../../application/use-cases/create-event.ts]] | Input validation for event creation |
 | [[../../interfaces/web/create-event-form.tsx]] | Form field validation |
 
@@ -55,8 +55,8 @@
 
 | Scenario | Description |
 |----------|-------------|
-| **Creation** | `EventName.create('Tech Conference 2026')` validates and creates |
-| **Trimming** | `EventName.create('  Summit  ')` automatically trims whitespace |
+| **Creation** | `ConferenceName.create('Tech Conference 2026')` validates and creates |
+| **Trimming** | `ConferenceName.create('  Summit  ')` automatically trims whitespace |
 | **Comparison** | `eventName.equals(otherName)` checks value equality |
 | **Search** | `eventName.contains('tech')` performs case-insensitive search |
 
@@ -66,4 +66,4 @@
 
 | Error | Trigger |
 |-------|---------|
-| `InvalidEventNameError` | Name is empty, too short (< 3 chars), or too long (> 100 chars) |
+| `InvalidConferenceNameError` | Name is empty, too short (< 3 chars), or too long (> 100 chars) |

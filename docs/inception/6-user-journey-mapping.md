@@ -27,8 +27,8 @@ The user is asking about the "Composite Journey"—the fact that these interacti
 | Step | User Action | System Feature / Response | Pain Point Addressed |
 | :--- | :--- | :--- | :--- |
 | 1. | Fernando logs in. | **User Authentication**: Shows Admin Dashboard. | **Need 1:** Single platform for all data. |
-| 2. | Fernando creates a new "C4P Session". | **Collect Proposals (CfP)**: Form to set Conference Name/Dates. | **Pain 1:** Repetitive work to organize CfP. |
-| 3. | Fernando publishes the session. | **Collect Proposals (CfP)**: Generates and activates Public Link. | **Need 3:** Simple, intuitive interface. |
+| 2. | Fernando creates a new Conference. | **Collect Proposals (CfP)**: Form to set Conference Name/Dates. | **Pain 1:** Repetitive work to organize CfP. |
+| 3. | Fernando publishes the conference. | **Collect Proposals (CfP)**: Generates and activates Public Link. | **Need 3:** Simple, intuitive interface. |
 
 ---
 

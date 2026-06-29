@@ -1,8 +1,8 @@
 # INV-002: Cfp End Date Must Be After Start Date
 
 * **Status:** Active
-* **Bounded Context:** Event Management Bounded Context
-* **Aggregate Root:** `Event` Aggregate (via `CfpConfig` child entity)
+* **Bounded Context:** Conference Management Bounded Context
+* **Aggregate Root:** `Conference` Aggregate (via `CfpConfig` child entity)
 * **Data Integrity Risk:** Invalid submission window, logical impossibility, broken CfP functionality
 
 ---
@@ -18,7 +18,7 @@
 * **Monitored Fields:**
   * `CfpConfig.startDate` (CfpStartDate value object)
   * `CfpConfig.endDate` (CfpEndDate value object)
-* **Transactional Boundary:** Enforced synchronously during CfpConfig creation or modification within the Event aggregate.
+* **Transactional Boundary:** Enforced synchronously during CfpConfig creation or modification within the Conference aggregate.
 
 ## 3. Enforcement Logic & Edge Cases
 *Specify the exact condition under which the operation must fail using Gherkin scenarios to illustrate how the aggregate root guards this boundary.*
@@ -27,7 +27,7 @@
 
 ```gherkin
 Scenario: Attempting to set invalid date order
-  Given an Event with CfpConfig start date of 2026-07-01
+  Given an Conference with CfpConfig start date of 2026-07-01
   When the organizer attempts to set end date to 2026-06-15
   Then the system throws InvalidCfpConfigError
   And the CfpConfig dates remain unchanged

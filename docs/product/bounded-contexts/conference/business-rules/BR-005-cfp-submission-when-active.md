@@ -1,7 +1,7 @@
 # BR-005: Submissions Only Accepted When CfP Is Active
 
 * **Status:** Active
-* **Domain Context:** Event Management Bounded Context
+* **Domain Context:** Conference Management Bounded Context
 * **Business Owner:** Product Team
 * **Last Reviewed:** 2026-06-09
 

@@ -30,7 +30,7 @@ Objective: Define the Who and the Why to ensure the discovery team is aligned on
 | Dimension | Guiding Questions | Team Input |
 | :--- | :--- | :--- |
 | **User Value** | How will the users’ lives be better once this solution "lands" in their world? | Fernando can launch a professional-looking CfP in **minutes**, not hours, and knows all data is validated and centralized from day one. |
-| **Success Metrics** | What specific user behaviours can you measure to indicate the product is valuable (e.g. usage frequency)? | 1. **Activation:** 5 Events created within the first month.<br>2. **Volume:** >50 Proposals collected.<br>3. **Efficiency:** Reduce session organization time by **50%** compared to manual tools. |
+| **Success Metrics** | What specific user behaviours can you measure to indicate the product is valuable (e.g. usage frequency)? | 1. **Activation:** 5 Conferences created within the first month.<br>2. **Volume:** >50 Proposals collected.<br>3. **Efficiency:** Reduce session organization time by **50%** compared to manual tools. |
 
 ## 5. Business Motivation & Impact
 

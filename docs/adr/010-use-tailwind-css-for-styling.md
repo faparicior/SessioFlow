@@ -154,7 +154,7 @@ For features not covered by shadcn/ui, build custom components using:
 ## Design System Approach
 
 ### Color Palette
-- Primary: Event-specific branding color (configurable)
+- Primary: Conference-specific branding color (configurable)
 - Secondary: Neutral supporting color
 - Semantic: Success, warning, error colors for feedback
 

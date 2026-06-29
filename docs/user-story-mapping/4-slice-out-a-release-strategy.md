@@ -10,7 +10,7 @@ Before selecting stories, define the success criteria for this specific slice. D
 - **Target Audience:** Event Organizers (starting with Fernando) who need to launch a Call for Papers immediately.
 - **Desired Outcome:** An organizer can self-host the tool, publish a CfP page, and start collecting proposals within minutes, eliminating the need for manual spreadsheets.
 - **Impact Metric:**
-  - **Activation:** 5 Events created.
+  - **Activation:** 5 Conferences created.
   - **Volume:** >50 Proposals collected.
   - **Conversion:** 80% completion rate (Form Start -> Submit).
 

@@ -11,7 +11,7 @@
 SessioFlow requires a backend solution to manage:
 
 1. **User Authentication**: Secure login for organizers (Fernando) and speakers (Andrea)
-2. **Data Storage**: Events, proposals, speaker profiles, and session scheduling data
+2. **Data Storage**: Conferences, proposals, speaker profiles, and session scheduling data
 3. **File Storage**: Profile photos and potentially session attachments
 4. **Row-Level Security**: GDPR compliance for speaker data protection
 

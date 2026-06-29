@@ -29,7 +29,7 @@ Who is taking this journey and what is the trigger?
 
 Read the backbone aloud. Does it tell a coherent story? Use the conjunction "and then..." between steps to test the flow.
 
-- Narrative Check: First the user **Deploys the System**, and then they **Define the Event**, and then speakers **Submit Proposals**, and then the organizer **Selects Talks**, and then they **Schedule the Program**, and then they **Confirm Speakers**.
+- Narrative Check: First the user **Deploys the System**, and then they **Define the Conference**, and then speakers **Submit Proposals**, and then the organizer **Selects Talks**, and then they **Schedule the Program**, and then they **Confirm Speakers**.
 - Missing Links: Implied time gaps between Submission (Weeks 1-4) and Selection (Week 5).
 - Notes: The transition from Deployment to Usage assumes technical competence (Self-hosting).
 

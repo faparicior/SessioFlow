@@ -236,7 +236,7 @@ WITH CHECK ([condition]);
 
 | Event | Triggered By | Side Effects |
 |-------|--------------|--------------|
-| `[EventName]` | `[Method call]` | [Side effect description] |
+| `[ConferenceName]` | `[Method call]` | [Side effect description] |
 
 ---
 

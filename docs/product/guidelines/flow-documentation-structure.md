@@ -103,7 +103,7 @@ Complete flow spec (all diagrams inline)
 ## 📝 Example Flow Structure
 
 ```markdown
-# Journey 01: Setup Event (CfP Configuration)
+# Journey 01: Setup Conference (CfP Configuration)
 
 ## 🛡️ ADR Compliance Checklist
 ...

@@ -1,7 +1,7 @@
-# BR-002: Event Name Must Meet Requirements
+# BR-002: Conference Name Must Meet Requirements
 
 * **Status:** Active
-* **Domain Context:** Event Management Bounded Context
+* **Domain Context:** Conference Management Bounded Context
 * **Business Owner:** Product Team
 * **Last Reviewed:** 2026-06-09
 
@@ -16,14 +16,14 @@
 *Why does this rule exist? What business metric, legal requirement, or operational workflow drives this policy?*
 
 * **Objective:** Ensure event names are meaningful, displayable, and suitable for URL slugs while preventing abuse or broken links.
-* **Source:** User Journey 01 - Setup Event, UI/UX Design Specifications
+* **Source:** User Journey 01 - Setup Conference, UI/UX Design Specifications
 
 ## 3. Detailed Rule Logic & Scenarios
 *Break down the exact logic. Use tables, bullet points, or Gherkin syntax (Given/When/Then) to cover different edge cases.*
 
 ### Evaluation Logic
-* **If** `eventName.length < 3` -> Throw `InvalidEventNameError: "Event name must be at least 3 characters"`
-* **If** `eventName.length > 100` -> Throw `InvalidEventNameError: "Event name cannot exceed 100 characters"`
+* **If** `eventName.length < 3` -> Throw `InvalidConferenceNameError: "Conference name must be at least 3 characters"`
+* **If** `eventName.length > 100` -> Throw `InvalidConferenceNameError: "Conference name cannot exceed 100 characters"`
 * **If** `eventName` contains invalid characters (e.g., control characters) -> Sanitize or reject
 * **Else** -> Allow event creation; generate slug from sanitized name
 
@@ -38,12 +38,12 @@ Scenario: Valid event name
 Scenario: Name too short
   Given the organizer enters event name "ABC"
   When they submit the form
-  Then the system displays error "Event name must be at least 3 characters"
+  Then the system displays error "Conference name must be at least 3 characters"
 
 Scenario: Name too long
   Given the organizer enters a 150-character event name
   When they submit the form
-  Then the system displays error "Event name cannot exceed 100 characters"
+  Then the system displays error "Conference name cannot exceed 100 characters"
 ```
 
 ### Asynchronous or Downstream Effects
@@ -53,9 +53,9 @@ Scenario: Name too long
 ## 4. System Enforcement (How It's Handled)
 *Unlike an invariant (which sits strictly inside an Aggregate Root), a business rule can be enforced via Domain Services, Policy objects, or workflow orchestration (like n8n or Saga patterns).*
 
-* **Enforcement Layer:** Value Object (`EventName`) and Zod validation schema
+* **Enforcement Layer:** Value Object (`ConferenceName`) and Zod validation schema
 * **Handling Violations/Exceptions:** 
-  * Throws `InvalidEventNameError` domain exception
+  * Throws `InvalidConferenceNameError` domain exception
   * HTTP/API returns 422 Unprocessable Entity
   * Form displays inline validation error in real-time
   * No state changes occur; transaction is aborted
@@ -63,4 +63,4 @@ Scenario: Name too long
 ## 5. History & Evolution
 *Business rules change frequently based on market conditions. Track changes to this rule here.*
 
-* **2026-06-09:** Rule extracted from Journey 01 and Event entity documentation.
+* **2026-06-09:** Rule extracted from Journey 01 and Conference entity documentation.

@@ -19,10 +19,10 @@ Understanding the difference between **Business Rules** and **Invariants** is cr
 
 ### Business Rule Examples
 
-**BR-004: Free Tier Event Creation Limit**
+**BR-004: Free Tier Conference Creation Limit**
 - **Rule:** When a free tier organizer attempts to create an event, check if they have 5 active events
 - **Violation Handling:** Show upgrade prompt, don't block the user entirely
-- **Enforcement:** Application Service (`CreateEventService`)
+- **Enforcement:** Application Service (`CreateConferenceService`)
 - **Fallback:** Can log telemetry error and allow purchase flow
 
 **BR-001: CfP Dates Must Be Valid**
@@ -33,16 +33,16 @@ Understanding the difference between **Business Rules** and **Invariants** is cr
 
 ### Invariant Examples
 
-**INV-001: Event State Transitions Must Follow State Machine**
-- **Invariant:** Event state transitions must follow the defined state machine
+**INV-001: Conference State Transitions Must Follow State Machine**
+- **Invariant:** Conference state transitions must follow the defined state machine
 - **Violation Handling:** Throw `InvalidStateTransitionError`, rollback transaction
-- **Enforcement:** Inside `Event` Aggregate Root methods
+- **Enforcement:** Inside `Conference` Aggregate Root methods
 - **Fallback:** None - operation must fail completely
 
 **INV-002: Cfp End Date Must Be After Start Date**
 - **Invariant:** The `cfpEndDate` must always be strictly greater than `cfpStartDate`
 - **Violation Handling:** Throw `InvalidCfpConfigError`, rollback transaction
-- **Enforcement:** Inside `CfpConfig` child entity within Event Aggregate
+- **Enforcement:** Inside `CfpConfig` child entity within Conference Aggregate
 - **Fallback:** None - data would be in illegal state
 
 ## Decision Guide
@@ -109,11 +109,11 @@ class CheckoutService {
 ### ❌ Mistake: Treating Invariants as Business Rules
 ```typescript
 // BAD: Invariant with fallback
-class Event {
+class Conference {
   closeCfp(): void {
-    if (this.status !== EventStatus.CFP_OPEN) {
+    if (this.status !== ConferenceStatus.CFP_OPEN) {
       console.warn('Invalid state for closing CfP'); // Too lenient!
-      this.status = EventStatus.CFP_CLOSED; // Still changes state!
+      this.status = ConferenceStatus.CFP_CLOSED; // Still changes state!
     }
   }
 }
@@ -122,17 +122,17 @@ class Event {
 **Fix:** Enforce strictly in Aggregate Root
 ```typescript
 // GOOD: Invariant with no fallback
-class Event {
+class Conference {
   closeCfp(): void {
-    if (this.status !== EventStatus.CFP_OPEN) {
+    if (this.status !== ConferenceStatus.CFP_OPEN) {
       throw new InvalidStateTransitionError(
         this.id, 
-        EventStatus.CFP_OPEN, 
-        EventStatus.CFP_CLOSED
+        ConferenceStatus.CFP_OPEN, 
+        ConferenceStatus.CFP_CLOSED
       );
     }
-    this.status = EventStatus.CFP_CLOSED;
-    this.recordDomainEvent(new CfpClosed(this.id));
+    this.status = ConferenceStatus.CFP_CLOSED;
+    this.recordDomainConference(new CfpClosed(this.id));
   }
 }
 ```

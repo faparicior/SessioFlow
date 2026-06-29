@@ -36,7 +36,7 @@
 | Entity / Use Case | Usage |
 |-------------------|-------|
 | [[cfp-config.md]] | Part of CfpConfig composite |
-| [[../entities/event.md]] | Used in Event's CfpConfig |
+| [[../entities/conference.md]] | Used in Conference's CfpConfig |
 | [[../../application/use-cases/submit-proposal.ts]] | Validate submission limits |
 
 ---

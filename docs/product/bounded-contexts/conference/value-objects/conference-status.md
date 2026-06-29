@@ -1,7 +1,7 @@
-# Value Object: EventStatus
+# Value Object: ConferenceStatus
 
 ## 📋 Definition
-* **Description:** Enumerated value representing the current state of an Event in its lifecycle. Controls which operations are allowed.
+* **Description:** Enumerated value representing the current state of a Conference in its lifecycle. Controls which operations are allowed.
 * **Type:** Enum (string-based)
 * **Immutability:** ✅ Immutable (state transitions are explicit)
 * **Validation:** Must be one of the defined status values
@@ -12,14 +12,14 @@
 
 | Status | Description | Allowed Transitions |
 |--------|-------------|---------------------|
-| `DRAFT` | Event created but not yet published | → `CFP_OPEN`, `DELETED` |
-| `CFP_OPEN` | Event accepting submissions | → `CFP_CLOSED`, `DELETED` |
+| `DRAFT` | Conference created but not yet published | → `CFP_OPEN`, `DELETED` |
+| `CFP_OPEN` | Conference accepting submissions | → `CFP_CLOSED`, `DELETED` |
 | `CFP_CLOSED` | Submission deadline passed | → `REVIEWING` |
 | `REVIEWING` | Organizer reviewing submissions | → `SCHEDULED` |
 | `SCHEDULED` | Sessions selected, scheduling in progress | → `PUBLISHED` |
-| `PUBLISHED` | Event agenda public | → `COMPLETED` |
-| `COMPLETED` | Event concluded | None (terminal state) |
-| `DELETED` | Event cancelled | None (terminal state) |
+| `PUBLISHED` | Conference agenda public | → `COMPLETED` |
+| `COMPLETED` | Conference concluded | None (terminal state) |
+| `DELETED` | Conference cancelled | None (terminal state) |
 
 ---
 
@@ -27,10 +27,10 @@
 
 | Method | Purpose |
 |--------|---------|
-| `isValidStatus(status: string)` | Check if string is a valid EventStatus |
-| `canTransitionTo(current: EventStatus, target: EventStatus)` | Validate state transition |
-| `isAcceptingSubmissions(status: EventStatus)` | Check if status allows new submissions |
-| `isPublished(status: EventStatus)` | Check if status is publicly visible |
+| `isValidStatus(status: string)` | Check if string is a valid ConferenceStatus |
+| `canTransitionTo(current: ConferenceStatus, target: ConferenceStatus)` | Validate state transition |
+| `isAcceptingSubmissions(status: ConferenceStatus)` | Check if status allows new submissions |
+| `isPublished(status: ConferenceStatus)` | Check if status is publicly visible |
 
 ---
 
@@ -38,7 +38,7 @@
 
 | Entity / Use Case | Usage |
 |-------------------|-------|
-| [[../entities/event.md]] | Core property of Event aggregate |
+| [[../entities/conference.md]] | Core property of Conference aggregate |
 | [[../../application/use-cases/create-event.ts]] | Initial status validation |
 | [[../../application/use-cases/submit-proposal.ts]] | Check if submissions allowed |
 
@@ -73,6 +73,6 @@
 
 | Error | Trigger |
 |-------|---------|
-| `InvalidEventStatusError` | Invalid status string provided |
+| `InvalidConferenceStatusError` | Invalid status string provided |
 | `InvalidStatusTransitionError` | Attempted illegal state transition |
 | `OperationNotAllowedError` | Operation not valid for current status |

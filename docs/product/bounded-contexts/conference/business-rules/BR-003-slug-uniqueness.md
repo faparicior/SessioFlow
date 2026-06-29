@@ -1,7 +1,7 @@
-# BR-003: Event Slug Must Be Unique
+# BR-003: Conference Slug Must Be Unique
 
 * **Status:** Active
-* **Domain Context:** Event Management Bounded Context
+* **Domain Context:** Conference Management Bounded Context
 * **Business Owner:** Product Team
 * **Last Reviewed:** 2026-06-09
 
@@ -16,14 +16,14 @@
 *Why does this rule exist? What business metric, legal requirement, or operational workflow drives this policy?*
 
 * **Objective:** Ensure each event has a unique, shareable URL that doesn't conflict with other events.
-* **Source:** User Journey 01 - Setup Event, Database Schema Design (ADR-002)
+* **Source:** User Journey 01 - Setup Conference, Database Schema Design (ADR-002)
 
 ## 3. Detailed Rule Logic & Scenarios
 *Break down the exact logic. Use tables, bullet points, or Gherkin syntax (Given/When/Then) to cover different edge cases.*
 
 ### Evaluation Logic
-1. Generate initial slug from event name (e.g., "My Event" → "my-event")
-2. Check database for existing slug using `EventRepository.findBySlug()`
+1. Generate initial slug from event name (e.g., "My Conference" → "my-event")
+2. Check database for existing slug using `ConferenceRepository.findBySlug()`
 3. **If** slug exists -> Append numeric suffix (e.g., "my-event-2", "my-event-3")
 4. Retry up to 3 times with incremented suffix
 5. **If** still conflicts after 3 attempts -> Throw `SlugGenerationError`
@@ -55,7 +55,7 @@ Scenario: Multiple collisions
 ## 4. System Enforcement (How It's Handled)
 *Unlike an invariant (which sits strictly inside an Aggregate Root), a business rule can be enforced via Domain Services, Policy objects, or workflow orchestration (like n8n or Saga patterns).*
 
-* **Enforcement Layer:** Application Service (`CreateEventService`) and Repository (`EventRepository.findBySlug()`)
+* **Enforcement Layer:** Application Service (`CreateConferenceService`) and Repository (`ConferenceRepository.findBySlug()`)
 * **Handling Violations/Exceptions:** 
   * Automatically generates alternative slug with numeric suffix
   * Retries up to 3 times
@@ -66,4 +66,4 @@ Scenario: Multiple collisions
 ## 5. History & Evolution
 *Business rules change frequently based on market conditions. Track changes to this rule here.*
 
-* **2026-06-09:** Rule extracted from Journey 01 and Event entity documentation.
+* **2026-06-09:** Rule extracted from Journey 01 and Conference entity documentation.

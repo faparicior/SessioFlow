@@ -1,7 +1,7 @@
 # BR-001: CfP Dates Must Be Valid
 
 * **Status:** Active
-* **Domain Context:** Event Management Bounded Context
+* **Domain Context:** Conference Management Bounded Context
 * **Business Owner:** Product Team
 * **Last Reviewed:** 2026-06-09
 
@@ -16,7 +16,7 @@
 *Why does this rule exist? What business metric, legal requirement, or operational workflow drives this policy?*
 
 * **Objective:** Ensure logical CfP windows that provide adequate time for speaker submissions and prevent configuration errors.
-* **Source:** User Journey 01 - Setup Event (C4P Configuration), Product Requirements for Event Creation Flow
+* **Source:** User Journey 01 - Setup Conference (C4P Configuration), Product Requirements for Conference Creation Flow
 
 ## 3. Detailed Rule Logic & Scenarios
 *Break down the exact logic. Use tables, bullet points, or Gherkin syntax (Given/When/Then) to cover different edge cases.*
@@ -67,4 +67,4 @@ Scenario: Past start date
 ## 5. History & Evolution
 *Business rules change frequently based on market conditions. Track changes to this rule here.*
 
-* **2026-06-09:** Rule extracted from Journey 01 and Event/CfpConfig entity documentation.
+* **2026-06-09:** Rule extracted from Journey 01 and Conference/CfpConfig entity documentation.

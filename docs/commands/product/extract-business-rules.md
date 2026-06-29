@@ -25,7 +25,7 @@ Your task is to analyze the provided source code, entity models, or workflow def
 ### Instructions:
 1. Review the input looking for logical branching (`if/else`), calculations, policy classes, status transitions, or orchestration flows.
 2. For every distinct business policy you find, extract it and fill out the markdown template below.
-3. Use the **Ubiquitous Language** implied by the code (e.g., use business terms like "Organizer", "Sponsor", "Draft Event", rather than "db_row" or "array_index").
+3. Use the **Ubiquitous Language** implied by the code (e.g., use business terms like "Organizer", "Sponsor", "Draft Conference", rather than "db_row" or "array_index").
 
 ---
 
@@ -35,7 +35,7 @@ Your task is to analyze the provided source code, entity models, or workflow def
 
 * **Domain Context:** [Infer the Bounded Context / Subdomain from the file names or namespaces]
 
-> **Rule:** When [Trigger Event/Condition], then [Apply this Policy/Calculation], otherwise [Fallback Action].
+> **Rule:** When [Trigger Conference/Condition], then [Apply this Policy/Calculation], otherwise [Fallback Action].
 
 ## 1. Detailed Rule Logic & Scenarios
 *Break down the exact logic found in the code using clear bullet points or pseudo-logic.*

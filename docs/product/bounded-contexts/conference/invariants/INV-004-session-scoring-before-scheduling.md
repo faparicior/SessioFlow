@@ -1,8 +1,8 @@
 # INV-004: All Sessions Must Be Scored Before Selection Can Be Completed
 
 * **Status:** Active
-* **Bounded Context:** Event Management Bounded Context
-* **Aggregate Root:** `Event` Aggregate
+* **Bounded Context:** Conference Management Bounded Context
+* **Aggregate Root:** `Conference` Aggregate
 * **Data Integrity Risk:** Incomplete review process, unfair selection, schedule generation failures
 
 ---
@@ -10,16 +10,16 @@
 ## 1. Statement of Invariant
 *An absolute statement of truth that must hold true at all times within the Aggregate boundary. There are no "if-else workflows" or "fallbacks" here—violating this means transaction failure.*
 
-> **Invariant:** The `Event.completeSelection()` method can only succeed when all submitted sessions have been scored by reviewers.
+> **Invariant:** The `Conference.completeSelection()` method can only succeed when all submitted sessions have been scored by reviewers.
 
 ## 2. Technical Context & State Boundary
 *Define exactly which fields, value objects, or entities inside the Aggregate Root are involved in maintaining this consistency.*
 
 * **Monitored Fields:**
-  * `Event.sessions` (Collection of Session entities)
+  * `Conference.sessions` (Collection of Session entities)
   * `Session.score` (Score value object, nullable)
-  * `Event.status` (must be REVIEWING)
-* **Transactional Boundary:** Enforced synchronously when `Event.completeSelection()` is called.
+  * `Conference.status` (must be REVIEWING)
+* **Transactional Boundary:** Enforced synchronously when `Conference.completeSelection()` is called.
 
 ## 3. Enforcement Logic & Edge Cases
 *Specify the exact condition under which the operation must fail using Gherkin scenarios to illustrate how the aggregate root guards this boundary.*
@@ -28,12 +28,12 @@
 
 ```gherkin
 Scenario: Attempting to complete selection with unscored sessions
-  Given an Event with status REVIEWING
+  Given an Conference with status REVIEWING
   And 5 sessions exist with scores
   And 2 sessions exist without scores
-  When the organizer calls Event.completeSelection()
+  When the organizer calls Conference.completeSelection()
   Then the system throws UnscoredSessionsError
-  And the Event status remains REVIEWING
+  And the Conference status remains REVIEWING
   And no state changes are persisted
 ```
 
@@ -55,11 +55,11 @@ Scenario: Attempting to complete selection with unscored sessions
 ### Positive Test (Invariant Holds)
 ```gherkin
 Scenario: Completing selection with all sessions scored
-  Given an Event with status REVIEWING
+  Given an Conference with status REVIEWING
   And 10 sessions exist
   And all 10 sessions have scores
-  When the organizer calls Event.completeSelection()
-  Then the Event status transitions to SCHEDULED
+  When the organizer calls Conference.completeSelection()
+  Then the Conference status transitions to SCHEDULED
   And the SelectionCompleted domain event is published
   And the invariant remains satisfied
 ```
@@ -67,10 +67,10 @@ Scenario: Completing selection with all sessions scored
 ### Negative Test (Invariant Violation Blocked)
 ```gherkin
 Scenario: Attempting to complete selection with unscored sessions
-  Given an Event with status REVIEWING
+  Given an Conference with status REVIEWING
   And 10 sessions exist
   And 3 sessions are without scores
-  When the organizer calls Event.completeSelection()
+  When the organizer calls Conference.completeSelection()
   Then the system throws UnscoredSessionsError
   And HTTP response is 422 Unprocessable Entity
   And database transaction is rolled back
@@ -81,4 +81,4 @@ Scenario: Attempting to complete selection with unscored sessions
 ## 6. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
-* **2026-06-09:** Invariant defined alongside Event entity lifecycle documentation.
+* **2026-06-09:** Invariant defined alongside Conference entity lifecycle documentation.

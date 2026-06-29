@@ -1,4 +1,4 @@
-# Journey 01: Setup Event (C4P Configuration)
+# Journey 01: Setup Conference (C4P Configuration)
 
 ## 🛡️ ADR Compliance Checklist
 After generating the flow document, review the project's Architecture Decision Records (ADRs) to ensure alignment with established architectural decisions.
@@ -10,15 +10,15 @@ After generating the flow document, review the project's Architecture Decision R
 - [x] Input validation uses schema validation
 
 ## 📋 Overview
-* **As a:** Event Organizer (Fernando)
+* **As a:** Conference Organizer (Fernando)
 * **I want to:** Create a new event and configure its Call for Papers (CfP) settings
 * **So that:** I can share a submission link with potential speakers and start collecting proposals
 * **Source:** Inception Step 6 - User Journey Mapping (Journey 1)
-* **Related Feature:** Setup Event (C4P Configuration) from Wave 1 (MVP)
+* **Related Feature:** Setup Conference (C4P Configuration) from Wave 1 (MVP)
 * **Impacted Entities:** 
-  * [Event Entity](../entities/event.md) (e.g., `Event` created with `DRAFT` -> `CFP_OPEN` status)
+  * [Conference Entity](../entities/conference.md) (e.g., `Conference` created with `DRAFT` -> `CFP_OPEN` status)
   * [CfpConfig Entity](../entities/cfp-config.md) (e.g., `CfpConfig` created with submission dates and settings)
-* **Bounded Context:** Event
+* **Bounded Context:** Conference
 
 ---
 
@@ -31,13 +31,13 @@ sequenceDiagram
     actor Organizer
     participant UI as Frontend
     participant API as Application Service
-    participant Domain as Event Aggregate
+    participant Domain as Conference Aggregate
     participant DB as Repository
     participant Email as Email Service
 
-    Note over Organizer, Email: Journey 01: Setup Event Flow
+    Note over Organizer, Email: Journey 01: Setup Conference Flow
 
-    Organizer->>UI: Click "Create New Event"
+    Organizer->>UI: Click "Create New Conference"
     UI->>API: GET /auth/me
     API-->>UI: Return organizerId
 
@@ -46,19 +46,19 @@ sequenceDiagram
     
     rect rgb(232, 245, 233)
         note right of UI: Happy Path - All Valid
-        Organizer->>UI: Click "Create Event"
+        Organizer->>UI: Click "Create Conference"
         UI->>API: POST /api/v1/events
         API->>API: Validate payload with Zod
         API->>DB: Check slug uniqueness
         DB-->>API: Slug available
         
-        API->>Domain: Event.create(id, data)
-        Note over Domain: Event state: DRAFT
-        API->>Domain: Event.publishCfp()
-        Note over Domain: Event state: CFP_OPEN<br/>CfpConfig created: ACTIVE
+        API->>Domain: Conference.create(id, data)
+        Note over Domain: Conference state: DRAFT
+        API->>Domain: Conference.publishCfp()
+        Note over Domain: Conference state: CFP_OPEN<br/>CfpConfig created: ACTIVE
         
-        Domain->>Domain: Publish EventCreated<br/>CfpOpened events
-        API->>DB: Save Event aggregate
+        Domain->>Domain: Publish ConferenceCreated<br/>CfpOpened events
+        API->>DB: Save Conference aggregate
         DB-->>API: Persisted
         
         API->>Email: Send welcome email (async)
@@ -85,14 +85,14 @@ sequenceDiagram
 
     rect rgb(255, 235, 238)
         note right of Domain: Error Path - Business Rule Violation
-        API->>Domain: Event.create()
+        API->>Domain: Conference.create()
         Domain->>Domain: Check free tier limit
         Domain-->>API: FreeTierLimitExceeded
         API-->>UI: 403 Forbidden + upgrade prompt
     end
 
-    Note over Organizer, Email: Domain Events Published
-    Note right of Domain: EventCreated → Analytics<br/>CfpOpened → Welcome Email
+    Note over Organizer, Email: Domain Conferences Published
+    Note right of Domain: ConferenceCreated → Analytics<br/>CfpOpened → Welcome Email
 ```
 
 ---
@@ -101,38 +101,38 @@ sequenceDiagram
 
 | Step | User Action | System Reaction | Domain/Entity Impact |
 | :--- | :--- | :--- | :--- |
-| **1** | Clicks "Create New Event" button in dashboard | Loads event creation form with validation schema | None (UI Level) |
+| **1** | Clicks "Create New Conference" button in dashboard | Loads conference creation form with validation schema | None (UI Level) |
 | **2** | — | GET /auth/me - Verify authentication | None (Security) |
 | **3** | — | Returns user session with organizerId | None (Security) |
 | **4** | Enters event name, description, and logo URL | Client-side validates using Zod schema in real-time | None (UI Level) |
 | **5** | Selects CfP start and end dates via date picker | Validates end date is after start date, prevents past dates | None (UI Level) |
-| **6** | Clicks "Create Event" submit button | Shows loading state, sends POST request with payload | None (UI Level) |
+| **6** | Clicks "Create Conference" submit button | Shows loading state, sends POST request with payload | None (UI Level) |
 | **7** | — | **Application Service:** Validates all fields against Zod schema | None (Validation) |
 | **8** | — | **Repository:** Check slug uniqueness (findBySlug) | None (Validation) |
-| **9** | — | **Domain Layer:** `EventId.generate()` creates UUIDv4 | New EventId |
-| **10** | — | **Domain Layer:** `Event.create(id, validatedData)` creates Event in `DRAFT` state | `Event` → `DRAFT` |
-| **11** | — | **Domain Layer:** `Event.publishCfp()` transitions Event to `CFP_OPEN` | `Event` → `CFP_OPEN` |
+| **9** | — | **Domain Layer:** `ConferenceId.generate()` creates UUIDv4 | New ConferenceId |
+| **10** | — | **Domain Layer:** `Conference.create(id, validatedData)` creates Conference in `DRAFT` state | `Conference` → `DRAFT` |
+| **11** | — | **Domain Layer:** `Conference.publishCfp()` transitions Conference to `CFP_OPEN` | `Conference` → `CFP_OPEN` |
 | **12** | — | **Domain Layer:** `CfpConfig` child entity created with validated dates | `CfpConfig` → `ACTIVE` |
-| **13** | — | **Domain Layer:** Publishes `EventCreated` and `CfpOpened` domain events | Domain Events Published |
-| **14** | — | **Repository:** `EventRepository.save()` persists Event and CfpConfig | Database Persisted |
+| **13** | — | **Domain Layer:** Publishes `ConferenceCreated` and `CfpOpened` domain events | Domain Conferences Published |
+| **14** | — | **Repository:** `ConferenceRepository.save()` persists Conference and CfpConfig | Database Persisted |
 | **15** | — | **Application Service:** Triggers welcome email (async) via Resend | External Service |
-| **16** | — | Returns 201 Created with Event and CfP URL | Response Sent |
-| **17** | Views success notification | Redirects to Event Dashboard with pre-populated CfP link | None (UI Level) |
+| **16** | — | Returns 201 Created with Conference and CfP URL | Response Sent |
+| **17** | Views success notification | Redirects to Conference Dashboard with pre-populated CfP link | None (UI Level) |
 
 ---
 
 ## ✅ Acceptance Criteria & Scenarios
 
-### Scenario 1: Successful Event Creation (Happy Path)
+### Scenario 1: Successful Conference Creation (Happy Path)
 * **Given** the organizer is authenticated and on the dashboard,
 * **When** they fill out all required event fields and submit the form,
-* **Then** the system creates an `Event` record with `DRAFT` status,
-* **And** calls `Event.publishCfp()` to transition to `CFP_OPEN` status,
+* **Then** the system creates a `Conference` record with `DRAFT` status,
+* **And** calls `Conference.publishCfp()` to transition to `CFP_OPEN` status,
 * **And** creates a linked `CfpConfig` with the specified submission window in `ACTIVE` state,
-* **And** publishes `EventCreated` and `CfpOpened` domain events,
-* **And** redirects the user to the Event Dashboard with a shareable CfP link.
+* **And** publishes `ConferenceCreated` and `CfpOpened` domain events,
+* **And** redirects the user to the Conference Dashboard with a shareable CfP link.
 
-### Scenario 2: Minimal Event Setup
+### Scenario 2: Minimal Conference Setup
 * **Given** the organizer wants to quickly set up a CfP,
 * **When** they enter only the required fields (event name, CfP start/end dates),
 * **Then** the system creates the event with default settings for optional fields,
@@ -147,24 +147,24 @@ sequenceDiagram
 | What If | System Handling | Domain Method | Entity Impact |
 |---------|-----------------|---------------|---------------|
 | User selects CfP end date before start date | Display inline validation error *"End date must be after start date"*, prevent form submission | `CfpConfig.validateDates()` throws `InvalidCfpConfigError` | No lifecycle change; no entities created |
-| Event name contains special characters or is too long | Sanitize input, truncate to max 100 characters, display warning | `EventName.create()` validates and sanitizes | `Event` created with sanitized name |
-| User tries to create more than 5 active events (free tier limit) | Display upgrade prompt with pricing information | `CreateEvent.execute()` checks subscription tier | No lifecycle change; `Event` not created |
-| Slug already exists in database | Display error *"Event name already taken, try a different name"* | `EventRepository.findBySlug()` returns existing event | No lifecycle change; `Event` not created |
+| Conference name contains special characters or is too long | Sanitize input, truncate to max 100 characters, display warning | `ConferenceName.create()` validates and sanitizes | `Conference` created with sanitized name |
+| User tries to create more than 5 active conferences (free tier limit) | Display upgrade prompt with pricing information | `CreateConference.execute()` checks subscription tier | No lifecycle change; `Conference` not created |
+| Slug already exists in database | Display error *"Conference name already taken, try a different name"* | `ConferenceRepository.findBySlug()` returns existing conference | No lifecycle change; `Conference` not created |
 
 ### 2. Technical Failures
 
 | What If | System Handling | Domain Impact |
 |---------|-----------------|---------------|
-| Database connection fails during Event creation | Rollback any partial writes, display generic error message *"Unable to create event. Please try again."*, log error to monitoring service | No entities created; transaction aborted |
-| Slug generation produces a duplicate (two events with same name) | Append numeric suffix (e.g., `my-event-2`), retry up to 3 times | `Event` created with unique slug |
-| Welcome email fails to send | Log error, continue with successful response (email is best-effort) | `Event` and `CfpConfig` persisted; email queued for retry |
+| Database connection fails during Conference creation | Rollback any partial writes, display generic error message *"Unable to create conference. Please try again."*, log error to monitoring service | No entities created; transaction aborted |
+| Slug generation produces a duplicate (two conferences with same name) | Append numeric suffix (e.g., `my-conference-2`), retry up to 3 times | `Conference` created with unique slug |
+| Welcome email fails to send | Log error, continue with successful response (email is best-effort) | `Conference` and `CfpConfig` persisted; email queued for retry |
 
 ### 3. Validation Boundary Conditions
 
 | What If | System Handling | Domain Method | Entity Impact |
 |---------|-----------------|---------------|---------------|
 | CfP window is set for more than 180 days | Warn user that extended windows may reduce submission quality, require confirmation | `CfpConfig.validateDates()` checks duration | `CfpConfig` created with extended dates after confirmation |
-| User tries to create event with a date in the past | Block submission with error *"Event dates must be in the future"* | `CfpStartDate.create()` validates future date | No lifecycle change; no entities created |
+| User tries to create conference with a date in the past | Block submission with error *"Conference dates must be in the future"* | `CfpStartDate.create()` validates future date | No lifecycle change; no entities created |
 | User is not authorized (organizerId mismatch) | Return 403 Forbidden, log security violation | RLS policy prevents access | No entities created |
 
 ---
@@ -241,28 +241,28 @@ WITH CHECK (organizer_id = auth.uid());
 
 | Field | Value |
 |-------|-------|
-| `slug` | URL-safe version of event name (e.g., "My Event 2026" → "my-event-2026") |
+| `slug` | URL-safe version of event name (e.g., "My Conference 2026" → "my-event-2026") |
 | `cfpUrl` | `{baseUrl}/cfp/{slug}` (e.g., `https://sessioflow.app/cfp/my-event-2026`) |
 | `status` | `CFP_OPEN` upon creation (after `publishCfp()` call) |
 
 ### Enforced Business Rules
 
 * [BR-001](../business-rules/BR-001-cfp-dates-validation.md): CfP Dates Must Be Valid
-* [BR-002](../business-rules/BR-002-event-name-validation.md): Event Name Must Meet Requirements
-* [BR-003](../business-rules/BR-003-slug-uniqueness.md): Event Slug Must Be Unique
-* [BR-004](../business-rules/BR-004-free-tier-event-limit.md): Free Tier Event Creation Limit
+* [BR-002](../business-rules/BR-002-event-name-validation.md): Conference Name Must Meet Requirements
+* [BR-003](../business-rules/BR-003-slug-uniqueness.md): Conference Slug Must Be Unique
+* [BR-004](../business-rules/BR-004-free-tier-event-limit.md): Free Tier Conference Creation Limit
 
 ### Enforced Invariants
 
 * [INV-002](../invariants/INV-002-cfp-date-order.md): Cfp End Date Must Be After Start Date
-* [INV-003](../invariants/INV-003-slug-uniqueness.md): Event Slug Must Be Unique Across All Events
+* [INV-003](../invariants/INV-003-slug-uniqueness.md): Conference Slug Must Be Unique Across All Conferences
 
-### Domain Events Published
+### Domain Conferences Published
 
-| Event | Triggered By | Side Effects |
+| Conference | Triggered By | Side Effects |
 |-------|--------------|--------------|
-| `EventCreated` | `Event.create()` | Log event creation, initialize analytics |
-| `CfpOpened` | `Event.publishCfp()` | Send welcome email to organizer, notify subscribers |
+| `ConferenceCreated` | `Conference.create()` | Log event creation, initialize analytics |
+| `CfpOpened` | `Conference.publishCfp()` | Send welcome email to organizer, notify subscribers |
 
 ---
 
@@ -272,7 +272,7 @@ Shows decision points and error handling paths:
 
 ```mermaid
 flowchart TB
-    Start([Organizer Starts]) --> Form[Fill Event Form]
+    Start([Organizer Starts]) --> Form[Fill Conference Form]
     Form --> Validate{Client Validation}
     
     Validate -->|Invalid| Error1[Show Inline Errors]
@@ -288,24 +288,24 @@ flowchart TB
     CheckSlug -->|No| Error3[Suggest Alternative]
     Error3 --> Form
     
-    CheckSlug -->|Yes| CreateEvent[Create Event Aggregate]
-    CreateEvent --> PublishCfp[Publish CfP]
+    CheckSlug -->|Yes| CreateConference[Create Conference Aggregate]
+    CreateConference --> PublishCfp[Publish CfP]
     
     PublishCfp --> CheckTier{Free Tier Limit?}
     CheckTier -->|Exceeded| Error4[Show Upgrade Prompt]
     Error4 --> EndFail([Create Failed])
     
     CheckTier -->|OK| SaveDB[(Save to Database)]
-    SaveDB --> PublishEvents[Publish Domain Events]
+    SaveDB --> PublishConferences[Publish Domain Conferences]
     
-    PublishEvents --> SendEmail[Send Welcome Email]
+    PublishConferences --> SendEmail[Send Welcome Email]
     SendEmail --> Success[Redirect to Dashboard]
     
     Success --> EndSuccess([CfP Link Generated])
     
-    style CreateEvent fill:#e1f5fe
+    style CreateConference fill:#e1f5fe
     style PublishCfp fill:#e8f5e9
-    style PublishEvents fill:#fff3e0
+    style PublishConferences fill:#fff3e0
     style Success fill:#c8e6c9
     style Error1 fill:#ffcdd2
     style Error2 fill:#ffcdd2
@@ -317,12 +317,12 @@ flowchart TB
 
 ## 📊 Entity State Diagram
 
-Shows the Event entity lifecycle:
+Shows the Conference entity lifecycle:
 
 ```mermaid
 stateDiagram-v2
     [*] --> NotCreated
-    NotCreated --> Draft: Create Event
+    NotCreated --> Draft: Create Conference
     Draft --> CfpOpen: publishCfp()
     CfpOpen --> CfpClosed: closeCfp()
     CfpClosed --> CfpOpen: reopenCfp()
@@ -331,7 +331,7 @@ stateDiagram-v2
     Published --> Completed: eventEnds
     
     note right of Draft
-        Event created with
+        Conference created with
         basic details
     end note
     
@@ -367,10 +367,10 @@ This flow document follows the consistency guidelines:
 
 | Document | Relationship |
 |----------|--------------|
-| [Event Entity](../entities/event.md) | Event entity lifecycle and state machine |
+| [Conference Entity](../entities/event.md) | Conference entity lifecycle and state machine |
 | [CfpConfig Entity](../entities/cfp-config.md) | CfpConfig child entity lifecycle |
-| [EventId Value Object](../value-objects/event-id.md) | Event identifier value object |
-| [EventStatus Value Object](../value-objects/event-status.md) | Event status enum value object |
+| [ConferenceId Value Object](../value-objects/event-id.md) | Conference identifier value object |
+| [ConferenceStatus Value Object](../value-objects/event-status.md) | Conference status enum value object |
 | [ADR-002: Use Supabase for Backend](../../../../adr/002-00-use-supabase-for-backend-and-database.md) | Supabase and RLS decision |
 | [ADR-006: Use RESTful API Design](../../../../adr/006-use-restful-api-design.md) | RESTful API design decision |
 | [ADR-007: Use Zod for Validation](../../../../adr/007-use-zod-for-validation.md) | Zod validation strategy |

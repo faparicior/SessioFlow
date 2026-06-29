@@ -6,7 +6,7 @@ Organize the brainstormed features into a logical sequence of releases to define
 ## 7.1 Brainstormed Features (Initial List)
 *All features considered, derived from Brainstorming (Step 5) and Journey Mapping (Step 6).*
 
-* [x] **Setup Event (C4P Configuration)**: Create event, set dates, and open C4P (Found in Journey 1).
+* [x] **Setup Conference (C4P Configuration)**: Create conference, set dates, and open C4P (Found in Journey 1).
 * [x] **Collect Proposals (CfP)**: Public form for speakers to submit talks.
 * [x] **Review & Score Sessions**: Dashboard for organizers to rate submissions.
 * [x] **Automate Speaker Communications**: Email triggers for status changes.

@@ -8,10 +8,10 @@ Each flow represents a complete user story from start to finish, spanning one or
 
 | ID | Journey Name | Primary Bounded Context | Related Contexts | Status |
 |:---|:-------------|:----------------------|:-----------------|:-------|
-| **J01** | [Setup Event (CfP Configuration)](../bounded-contexts/event/flows/journey-01-setup-event.md) | Event | — | ✅ Complete |
-| **J02** | [Submit Proposal](../bounded-contexts/submission/flows/journey-02-submit-proposal.md) | Submission | Event | ⏳ Pending |
+| **J01** | [Setup Conference (CfP Configuration)](../bounded-contexts/conference/flows/journey-01-setup-conference.md) | Conference | — | ✅ Complete |
+| **J02** | [Submit Proposal](../bounded-contexts/submission/flows/journey-02-submit-proposal.md) | Submission | Conference | ⏳ Pending |
 | **J03** | [Review Sessions](../bounded-contexts/review/flows/journey-03-review-sessions.md) | Review | Submission | ⏳ Pending |
-| **J04** | [Acceptance & Logistics](../bounded-contexts/scheduling/flows/journey-04-acceptance-logistics.md) | Scheduling | Event, Submission | ⏳ Pending |
+| **J04** | [Acceptance & Logistics](../bounded-contexts/scheduling/flows/journey-04-acceptance-logistics.md) | Scheduling | Conference, Submission | ⏳ Pending |
 
 ---
 
@@ -32,22 +32,22 @@ Each journey's complete documentation is in a **single file** that includes:
 
 ## 📋 Flow Details
 
-### Journey 01: Setup Event (CfP Configuration)
+### Journey 01: Setup Conference (CfP Configuration)
 
-**As a** Event Organizer  
-**I want to** Create a new event and configure its Call for Papers (CfP) settings  
+**As a** Conference Organizer  
+**I want to** Create a new conference and configure its Call for Papers (CfP) settings  
 **So that** I can share a submission link with potential speakers and start collecting proposals
 
 **📄 Detailed Documentation (includes all diagrams):**  
-→ [View Full Flow Specification](../bounded-contexts/event/flows/journey-01-setup-event.md)
+→ [View Full Flow Specification](../bounded-contexts/conference/flows/journey-01-setup-conference.md)
 
 **Includes:**
 - Sequence diagram with error paths
 - Flowchart with decision points
-- State diagram (Event lifecycle)
+- State diagram (Conference lifecycle)
 
 **Bounded Contexts Involved:**
-- **Event** (Primary) - Event aggregate, CfpConfig entity
+- **Conference** (Primary) - Conference aggregate, CfpConfig entity
 
 ---
 
@@ -67,7 +67,7 @@ Each journey's complete documentation is in a **single file** that includes:
 
 **Bounded Contexts Involved:**
 - **Submission** (Primary) - Submission aggregate, Speaker entity
-- **Event** (Referenced) - Event status validation
+- **Conference** (Referenced) - Conference status validation
 
 ---
 
@@ -75,7 +75,7 @@ Each journey's complete documentation is in a **single file** that includes:
 
 **As a** Organizer/Reviewer  
 **I want to** Review and score submitted proposals  
-**So that** I can select the best talks for the event
+**So that** I can select the best talks for the conference
 
 **📄 Detailed Documentation (when created, will include):**  
 → [Flow Spec Location](../bounded-contexts/review/flows/journey-03-review-sessions.md) *(not yet created)*
@@ -94,7 +94,7 @@ Each journey's complete documentation is in a **single file** that includes:
 ### Journey 04: Acceptance & Logistics
 
 **As a** Organizer  
-**I want to** Accept submissions and publish the event schedule  
+**I want to** Accept submissions and publish the conference schedule  
 **So that** speakers know their acceptance status and time slots
 
 **📄 Detailed Documentation (when created, will include):**  
@@ -107,7 +107,7 @@ Each journey's complete documentation is in a **single file** that includes:
 
 **Bounded Contexts Involved:**
 - **Scheduling** (Primary) - Schedule aggregate, TimeSlot entity
-- **Event** (Referenced) - Event status updates
+- **Conference** (Referenced) - Conference status updates
 - **Submission** (Referenced) - Submission status updates
 
 ---
@@ -119,7 +119,7 @@ This diagram shows how journeys connect across bounded contexts:
 ```mermaid
 flowchart TB
     subgraph Organizer["Organizer Journey"]
-        J01[J01: Setup Event]
+        J01[J01: Setup Conference]
         J03[J03: Review Sessions]
         J04[J04: Acceptance & Logistics]
     end
@@ -128,8 +128,8 @@ flowchart TB
         J02[J02: Submit Proposal]
     end
 
-    subgraph EventBC["Event Bounded Context"]
-        E[Event Aggregate]
+    subgraph ConferenceBC["Conference Bounded Context"]
+        E[Conference Aggregate]
         CFP[CfpConfig]
     end
 
@@ -151,16 +151,16 @@ flowchart TB
     J01 --> E
     J01 --> CFP
     J02 --> S
-    J02 -.-> E
+    J02 -.-> ConferenceBC
     J03 --> R
     J03 -.-> S
     J04 --> SCH
-    J04 -.-> E
+    J04 -.-> ConferenceBC
     J04 -.-> S
 
     style Organizer fill:#e1f5fe
     style Speaker fill:#fff3e0
-    style EventBC fill:#f3e5f5
+    style ConferenceBC fill:#f3e5f5
     style SubmissionBC fill:#e8f5e9
     style ReviewBC fill:#fff8e1
     style ScheduleBC fill:#fce4ec

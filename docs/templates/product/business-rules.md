@@ -31,7 +31,7 @@
 
 ### Asynchronous or Downstream Effects
 *Does this rule trigger other business workflows or fire domain events?*
-* [e.g., When a discount higher than 15% is applied, emit `HighDiscountAppliedEvent` to notify the accounting team.]
+* [e.g., When a discount higher than 15% is applied, emit `HighDiscountAppliedConference` to notify the accounting team.]
 
 ## 4. System Enforcement (How It’s Handled)
 *Unlike an invariant (which sits strictly inside an Aggregate Root), a business rule can be enforced via Domain Services, Policy objects, or workflow orchestration (like n8n or Saga patterns).*

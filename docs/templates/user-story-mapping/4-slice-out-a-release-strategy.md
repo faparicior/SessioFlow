@@ -10,7 +10,7 @@ Before selecting stories, define the success criteria for this specific slice. D
 - **Target Audience:** [Who are we satisfying with this specific release?]
 - **Desired Outcome:** [What human behavior will change? e.g., "Users can complete a purchase without calling support."]
 - **Impact Metric:**
-  - **Activation:** [e.g., "5 Events created"]
+  - **Activation:** [e.g., "5 Conferences created"]
   - **Volume:** [e.g., ">50 Proposals collected"]
   - **Conversion:** [e.g., "80% completion rate"]
 

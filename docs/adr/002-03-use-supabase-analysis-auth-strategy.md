@@ -86,7 +86,7 @@ src/
 
 ADR-009 established DDD to prevent business logic leakage and enable long-term maintainability. For authentication specifically, DDD provides:
 
-1. **Repository Pattern**: `AuthProvider` is a repository interface (same pattern as `EventRepository`, `SubmissionRepository`)
+1. **Repository Pattern**: `AuthProvider` is a repository interface (same pattern as `ConferenceRepository`, `SubmissionRepository`)
 2. **Infrastructure Isolation**: Auth SDKs (Auth0, NextAuth) live **only** in infrastructure layer
 3. **Application Services**: Use cases orchestrate flows without knowing the provider
 4. **Domain Purity**: Business logic depends only on domain types (`User`, `Session`), not SDK types
@@ -257,7 +257,7 @@ export interface AuthProvider {
 }
 ```
 
-**This is a repository interface** following the same pattern as `EventRepository`, `SubmissionRepository` in ADR-009.
+**This is a repository interface** following the same pattern as `ConferenceRepository`, `SubmissionRepository` in ADR-009.
 
 **TypeScript Naming Convention:**
 - Use descriptive names without "I" prefix (e.g., `AuthProvider`, not `IAuthProvider`)

@@ -1,8 +1,8 @@
-# INV-003: Event Slug Must Be Unique Across All Events
+# INV-003: Conference Slug Must Be Unique Across All Conferences
 
 * **Status:** Active
-* **Bounded Context:** Event Management Bounded Context
-* **Aggregate Root:** `Event` Aggregate
+* **Bounded Context:** Conference Management Bounded Context
+* **Aggregate Root:** `Conference` Aggregate
 * **Data Integrity Risk:** URL collisions, broken links, ambiguous event identification
 
 ---
@@ -16,7 +16,7 @@
 *Define exactly which fields, value objects, or entities inside the Aggregate Root are involved in maintaining this consistency.*
 
 * **Monitored Fields:**
-  * `Event.slug` (EventSlug value object)
+  * `Conference.slug` (ConferenceSlug value object)
 * **Transactional Boundary:** Enforced synchronously during event creation before persistence.
 
 ## 3. Enforcement Logic & Edge Cases
@@ -36,7 +36,7 @@ Scenario: Attempting to create event with duplicate slug
 ### Critical Edge Cases Handled:
 * **Race Conditions:** Two users creating events with the same name simultaneously - database UNIQUE constraint provides final protection.
 * **Slug Collision After Generation:** Database constraint (`events.slug UNIQUE`) ensures no duplicates can be persisted even if application logic fails.
-* **Case Sensitivity:** Slugs are normalized to lowercase to prevent "My-Event" and "my-event" from being treated as different.
+* **Case Sensitivity:** Slugs are normalized to lowercase to prevent "My-Conference" and "my-event" from being treated as different.
 
 ## 4. Failure Response (Exception Handling)
 *What happens when this invariant is violated? Invariants always result in a rejected transaction and a domain exception.*
@@ -62,7 +62,7 @@ Scenario: Creating event with unique slug
 ```gherkin
 Scenario: Slug collision after multiple retry attempts
   Given events with slugs "my-event", "my-event-2", "my-event-3" exist
-  When organizer creates another event named "My Event"
+  When organizer creates another event named "My Conference"
   Then the system throws SlugGenerationError after 3 attempts
   And HTTP response is 500 Internal Server Error
   And database transaction is rolled back
@@ -73,5 +73,5 @@ Scenario: Slug collision after multiple retry attempts
 ## 6. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
-* **2026-06-09:** Invariant defined alongside Event entity documentation.
+* **2026-06-09:** Invariant defined alongside Conference entity documentation.
 * **Database Constraint:** UNIQUE index on `events.slug` column provides additional enforcement layer.

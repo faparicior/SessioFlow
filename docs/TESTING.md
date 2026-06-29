@@ -166,9 +166,9 @@ describe('Event entity', () => {
 
 **Value Objects:**
 ```typescript
-describe('EventId value object', () => {
+describe('ConferenceId value object', () => {
   it('generates valid UUID', () => {
-    const id = EventId.create();
+    const id = ConferenceId.create();
     expect(id.getValue()).toMatch(/^[0-9a-f-]{36}$/);
   });
 });
@@ -178,8 +178,8 @@ describe('EventId value object', () => {
 ```typescript
 describe('EventRepository', () => {
   it('enforces unique slugs', async () => {
-    const event1 = createEvent({ slug: 'test-event' });
-    const event2 = createEvent({ slug: 'test-event' });
+    const event1 = createConference({ slug: 'test-conference' });
+    const event2 = createConference({ slug: 'test-conference' });
     
     await repository.save(event1);
     const result = await repository.save(event2);

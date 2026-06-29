@@ -55,7 +55,7 @@
   - Speaker Profile (Photo Upload) - Must-have
   - Collect Proposals (CfP) - Must-have
 - **MVP Canvas**: 
-  - Technical Enablers: "Database Schema for Events, Proposals, and Profiles"
+  - Technical Enablers: "Database Schema for Conferences, Proposals, and Profiles"
   - Technical Enablers: "Authentication system (Magic Link)"
   - Technical Enablers: "Image Storage (Supabase Storage) for profile photos"
   - Risks: "GDPR/Privacy compliance"

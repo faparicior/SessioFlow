@@ -1,7 +1,7 @@
-# Value Object: EventId
+# Value Object: ConferenceId
 
 ## 📋 Definition
-* **Description:** Unique identifier for an Event aggregate. Ensures type safety and validation at the value object level.
+* **Description:** Unique identifier for a Conference aggregate. Ensures type safety and validation at the value object level.
 * **Type:** UUIDv4 (string internally, but wrapped in strong type)
 * **Immutability:** ✅ Immutable (created once, never changed)
 * **Validation:** Format validation on creation
@@ -14,7 +14,7 @@
 |------|-------------|
 | **Format** | Must be valid UUIDv4 format |
 | **Case** | Case-insensitive comparison |
-| **Uniqueness** | Must be unique across all Event aggregates |
+| **Uniqueness** | Must be unique across all Conference aggregates |
 | **Immutability** | Cannot be modified after creation |
 
 ---
@@ -25,7 +25,7 @@
 |--------|---------|
 | `create(id: string)` | Create from validated string (throws on invalid format) |
 | `generate()` | Generate new UUIDv4 identifier |
-| `equals(other: EventId)` | Compare two EventId instances for equality |
+| `equals(other: ConferenceId)` | Compare two ConferenceId instances for equality |
 | `toString()` | Convert to string representation |
 
 ---
@@ -34,7 +34,7 @@
 
 | Entity / Use Case | Usage |
 |-------------------|-------|
-| [[../entities/event.md]] | Primary key for Event aggregate |
+| [[../entities/conference.md]] | Primary key for Conference aggregate |
 | [[../../application/use-cases/create-event.ts]] | Input parameter for event creation |
 | [[../../infrastructure/repositories/event-repository.ts]] | Query parameter for repository methods |
 
@@ -54,8 +54,8 @@
 
 | Scenario | Description |
 |----------|-------------|
-| **Generation** | `EventId.generate()` creates new UUIDv4 |
-| **Creation** | `EventId.create('123e...')` validates and wraps string |
+| **Generation** | `ConferenceId.generate()` creates new UUIDv4 |
+| **Creation** | `ConferenceId.create('123e...')` validates and wraps string |
 | **Comparison** | `eventId.equals(otherId)` checks value equality |
 | **Serialization** | `eventId.toString()` converts to string for storage/transmission |
 
@@ -65,5 +65,5 @@
 
 | Error | Trigger |
 |-------|---------|
-| `InvalidEventIdError` | Invalid UUIDv4 format provided |
-| `DuplicateEventIdError` | ID already exists in database (repository level) |
+| `InvalidConferenceIdError` | Invalid UUIDv4 format provided |
+| `DuplicateConferenceIdError` | ID already exists in database (repository level) |

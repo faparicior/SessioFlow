@@ -197,8 +197,8 @@ const minioClient = new Client({
 });
 
 // Upload event logo
-async function uploadEventLogo(eventId: string, file: Buffer, mimetype: string) {
-  const filename = `${eventId}/logo.${mimetype.split('/')[1]}`;
+async function uploadConferenceLogo(conferenceId: string, file: Buffer, mimetype: string) {
+  const filename = `${conferenceId}/logo.${mimetype.split('/')[1]}`;
   
   await minioClient.putObject(
     'events-bucket',
@@ -211,8 +211,8 @@ async function uploadEventLogo(eventId: string, file: Buffer, mimetype: string) 
 }
 
 // Generate presigned URL for secure download
-async function getLogoUrl(eventId: string) {
-  const filename = `${eventId}/logo.jpg`;
+async function getLogoUrl(conferenceId: string) {
+  const filename = `${conferenceId}/logo.jpg`;
   const url = await minioClient.presignedGetObject(
     'events-bucket',
     filename,
@@ -383,14 +383,14 @@ If we start with Supabase and migrate later:
 interface EventRepository {
   findById(id: string): Promise<Event | null>;
   findBySlug(slug: string): Promise<Event | null>;
-  create(event: Event): Promise<Event>;
-  update(event: Event): Promise<Event>;
+  create(conference: Conference): Promise<Conference>;
+  update(conference: Conference): Promise<Conference>;
   delete(id: string): Promise<void>;
 }
 
 // Supabase implementation
 class SupabaseEventRepository implements EventRepository {
-  async create(event: Event) {
+  async create(conference: Conference) {
     const { data } = await supabase.from('events').insert(event);
     return data;
   }
@@ -398,7 +398,7 @@ class SupabaseEventRepository implements EventRepository {
 
 // PostgreSQL implementation
 class PostgresEventRepository implements EventRepository {
-  async create(event: Event) {
+  async create(conference: Conference) {
     const { rows } = await db.query(
       'INSERT INTO events (...) VALUES (...) RETURNING *',
       [event]

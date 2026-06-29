@@ -138,10 +138,10 @@ DDD is the optimal choice because it provides long-term architectural stability 
 ```typescript
 src/
 ├── domains/                    # Domain layer (business logic)
-│   ├── event/                  # Event bounded context
-│   │   ├── entities/           # Event, Session, Track
-│   │   ├── value-objects/      # EventId, SessionType, DateTimeRange
-│   │   ├── aggregates/         # EventAggregate (consistency boundary)
+│   ├── event/                  # conference bounded context
+│   │   ├── entities/           # conference, session, track
+│   │   ├── value-objects/      # ConferenceId, SessionType, DateTimeRange
+│   │   ├── aggregates/         # ConferenceAggregate (consistency boundary)
 │   │   ├── services/           # Domain services (event rules)
 │   │   └── repositories/       # Repository interfaces
 │   ├── submission/             # Submission bounded context
@@ -162,7 +162,7 @@ src/
 │       └── repositories/       # ScheduleRepository interface
 │
 ├── application/                # Application layer (use cases)
-│   ├── event/                  # Event use cases
+│   ├── event/                  # conference use cases
 │   │   ├── create-event.ts
 │   │   ├── publish-cfp.ts
 │   │   └── event-dto.ts
@@ -201,9 +201,9 @@ src/
 
 ### Key DDD Concepts Applied
 
-**Entities:** Objects with identity (Event, Submission, Review, Schedule)
+**Entities:** Objects with identity (Conference, Submission, Review, Schedule)
 **Value Objects:** Immutable objects defined by attributes (Title, Abstract, Score)
-**Aggregates:** Consistency boundaries (EventAggregate, SubmissionAggregate)
+**Aggregates:** Consistency boundaries (ConferenceAggregate, SubmissionAggregate)
 **Domain Services:** Business logic that doesn't belong to entities
 **Repository Interfaces:** Abstractions for data access (implemented in infrastructure)
 **Application Services:** Use cases that orchestrate domain objects
@@ -371,18 +371,18 @@ export interface SubmissionRepository {
 export class SubmitProposal {
   constructor(
     private submissionRepository: SubmissionRepository,
-    private eventRepository: EventRepository
+    private conferenceRepository: ConferenceRepository
   ) {}
 
   async execute(command: SubmitProposalCommand): Promise<Submission> {
-    // Validate event exists
-    const event = await this.eventRepository.findById(command.eventId);
-    if (!event) {
-      throw new EventNotFoundError(command.eventId);
+    // Validate conference exists
+    const conference = await this.conferenceRepository.findById(command.conferenceId);
+    if (!conference) {
+      throw new ConferenceNotFoundError(command.conferenceId);
     }
 
     // Check CFP deadline
-    if (!event.isCfpOpen()) {
+    if (!conference.isCfpOpen()) {
       throw new CfpClosedError('Call for papers is closed');
     }
 

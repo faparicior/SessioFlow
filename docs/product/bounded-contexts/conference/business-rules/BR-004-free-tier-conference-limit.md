@@ -1,7 +1,7 @@
-# BR-004: Free Tier Event Creation Limit
+# BR-004: Free Tier Conference Creation Limit
 
 * **Status:** Active
-* **Domain Context:** Event Management Bounded Context
+* **Domain Context:** Conference Management Bounded Context
 * **Business Owner:** Product Team
 * **Last Reviewed:** 2026-06-09
 
@@ -22,8 +22,8 @@
 *Break down the exact logic. Use tables, bullet points, or Gherkin syntax (Given/When/Then) to cover different edge cases.*
 
 ### Evaluation Logic
-* **If** `organizer.tier == FREE` AND `count(activeEvents) >= 5` -> Block creation, show upgrade prompt
-* **If** `organizer.tier == FREE` AND `count(activeEvents) < 5` -> Allow creation
+* **If** `organizer.tier == FREE` AND `count(activeConferences) >= 5` -> Block creation, show upgrade prompt
+* **If** `organizer.tier == FREE` AND `count(activeConferences) < 5` -> Allow creation
 * **If** `organizer.tier != FREE` (PRO/ENTERPRISE) -> No limit applied
 
 ### Gherkin Scenarios
@@ -57,7 +57,7 @@ Scenario: Pro tier user
 ## 4. System Enforcement (How It's Handled)
 *Unlike an invariant (which sits strictly inside an Aggregate Root), a business rule can be enforced via Domain Services, Policy objects, or workflow orchestration (like n8n or Saga patterns).*
 
-* **Enforcement Layer:** Application Service (`CreateEventService`) checks subscription tier before event creation
+* **Enforcement Layer:** Application Service (`CreateConferenceService`) checks subscription tier before event creation
 * **Handling Violations/Exceptions:** 
   * Does NOT throw domain exception
   * Returns business rule violation response with upgrade information

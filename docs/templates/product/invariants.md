@@ -1,8 +1,8 @@
 # INV-[000]: [Short, Strict Title of the Invariant]
 
 * **Status:** [Active | Proposed | Retired]
-* **Bounded Context:** [e.g., Event Management Bounded Context]
-* **Aggregate Root:** [e.g., `Event` Aggregate]
+* **Bounded Context:** [e.g., Conference Management Bounded Context]
+* **Aggregate Root:** [e.g., `Conference` Aggregate]
 * **Data Integrity Risk:** [e.g., Overbooking, Corrupt State, Financial/Inventory Discrepancy]
 * **Invariant Type:** Strict constraint (must be protected inside Aggregate Root, no fallbacks)
 
@@ -11,7 +11,7 @@
 ## 1. Statement of Invariant
 *An absolute statement of truth that must hold true at all times within the Aggregate boundary. There are no "if-else workflows" or "fallbacks" here—violating this means transaction failure.*
 
-> **Invariant:** [e.g., The number of `ConfirmedTickets` can never exceed the `TotalCapacity` of the Event.]
+> **Invariant:** [e.g., The number of `ConfirmedTickets` can never exceed the `TotalCapacity` of the Conference.]
 
 **Note:** Unlike a business rule, this invariant:
 - MUST be enforced synchronously inside the Aggregate Root
@@ -23,8 +23,8 @@
 *Define exactly which fields, value objects, or entities inside the Aggregate Root are involved in maintaining this consistency.*
 
 * **Monitored Fields:**
-  * `Event.capacity` (Integer)
-  * `Event.tickets` (Collection of Ticket entities where status == CONFIRMED)
+  * `Conference.capacity` (Integer)
+  * `Conference.tickets` (Collection of Ticket entities where status == CONFIRMED)
 * **Transactional Boundary:** Enforced synchronously during any command that alters ticket state or event capacity.
 
 ## 3. Enforcement Logic & Edge Cases

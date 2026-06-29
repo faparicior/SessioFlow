@@ -1,8 +1,8 @@
-# INV-001: Event State Transitions Must Follow State Machine
+# INV-001: Conference State Transitions Must Follow State Machine
 
 * **Status:** Active
-* **Bounded Context:** Event Management Bounded Context
-* **Aggregate Root:** `Event` Aggregate
+* **Bounded Context:** Conference Management Bounded Context
+* **Aggregate Root:** `Conference` Aggregate
 * **Data Integrity Risk:** Corrupt state, invalid workflow progression, broken business logic
 
 ---
@@ -10,14 +10,14 @@
 ## 1. Statement of Invariant
 *An absolute statement of truth that must hold true at all times within the Aggregate boundary. There are no "if-else workflows" or "fallbacks" here—violating this means transaction failure.*
 
-> **Invariant:** Event state transitions must follow the defined state machine diagram; no state can be changed except through valid domain methods that enforce allowed transitions.
+> **Invariant:** Conference state transitions must follow the defined state machine diagram; no state can be changed except through valid domain methods that enforce allowed transitions.
 
 ## 2. Technical Context & State Boundary
 *Define exactly which fields, value objects, or entities inside the Aggregate Root are involved in maintaining this consistency.*
 
 * **Monitored Fields:**
-  * `Event.status` (EventStatus value object)
-  * `Event.cfpConfig` (CfpConfig child entity)
+  * `Conference.status` (ConferenceStatus value object)
+  * `Conference.cfpConfig` (CfpConfig child entity)
 * **Transactional Boundary:** Enforced synchronously during any command that alters event state via domain methods.
 
 ## 3. Enforcement Logic & Edge Cases
@@ -27,10 +27,10 @@
 
 ```gherkin
 Scenario: Attempting invalid state transition
-  Given an Event with status DRAFT
+  Given an Conference with status DRAFT
   When a command attempts to transition directly to REVIEWING
   Then the system throws InvalidStateTransitionError
-  And the Event status remains DRAFT
+  And the Conference status remains DRAFT
   And no state changes are persisted
 ```
 
@@ -52,9 +52,9 @@ Scenario: Attempting invalid state transition
 ### Positive Test (Invariant Holds)
 ```gherkin
 Scenario: Valid state transition following state machine
-  Given an Event with status DRAFT
-  When the organizer calls Event.publishCfp()
-  Then the Event status transitions to CFP_OPEN
+  Given an Conference with status DRAFT
+  When the organizer calls Conference.publishCfp()
+  Then the Conference status transitions to CFP_OPEN
   And the CfpOpened domain event is published
   And the invariant remains satisfied
 ```
@@ -62,7 +62,7 @@ Scenario: Valid state transition following state machine
 ### Negative Test (Invariant Violation Blocked)
 ```gherkin
 Scenario: Attempted invalid state transition
-  Given an Event with status DRAFT
+  Given an Conference with status DRAFT
   When a command attempts to transition directly to REVIEWING
   Then the system throws InvalidStateTransitionError
   And HTTP response is 422 Unprocessable Entity
@@ -74,4 +74,4 @@ Scenario: Attempted invalid state transition
 ## 6. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
-* **2026-06-09:** Invariant defined alongside Event entity lifecycle documentation.
+* **2026-06-09:** Invariant defined alongside Conference entity lifecycle documentation.

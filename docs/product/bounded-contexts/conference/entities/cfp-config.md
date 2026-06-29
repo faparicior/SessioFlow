@@ -17,11 +17,11 @@ After generating the entity lifecycle document, review the project's Architectur
 
 ## 📋 Definition & Context
 * **Description:** Configuration settings for a Call for Papers (CfP) submission window. Defines the submission period, rules, and settings for how speakers can submit proposals to an event.
-* **Aggregate Relationship:** Child Entity of `Event` Aggregate (not a root entity)
+* **Aggregate Relationship:** Child Entity of `Conference` Aggregate (not a root entity)
 * **Database Table / Collection:** `cfp_configs` (embedded or separate table with eventId foreign key)
-* **Primary Key / Identifier:** Inherited from parent `Event.id` (no separate identity)
-* **Owner Team:** Core Event Team
-* **Domain Context:** Event Bounded Context (see ADR-009)
+* **Primary Key / Identifier:** Inherited from parent `Conference.id` (no separate identity)
+* **Owner Team:** Core Conference Team
+* **Domain Context:** Conference Bounded Context (see ADR-009)
 
 ---
 
@@ -29,7 +29,7 @@ After generating the entity lifecycle document, review the project's Architectur
 
 ### Aggregate Relationship
 ```
-EventAggregate (Root)
+ConferenceAggregate (Root)
 └── cfpConfig: CfpConfig (Child Entity / Embedded)
     ├── startDate: CfpStartDate (Value Object)
     ├── endDate: CfpEndDate (Value Object)
@@ -52,9 +52,9 @@ EventAggregate (Root)
 
 ```mermaid
 stateDiagram-v2
-    [*] --> ACTIVE : Event published (CFP_OPEN)
-    ACTIVE --> CLOSED : Event.closeCfp() / CfpDeadlineReached
-    CLOSED --> ARCHIVED : Event.complete()
+    [*] --> ACTIVE : Conference published (CFP_OPEN)
+    ACTIVE --> CLOSED : Conference.closeCfp() / CfpDeadlineReached
+    CLOSED --> ARCHIVED : Conference.complete()
     ARCHIVED --> [*]
     
     ACTIVE --> ACTIVE : Submission received
@@ -66,12 +66,12 @@ stateDiagram-v2
 ## 🔄 State Transition Matrix
 *A strict mapping of every allowed state change, the trigger behind it, and any automatic system side-effects.*
 
-| Current State | Domain Method / Event | Target State | Guards / Conditions | Side Effects / Actions |
+| Current State | Domain Method / Conference | Target State | Guards / Conditions | Side Effects / Actions |
 | :--- | :--- | :--- | :--- | :--- |
-| `ACTIVE` | `Event.publishCfp()` | `ACTIVE` | Event status = CFP_OPEN | Enable submission form; start accepting proposals; publish `CfpOpened` domain event. |
-| `ACTIVE` | `Event.closeCfp()` | `CLOSED` | Organizer has admin rights | Disable submission form; lock all submissions for review; publish `CfpClosed` domain event. |
+| `ACTIVE` | `Conference.publishCfp()` | `ACTIVE` | Conference status = CFP_OPEN | Enable submission form; start accepting proposals; publish `CfpOpened` domain event. |
+| `ACTIVE` | `Conference.closeCfp()` | `CLOSED` | Organizer has admin rights | Disable submission form; lock all submissions for review; publish `CfpClosed` domain event. |
 | `ACTIVE` | `CfpDeadlineReached` (cron) | `CLOSED` | Current time >= cfpEndDate | Auto-close submissions; send closure notifications to speakers; publish `CfpClosed` domain event. |
-| `CLOSED` | `Event.complete()` | `ARCHIVED` | Event status = COMPLETED | Archive all submission data; make read-only; publish `CfpArchived` domain event. |
+| `CLOSED` | `Conference.complete()` | `ARCHIVED` | Conference status = COMPLETED | Archive all submission data; make read-only; publish `CfpArchived` domain event. |
 | `CLOSED` | New submission attempt | `CLOSED` | CfP is closed | Reject submission; return error to user; no state change. |
 
 ---
@@ -106,9 +106,9 @@ This entity lifecycle document follows the consistency guidelines:
 1. **State Completeness:** Every state shown in the Mermaid diagram has a corresponding definition in the State Definitions section
 2. **Transition Completeness:** Every transition arrow in the Mermaid diagram is documented in the State Transition Matrix
 3. **State Names:** Consistent naming using uppercase (e.g., `ACTIVE`, `CLOSED`)
-4. **Trigger Alignment:** The triggering actions/events in the Mermaid diagram match the "Event / Trigger" column in the State Transition Matrix
+4. **Trigger Alignment:** The triggering actions/events in the Mermaid diagram match the "Conference / Trigger" column in the State Transition Matrix
 5. **Target State Alignment:** The target states in the Mermaid diagram match the "Target State" column in the State Transition Matrix
-6. **Domain Methods:** Domain methods shown in the Mermaid (e.g., `Event.closeCfp()`) are documented in the Domain Behavior section
+6. **Domain Methods:** Domain methods shown in the Mermaid (e.g., `Conference.closeCfp()`) are documented in the Domain Behavior section
 7. **Terminal States:** Terminal states (`ARCHIVED`) are clearly identified in State Definitions
 
 ## 🔍 State Definitions
@@ -116,22 +116,22 @@ This entity lifecycle document follows the consistency guidelines:
 
 | State | Description | Domain Method |
 |-------|-------------|---------------|
-| `ACTIVE` | CfP is open and accepting submissions. Speakers can create accounts, fill out the submission form, and submit proposals. The submission deadline is in the future. | `Event.publishCfp()` |
-| `CLOSED` | CfP has been closed (manually or by deadline). No new submissions accepted. Existing submissions are locked and can only be viewed/reviewed by organizers. | `Event.closeCfp()`, `CfpDeadlineReached` |
-| `ARCHIVED` | CfP configuration archived with event. All data preserved in read-only mode for historical reference and reporting. | `Event.complete()` |
+| `ACTIVE` | CfP is open and accepting submissions. Speakers can create accounts, fill out the submission form, and submit proposals. The submission deadline is in the future. | `Conference.publishCfp()` |
+| `CLOSED` | CfP has been closed (manually or by deadline). No new submissions accepted. Existing submissions are locked and can only be viewed/reviewed by organizers. | `Conference.closeCfp()`, `CfpDeadlineReached` |
+| `ARCHIVED` | CfP configuration archived with event. All data preserved in read-only mode for historical reference and reporting. | `Conference.complete()` |
 
 ---
 
 ## 🛠️ Repository Interface (DDD Pattern)
 
 ```typescript
-// CfpConfig does not have its own repository - it is accessed through EventRepository
-// as part of the Event Aggregate.
+// CfpConfig does not have its own repository - it is accessed through ConferenceRepository
+// as part of the Conference Aggregate.
 
-// Example usage through EventRepository:
-export interface EventRepository {
-  // CfpConfig is loaded as part of Event aggregate
-  findById(id: EventId): Promise<Event | null>;
+// Example usage through ConferenceRepository:
+export interface ConferenceRepository {
+  // CfpConfig is loaded as part of Conference aggregate
+  findById(id: ConferenceId): Promise<Conference | null>;
   
   // No separate CfpConfigRepository needed
 }
@@ -161,13 +161,13 @@ export interface EventRepository {
 
 ---
 
-## 🔗 Domain Events
+## 🔗 Domain Conferences
 
-| Event | Triggered By | Published When |
+| Conference | Triggered By | Published When |
 |-------|--------------|----------------|
-| `CfpOpened` | `Event.publishCfp()` | CfP transitions to `ACTIVE` |
-| `CfpClosed` | `Event.closeCfp()` / `CfpDeadlineReached` | CfP transitions to `CLOSED` |
-| `CfpArchived` | `Event.complete()` | CfP transitions to `ARCHIVED` |
+| `CfpOpened` | `Conference.publishCfp()` | CfP transitions to `ACTIVE` |
+| `CfpClosed` | `Conference.closeCfp()` / `CfpDeadlineReached` | CfP transitions to `CLOSED` |
+| `CfpArchived` | `Conference.complete()` | CfP transitions to `ARCHIVED` |
 
 ---
 
@@ -179,5 +179,5 @@ export interface EventRepository {
 | [[../value-objects/cfp-end-date]] | CfP end date value object |
 | [[../value-objects/cfp-status]] | CfP status enum value object |
 | [[../value-objects/max-submissions]] | Maximum submission limit value object |
-| [[event.md]] | Parent Event aggregate documentation |
+| [[event.md]] | Parent Conference aggregate documentation |
 | [[../../adr/009-adopt-domain-driven-design-structure.md]] | DDD architecture decision |
