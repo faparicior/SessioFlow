@@ -11,7 +11,7 @@ After generating the flow document, review the project's Architecture Decision R
 
 ## 📋 Overview
 * **As a:** Conference Organizer (Fernando)
-* **I want to:** Create a new event and configure its Call for Papers (CfP) settings
+* **I want to:** Create a new conference and configure its Call for Papers (CfP) settings
 * **So that:** I can share a submission link with potential speakers and start collecting proposals
 * **Source:** Inception Step 6 - User Journey Mapping (Journey 1)
 * **Related Feature:** Setup Conference (C4P Configuration) from Wave 1 (MVP)
@@ -41,13 +41,13 @@ sequenceDiagram
     UI->>API: GET /auth/me
     API-->>UI: Return organizerId
 
-    Organizer->>UI: Fill event form<br/>(name, dates, description)
+    Organizer->>UI: Fill conference form<br/>(name, dates, description)
     UI->>UI: Client-side Zod validation
     
     rect rgb(232, 245, 233)
         note right of UI: Happy Path - All Valid
         Organizer->>UI: Click "Create Conference"
-        UI->>API: POST /api/v1/events
+        UI->>API: POST /api/v1/conferences
         API->>API: Validate payload with Zod
         API->>DB: Check slug uniqueness
         DB-->>API: Slug available
@@ -104,7 +104,7 @@ sequenceDiagram
 | **1** | Clicks "Create New Conference" button in dashboard | Loads conference creation form with validation schema | None (UI Level) |
 | **2** | — | GET /auth/me - Verify authentication | None (Security) |
 | **3** | — | Returns user session with organizerId | None (Security) |
-| **4** | Enters event name, description, and logo URL | Client-side validates using Zod schema in real-time | None (UI Level) |
+| **4** | Enters conference name, description, and logo URL | Client-side validates using Zod schema in real-time | None (UI Level) |
 | **5** | Selects CfP start and end dates via date picker | Validates end date is after start date, prevents past dates | None (UI Level) |
 | **6** | Clicks "Create Conference" submit button | Shows loading state, sends POST request with payload | None (UI Level) |
 | **7** | — | **Application Service:** Validates all fields against Zod schema | None (Validation) |
@@ -125,7 +125,7 @@ sequenceDiagram
 
 ### Scenario 1: Successful Conference Creation (Happy Path)
 * **Given** the organizer is authenticated and on the dashboard,
-* **When** they fill out all required event fields and submit the form,
+* **When** they fill out all required conference fields and submit the form,
 * **Then** the system creates a `Conference` record with `DRAFT` status,
 * **And** calls `Conference.publishCfp()` to transition to `CFP_OPEN` status,
 * **And** creates a linked `CfpConfig` with the specified submission window in `ACTIVE` state,
@@ -134,8 +134,8 @@ sequenceDiagram
 
 ### Scenario 2: Minimal Conference Setup
 * **Given** the organizer wants to quickly set up a CfP,
-* **When** they enter only the required fields (event name, CfP start/end dates),
-* **Then** the system creates the event with default settings for optional fields,
+* **When** they enter only the required fields (conference name, CfP start/end dates),
+* **Then** the system creates the conference with default settings for optional fields,
 * **And** the CfP is immediately ready to accept submissions.
 
 ---
@@ -248,9 +248,9 @@ WITH CHECK (organizer_id = auth.uid());
 ### Enforced Business Rules
 
 * [BR-001](../business-rules/BR-001-cfp-dates-validation.md): CfP Dates Must Be Valid
-* [BR-002](../business-rules/BR-002-event-name-validation.md): Conference Name Must Meet Requirements
+* [BR-002](../business-rules/BR-002-conference-name-validation.md): Conference Name Must Meet Requirements
 * [BR-003](../business-rules/BR-003-slug-uniqueness.md): Conference Slug Must Be Unique
-* [BR-004](../business-rules/BR-004-free-tier-event-limit.md): Free Tier Conference Creation Limit
+* [BR-004](../business-rules/BR-004-free-tier-conference-limit.md): Free Tier Conference Creation Limit
 
 ### Enforced Invariants
 

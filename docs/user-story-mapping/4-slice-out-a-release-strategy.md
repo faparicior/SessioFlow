@@ -21,7 +21,7 @@ Identify the stories that fall **Above the Line**. These are the stories that ar
 | Backbone Activity | Selected Stories (Must-Haves) | Why is this in the slice? |
 | :--- | :--- | :--- |
 | **1. Initial Setup** | • **Deploy via Docker Compose**<br>• Clone & Configure Repo | Critical for "Self-Hosted" constraint. Users cannot use the app without this. |
-| **2. Event Definition** | • **Organizer Login** (Magic Link)<br>• **Create and Publish Event** | Defines the "product" (the CfP page) that organizers share. |
+| **2. Conference Definition** | • **Organizer Login** (Magic Link)<br>• **Create and Publish Conference** | Defines the "product" (the CfP page) that organizers share. |
 | **3. Proposal Submission** | • **Speaker Login** (Magic Link)<br>• **Create Speaker Profile** (with Photo)<br>• **Submit Session Proposal** (w/ Success Page) | The core value: collecting data. Includes "Success Page" as critical feedback (replacing email for MVP). |
 | **4. Selection Process** | • **View Submission List** (Basic Read-only) | Essential visibility. "Black box" data collection is not a functional solution. |
 

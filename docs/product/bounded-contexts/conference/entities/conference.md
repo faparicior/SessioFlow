@@ -49,10 +49,10 @@ ConferenceAggregate
 ### Value Objects Used
 | Value Object | Purpose | Referenced Doc |
 |--------------|---------|----------------|
-| `ConferenceId` | Unique identifier with validation | [[value-objects/event-id]] |
-| `ConferenceName` | Conference title with length constraints | [[value-objects/event-name]] |
-| `ConferenceSlug` | URL-safe identifier generator | [[value-objects/event-slug]] |
-| `ConferenceStatus` | State enum (DRAFT, CFP_OPEN, etc.) | [[value-objects/event-status]] |
+| `ConferenceId` | Unique identifier with validation | [[value-objects/conference-id]] |
+| `ConferenceName` | Conference title with length constraints | [[value-objects/conference-name]] |
+| `ConferenceSlug` | URL-safe identifier generator | [[value-objects/conference-slug]] |
+| `ConferenceStatus` | State enum (DRAFT, CFP_OPEN, etc.) | [[value-objects/conference-status]] |
 | `CfpConfig` | Submission window configuration | [[value-objects/cfp-config]] |
 
 ---
@@ -91,7 +91,7 @@ stateDiagram-v2
 | `CFP_CLOSED` | `Conference.startReview()` | `REVIEWING` | Submissions exist to review | Enable scoring dashboard; publish `ReviewStarted` domain event. |
 | `REVIEWING` | `Conference.completeSelection()` | `SCHEDULED` | All sessions scored; acceptances defined | Generate session list; publish `SelectionCompleted` domain event. |
 | `SCHEDULED` | `Conference.publishSchedule()` | `PUBLISHED` | All sessions assigned to rooms/times | Generate public agenda; publish `SchedulePublished` domain event; send acceptance emails. |
-| `PUBLISHED` | `Conference.complete()` | `COMPLETED` | Conference date passed or manual close | Archive event; publish `ConferenceCompleted` domain event; enable feedback collection. |
+| `PUBLISHED` | `Conference.complete()` | `COMPLETED` | Conference date passed or manual close | Archive conference; publish `ConferenceCompleted` domain event; enable feedback collection. |
 
 ---
 
@@ -101,14 +101,14 @@ stateDiagram-v2
 
 | Method | Purpose | Pre-conditions | Post-conditions |
 |--------|---------|----------------|-----------------|
-| `Conference.create()` | Initialize new event in DRAFT state | Valid name, CfP dates in future | Conference created with `CfpConfig` child |
-| `publishCfp()` | Open event for submissions | Status must be `DRAFT` | Status → `CFP_OPEN`; `CfpOpened` event published |
+| `Conference.create()` | Initialize new conference in DRAFT state | Valid name, CfP dates in future | Conference created with `CfpConfig` child |
+| `publishCfp()` | Open conference for submissions | Status must be `DRAFT` | Status → `CFP_OPEN`; `CfpOpened` event published |
 | `closeCfp(reason)` | Close submission window | Status must be `CFP_OPEN` | Status → `CFP_CLOSED`; `CfpClosed` event published |
 | `startReview()` | Begin review process | Status must be `CFP_CLOSED` | Status → `REVIEWING`; `ReviewStarted` event published |
 | `completeSelection()` | Finalize session selection | Status must be `REVIEWING`; all sessions scored | Status → `SCHEDULED`; `SelectionCompleted` event published |
 | `publishSchedule()` | Make schedule public | Status must be `SCHEDULED`; all sessions assigned | Status → `PUBLISHED`; `SchedulePublished` event published |
-| `complete()` | Mark event as finished | Status must be `PUBLISHED` or `SCHEDULED` | Status → `COMPLETED`; `ConferenceCompleted` event published |
-| `cancel(reason)` | Cancel the event | Status must be `DRAFT` or `CFP_OPEN` | Status → `DELETED`; `ConferenceCancelled` event published |
+| `complete()` | Mark conference as finished | Status must be `PUBLISHED` or `SCHEDULED` | Status → `COMPLETED`; `ConferenceCompleted` event published |
+| `cancel(reason)` | Cancel the conference | Status must be `DRAFT` or `CFP_OPEN` | Status → `DELETED`; `ConferenceCancelled` event published |
 
 ### Domain Invariants
 
@@ -118,7 +118,7 @@ stateDiagram-v2
 | **State Transitions** | Only allowed transitions per state machine (no skipping states) |
 | **Session Scoring** | All sessions must be scored before `completeSelection()` can succeed |
 | **Session Assignment** | All accepted sessions must have time slots before `publishSchedule()` can succeed |
-| **Slug Uniqueness** | Conference slug must be unique across all events |
+| **Slug Uniqueness** | Conference slug must be unique across all conferences |
 
 ---
 
@@ -159,7 +159,7 @@ export interface ConferenceRepository {
   findBySlug(slug: ConferenceSlug): Promise<Conference | null>;
   findByOrganizerId(organizerId: string): Promise<Conference[]>;
   findByStatus(status: ConferenceStatus): Promise<Conference[]>;
-  save(event: Conference): Promise<void>;
+  save(conference: Conference): Promise<void>;
   delete(id: ConferenceId): Promise<void>;
 }
 ```
@@ -178,16 +178,16 @@ export interface ConferenceRepository {
 
 **Business Rules:**
 * [BR-001](../business-rules/BR-001-cfp-dates-validation.md): CfP Dates Must Be Valid
-* [BR-002](../business-rules/BR-002-event-name-validation.md): Conference Name Must Meet Requirements
+* [BR-002](../business-rules/BR-002-conference-name-validation.md): Conference Name Must Meet Requirements
 * [BR-003](../business-rules/BR-003-slug-uniqueness.md): Conference Slug Must Be Unique
-* [BR-004](../business-rules/BR-004-free-tier-event-limit.md): Free Tier Conference Creation Limit
+* [BR-004](../business-rules/BR-004-free-tier-conference-limit.md): Free Tier Conference Creation Limit
 
 ---
 
 ## 🔗 Linked User Stories & Flows
 *Relative links to the User Stories/Flows that interact with or trigger mutations on this entity.*
 
-* [[../value-objects/event-id]]: Triggers `Conference.create()` → `Conference.publishCfp()`
+* [[../value-objects/conference-id]]: Triggers `Conference.create()` → `Conference.publishCfp()`
 * [[../../flows/journey-03-review-sessions.md]]: Triggers `Conference.closeCfp()` → `Conference.startReview()` → `Conference.completeSelection()`
 * [[../../flows/journey-04-acceptance-logistics.md]]: Triggers `Conference.publishSchedule()` → `Conference.complete()`
 
@@ -212,9 +212,9 @@ export interface ConferenceRepository {
 
 | Document | Purpose |
 |----------|---------|
-| [[../value-objects/event-id]] | Unique identifier value object |
-| [[../value-objects/event-name]] | Conference title value object |
-| [[../value-objects/event-slug]] | URL-safe slug value object |
-| [[../value-objects/event-status]] | State enum value object |
+| [[../value-objects/conference-id]] | Unique identifier value object |
+| [[../value-objects/conference-name]] | Conference title value object |
+| [[../value-objects/conference-slug]] | URL-safe slug value object |
+| [[../value-objects/conference-status]] | State enum value object |
 | [[../value-objects/cfp-config]] | CfP configuration value object |
 | [[../../adr/009-adopt-domain-driven-design-structure.md]] | DDD architecture decision |
