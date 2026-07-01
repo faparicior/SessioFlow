@@ -36,8 +36,8 @@
 | Entity / Use Case | Usage |
 |-------------------|-------|
 | [[../entities/conference.md]] | Property of Conference aggregate |
-| [[../../../../application/conference/use-cases/create-conference.ts]] | Auto-generated from conference name |
-| [[../../interfaces/web/cfp-page.tsx]] | Used in public CfP route |
+| [[../../../../../src/application/conference/use-cases/create-conference.ts]] | Auto-generated from conference name |
+| [[../../../../../src/interfaces/web/cfp-page.tsx]] | Used in public CfP route |
 
 ---
 

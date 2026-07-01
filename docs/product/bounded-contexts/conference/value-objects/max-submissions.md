@@ -37,7 +37,7 @@
 |-------------------|-------|
 | [[cfp-config.md]] | Part of CfpConfig composite |
 | [[../entities/conference.md]] | Used in Conference's CfpConfig |
-| [[../../application/use-cases/submit-proposal.ts]] | Validate submission limits |
+| [[../../../../../src/application/submission/use-cases/submit-proposal.ts]] | Validate submission limits |
 
 ---
 

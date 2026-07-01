@@ -36,8 +36,8 @@
 | Entity / Use Case | Usage |
 |-------------------|-------|
 | [[../entities/conference.md]] | Property of Conference aggregate |
-| [[../../../../application/conference/use-cases/create-conference.ts]] | Input validation for conference creation |
-| [[../../../../interfaces/web/create-conference-form.tsx]] | Form field validation |
+| [[../../../../../src/application/conference/use-cases/create-conference.ts]] | Input validation for conference creation |
+| [[../../../../../src/interfaces/web/create-conference-form.tsx]] | Form field validation |
 
 ---
 

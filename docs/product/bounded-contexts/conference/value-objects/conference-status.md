@@ -39,8 +39,8 @@
 | Entity / Use Case | Usage |
 |-------------------|-------|
 | [[../entities/conference.md]] | Core property of Conference aggregate |
-| [[../../../../application/conference/use-cases/create-conference.ts]] | Initial status validation |
-| [[../../../../application/submission/use-cases/submit-proposal.ts]] | Check if submissions allowed |
+| [[../../../../../src/application/conference/use-cases/create-conference.ts]] | Initial status validation |
+| [[../../../../../src/application/submission/use-cases/submit-proposal.ts]] | Check if submissions allowed |
 
 ---
 

@@ -48,7 +48,7 @@
 |-------------------|-------|
 | [[../entities/cfp-config.md]] | Embedded in Conference aggregate |
 | [[../entities/conference.md]] | Child entity of Conference |
-| [[../../application/use-cases/submit-proposal.ts]] | Check if submissions allowed |
+| [[../../../../../src/application/submission/use-cases/submit-proposal.ts]] | Check if submissions allowed |
 
 ---
 

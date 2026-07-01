@@ -35,7 +35,7 @@
 |-------------------|-------|
 | [[cfp-config.md]] | Core property of CfpConfig |
 | [[../entities/cfp-config.md]] | State tracking for CfP |
-| [[../../application/use-cases/submit-proposal.ts]] | Check if submissions allowed |
+| [[../../../../../src/application/submission/use-cases/submit-proposal.ts]] | Check if submissions allowed |
 
 ---
 
