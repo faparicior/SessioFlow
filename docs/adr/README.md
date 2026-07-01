@@ -31,6 +31,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | ✅ Approved | 2026-06-05 |
 | [015](015-adopt-cqrs-pattern.md) | Adopt CQRS Pattern for Application Layer | ✅ **Approved** | 2026-06-29 |
 | [016](016-dependency-injection-strategy-for-nextjs.md) | Dependency Injection Strategy for Next.js | ⚠️ Proposed | 2026-07-01 |
+| [017](017-use-drizzle-orm-with-ddd-transactions.md) | Use Drizzle ORM with Transaction Support at Application Layer | ⚠️ Proposed | 2026-07-01 |
 
 ---
 
@@ -75,6 +76,9 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 ### 🔄 Application Architecture
 - **015** - **CQRS Pattern for Application Layer**
 - **016** - **Dependency Injection Strategy**
+
+### 💾 Data Access & Persistence
+- **017** - **ORM Selection: Drizzle with DDD Transactions**
 
 ---
 
@@ -262,12 +266,12 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 23 (including amendments and analyses) |
-| **Proposed** | 11 |
+| **Total ADRs** | 24 (including amendments and analyses) |
+| **Proposed** | 12 |
 | **Accepted** | 7 |
 | **Amendments** | 4 |
 | **Optional** | 1 |
-| **Date Range** | 2026-06-05 to 2026-06-29 |
+| **Date Range** | 2026-06-05 to 2026-07-01 |
 | **Most Active Category** | Core Technology Stack (6 decisions) |
 
 ---
