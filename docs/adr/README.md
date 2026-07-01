@@ -30,6 +30,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [013](013-adopt-typescript-with-strict-mode.md) | Adopt TypeScript with Strict Mode | ✅ Approved | 2026-06-05 |
 | [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | ✅ Approved | 2026-06-05 |
 | [015](015-adopt-cqrs-pattern.md) | Adopt CQRS Pattern for Application Layer | ✅ **Approved** | 2026-06-29 |
+| [016](016-dependency-injection-strategy-for-nextjs.md) | Dependency Injection Strategy for Next.js | ⚠️ Proposed | 2026-07-01 |
 
 ---
 
@@ -73,6 +74,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 
 ### 🔄 Application Architecture
 - **015** - **CQRS Pattern for Application Layer**
+- **016** - **Dependency Injection Strategy**
 
 ---
 
@@ -260,8 +262,8 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 22 (including amendments and analyses) |
-| **Proposed** | 10 |
+| **Total ADRs** | 23 (including amendments and analyses) |
+| **Proposed** | 11 |
 | **Accepted** | 7 |
 | **Amendments** | 4 |
 | **Optional** | 1 |
@@ -270,5 +272,5 @@ Each ADR follows this structure:
 
 ---
 
-**Last Updated**: 2026-06-29
+**Last Updated**: 2026-07-01
 **Maintained By**: Technical Team

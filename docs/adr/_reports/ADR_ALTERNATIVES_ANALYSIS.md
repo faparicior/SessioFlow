@@ -21,6 +21,7 @@ This document analyzes the current Architecture Decision Records (ADRs) and rese
 | ADR-012 | GitHub Actions | ✅ Industry standard | Keep - best for GitHub-hosted projects |
 | ADR-013 | TypeScript Strict | ✅ Best practice | Keep - non-negotiable for quality |
 | ADR-014 | shadcn/ui | ✅ Leading choice | Keep - dominant in 2026 |
+| ADR-016 | Factory DI | ✅ Simple & Explicit | Keep - aligns with DDD and simplicity |
 
 ---
 
@@ -441,6 +442,64 @@ features/
 
 ---
 
+### ADR-016: Factory Functions for Dependency Injection
+
+**Current Decision:** Factory Functions with Explicit Injection
+
+**2026 Alternatives:**
+1. **tsyringe** - Decorator-based DI container
+2. **InversifyJS** - Full-featured DI framework
+3. **Module-Level Singletons** - Simple global instances
+4. **Context-based DI** - React/Next.js Context API
+
+**2026 Comparison:**
+
+| Approach | Dependencies | DX | Testability | Next.js Compatible | Complexity |
+|----------|--------------|-----|-------------|-------------------|------------|
+| **Factory Functions** | None ⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ Excellent | Low ⭐ |
+| tsyringe | External | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⚠️ Mixed | Medium |
+| InversifyJS | External | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⚠️ Mixed | High |
+| Module Singletons | None | ⭐⭐⭐ | ⭐⭐ | ✅ Excellent | Low |
+| Context-based | None | ⭐⭐⭐⭐ | ⭐⭐⭐ | ✅ Excellent | Medium |
+
+**Analysis:**
+- ✅ **Factory functions align perfectly with DDD** (ADR-009) and repository pattern
+- ✅ **Explicit dependencies** in function signatures make code self-documenting
+- ✅ **Zero dependencies** - no external packages needed
+- ✅ **Easy to test** - simply pass mock implementations
+- ✅ **Works with Next.js** Server and Client Components
+- ⚠️ **Concerns:** Manual wiring at composition root, more boilerplate
+- 🔄 **tsyringe offers automation** but adds complexity and hidden dependencies
+
+**Recommendation:** **Keep Factory Functions** - Your decision is optimal because:
+- Matches existing DDD structure (ADR-009)
+- Explicit dependencies improve code readability
+- Zero runtime overhead
+- Easy to mock for testing
+- No external dependencies to maintain
+- Follows Karpathy Principle #2 (Simplicity First)
+
+**Implementation pattern:**
+```typescript
+// Composition Root
+const supabase = createSupabaseClient();
+const conferenceRepo = new SupabaseConferenceRepository(supabase);
+const createConference = new CreateConferenceService(conferenceRepo);
+
+// API Route
+export async function POST(request: Request) {
+  const result = await createConference.execute(data);
+  return Response.json(result);
+}
+```
+
+**When to reconsider:**
+- If dependency graph becomes very complex (10+ services)
+- If team prefers decorator-based syntax (tsyringe)
+- If building primarily UI components (Context-based DI)
+
+---
+
 ## Emerging Technologies to Monitor
 
 ### 1. **Server Actions (Next.js 15+)**
@@ -468,6 +527,13 @@ features/
 - Much smaller bundle than Zod
 - Monitor for maturity before considering migration
 
+### 6. **Advanced DI Patterns**
+- tsyringe and InversifyJS gaining traction
+- Consider if dependency graph becomes very complex
+- Monitor for Next.js Server Component compatibility
+
+---
+
 ---
 
 ## Recommendations Summary
@@ -481,6 +547,7 @@ features/
 6. **GitHub Actions** - Best CI/CD for GitHub projects
 7. **TypeScript Strict** - Non-negotiable best practice
 8. **shadcn/ui** - Leading UI approach in 2026
+9. **Factory DI** - Simple, explicit dependency injection
 
 ### ⚠️ Consider Enhancements
 1. **REST API** - Add tRPC for internal communication
