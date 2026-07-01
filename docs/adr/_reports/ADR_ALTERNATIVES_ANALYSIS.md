@@ -535,8 +535,6 @@ export async function POST(request: Request) {
 
 ---
 
----
-
 ### ADR-017: Drizzle ORM with Transaction Support at Application Layer
 
 **Current Decision:** Drizzle ORM
