@@ -22,6 +22,7 @@ This document analyzes the current Architecture Decision Records (ADRs) and rese
 | ADR-013 | TypeScript Strict | ✅ Best practice | Keep - non-negotiable for quality |
 | ADR-014 | shadcn/ui | ✅ Leading choice | Keep - dominant in 2026 |
 | ADR-016 | Factory DI | ✅ Simple & Explicit | Keep - aligns with DDD and simplicity |
+| ADR-017 | Drizzle ORM | ✅ Optimal for DDD + Serverless | Keep - best choice for PostgreSQL + DDD |
 
 ---
 
@@ -536,6 +537,176 @@ export async function POST(request: Request) {
 
 ---
 
+### ADR-017: Drizzle ORM with Transaction Support at Application Layer
+
+**Current Decision:** Drizzle ORM
+
+**Status:** ✅ Optimal for SessioFlow's requirements
+
+**Confidence Level:** High
+
+#### Context & Rationale
+
+SessioFlow requires a data persistence layer that:
+1. Supports PostgreSQL (via Supabase)
+2. Maintains DDD layer boundaries (domain layer must be framework-agnostic)
+3. Enables transaction support at the application/use-case level
+4. Provides type safety and migration capabilities
+5. Allows for easy provider swapping (Supabase → Neon, PlanetScale, AWS RDS)
+
+#### Current Alternatives (2026)
+
+| Alternative | Bundle Size | Cold Start | Type Safety | DDD Compatibility | Transaction Support | Edge Runtime | Best For |
+|-------------|-------------|------------|-------------|-------------------|---------------------|--------------|----------|
+| **Drizzle ORM** | ~50KB | ~5ms | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ Excellent | ✅ Native | Serverless + DDD |
+| **Prisma 6** | ~500KB+ | ~200ms | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ✅ Good | ⚠️ Via Accelerate | Schema-first teams |
+| **Kysely** | ~30KB | ~5ms | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ✅ Manual | ✅ Native | SQL purists |
+| **TypeORM** | ~80KB | ~10ms | ⭐⭐⭐ | ⭐⭐⭐⭐ | ✅ Good | ❌ Poor | Legacy TypeScript |
+| **MikroORM** | ~120KB | ~15ms | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ Excellent | ❌ Poor | DDD-heavy projects |
+| **pg (raw)** | ~10KB | ~3ms | ⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ Manual | ✅ Excellent | Maximum control |
+
+**Analysis Method:**
+- Compared 8 sources from 2025-2026 including official documentation, benchmarks, and community feedback
+- Evaluated against SessioFlow's specific requirements (DDD, transactions, Supabase)
+- Considered bundle size, cold start, type safety, and migration ease
+
+#### Strengths of Current Choice (Drizzle ORM)
+
+- ✅ **Excellent TypeScript support** with full type inference from schema
+- ✅ **Native transaction support**: `db.transaction(async (tx) => { ... })` enables complex use cases
+- ✅ **Lightweight** (~50KB vs Prisma's 500KB+) - critical for serverless/edge deployments
+- ✅ **SQL-close design** makes queries readable and debuggable
+- ✅ **Migration files are plain SQL** - human-readable, easy to review and version
+- ✅ **Easy provider swapping** - can switch from Supabase to any PostgreSQL provider
+- ✅ **Works perfectly with DDD repository pattern** - clean separation between domain and infrastructure
+- ✅ **No code generation required** - types inferred directly from schema
+- ✅ **Edge runtime support** - works in Vercel Edge, Cloudflare Workers, etc.
+
+**Evidence from Research:**
+- npm downloads: ~1.9M/week (March 2026), growing faster than Prisma
+- Production-proven: 18+ months before v1.0 release in mid-2025
+- Community consensus: "Best default for new TypeScript apps that want SQL-shaped queries, small runtime surface, and edge-friendly deployment"
+
+#### Weaknesses & Risks
+
+- ⚠️ **Younger ecosystem** compared to Prisma (fewer third-party integrations)
+- ⚠️ **Learning curve** for Drizzle-specific query syntax if team is unfamiliar
+- ⚠️ **Requires separate tool** (drizzle-kit) for migrations
+- ⚠️ **Smaller community** means fewer Stack Overflow answers and tutorials
+- ⚠️ **Potential breaking changes** - relatively new compared to established ORMs
+
+**Risk Mitigation:**
+- Migration to other ORMs is straightforward (database remains same)
+- Documentation is comprehensive and well-maintained
+- Active development with stable API since v1.0
+
+#### Emerging Alternatives to Monitor
+
+| Alternative | Maturity | Timeline | Why It Matters |
+|-------------|----------|----------|----------------|
+| **Effect SQL** | Early | 2026-2027 | Functional programming approach, native to Effect ecosystem |
+| **Prisma Accelerate** | Mature | 2026 | May solve cold start issues, making Prisma more competitive |
+| **Kysely v2** | Beta | 2026 | Adding more ORM-like features while maintaining SQL control |
+
+#### Recommendation
+
+**Decision:** ✅ **Keep As-Is** - Drizzle ORM is the optimal choice for SessioFlow
+
+**Justification:**
+
+Drizzle ORM provides the best balance for SessioFlow's specific requirements:
+
+1. **Transaction Support**: Native multi-step transactions at application layer enable complex use cases like "create conference + initial settings" in a single transaction
+2. **DDD Compatibility**: Clean separation between domain interfaces and infrastructure implementations - no ORM code leaks into domain layer
+3. **Type Safety**: Full TypeScript inference without code generation - types are derived directly from schema
+4. **Performance**: Minimal overhead (~50KB bundle, ~5ms cold start) ideal for serverless deployments
+5. **Migration Ease**: Easy to swap database providers (Supabase → Neon, PlanetScale, etc.) with minimal code changes
+6. **Developer Experience**: SQL-like syntax is readable and predictable, excellent IDE support
+
+**Alignment with SessioFlow Requirements:**
+- ✅ Supports 6-week MVP timeline (fast setup, excellent DX)
+- ✅ Enables DDD architecture (ADR-009) with clean repository pattern
+- ✅ Works with Supabase PostgreSQL (ADR-002)
+- ✅ Serverless-ready for Vercel deployment (ADR-003)
+- ✅ Type safety aligns with TypeScript strict mode (ADR-013)
+
+**When to Reconsider:**
+- If team becomes heavily invested in Prisma ecosystem (unlikely given DDD requirements)
+- If database switches to non-PostgreSQL (MySQL, MongoDB)
+- If complex aggregations and reporting become primary use case (Kysely might be better)
+- If functional programming patterns become dominant (Effect SQL)
+
+#### Evidence & References
+
+**Primary Sources:**
+1. PkgPulse - "Drizzle ORM v1 vs Prisma 6 vs Kysely 2026" - https://www.pkgpulse.com/guides/drizzle-orm-v1-vs-prisma-6-vs-kysely-2026
+2. TryBuildPilot - "Drizzle vs Prisma vs Kysely 2026" - https://trybuildpilot.com/447-drizzle-vs-prisma-vs-kysely-2026
+3. Bytepane - "ORM Comparison 2026" - https://bytepane.com/faq/orm-comparison-2026-prisma-vs-drizzle-vs-kysely-vs-typeorm-real-benchmark-bundle-size-type-safety/
+
+**Secondary Sources:**
+1. TheEditorial - "Best TypeScript ORMs in 2026" - https://theeditorial.news/frameworks/best-typescript-orms-in-2026-prisma-drizzle-kysely-tested-for-speed-type-safety-and-which-one-sh-mpgiv28n
+2. Bytebase - "Top TypeScript ORM" - https://www.bytebase.com/blog/top-typescript-orm/
+3. Encore - "Typescript ORMs" - https://encore.dev/articles/typescript-orms
+
+**Data Points:**
+- npm downloads (March 2026): Prisma ~3.8M/week, Drizzle ~1.9M/week (fastest growing), Kysely ~550K/week
+- Bundle size: Drizzle ~50KB, Prisma ~500KB+, Kysely ~30KB
+- Cold start: Drizzle ~5ms, Prisma ~200ms, Kysely ~5ms
+
+---
+
+### ADR-017 Deep Dive: Transaction Support Pattern
+
+**Implementation Pattern:**
+
+```typescript
+// Domain Layer (Repository Interface)
+export interface ConferenceRepository {
+  findById(id: ConferenceId): Promise<Conference | null>;
+  save(conference: Conference): Promise<void>;
+}
+
+// Infrastructure Layer (Drizzle Implementation)
+export class DrizzleConferenceRepository implements ConferenceRepository {
+  constructor(private db: DrizzleDatabase) {}
+
+  async save(conference: Conference): Promise<void> {
+    await this.db
+      .insert(conferences)
+      .values(this.toPersistence(conference))
+      .onConflictDoUpdate({ ... });
+  }
+}
+
+// Application Layer (Transaction Control)
+export class CreateConference {
+  constructor(
+    private db: DrizzleDatabase,
+    private conferenceRepo: ConferenceRepository,
+    private settingsRepo: ConferenceSettingsRepository
+  ) {}
+
+  async execute(input: CreateConferenceInput): Promise<Result<Conference>> {
+    // Transaction at application layer
+    return this.db.transaction(async (tx) => {
+      const conference = Conference.create(input).unwrap();
+      await this.conferenceRepo.save(conference);
+      await this.settingsRepo.save(ConferenceSettings.create({ ... }));
+      return Result.ok(conference);
+    });
+  }
+}
+```
+
+**Why This Pattern Works:**
+- Transaction boundaries are explicit at use case level
+- Domain layer remains pure (no ORM dependencies)
+- Infrastructure handles persistence details
+- Easy to test (can mock repositories)
+- Supports complex operations requiring atomicity
+
+---
+
 ## Recommendations Summary
 
 ### ✅ Keep As-Is (No Changes Needed)
@@ -548,6 +719,7 @@ export async function POST(request: Request) {
 7. **TypeScript Strict** - Non-negotiable best practice
 8. **shadcn/ui** - Leading UI approach in 2026
 9. **Factory DI** - Simple, explicit dependency injection
+10. **Drizzle ORM** - Optimal for DDD + Serverless + Transactions
 
 ### ⚠️ Consider Enhancements
 1. **REST API** - Add tRPC for internal communication
