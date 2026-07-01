@@ -89,8 +89,10 @@ pi skill adr-manager --mode [generate|validate|summary|traceability|alternatives
 *   **Process**:
     1. Read `references/5-analyze-adr-alternatives.md`.
     2. Evaluate all active ADRs against the current technology landscape.
-    3. Generate the comprehensive analysis in `docs/adr/_reports/ADR_ALTERNATIVES_ANALYSIS.md` using `templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`.
-    4. Generate the stakeholder executive summary in `docs/adr/_reports/EXECUTIVE_SUMMARY.md` using `templates/TEMPLATE-EXECUTIVE_SUMMARY.md`.
+    3. **If `docs/adr/_reports/ADR_ALTERNATIVES_ANALYSIS.md` exists**, append new ADR analysis sections to the existing document (preserve existing content).
+    4. **If the file doesn't exist**, create it using `templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`.
+    5. Generate the stakeholder executive summary in `docs/adr/_reports/EXECUTIVE_SUMMARY.md` using `templates/TEMPLATE-EXECUTIVE_SUMMARY.md` (this file is always regenerated).
+    6. Update the summary table at the top of ADR_ALTERNATIVES_ANALYSIS.md to include the new ADR(s).
 
 ### 6. Mode: Index (`--mode index`)
 *   **Purpose**: Keep the ADR index up to date.
