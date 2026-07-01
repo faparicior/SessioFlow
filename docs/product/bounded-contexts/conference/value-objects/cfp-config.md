@@ -46,9 +46,9 @@
 
 | Entity / Use Case | Usage |
 |-------------------|-------|
-| [[../entities/cfp-config.md]] | Embedded in Conference aggregate |
-| [[../entities/conference.md]] | Child entity of Conference |
-| [[../../../../../src/application/submission/use-cases/submit-proposal.ts]] | Check if submissions allowed |
+| [cfp-config.md](../entities/cfp-config.md) | Embedded in Conference aggregate |
+| [conference.md](../entities/conference.md) | Child entity of Conference |
+| [submit-proposal.ts](../../../../../src/application/submission/use-cases/submit-proposal.ts) | Check if submissions allowed |
 
 ---
 
@@ -89,7 +89,7 @@
 
 | Value Object | Purpose |
 |--------------|---------|
-| [[cfp-start-date]] | CfP window start date |
-| [[cfp-end-date]] | CfP window end date |
-| [[max-submissions]] | Maximum submission limit |
-| [[cfp-status]] | Active/Inactive status |
+| [cfp-start-date.md](cfp-start-date.md) | CfP window start date |
+| [cfp-end-date.md](cfp-end-date.md) | CfP window end date |
+| [max-submissions.md](max-submissions.md) | Maximum submission limit |
+| [cfp-status.md](cfp-status.md) | Active/Inactive status |

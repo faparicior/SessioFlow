@@ -16,8 +16,8 @@ After generating the flow document, review the project's Architecture Decision R
 * **Source:** Inception Step 6 - User Journey Mapping (Journey [X])
 * **Related Feature:** [Feature Name] from Wave [X] ([MVP/Phase])
 * **Impacted Entities:** 
-  * [[entity-name-1]] (e.g., `Order` changes from `Draft` -> `Pending`)
-  * [[entity-name-2]] (e.g., `Inventory` item quantity decrements)
+  * [entity-name-1.md](entity-name-1.md) (e.g., `Order` changes from `Draft` -> `Pending`)
+  * [entity-name-2.md](entity-name-2.md) (e.g., `Inventory` item quantity decrements)
 * **Bounded Context:** [Bounded Context Name]
 
 ---
@@ -256,6 +256,6 @@ This flow document follows consistency guidelines:
 
 | Document | Relationship |
 |----------|--------------|
-| [[../entities/entity-name]] | Entity lifecycle and state machine |
-| [[../value-objects/value-object-name]] | Value object definition |
-| [[../../adr/XXX-xxx-xxx.md]] | Relevant architecture decision |
+| [entity-name.md](../entities/entity-name.md) | Entity lifecycle and state machine |
+| [value-object-name.md](../value-objects/value-object-name.md) | Value object definition |
+| [XXX-xxx-xxx.md](../../adr/XXX-xxx-xxx.md) | Relevant architecture decision |

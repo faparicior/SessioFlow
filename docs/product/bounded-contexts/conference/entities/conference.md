@@ -49,11 +49,11 @@ ConferenceAggregate
 ### Value Objects Used
 | Value Object | Purpose | Referenced Doc |
 |--------------|---------|----------------|
-| `ConferenceId` | Unique identifier with validation | [[value-objects/conference-id]] |
-| `ConferenceName` | Conference title with length constraints | [[value-objects/conference-name]] |
-| `ConferenceSlug` | URL-safe identifier generator | [[value-objects/conference-slug]] |
-| `ConferenceStatus` | State enum (DRAFT, CFP_OPEN, etc.) | [[value-objects/conference-status]] |
-| `CfpConfig` | Submission window configuration | [[value-objects/cfp-config]] |
+| `ConferenceId` | Unique identifier with validation | [conference-id.md](value-objects/conference-id.md) |
+| `ConferenceName` | Conference title with length constraints | [conference-name.md](value-objects/conference-name.md) |
+| `ConferenceSlug` | URL-safe identifier generator | [conference-slug.md](value-objects/conference-slug.md) |
+| `ConferenceStatus` | State enum (DRAFT, CFP_OPEN, etc.) | [conference-status.md](value-objects/conference-status.md) |
+| `CfpConfig` | Submission window configuration | [cfp-config.md](value-objects/cfp-config.md) |
 
 ---
 
@@ -187,9 +187,9 @@ export interface ConferenceRepository {
 ## 🔗 Linked User Stories & Flows
 *Relative links to the User Stories/Flows that interact with or trigger mutations on this entity.*
 
-* [[../value-objects/conference-id]]: Triggers `Conference.create()` → `Conference.publishCfp()`
-* [[../../flows/journey-03-review-sessions.md]]: Triggers `Conference.closeCfp()` → `Conference.startReview()` → `Conference.completeSelection()`
-* [[../../flows/journey-04-acceptance-logistics.md]]: Triggers `Conference.publishSchedule()` → `Conference.complete()`
+* [conference-id.md](../value-objects/conference-id.md): Triggers `Conference.create()` → `Conference.publishCfp()`
+* [journey-03-review-sessions.md](../../flows/journey-03-review-sessions.md): Triggers `Conference.closeCfp()` → `Conference.startReview()` → `Conference.completeSelection()`
+* [journey-04-acceptance-logistics.md](../../flows/journey-04-acceptance-logistics.md): Triggers `Conference.publishSchedule()` → `Conference.complete()`
 
 ---
 
@@ -212,9 +212,9 @@ export interface ConferenceRepository {
 
 | Document | Purpose |
 |----------|---------|
-| [[../value-objects/conference-id]] | Unique identifier value object |
-| [[../value-objects/conference-name]] | Conference title value object |
-| [[../value-objects/conference-slug]] | URL-safe slug value object |
-| [[../value-objects/conference-status]] | State enum value object |
-| [[../value-objects/cfp-config]] | CfP configuration value object |
-| [[../../adr/009-adopt-domain-driven-design-structure.md]] | DDD architecture decision |
+| [conference-id.md](../value-objects/conference-id.md) | Unique identifier value object |
+| [conference-name.md](../value-objects/conference-name.md) | Conference title value object |
+| [conference-slug.md](../value-objects/conference-slug.md) | URL-safe slug value object |
+| [conference-status.md](../value-objects/conference-status.md) | State enum value object |
+| [cfp-config.md](../value-objects/cfp-config.md) | CfP configuration value object |
+| [009-adopt-domain-driven-design-structure.md](../../adr/009-adopt-domain-driven-design-structure.md) | DDD architecture decision |

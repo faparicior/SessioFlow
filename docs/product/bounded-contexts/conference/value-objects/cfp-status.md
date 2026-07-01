@@ -33,9 +33,9 @@
 
 | Entity / Use Case | Usage |
 |-------------------|-------|
-| [[cfp-config.md]] | Core property of CfpConfig |
-| [[../entities/cfp-config.md]] | State tracking for CfP |
-| [[../../../../../src/application/submission/use-cases/submit-proposal.ts]] | Check if submissions allowed |
+| [cfp-config.md](cfp-config.md) | Core property of CfpConfig |
+| [cfp-config.md](../entities/cfp-config.md) | State tracking for CfP |
+| [submit-proposal.ts](../../../../../src/application/submission/use-cases/submit-proposal.ts) | Check if submissions allowed |
 
 ---
 
