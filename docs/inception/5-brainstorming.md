@@ -17,7 +17,7 @@ Brainstorm and identify potential features for the product based on the personas
 
 **Feature 1: Collect Proposals (CfP)**
 - **Description:** **Collect** speaker proposals via a public form and allow organizers to **view** them in a dashboard.
-- **Why it matters:** It is the entry point for all content in the event. Without this, there are no sessions to manage.
+- **Why it matters:** It is the entry point for all content in the conference. Without this, there are no sessions to manage.
 - **Related to:** **Fernando's Need 1** (Single platform that integrates all data) and **Andrea's Primary Goal** (Have easy way to propose sessions).
 
 **Feature 2: Review & Score Sessions**
@@ -32,7 +32,7 @@ Brainstorm and identify potential features for the product based on the personas
 
 **Feature 4: Assign Schedule Slots**
 - **Description:** **Assign** accepted sessions to specific rooms and time slots via simple inputs.
-- **Why it matters:** Transforms the selected list of talks into an actionable event timeline.
+- **Why it matters:** Transforms the selected list of talks into an actionable conference timeline.
 - **Related to:** **Fernando's Need 1** (Single platform).
 
 **Feature 5: Co-Speaker Management**
@@ -51,7 +51,7 @@ Brainstorm and identify potential features for the product based on the personas
 **Feature 2: Speaker Travel & Info Dashboard**
 - **Description:** **Display** a dedicated page for accepted speakers with reimbursement guides, hotel deals, and travel info.
 - **Why it matters:** Centralizes logistics info, reducing email questions to organizers.
-- **Related to:** **Andrea's Need 1** (Single point for event info/travel) and **Andrea's Pain 3** (Hard to find info).
+- **Related to:** **Andrea's Need 1** (Single point for conference info/travel) and **Andrea's Pain 3** (Hard to find info).
 
 ### Differentiating Features
 *Features that set the product apart from competitors*
@@ -71,12 +71,12 @@ Brainstorm and identify potential features for the product based on the personas
 
 **Feature 1: Collect Attendee Feedback**
 - **Description:** **Gather** ratings from attendees after sessions occur.
-- **Why it matters:** Provides value to speakers and helps organizers improve future events.
+- **Why it matters:** Provides value to speakers and helps organizers improve future conferences.
 - **Related to:** **Fernando's Secondary Goal** (Offer best experience).
 
 **Feature 2: Detect Schedule Conflicts**
 - **Description:** **Warn** the user if a speaker is double-booked or a room is empty.
-- **Why it matters:** Improving data quality and preventing day-of-event issues.
+- **Why it matters:** Improving data quality and preventing day-of-conference issues.
 - **Related to:** **Fernando's Need 2** (Automated data validation).
 
 ## Initial Feature Assessment

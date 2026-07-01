@@ -1,7 +1,7 @@
 # Value Object: ConferenceName
 
 ## 📋 Definition
-* **Description:** The display name/title of an event. Includes validation for length and content constraints.
+* **Description:** The display name/title of a conference. Includes validation for length and content constraints.
 * **Type:** String (validated and normalized)
 * **Immutability:** ✅ Immutable
 * **Validation:** Length, non-empty, character restrictions
@@ -36,8 +36,8 @@
 | Entity / Use Case | Usage |
 |-------------------|-------|
 | [[../entities/conference.md]] | Property of Conference aggregate |
-| [[../../application/use-cases/create-event.ts]] | Input validation for event creation |
-| [[../../interfaces/web/create-event-form.tsx]] | Form field validation |
+| [[../../../../application/conference/use-cases/create-conference.ts]] | Input validation for conference creation |
+| [[../../../../interfaces/web/create-conference-form.tsx]] | Form field validation |
 
 ---
 

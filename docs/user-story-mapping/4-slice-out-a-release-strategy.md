@@ -7,7 +7,7 @@ Objective: Prioritize outcomes over output. Slice the map horizontally to define
 Before selecting stories, define the success criteria for this specific slice. Don't prioritize features; prioritize the result.
 
 - **Release Name:** "The Cupcake" (MVP Pilot)
-- **Target Audience:** Event Organizers (starting with Fernando) who need to launch a Call for Papers immediately.
+- **Target Audience:** Conference Organizers (starting with Fernando) who need to launch a Call for Papers immediately.
 - **Desired Outcome:** An organizer can self-host the tool, publish a CfP page, and start collecting proposals within minutes, eliminating the need for manual spreadsheets.
 - **Impact Metric:**
   - **Activation:** 5 Conferences created.
@@ -33,7 +33,7 @@ Move the remaining stories into future slices. This forms your release roadmap b
 
 ### Slice 2: "The Selection & Management Update" (Wave 2)
 
-- **Goal:** Enable organizers to process the proposals, make decisions, and shape the event program.
+- **Goal:** Enable organizers to process the proposals, make decisions, and shape the conference program.
 - **Key Stories:**
   - Invite Co-Speakers (Workaround removed)
   - Close CfP (Stop submissions)
@@ -42,7 +42,7 @@ Move the remaining stories into future slices. This forms your release roadmap b
 
 ### Slice 3: "The Full Conference Suite" (Wave 3)
 
-- **Goal:** Manage the full event schedule and final logistics.
+- **Goal:** Manage the full conference schedule and final logistics.
 - **Key Stories:**
   - Program Scheduling (Drag-and-drop slots)
   - Bulk Email Confirmations (Accept/Reject)
@@ -54,7 +54,7 @@ Move the remaining stories into future slices. This forms your release roadmap b
 Explicitly list the ideas that were "good" but didn't make the cut for the foreseeable future. This prevents scope creep.
 
 - **Discarded/Deferred:**
-  - **Payment Processing** - **Reason:** Permanent Anti-Goal. We focus on free/community events.
+  - **Payment Processing** - **Reason:** Permanent Anti-Goal. We focus on free/community conferences.
   - **Automated Speaker Emails** - **Reason:** Complexity (SMTP setup, reliability). MVP relies on manual personal emails.
   - **Complex Microservices** - **Reason:** Technical Constraint. Must run on minimal infrastructure/free tier.
   - **Attendee Feedback** - **Reason:** Out of scope for the "Organizing" phase.

@@ -65,7 +65,7 @@ The user is asking about the "Composite Journey"—the fact that these interacti
 ## 🗺️ Journey 4: Acceptance & Logistics (Andrea & Fernando)
 
 **Persona:** Andrea (Speaker) & Fernando (Organizer)
-**Goal:** Post-selection communication and event logistics.
+**Goal:** Post-selection communication and conference logistics.
 
 | Step | User Action | System Feature / Response | Pain Point Addressed |
 | :--- | :--- | :--- | :--- |

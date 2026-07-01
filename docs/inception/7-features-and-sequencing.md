@@ -51,7 +51,7 @@ We prioritize the **Start of the Lifecycle**. Without "Conference Setup" and "Cf
 **Rationale:**
 This wave addresses the "Middle" of the lifecycle. Once proposals are in, Fernando needs to review them. Co-speakers are added here to ensure the proposal data is complete before final selection.
 
-### 🌊 Wave 3: Execution & Logistics (The "Event Day" Phase)
+### 🌊 Wave 3: Execution & Logistics (The "Conference Day" Phase)
 *Features required to publish the agenda and manage logistics.*
 
 | Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
@@ -66,7 +66,7 @@ This wave addresses the "Middle" of the lifecycle. Once proposals are in, Fernan
 *Features that are not critical for the initial validation.*
 
 * [ ] **Collect Attendee Feedback**: Happens *after* the main problem (organizing) is solved.
-* [ ] **Detect Schedule Conflicts**: A "quality of life" feature. Small events can manage this manually.
+* [ ] **Detect Schedule Conflicts**: A "quality of life" feature. Small conferences can manage this manually.
 
 ---
 

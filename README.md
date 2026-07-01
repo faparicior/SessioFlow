@@ -1,6 +1,6 @@
 # SessioFlow
 
-A Call-for-Papers (CfP) platform built with Next.js, designed to help organizers manage events, proposals, and speaker scheduling.
+A Call-for-Papers (CfP) platform built with Next.js, designed to help organizers manage conferences, proposals, and speaker scheduling.
 
 ---
 
@@ -28,9 +28,9 @@ Step 4: More Flows (Reference Existing Entities)
    - **Step 7: Features & Sequencing** defines MVP scope
 
 **2. Flow Documentation** (`docs/product/bounded-contexts/{context}/flows/`)
-   - Start with **Journey 1** (e.g., Setup Event)
+   - Start with **Journey 1** (e.g., Setup Conference)
    - Use `create-flow-documentation` skill to generate flow specs
-   - Flow reveals which entities are needed (Event, CfpConfig, etc.)
+   - Flow reveals which entities are needed (Conference, CfpConfig, etc.)
    - Extract Business Rules (BR-XXX) and Invariants (INV-XXX)
 
 **3. Entity Lifecycle Documentation** (`docs/product/bounded-contexts/{context}/entities/`)
@@ -60,11 +60,11 @@ docs/
 │
 └── product/                      # DDD documentation
     ├── bounded-contexts/
-    │   └── event/
+    │   └── conference/
     │       ├── flows/             ← Create flows first (reveals entities)
-    │       │   └── journey-01-setup-event.md
+    │       │   └── journey-01-setup-conference.md
     │       ├── entities/          ← Then create entities
-    │       │   ├── event.md
+    │       │   ├── conference.md
     │       │   └── cfp-config.md
     │       ├── business-rules/    ← Extracted from flows/entities
     │       │   └── BR-001-*.md
@@ -81,7 +81,7 @@ SessioFlow provides two AI skills to help generate documentation:
 | Skill | Purpose | Triggers When You Say |
 |-------|---------|----------------------|
 | **create-flow-documentation** | Generate user journey flows | "Create flow for Journey 2", "Generate flow specification" |
-| **create-entity-lifecycle** | Generate entity specs | "Create entity lifecycle for Event", "Document the Submission entity" |
+| **create-entity-lifecycle** | Generate entity specs | "Create entity lifecycle for Conference", "Document the Submission entity" |
 
 Both skills are self-contained with all templates and guidelines bundled.
 
@@ -95,13 +95,13 @@ flowchart TB
     end
 
     subgraph FlowDocs["Flow Documentation"]
-        D["Create Flow 1<br/>(Journey 01: Setup Event)"] --> E["Extract BRs & INVs<br/>from flow steps"]
-        E --> F["journey-01-setup-event.md"]
+        D["Create Flow 1<br/>(Journey 01: Setup Conference)"] --> E["Extract BRs & INVs<br/>from flow steps"]
+        E --> F["journey-01-setup-conference.md"]
     end
 
     subgraph EntityDocs["Entity Lifecycle Documentation"]
-        G["Create Entity Lifecycle<br/>(Event, CfpConfig)"] --> H["Extract BRs & INVs<br/>from entity constraints"]
-        H --> I["event.md, cfp-config.md"]
+        G["Create Entity Lifecycle<br/>(Conference, CfpConfig)"] --> H["Extract BRs & INVs<br/>from entity constraints"]
+        H --> I["conference.md, cfp-config.md"]
     end
 
     subgraph BRINV["Business Rules & Invariants"]
@@ -147,21 +147,21 @@ Entity lifecycle documentation is created from **multiple input sources**:
 
 | Document | What It Provides | Example |
 |----------|-----------------|---------|
-| **Flow Documentation** (Primary) | Entity behaviors, state transitions, domain methods | Flow shows `Event.publishCfp()` → Entity needs `publishCfp()` method |
-| **Journey Mapping** (Step 6) | Entity requirements from user needs | "Create event" → Need Event entity |
-| **Features & Sequencing** (Step 7) | Feature scope and entity relationships | "CfP Management" → Need Event + CfpConfig entities |
-| **MVP Canvas** (Step 8) | Entity constraints and priorities | MVP scope limits Event to 5 states |
+| **Flow Documentation** (Primary) | Entity behaviors, state transitions, domain methods | Flow shows `Conference.publishCfp()` → Entity needs `publishCfp()` method |
+| **Journey Mapping** (Step 6) | Entity requirements from user needs | "Create conference" → Need Conference entity |
+| **Features & Sequencing** (Step 7) | Feature scope and entity relationships | "CfP Management" → Need Conference + CfpConfig entities |
+| **MVP Canvas** (Step 8) | Entity constraints and priorities | MVP scope limits Conference to 5 states |
 
 **Extraction Process:**
 
 ```
-Flow: Journey 01 - Setup Event
+Flow: Journey 01 - Setup Conference
     ↓
-Identifies: Event entity with states DRAFT → CFP_OPEN
+Identifies: Conference entity with states DRAFT → CFP_OPEN
     ↓
 Reveals: Methods create(), publishCfp(), closeCfp()
     ↓
-Creates: event.md with state machine and domain methods
+Creates: conference.md with state machine and domain methods
     ↓
 Extracts: INV-001 (state machine), BR-001 (date validation)
 ```
@@ -188,7 +188,7 @@ Extracts: INV-001 (state machine), BR-001 (date validation)
 | Source | What It Extracts | Example |
 |--------|------------------|---------|
 | **Flow Creation** | Rules governing flow steps, validations, edge cases | `BR-001: Cfp Dates Must Be Valid` (from flow validation step) |
-| **Entity Lifecycle** | Rules governing state transitions, domain methods, constraints | `INV-001: Event State Must Follow State Machine` (from entity state machine) |
+| **Entity Lifecycle** | Rules governing state transitions, domain methods, constraints | `INV-001: Conference State Must Follow State Machine` (from entity state machine) |
 
 **Process:**
 
@@ -202,17 +202,17 @@ Entity Lifecycle:
 
 **Output Structure:**
 ```
-docs/product/bounded-contexts/event/
+docs/product/bounded-contexts/conference/
 ├── flows/
-│   └── journey-01-setup-event.md  → Links to: BR-001, INV-002
+│   └── journey-01-setup-conference.md  → Links to: BR-001, INV-002
 ├── entities/
-│   ├── event.md                   → Links to: INV-001, BR-004
+│   ├── conference.md                   → Links to: INV-001, BR-004
 │   └── cfp-config.md              → Links to: INV-002, BR-001
 ├── business-rules/
 │   ├── BR-001-cfp-dates-validation.md
-│   └── BR-004-free-tier-event-limit.md
+│   └── BR-004-free-tier-conference-limit.md
 └── invariants/
-    ├── INV-001-event-state-machine.md
+    ├── INV-001-state-transition-validity.md
     └── INV-002-cfp-date-order.md
 ```
 
@@ -581,7 +581,7 @@ npm run start
 
 ### MVP Features (Wave 1)
 
-- ✅ Event creation and management
+- ✅ Conference creation and management
 - ✅ Call-for-Papers (CFP) configuration
 - ✅ Proposal submission by speakers
 - ✅ Speaker profiles with profile photos

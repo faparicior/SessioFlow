@@ -25,7 +25,7 @@
 * **Monitored Fields:**
   * `Conference.capacity` (Integer)
   * `Conference.tickets` (Collection of Ticket entities where status == CONFIRMED)
-* **Transactional Boundary:** Enforced synchronously during any command that alters ticket state or event capacity.
+* **Transactional Boundary:** Enforced synchronously during any command that alters ticket state or conference capacity.
 
 ## 3. Enforcement Logic & Edge Cases
 *Specify the exact condition under which the operation must fail using Gherkin scenarios to illustrate how the aggregate root guards this boundary.*
@@ -42,7 +42,7 @@ Scenario: Attempting to violate the invariant
 ```
 
 ### Critical Edge Cases Handled:
-* **Edge Case 1:** [Describe critical edge case, e.g., "Capacity Reduction: What happens if an Organizer tries to lower the event capacity *below* the current number of confirmed tickets?"]
+* **Edge Case 1:** [Describe critical edge case, e.g., "Capacity Reduction: What happens if an Organizer tries to lower the conference capacity *below* the current number of confirmed tickets?"]
 * **Edge Case 2:** [Describe concurrency challenge, e.g., "If two users attempt conflicting operations simultaneously, the aggregate locking mechanism must guarantee serial execution"]
 
 ## 4. Failure Response (Exception Handling)

@@ -69,7 +69,7 @@ sequenceDiagram
     rect rgb(255, 235, 238)
         note right of UI: Error Path - Validation Failed
         Organizer->>UI: Submit invalid data
-        UI->>API: POST /api/v1/events
+        UI->>API: POST /api/v1/conferences
         API->>API: Validate payload
         API-->>UI: 400 Bad Request + errors
         UI-->>Organizer: Show inline errors
@@ -91,7 +91,7 @@ sequenceDiagram
         API-->>UI: 403 Forbidden + upgrade prompt
     end
 
-    Note over Organizer, Email: Domain Conferences Published
+    Note over Organizer, Email: Domain Events Published
     Note right of Domain: ConferenceCreated → Analytics<br/>CfpOpened → Welcome Email
 ```
 
@@ -113,7 +113,7 @@ sequenceDiagram
 | **10** | — | **Domain Layer:** `Conference.create(id, validatedData)` creates Conference in `DRAFT` state | `Conference` → `DRAFT` |
 | **11** | — | **Domain Layer:** `Conference.publishCfp()` transitions Conference to `CFP_OPEN` | `Conference` → `CFP_OPEN` |
 | **12** | — | **Domain Layer:** `CfpConfig` child entity created with validated dates | `CfpConfig` → `ACTIVE` |
-| **13** | — | **Domain Layer:** Publishes `ConferenceCreated` and `CfpOpened` domain events | Domain Conferences Published |
+| **13** | — | **Domain Layer:** Publishes `ConferenceCreated` and `CfpOpened` domain events | Domain Events Published |
 | **14** | — | **Repository:** `ConferenceRepository.save()` persists Conference and CfpConfig | Database Persisted |
 | **15** | — | **Application Service:** Triggers welcome email (async) via Resend | External Service |
 | **16** | — | Returns 201 Created with Conference and CfP URL | Response Sent |
@@ -174,7 +174,7 @@ sequenceDiagram
 ### RESTful API Endpoint (ADR-006)
 
 ```
-POST /api/v1/events
+POST /api/v1/conferences
 Content-Type: application/json
 Authorization: Bearer {jwt}
 
@@ -207,7 +207,7 @@ Response: 201 Created
 ### Zod Validation Schema (ADR-007)
 
 ```typescript
-const eventCreateSchema = z.object({
+const conferenceCreateSchema = z.object({
   name: z.string().min(3).max(100),
   description: z.string().max(1000).optional(),
   logoUrl: z.string().url().optional().or(z.literal('')),
@@ -224,16 +224,16 @@ const eventCreateSchema = z.object({
 
 | Constraint | Description |
 |------------|-------------|
-| `events.slug` | UNIQUE across all events |
-| `events.organizerId` | FOREIGN KEY to `users.id` with RLS policy |
-| `cfp_configs.eventId` | FOREIGN KEY to `events.id` with CASCADE delete |
+| `conferences.slug` | UNIQUE across all conferences |
+| `conferences.organizerId` | FOREIGN KEY to `users.id` with RLS policy |
+| `cfp_configs.conferenceId` | FOREIGN KEY to `conferences.id` with CASCADE delete |
 
 ### Row-Level Security (ADR-002)
 
 ```sql
--- RLS Policy: Organizer can only create events for their own account
-CREATE POLICY "Organizers can create events"
-ON events FOR INSERT
+-- RLS Policy: Organizer can only create conferences for their own account
+CREATE POLICY "Organizers can create conferences"
+ON conferences FOR INSERT
 WITH CHECK (organizer_id = auth.uid());
 ```
 
@@ -241,8 +241,8 @@ WITH CHECK (organizer_id = auth.uid());
 
 | Field | Value |
 |-------|-------|
-| `slug` | URL-safe version of event name (e.g., "My Conference 2026" → "my-event-2026") |
-| `cfpUrl` | `{baseUrl}/cfp/{slug}` (e.g., `https://sessioflow.app/cfp/my-event-2026`) |
+| `slug` | URL-safe version of conference name (e.g., "My Conference 2026" → "my-conference-2026") |
+| `cfpUrl` | `{baseUrl}/cfp/{slug}` (e.g., `https://sessioflow.app/cfp/my-conference-2026`) |
 | `status` | `CFP_OPEN` upon creation (after `publishCfp()` call) |
 
 ### Enforced Business Rules
@@ -257,11 +257,11 @@ WITH CHECK (organizer_id = auth.uid());
 * [INV-002](../invariants/INV-002-cfp-date-order.md): Cfp End Date Must Be After Start Date
 * [INV-003](../invariants/INV-003-slug-uniqueness.md): Conference Slug Must Be Unique Across All Conferences
 
-### Domain Conferences Published
+### Domain Events Published
 
-| Conference | Triggered By | Side Effects |
+| Domain Event | Triggered By | Side Effects |
 |-------|--------------|--------------|
-| `ConferenceCreated` | `Conference.create()` | Log event creation, initialize analytics |
+| `ConferenceCreated` | `Conference.create()` | Log conference creation, initialize analytics |
 | `CfpOpened` | `Conference.publishCfp()` | Send welcome email to organizer, notify subscribers |
 
 ---
@@ -296,16 +296,16 @@ flowchart TB
     Error4 --> EndFail([Create Failed])
     
     CheckTier -->|OK| SaveDB[(Save to Database)]
-    SaveDB --> PublishConferences[Publish Domain Conferences]
+    SaveDB --> PublishEvents[Publish Domain Events]
     
-    PublishConferences --> SendEmail[Send Welcome Email]
+    PublishEvents --> SendEmail[Send Welcome Email]
     SendEmail --> Success[Redirect to Dashboard]
     
     Success --> EndSuccess([CfP Link Generated])
     
     style CreateConference fill:#e1f5fe
     style PublishCfp fill:#e8f5e9
-    style PublishConferences fill:#fff3e0
+    style PublishEvents fill:#fff3e0
     style Success fill:#c8e6c9
     style Error1 fill:#ffcdd2
     style Error2 fill:#ffcdd2
@@ -328,7 +328,7 @@ stateDiagram-v2
     CfpClosed --> CfpOpen: reopenCfp()
     CfpOpen --> Published: publishSchedule()
     CfpClosed --> Published: publishSchedule()
-    Published --> Completed: eventEnds
+    Published --> Completed: conferenceDatePassed
     
     note right of Draft
         Conference created with
@@ -367,10 +367,10 @@ This flow document follows the consistency guidelines:
 
 | Document | Relationship |
 |----------|--------------|
-| [Conference Entity](../entities/event.md) | Conference entity lifecycle and state machine |
+| [Conference Entity](../entities/conference.md) | Conference entity lifecycle and state machine |
 | [CfpConfig Entity](../entities/cfp-config.md) | CfpConfig child entity lifecycle |
-| [ConferenceId Value Object](../value-objects/event-id.md) | Conference identifier value object |
-| [ConferenceStatus Value Object](../value-objects/event-status.md) | Conference status enum value object |
+| [ConferenceId Value Object](../value-objects/conference-id.md) | Conference identifier value object |
+| [ConferenceStatus Value Object](../value-objects/conference-status.md) | Conference status enum value object |
 | [ADR-002: Use Supabase for Backend](../../../../adr/002-00-use-supabase-for-backend-and-database.md) | Supabase and RLS decision |
 | [ADR-006: Use RESTful API Design](../../../../adr/006-use-restful-api-design.md) | RESTful API design decision |
 | [ADR-007: Use Zod for Validation](../../../../adr/007-use-zod-for-validation.md) | Zod validation strategy |

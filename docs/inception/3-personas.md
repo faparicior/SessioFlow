@@ -26,7 +26,7 @@ Define the primary persona(s) who will use the product. Understanding who we're 
 ### Pain Points & Frustrations
 *What problems do they currently face?*
 - ❌ **Pain 1:** Too repetitive work to organize the call for papers
-- ❌ **Pain 2:** Lot of manual work to manage the event with different sources of data
+- ❌ **Pain 2:** Lot of manual work to manage the conference with different sources of data
 - ❌ **Pain 3:** New volunteers has to learn some tools to be able to do their job
 
 ### Needs & Expectations
@@ -41,7 +41,7 @@ Define the primary persona(s) who will use the product. Understanding who we're 
 - [ ] Advanced (power user, wants customization and shortcuts)
 
 ### Quote
-> *I need a single point of truth to manage the sessions of the event. I just want to focus on the event.*
+> *I need a single point of truth to manage the sessions of the conference. I just want to focus on the conference.*
 
 ---
 
@@ -116,11 +116,11 @@ Define the primary persona(s) who will use the product. Understanding who we're 
 *What problems do they currently face?*
 - ❌ **Pain 1:** Difficult to find a smooth an easy way to create a session proposal.
 - ❌ **Pain 2:** Add a partner to the proposal is not easy.
-- ❌ **Pain 3:** Have information about the event, recommendations about travel discounts and accommodations is not easy.
+- ❌ **Pain 3:** Have information about the conference, recommendations about travel discounts and accommodations is not easy.
 
 ### Needs & Expectations
 *What does this persona need from our product?*
-- ✅ **Need 1:** A single point with all information about the event, recommendations about travel discounts and accommodations.
+- ✅ **Need 1:** A single point with all information about the conference, recommendations about travel discounts and accommodations.
 - ✅ **Need 2:** An easy way to add a coleague to the proposal.
 - ✅ **Need 3:** Simple, intuitive interface that doesn't require training
 
@@ -130,7 +130,7 @@ Define the primary persona(s) who will use the product. Understanding who we're 
 - [ ] Advanced (power user, wants customization and shortcuts)
 
 ### Quote
-> *I need a single point with all information about the event, recommendations about travel discounts and accommodations. I just want to focus on the event.*
+> *I need a single point with all information about the conference, recommendations about travel discounts and accommodations. I just want to focus on the conference.*
 
 
 **Next Step:** In Step 4, we'll create an Empathy Map to deepen our understanding of what this persona thinks, feels, says, and does.
