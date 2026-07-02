@@ -246,5 +246,5 @@ await subagent(chain);
 
 **Related Documentation:**
 - [Inception Workshop Guide](./0-inception-workshop.md)
-- [Step Templates](../../templates/inception/)
+- [Step Templates](../templates/)
 - [Validators](./)

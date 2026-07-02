@@ -133,7 +133,7 @@ A successful Lean Inception workshop creates a bridge directly to architecture a
 *   **Flow Specifications**: Once you complete Step 6 (User Journey Mapping) and Step 7 (Sequencing), you can instruct your AI coding agent to generate flow specifications:
     > "Read docs/inception/6-user-journey.md and docs/inception/7-features-and-sequencing.md. For each MVP feature, create a flow specification using docs/templates/product/flows.md."
     *(If using the Pi CLI tool, you can also run `pi skill inception-workshop --mode generate-flows --from-step 6`)*. This will automatically map your user journeys into structured flows containing **Sequence Diagrams**, **Flowcharts**, and **State Lifecycle Diagrams**.
-*   **Architectural Decision Records (ADRs)**: Use the output of Step 8 (MVP Canvas) and the product vision boundaries to write formal [ADRs](file:///home/fernando/src/sessioflow/docs/commands/adr/1-generate-adrs-from-inception.md) documenting decisions like DB stack, state management, and framework choices.
+*   **Architectural Decision Records (ADRs)**: Use the output of Step 8 (MVP Canvas) and the product vision boundaries to write formal [ADRs](../../adr-manager/references/1-generate-adrs-from-inception.md) documenting decisions like DB stack, state management, and framework choices.
 
 
 ## Usage
@@ -338,10 +338,10 @@ Step 8: 8-mvp-canvas.md... ✓
 
 ## Related Documentation
 
-- [Inception Workshop Guide](../../docs/commands/inception/0-inception-workshop.md)
-- [Flow Documentation Structure](../../docs/product/guidelines/flow-documentation-structure.md)
-- [Templates](../../docs/templates/inception/)
-- [Validators](../../docs/commands/inception/)
+- [Inception Workshop Guide](./references/0-inception-workshop.md)
+- [Flow Documentation Structure](../../../docs/product/guidelines/flow-documentation-structure.md)
+- [Templates](../../../docs/templates/inception/)
+- [Validators](./references/)
 
 ---
 

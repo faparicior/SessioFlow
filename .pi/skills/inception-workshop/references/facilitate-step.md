@@ -246,5 +246,5 @@ The agent should check:
 
 **Related:**
 - [All Inception Commands](./)
-- [Templates](../../templates/inception/)
+- [Templates](../templates/)
 - [Validators](./)

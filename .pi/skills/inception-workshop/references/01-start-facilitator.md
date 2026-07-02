@@ -143,6 +143,6 @@ EOF
 ---
 
 **Related:**
-- [Template Files](../../templates/inception/)
+- [Template Files](../templates/)
 - [Validator Files](./)
 - [Inception Overview](./0-inception-workshop.md)
