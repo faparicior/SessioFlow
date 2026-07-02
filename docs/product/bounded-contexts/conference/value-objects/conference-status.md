@@ -40,7 +40,7 @@
 |-------------------|-------|
 | [conference.md](../entities/conference.md) | Core property of Conference aggregate |
 | [create-conference.ts](../../../../../src/application/conference/use-cases/create-conference.ts) | Initial status validation |
-| [submit-proposal.ts](../../../../../src/application/submission/use-cases/submit-proposal.ts) | Check if submissions allowed |
+| `submit-proposal.ts` (planned) | Check if submissions allowed |
 
 ---
 

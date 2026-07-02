@@ -154,10 +154,10 @@ export interface ConferenceRepository {
 ## 🔗 Linked User Stories & Flows
 *Relative links to the User Stories/Flows that interact with or trigger mutations on this entity.*
 
-* [journey-01-setup-conference.md](../../flows/journey-01-setup-conference.md): Creates `CfpConfig` with `ACTIVE` state
-* [journey-02-submit-proposal.md](../../flows/journey-02-submit-proposal.md): Submissions only accepted when `ACTIVE`
-* [journey-03-review-sessions.md](../../flows/journey-03-review-sessions.md): Review only possible when `CLOSED`
-* [journey-04-acceptance-logistics.md](../../flows/journey-04-acceptance-logistics.md): Archives when conference completes
+* [journey-01-setup-conference.md](../flows/journey-01-setup-conference.md): Creates `CfpConfig` with `ACTIVE` state
+* [journey-02-submit-proposal.md](../../submission/flows/journey-02-submit-proposal.md): Submissions only accepted when `ACTIVE`
+* [journey-03-review-sessions.md](../../review/flows/journey-03-review-sessions.md): Review only possible when `CLOSED`
+* [journey-04-acceptance-logistics.md](../../scheduling/flows/journey-04-acceptance-logistics.md): Archives when conference completes
 
 ---
 
@@ -180,4 +180,4 @@ export interface ConferenceRepository {
 | [cfp-status.md](../value-objects/cfp-status.md) | CfP status enum value object |
 | [max-submissions.md](../value-objects/max-submissions.md) | Maximum submission limit value object |
 | [conference.md](conference.md) | Parent Conference aggregate documentation |
-| [009-adopt-domain-driven-design-structure.md](../../adr/009-adopt-domain-driven-design-structure.md) | DDD architecture decision |
+| [009-adopt-domain-driven-design-structure.md](../../../../adr/009-adopt-domain-driven-design-structure.md) | DDD architecture decision |

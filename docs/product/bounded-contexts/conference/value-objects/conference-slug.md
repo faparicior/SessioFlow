@@ -37,7 +37,7 @@
 |-------------------|-------|
 | [conference.md](../entities/conference.md) | Property of Conference aggregate |
 | [create-conference.ts](../../../../../src/application/conference/use-cases/create-conference.ts) | Auto-generated from conference name |
-| [cfp-page.tsx](../../../../../src/interfaces/web/cfp-page.tsx) | Used in public CfP route |
+| `cfp-page.tsx` (planned) | Used in public CfP route |
 
 ---
 
