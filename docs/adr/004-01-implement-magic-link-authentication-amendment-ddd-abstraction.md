@@ -10,7 +10,7 @@
 
 ## Purpose of This Amendment
 
-This document amends **ADR-004** to incorporate the DDD abstraction pattern established in ADR-002b. The original ADR-004 assumed tight coupling to Supabase Auth, but with DDD abstraction, the authentication layer becomes vendor-agnostic and swappable.
+This document amends **ADR-004** to incorporate the DDD abstraction pattern established in ADR-002-03. The original ADR-004 assumed tight coupling to Supabase Auth, but with DDD abstraction, the authentication layer becomes vendor-agnostic and swappable.
 
 ---
 
@@ -25,7 +25,7 @@ The original ADR-004 assumed:
 
 ### New Reality with DDD Abstraction
 
-With ADR-002b's DDD pattern:
+With ADR-002-03's DDD pattern:
 - **All authentication** flows through `AuthProvider` interface
 - **Supabase Auth** becomes one implementation (adapter)
 - **Migration cost** reduced from 52-112 hours to 8-14 hours
@@ -40,7 +40,7 @@ With ADR-002b's DDD pattern:
 **Chosen Option:** "Hybrid: Magic Link + Social Login with DDD Abstraction"
 
 **Updated Justification:**
-With DDD abstraction (ADR-002b), the authentication strategy provides optimal flexibility:
+With DDD abstraction (ADR-002-03), the authentication strategy provides optimal flexibility:
 
 1. **Usability Priority**: Magic links eliminate password friction (supports #1 trade-off priority)
 2. **Vendor Independence**: Can swap Supabase Auth ↔ Auth0 ↔ NextAuth with 8-14 hours effort
@@ -314,7 +314,7 @@ export const authProvider: AuthProvider = new SupabaseAuthAdapter();
 
 ## Links
 
-* [ADR-002b: Authentication Strategy and Vendor Abstraction](./_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md)
+* [ADR-002-03: Authentication Strategy with DDD](./002-03-use-supabase-analysis-auth-strategy.md)
 * [ADR-009: Domain-Driven Design Structure](./009-adopt-domain-driven-design-structure.md)
 * [Supabase Auth Documentation](https://supabase.com/docs/guides/auth)
 * [Auth0 Next.js Integration](https://auth0.com/docs/quickstart/webapp/nextjs)

@@ -226,20 +226,23 @@ Key decisions that shape the SessioFlow architecture:
 
 | ADR | Status | Description |
 |-----|--------|-------------|
-| [ADR-002](./docs/adr/002-use-supabase-for-backend-and-database.md) | Proposed | Use Supabase for Backend and Database |
-| [ADR-002-Amendment](./docs/adr/002-supabase-backend-amendment-ddd-abstraction.md) | **Amendment** | DDD Abstraction Layer for Vendor Independence |
-| [ADR-002a](./docs/adr/_to-discuss/002a-supabase-vendor-lock-in-alternatives.md) | Under Discussion | Supabase Vendor Lock-in and Self-Hosted Alternatives |
-| [ADR-002b](./docs/adr/_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md) | **Under Discussion** | Authentication Strategy and Vendor Abstraction with DDD |
-| [ADR-004-Amendment](./docs/adr/004-magic-link-authentication-amendment.md) | **Amendment** | Magic Link Auth with DDD Abstraction |
-| [ADR-005-Amendment](./docs/adr/005-supabase-storage-amendment.md) | **Amendment** | Storage with DDD Abstraction |
-| [ADR-009](./docs/adr/009-adopt-domain-driven-design-structure.md) | Proposed | Adopt Domain-Driven Design (DDD) Structure |
-| [ADR-011-Amendment](./docs/adr/011-resend-email-amendment.md) | Optional | Email Abstraction (Deferred) |
+| [ADR-002-00](./docs/adr/002-00-use-supabase-for-backend-and-database.md) | Superseded | Use Supabase for Backend and Database |
+| [ADR-002-01](./docs/adr/002-01-use-supabase-amendment-ddd-abstraction.md) | ✅ **Approved** | **Amendment: DDD Abstraction Layer** |
+| [ADR-002-02](./docs/adr/002-02-use-supabase-analysis-vendor-lock-in.md) | ✅ **Accepted** | Vendor Lock-in Alternatives Analysis |
+| [ADR-002-03](./docs/adr/002-03-use-supabase-analysis-auth-strategy.md) | ✅ **Accepted** | Authentication Strategy with DDD |
+| [ADR-004-00](./docs/adr/004-00-implement-magic-link-authentication.md) | Superseded | Implement Magic Link Authentication |
+| [ADR-004-01](./docs/adr/004-01-implement-magic-link-authentication-amendment-ddd-abstraction.md) | ✅ **Approved** | **Amendment: Auth with DDD Abstraction** |
+| [ADR-005-00](./docs/adr/005-00-use-supabase-storage-for-files.md) | Superseded | Use Supabase Storage for Files |
+| [ADR-005-01](./docs/adr/005-01-use-supabase-storage-amendment-ddd-abstraction.md) | ✅ **Approved** | **Amendment: Storage with DDD Abstraction** |
+| [ADR-009](./docs/adr/009-adopt-domain-driven-design-structure.md) | ✅ **Approved** | Adopt Domain-Driven Design (DDD) Structure |
+| [ADR-011-00](./docs/adr/011-00-use-resend-for-email-communications.md) | Superseded | Use Resend for Email Communications |
+| [ADR-011-01](./docs/adr/011-01-use-resend-email-amendment-optional-abstraction.md) | ✅ **Approved (Optional)** | **Amendment: Optional Email Abstraction** |
 
 **Latest Decisions:**
-- **Authentication Strategy (ADR-002b)**: Implement DDD ports & adapters pattern for vendor-agnostic authentication
-- **Storage Strategy (ADR-005 Amendment)**: Supabase Storage with DDD abstraction (swappable to Cloudflare R2)
+- **Authentication Strategy (ADR-004-01)**: Implement DDD ports & adapters pattern for vendor-agnostic authentication
+- **Storage Strategy (ADR-005-01)**: Supabase Storage with DDD abstraction (swappable to Cloudflare R2)
 - **DDD Architecture (ADR-009)**: Adopt Domain-Driven Design structure for long-term maintainability
-- **Hybrid Approach (ADR-002 Amendment)**: Consider Supabase Database + Auth0 + DDD abstraction for MVP
+- **Hybrid Approach (ADR-002-01)**: Consider Supabase Database + Auth0 + DDD abstraction for MVP
 
 ---
 
@@ -674,10 +677,9 @@ MIT License - see [LICENSE](LICENSE) file for details
 ### Architecture Documentation
 - [ADR Documentation](./docs/adr/)
 - [DDD Implementation Guide](./docs/adr/009-adopt-domain-driven-design-structure.md)
-- [Authentication Strategy](./docs/adr/_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md)
-- [Auth Implementation (Amendment)](./docs/adr/004-magic-link-authentication-amendment.md)
-- [Storage Strategy (Amendment)](./docs/adr/005-supabase-storage-amendment.md)
-- [Supabase Integration](./docs/adr/002-use-supabase-for-backend-and-database.md)
+- [Authentication Strategy (ADR-004-01)](./docs/adr/004-01-implement-magic-link-authentication-amendment-ddd-abstraction.md)
+- [Storage Strategy (ADR-005-01)](./docs/adr/005-01-use-supabase-storage-amendment-ddd-abstraction.md)
+- [Supabase Integration (ADR-002-00)](./docs/adr/002-00-use-supabase-for-backend-and-database.md)
 
 ### External References
 - [Pretalx (Reference CfP Platform)](https://pretalx.com/)
