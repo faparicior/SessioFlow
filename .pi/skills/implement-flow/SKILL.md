@@ -24,15 +24,35 @@ This skill guides feature implementation through flow-driven analysis, planning,
 - Review relevant ADRs in `docs/adr/`
 - Follow conventions in AGENTS.md
 
-### Step 3: Implement Incrementally
+### Step 3: Implement Incrementally (Test-Driven Development)
 
-**Recommended Progression**:
-1. **Domain Layer** - Value objects, entities, domain services
-2. **Domain Interfaces** - Repository interfaces, domain events, exceptions
-3. **Infrastructure** - Repository implementations, external adapters
-4. **Application** - Use cases with validation
-5. **Interfaces** - API endpoints, frontend components
-6. **Testing** - Unit, integration, and E2E tests
+**Recommended Progression** (TDD - Red-Green-Refactor):
+
+1. **Domain Layer**
+   - Write tests for value objects → Implement → Verify
+   - Write tests for entities → Implement → Verify
+   - Write tests for domain services → Implement → Verify
+
+2. **Domain Interfaces**
+   - Write tests for repository interface (mocked) → Implement → Verify
+   - Write tests for domain events → Implement → Verify
+   - Write tests for domain exceptions → Implement → Verify
+
+3. **Infrastructure & Application**
+   - Write tests for use cases (with mocked repository) → Implement → Verify
+   - Write integration tests for repository → Implement → Verify
+
+4. **Interfaces**
+   - Write API tests (with mocked use cases) → Implement → Verify
+   - Write frontend component tests → Implement → Verify
+
+5. **E2E Testing**
+   - Write E2E test for complete flow → Implement missing pieces → Verify
+
+**TDD Workflow for Each Feature**:
+1. **Red**: Write a failing test that defines expected behavior
+2. **Green**: Implement minimum code to pass the test
+3. **Refactor**: Clean up while keeping tests passing
 
 *Note: Adjust based on feature requirements and existing patterns.*
 

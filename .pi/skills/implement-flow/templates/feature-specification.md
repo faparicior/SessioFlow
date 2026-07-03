@@ -71,20 +71,36 @@
 
 ---
 
-## 🧪 Testing Strategy
+## 🧪 Test-Driven Implementation
 
-### Unit Tests
-- [ ] Entity tests: [specific tests]
-- [ ] Value object tests: [specific tests]
-- [ ] Use case tests: [specific tests]
+### Step 1: Write Tests First
 
-### Integration Tests
-- [ ] Repository tests
-- [ ] Use case integration tests
+**Unit Tests:**
+- [ ] Test `[Entity]` creates with valid data
+- [ ] Test `[Entity]` rejects invalid data
+- [ ] Test `[ValueObject]` validation rules
+- [ ] Test edge cases and boundary conditions
 
-### E2E Tests
-- [ ] Flow step: [which step in the parent flow]
+**Integration Tests:**
+- [ ] Test `[UseCase]` with mocked dependencies
+- [ ] Test repository integration
+
+**E2E Tests:**
+- [ ] Test complete flow step: [which step in the parent flow]
 - [ ] Related to: [journey-XX-[name].md]
+
+### Step 2: Implement to Pass Tests
+
+- [ ] Implement domain objects
+- [ ] Implement use cases
+- [ ] Implement infrastructure
+- [ ] Make all tests pass
+
+### Step 3: Refactor
+
+- [ ] Clean up code
+- [ ] Maintain test coverage
+- [ ] Document behavior
 
 ---
 
@@ -130,13 +146,12 @@
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Domain | 📋 | |
-| Infrastructure | 📋 | |
-| Application | 📋 | |
-| API | 📋 | |
-| Frontend | 📋 | |
-| Testing | 📋 | |
+| Tests Written | 📋 | Write tests first |
+| Implementation | 📋 | Implement to pass tests |
+| Refactoring | 📋 | Clean up while tests pass |
+| Integration | 📋 | Integration tests |
+| E2E | 📋 | End-to-end validation |
 
 ---
 
-*This feature spec is part of the [Flow Name] development plan.*
+*This feature spec is part of the [Flow Name] development plan and follows Test-Driven Development.*

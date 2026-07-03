@@ -98,192 +98,276 @@ src/
 
 ### Phase 1: Core Domain
 
-**Goal:** Implement domain model with entities, value objects, and domain services.
+**Goal:** Implement domain model with entities, value objects, and domain services using TDD.
 
 #### Tasks
 
+**Step 1: Write Tests First**
+1. **Value Object Tests**
+   - [ ] Test `[ValueObject1]` - [specific behavior]
+   - [ ] Test `[ValueObject2]` - [specific behavior]
+   - [ ] Test `[ValueObject3]` - [specific behavior]
+   - [ ] Test edge cases (invalid inputs, boundary conditions)
+
+2. **Entity Tests**
+   - [ ] Test `create()` produces correct initial state
+   - [ ] Test state transitions (method1, method2, etc.)
+   - [ ] Test invalid state transitions throw errors
+   - [ ] Test invariants are enforced
+
+3. **Domain Service Tests**
+   - [ ] Test [business rule] validation
+   - [ ] Test [business rule] validation
+
+**Step 2: Implement to Pass Tests**
 1. **Value Objects**
-   - [ ] `[ValueObject1]` - [description]
-   - [ ] `[ValueObject2]` - [description]
-   - [ ] `[ValueObject3]` - [description]
-   - [ ] ... (up to 8 value objects)
+   - [ ] Implement `[ValueObject1]`
+   - [ ] Implement `[ValueObject2]`
+   - [ ] Implement `[ValueObject3]`
 
 2. **Entity: [EntityName]**
    - [ ] Implement aggregate root with state machine
-   - [ ] Domain methods: `method1()`, `method2()`, etc.
-   - [ ] Domain events: `EventCreated`, `EventUpdated`, etc.
-   - [ ] Invariants: [list invariants]
+   - [ ] Implement domain methods
+   - [ ] Implement domain events
 
 3. **Entity: [ChildEntityName]**
-   - [ ] Child entity with [states]
-   - [ ] Methods: `method1()`, `method2()`
-   - [ ] Invariants: [list invariants]
+   - [ ] Implement child entity
+   - [ ] Implement methods
 
 4. **Domain Services**
-   - [ ] `[DomainService]` - business rule validation
-   - [ ] [business rule] check
-   - [ ] [business rule] check
+   - [ ] Implement `[DomainService]`
+
+**Step 3: Verify**
+- [ ] Run tests: `npm test`
+- [ ] All tests pass
+- [ ] Coverage ≥ 95% for domain layer
 
 #### Deliverables
 - [ ] `domains/[context]/entities/[entity].ts`
 - [ ] `domains/[context]/entities/[child-entity].ts`
 - [ ] `domains/[context]/value-objects/*.ts` (8 files)
 - [ ] `domains/[context]/services/[domain-service].ts`
-- [ ] Unit tests for all domain objects (Vitest)
+- [ ] `tests/unit/[context]/value-objects/*.test.ts`
+- [ ] `tests/unit/[context]/entities/*.test.ts`
 
 ---
 
 ### Phase 2: Domain Interfaces
 
-**Goal:** Implement repository interfaces and domain event system.
+**Goal:** Implement repository interfaces and domain event system using TDD.
 
 #### Tasks
 
+**Step 1: Write Tests First**
+1. **Repository Interface Tests (Mocked)**
+   - [ ] Test `findById()` returns correct entity
+   - [ ] Test `findBySlug()` returns correct entity
+   - [ ] Test `save()` persists aggregate
+   - [ ] Test error handling (not found, etc.)
+
+2. **Domain Event Tests**
+   - [ ] Test event types are correctly structured
+   - [ ] Test event publisher interface
+
+3. **Exception Tests**
+   - [ ] Test `Invalid[Entity]Error` is thrown correctly
+   - [ ] Test other custom errors
+
+**Step 2: Implement to Pass Tests**
 1. **Repository Interface**
-   - [ ] `[Entity]Repository` interface in `domains/[context]/repositories/`
-   - [ ] Methods: `findById`, `findBySlug`, `findBy[Field]`, `findByStatus`, `save`, `delete`
+   - [ ] Implement `[Entity]Repository` interface
 
 2. **Domain Event System**
    - [ ] Create domain event types
-   - [ ] Event publisher interface
-   - [ ] Event listeners setup
+   - [ ] Implement event publisher interface
 
 3. **Domain Exception System**
-   - [ ] Custom error classes:
-     - [ ] `Invalid[Entity]Error`
-     - [ ] `Invalid[ChildEntity]Error`
-     - [ ] `[Entity]NotFoundError`
-     - [ ] [Other errors]
+   - [ ] Implement custom error classes
+
+**Step 3: Verify**
+- [ ] Run tests: `npm test`
+- [ ] All tests pass
+- [ ] Coverage ≥ 90%
 
 #### Deliverables
 - [ ] `domains/[context]/repositories/[entity]-repository.ts`
 - [ ] `domains/[context]/events/*.ts` (8 event types)
 - [ ] `domains/[context]/exceptions/*.ts` (6 error classes)
-- [ ] Unit tests for domain events and exceptions
+- [ ] `tests/unit/[context]/repository-interface.test.ts`
+- [ ] `tests/unit/[context]/events.test.ts`
 
 ---
 
 ### Phase 3: Infrastructure & Application
 
-**Goal:** Implement database layer and use cases.
+**Goal:** Implement database layer and use cases using TDD.
 
 #### Tasks
 
+**Step 1: Write Tests First**
+1. **Use Case Tests (Mocked Repository)**
+   - [ ] Test `[CreateResource]` use case happy path
+   - [ ] Test `[CreateResource]` use case error paths
+   - [ ] Test `[UpdateResource]` use case
+   - [ ] Test validation failures
+
+2. **Repository Integration Tests**
+   - [ ] Test `save()` persists correctly
+   - [ ] Test `findById()` retrieves correctly
+   - [ ] Test transaction support
+
+**Step 2: Implement to Pass Tests**
 1. **Database Schema**
-   - [ ] `[resources]` table with RLS
-   - [ ] `[child-table]` table with foreign keys
+   - [ ] Create `[resources]` table with RLS
+   - [ ] Create `[child-table]` table with foreign keys
 
 2. **Supabase Client Setup**
-   - [ ] `infrastructure/database/supabase-client.ts`
-   - [ ] RLS policies for [context] isolation
-   - [ ] Row-level security setup
+   - [ ] Implement `infrastructure/database/supabase-client.ts`
+   - [ ] Configure RLS policies
 
 3. **Repository Implementation**
-   - [ ] `[Entity]Repository` with all methods
-   - [ ] Transaction support for aggregate persistence
-   - [ ] Soft delete handling
+   - [ ] Implement `[Entity]Repository` with all methods
+   - [ ] Add transaction support
 
 4. **Use Cases**
-   - [ ] `[CreateResource]` use case
-   - [ ] `[UpdateResource]` use case
-   - [ ] `[DeleteResource]` use case
-   - [ ] [More use cases]
+   - [ ] Implement `[CreateResource]` use case
+   - [ ] Implement `[UpdateResource]` use case
+
+**Step 3: Verify**
+- [ ] Run tests: `npm test`
+- [ ] All tests pass
+- [ ] Integration tests pass
 
 #### Deliverables
 - [ ] Database migration files
 - [ ] RLS policies defined
 - [ ] `infrastructure/database/[entity]-repository.ts`
 - [ ] `application/[context]/use-cases/*.ts` (6-8 use cases)
-- [ ] Unit tests for repository and use cases
+- [ ] `tests/integration/[context]/repository.test.ts`
+- [ ] `tests/unit/[context]/use-cases/*.test.ts`
 
 ---
 
 ### Phase 4: RESTful API
 
-**Goal:** Implement API endpoints following RESTful conventions.
+**Goal:** Implement API endpoints using TDD.
 
 #### Tasks
 
+**Step 1: Write Tests First**
+1. **API Endpoint Tests (Mocked Use Cases)**
+   - [ ] Test `GET /api/v1/[resource]s` returns list
+   - [ ] Test `POST /api/v1/[resource]s` creates resource
+   - [ ] Test `GET /api/v1/[resource]s/:id` returns resource
+   - [ ] Test `PATCH /api/v1/[resource]s/:id` updates resource
+   - [ ] Test `DELETE /api/v1/[resource]s/:id` deletes resource
+   - [ ] Test authentication/authorization errors
+   - [ ] Test validation errors
+
+**Step 2: Implement to Pass Tests**
 1. **API Structure**
-   - [ ] `/api/v1/[resource]s` - GET, POST
-   - [ ] `/api/v1/[resource]s/:id` - GET, PATCH, DELETE
-   - [ ] Error response format
+   - [ ] Implement `/api/v1/[resource]s` - GET, POST
+   - [ ] Implement `/api/v1/[resource]s/:id` - GET, PATCH, DELETE
+   - [ ] Implement error response format
 
-2. **Resource Endpoints**
-   - [ ] `GET /api/v1/[resource]s` - List resources
-   - [ ] `POST /api/v1/[resource]s` - Create resource
-   - [ ] `GET /api/v1/[resource]s/:id` - Get resource details
-   - [ ] `PATCH /api/v1/[resource]s/:id` - Update resource
-   - [ ] `DELETE /api/v1/[resource]s/:id` - Delete resource
-
-3. **Authentication**
+2. **Authentication**
    - [ ] Verify user authorization
    - [ ] RLS integration
-   - [ ] Error responses
+
+**Step 3: Verify**
+- [ ] Run tests: `npm test`
+- [ ] All API tests pass
+- [ ] Response times <200ms (P95)
 
 #### Deliverables
 - [ ] API endpoints with proper status codes
 - [ ] Zod schemas for request/response
-- [ ] Unit tests for each endpoint
+- [ ] `tests/api/[context]/[resource].test.ts`
 - [ ] API documentation (OpenAPI format)
 
 ---
 
 ### Phase 5: Frontend
 
-**Goal:** Implement Next.js pages and components.
+**Goal:** Implement Next.js pages and components using TDD.
 
 #### Tasks
 
+**Step 1: Write Tests First**
+1. **Component Tests**
+   - [ ] Test `[Resource]CreationForm` renders correctly
+   - [ ] Test form validation with Zod
+   - [ ] Test form submission
+   - [ ] Test error handling
+
+2. **Page Tests**
+   - [ ] Test `/dashboard/[resource]s` renders list
+   - [ ] Test `/dashboard/[resource]s/new` renders form
+   - [ ] Test `/dashboard/[resource]s/[id]` renders details
+
+**Step 2: Implement to Pass Tests**
 1. **Resource List & Creation**
-   - [ ] `/dashboard/[resource]s` - List resources table
-   - [ ] `/dashboard/[resource]s/new` - Resource creation form
-   - [ ] Resource table with status badges
-   - [ ] Zod form validation with React Hook Form
+   - [ ] Implement `/dashboard/[resource]s` - List resources table
+   - [ ] Implement `/dashboard/[resource]s/new` - Resource creation form
+   - [ ] Implement resource table with status badges
+   - [ ] Implement Zod form validation with React Hook Form
 
 2. **Resource Dashboard**
-   - [ ] `/dashboard/[resource]s/[id]` - Resource overview
-   - [ ] Resource status display
-   - [ ] Quick actions
-   - [ ] Navigation to related pages
+   - [ ] Implement `/dashboard/[resource]s/[id]` - Resource overview
+   - [ ] Implement resource status display
+   - [ ] Implement quick actions
+
+**Step 3: Verify**
+- [ ] Run tests: `npm test`
+- [ ] All component tests pass
+- [ ] Component coverage ≥ 80%
 
 #### Deliverables
 - [ ] Next.js pages and layouts
 - [ ] Reusable components
 - [ ] Zod form validation
-- [ ] Component unit tests (React Testing Library)
+- [ ] `tests/components/[context]/[resource].test.tsx`
+- [ ] Component tests (React Testing Library)
 
 ---
 
-### Phase 6: Testing & Refinement
+### Phase 6: E2E Testing & Refinement
 
-**Goal:** Achieve comprehensive test coverage and validate flow completion.
+**Goal:** Validate complete flow and achieve comprehensive coverage.
 
 #### Tasks
 
-1. **Unit Tests**
-   - [ ] Domain objects: 95% coverage
-   - [ ] Use cases: 90% coverage
-   - [ ] Value objects: 100% coverage
+**Step 1: Write E2E Tests First**
+1. **Flow E2E Tests**
+   - [ ] Test complete user journey: [Flow Name]
+   - [ ] Test each journey step from flow documentation
+   - [ ] Test error scenarios
 
 2. **Integration Tests**
-   - [ ] Complete [entity] lifecycle: DRAFT → COMPLETED
-   - [ ] State transition validation
-   - [ ] Error path testing
+   - [ ] Test complete [entity] lifecycle: DRAFT → COMPLETED
+   - [ ] Test state transition validation
+   - [ ] Test error path coverage
 
-3. **E2E Tests**
-   - [ ] **Flow E2E:** [Flow Name] - Complete user journey validation
-   - [ ] Journey steps: [List key steps from flow documentation]
-   - [ ] Error scenarios
+**Step 2: Verify & Refine**
+1. **Run E2E Tests**
+   - [ ] All E2E tests pass
+   - [ ] Fix any failing tests
 
-4. **Refinement**
+2. **Refinement**
    - [ ] Performance optimization
    - [ ] Error handling polish
    - [ ] Documentation updates
 
+**Step 3: Final Validation**
+- [ ] Run tests: `npm test`
+- [ ] Run E2E: `npm run test:e2e`
+- [ ] Run lint: `npm run lint`
+- [ ] Run typecheck: `npm run typecheck`
+- [ ] All checks pass
+
 #### Deliverables
-- [ ] Test coverage reports
-- [ ] E2E test suite
+- [ ] Test coverage reports (≥80% overall)
+- [ ] E2E test suite (`tests/e2e/[flow-name].spec.ts`)
 - [ ] User testing feedback incorporated
 - [ ] Final documentation
 
