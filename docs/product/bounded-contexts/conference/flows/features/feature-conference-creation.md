@@ -1,371 +1,209 @@
-# Feature: Conference Creation & CFP Configuration
+# Conference Creation - Feature Specification
 
-**Feature ID:** CONF-001  
-**Related Flow:** Journey 01 - Setup Conference  
-**Bounded Context:** Conference  
-**Priority:** P0 (MVP Wave 1)  
-**Status:** 📋 Planned
-
----
-
-## 📋 Feature Overview
-
-This feature enables conference organizers to create a new conference and configure its Call for Papers (CfP) settings, including submission dates, rules, and basic conference information.
-
-**User Story:** As a conference organizer, I want to create a new conference and configure its CfP settings so that I can share a submission link with potential speakers and start collecting proposals.
+* **Parent Flow:** `journey-01-setup-conference.md`
+* **Context:** Conference Bounded Context
+* **Status:** 📋 Planned
+* **Priority:** High
 
 ---
 
-## 🎯 Functional Requirements
+## 🎯 Overview
 
-### FR-001: Conference Basic Information
+**Feature Description:** Allows organizers to create a new conference with basic details including name, description, logo, and automatically generates a unique slug.
 
-**Description:** Organizer can enter basic conference details during creation.
+**User Value:** Enables organizers to quickly set up a conference and get started with CfP management.
 
-**Fields:**
-| Field | Type | Required | Validation |
-|-------|------|----------|------------|
-| Name | String | ✅ Yes | 3-100 characters, alphanumeric + spaces |
-| Description | String | ❌ No | Max 1000 characters |
-| Logo URL | String | ❌ No | Valid URL format |
-| Organizer ID | String | ✅ Yes | Auto-filled from authentication |
-
-**Business Rules:**
-- Conference name must be sanitized (remove special characters)
-- Name must be unique across all conferences
-- Slug auto-generated from name (URL-safe)
-
-### FR-002: CFP Date Configuration
-
-**Description:** Organizer can set the submission window for the conference.
-
-**Fields:**
-| Field | Type | Required | Validation |
-|-------|------|----------|------------|
-| CFP Start Date | Date | ✅ Yes | Must be >= today |
-| CFP End Date | Date | ✅ Yes | Must be > start date |
-
-**Business Rules:**
-- End date must be after start date (INV-002)
-- Start date must be in the future
-- Maximum window duration: 180 days (warning required for longer)
-- Dates validated on client and server
-
-### FR-003: Optional Settings
-
-**Description:** Organizer can configure optional CfP settings.
-
-**Fields:**
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| Max Submissions | Integer | Unlimited | Maximum number of submissions accepted |
-| Requires Approval | Boolean | true | Whether submissions require organizer approval |
+**Flow Step:** Steps 1-10 in Journey 01 (from form fill to conference creation in DRAFT state)
 
 ---
 
-## 🔄 User Flow
+## 📋 Requirements
 
-```mermaid
-flowchart TD
-    Start([Organizer on Dashboard]) --> Click[Click 'Create New Conference']
-    Click --> Form[Load Conference Creation Form]
-    Form --> Fill[Fill Conference Details]
-    Fill --> Validate{Client Validation}
-    
-    Validate -->|Invalid| ShowErrors[Show Inline Errors]
-    ShowErrors --> Fill
-    
-    Validate -->|Valid| Submit[Submit Form]
-    Submit --> ServerValidate{Server Validation}
-    
-    ServerValidate -->|Invalid| ReturnErrors[Return Validation Errors]
-    ReturnErrors --> Form
-    
-    ServerValidate -->|Valid| CheckSlug{Slug Unique?}
-    CheckSlug -->|No| SuggestAlt[Suggest Alternative Slug]
-    SuggestAlt --> Fill
-    
-    CheckSlug -->|Yes| Create[Create Conference Aggregate]
-    Create --> Publish[Publish CFP]
-    Publish --> CheckTier{Within Free Tier?}
-    
-    CheckTier -->|No| ShowUpgrade[Show Upgrade Prompt]
-    ShowUpgrade --> Fail([Display Error])
-    
-    CheckTier -->|Yes| Save[(Save to Database)]
-    Save --> Events[Publish Domain Events]
-    Events --> Email[Send Welcome Email Async]
-    Email --> Success[Redirect to Dashboard with CfP Link]
-    
-    Success --> End([Feature Complete])
-    
-    style Create fill:#e1f5fe
-    style Publish fill:#e8f5e9
-    style Events fill:#fff3e0
-    style Success fill:#c8e6c9
-    style ShowErrors fill:#ffcdd2
-    style ReturnErrors fill:#ffcdd2
-    style ShowUpgrade fill:#ffcdd2
-```
+### Functional Requirements
+- [ ] Organizer can enter conference name (3-100 characters)
+- [ ] Organizer can enter optional description (max 1000 characters)
+- [ ] Organizer can enter optional logo URL (valid URL format)
+- [ ] System generates unique URL-safe slug from conference name
+- [ ] System validates conference name meets requirements (BR-002)
+- [ ] System checks slug uniqueness (BR-003)
+- [ ] System validates organizer subscription tier (BR-004)
+- [ ] Conference created in DRAFT state initially
+- [ ] System publishes `ConferenceCreated` domain event
+
+### Non-Functional Requirements
+- [ ] Performance: API response <200ms (P95)
+- [ ] Security: RLS policy ensures organizer can only create for their account
+- [ ] Validation: All inputs validated with Zod schema
+- [ ] Error Handling: Clear error messages for validation failures
 
 ---
 
-## 🏗️ Technical Specification
+## 🏗️ Domain Model
 
-### Domain Model
+### Entities Affected
+| Entity | Role | Changes |
+|--------|------|---------|
+| `Conference` | Primary | Create new aggregate in DRAFT state |
+| `CfpConfig` | Child | Create with initial configuration |
 
-**Entities:**
-- `Conference` - Aggregate root
-- `CfpConfig` - Child entity (embedded)
+### Value Objects
+- `ConferenceId` - UUIDv4 unique identifier
+- `ConferenceName` - Validated conference title (3-100 chars)
+- `ConferenceSlug` - URL-safe generated identifier
+- `ConferenceStatus` - Initial state: DRAFT
+- `Description` - Optional conference description
+- `LogoUrl` - Optional logo URL (validated)
 
-**Value Objects:**
-- `ConferenceId` - UUIDv4 identifier
-- `ConferenceName` - Validated conference name
-- `ConferenceSlug` - URL-safe unique slug
-- `ConferenceStatus` - Enum (DRAFT, CFP_OPEN, etc.)
-- `CfpStartDate` - Validated start date
-- `CfpEndDate` - Validated end date
-- `CfpConfig` - Submission configuration
-
-**Domain Events:**
-- `ConferenceCreated` - Triggered on creation
-- `CfpOpened` - Triggered when CFP is published
-
-### API Contract
-
-**Endpoint:** `POST /api/v1/conferences`
-
-**Request Body:**
-```json
-{
-  "name": "Tech Conference 2026",
-  "description": "Annual technology conference",
-  "logoUrl": "https://example.com/logo.png",
-  "cfpStartDate": "2026-08-01T00:00:00Z",
-  "cfpEndDate": "2026-09-30T23:59:59Z",
-  "maxSubmissions": 100,
-  "requiresApproval": true
-}
-```
-
-**Response (201 Created):**
-```json
-{
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "Tech Conference 2026",
-  "slug": "tech-conference-2026",
-  "status": "CFP_OPEN",
-  "cfpConfig": {
-    "startDate": "2026-08-01T00:00:00Z",
-    "endDate": "2026-09-30T23:59:59Z",
-    "status": "ACTIVE"
-  },
-  "cfpUrl": "https://sessioflow.app/cfp/tech-conference-2026"
-}
-```
-
-**Error Responses:**
-- `400 Bad Request` - Validation errors
-- `401 Unauthorized` - Not authenticated
-- `403 Forbidden` - Free tier limit exceeded
-- `409 Conflict` - Slug already exists
-
-### Database Schema
-
-**Table: conferences**
-```sql
-CREATE TABLE conferences (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  organizer_id UUID NOT NULL REFERENCES users(id),
-  name VARCHAR(100) NOT NULL,
-  slug VARCHAR(100) NOT NULL UNIQUE,
-  description TEXT,
-  logo_url VARCHAR(500),
-  status VARCHAR(20) NOT NULL DEFAULT 'DRAFT',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE INDEX idx_conferences_organizer ON conferences(organizer_id);
-CREATE INDEX idx_conferences_status ON conferences(status);
-```
-
-**Table: cfp_configs**
-```sql
-CREATE TABLE cfp_configs (
-  conference_id UUID PRIMARY KEY REFERENCES conferences(id) ON DELETE CASCADE,
-  start_date DATE NOT NULL,
-  end_date DATE NOT NULL,
-  max_submissions INTEGER,
-  requires_approval BOOLEAN DEFAULT true,
-  status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  CONSTRAINT valid_dates CHECK (end_date > start_date)
-);
-```
-
-**RLS Policies:**
-```sql
--- Organizers can only create conferences for their own account
-CREATE POLICY "Organizers can create conferences"
-ON conferences FOR INSERT
-WITH CHECK (organizer_id = auth.uid());
-
--- Organizers can only view their own conferences
-CREATE POLICY "Organizers can view their conferences"
-ON conferences FOR SELECT
-USING (organizer_id = auth.uid());
-```
+### Domain Events (if any)
+- `ConferenceCreated` - Triggered when conference is successfully created
 
 ---
 
-## ✅ Acceptance Criteria
+## 📦 Implementation Scope
 
-### AC-001: Successful Conference Creation
-**Given** the organizer is authenticated  
-**When** they fill out all required fields with valid data  
-**Then** the system creates a Conference in DRAFT state  
-**And** transitions it to CFP_OPEN state  
-**And** creates a CfpConfig with ACTIVE status  
-**And** publishes ConferenceCreated and CfpOpened domain events  
-**And** redirects to dashboard with CfP link
+### Files to Create/Modify
 
-### AC-002: Validation Errors
-**Given** the organizer submits invalid data  
-**When** any field fails validation  
-**Then** the system returns 400 Bad Request  
-**And** displays appropriate error messages  
-**And** no conference is created
+**Domain Layer:**
+- [ ] `modules/conference/domain/entities/conference.ts`
+- [ ] `modules/conference/domain/value-objects/conference-id.ts`
+- [ ] `modules/conference/domain/value-objects/conference-name.ts`
+- [ ] `modules/conference/domain/value-objects/conference-slug.ts`
+- [ ] `modules/conference/domain/value-objects/conference-status.ts`
+- [ ] `modules/conference/domain/value-objects/description.ts`
+- [ ] `modules/conference/domain/value-objects/logo-url.ts`
+- [ ] `modules/conference/domain/events/conference-created.ts`
+- [ ] `modules/conference/domain/exceptions/invalid-conference-error.ts`
+- [ ] `modules/conference/domain/exceptions/slug-already-exists-error.ts`
 
-### AC-003: Slug Uniqueness
-**Given** the organizer enters a conference name  
-**When** the generated slug already exists  
-**Then** the system returns 409 Conflict  
-**And** suggests alternative slugs  
-**And** no conference is created
+**Application Layer:**
+- [ ] `modules/conference/application/commands/create-conference/create-conference.command.ts`
+- [ ] `modules/conference/application/commands/create-conference/create-conference.handler.ts`
+- [ ] `modules/conference/application/commands/create-conference/create-conference.dto.ts`
+- [ ] `modules/conference/application/dto/conference-dto.ts`
 
-### AC-004: Free Tier Limit
-**Given** the organizer has reached their free tier limit (5 conferences)  
-**When** they attempt to create a new conference  
-**Then** the system returns 403 Forbidden  
-**And** displays upgrade prompt  
-**And** no conference is created
+**Infrastructure Layer:**
+- [ ] `modules/conference/infrastructure/database/conference-repository.ts`
+- [ ] Database migration for `conferences` table
+- [ ] Database migration for `cfp_configs` table
+- [ ] RLS policies for conferences table
 
-### AC-005: Date Validation
-**Given** the organizer enters CFP dates  
-**When** end date is before or equal to start date  
-**Then** the system displays validation error  
-**And** prevents form submission  
-**And** no conference is created
+**Interface Layer:**
+- [ ] `modules/conference/interfaces/api/v1/conferences/conferences.controller.ts`
+- [ ] Zod validation schema for conference creation
 
 ---
 
-## 🧪 Testing Strategy
+## 🧪 Hybrid TDD Implementation
 
-### Unit Tests
-- Value object validation tests
-- Entity state transition tests
-- Domain service validation tests
-- Use case logic tests
+### Phase 0: Define E2E Contract (Outside-In)
 
-### Integration Tests
-- Repository persistence tests
-- Database transaction tests
-- Domain event publishing tests
+**Step 1: Write E2E Test**
+- [ ] Write E2E test for conference creation flow
+- [ ] Document acceptance criteria from journey-01
+- [ ] **Expected to FAIL initially** - defines the goal
 
-### E2E Tests
-- Complete user journey from form to dashboard
-- Error scenario validation
-- Authentication and authorization tests
+### Phase 1-3: Build Inside-Out
 
-### Test Coverage Targets
-- Domain layer: ≥95%
-- Application layer: ≥90%
-- Interface layer: ≥80%
-- Overall: ≥80%
+**Step 2: Write Tests First**
 
----
+**Unit Tests:**
+- [ ] Test `ConferenceName` creates valid names (3-100 chars)
+- [ ] Test `ConferenceName` rejects invalid names (<3 or >100 chars)
+- [ ] Test `ConferenceSlug` generates URL-safe slugs
+- [ ] Test `Conference.create()` produces DRAFT state
+- [ ] Test `Conference` publishes `ConferenceCreated` event
+- [ ] Test edge cases (special characters, max length)
 
-## 📝 Implementation Checklist
+**Integration Tests:**
+- [ ] Test `CreateConference` command with mocked repository
+- [ ] Test slug uniqueness validation
+- [ ] Test free tier limit validation
+- [ ] Test repository `save()` persists correctly
 
-### Phase 0: E2E Contract
-- [ ] Write E2E test for complete flow
-- [ ] Document acceptance criteria
-- [ ] Run E2E (expected to fail)
-
-### Phase 1: Domain Layer
-- [ ] Implement ConferenceId value object
-- [ ] Implement ConferenceName value object
-- [ ] Implement ConferenceSlug value object
-- [ ] Implement ConferenceStatus value object
-- [ ] Implement CfpStartDate value object
-- [ ] Implement CfpEndDate value object
-- [ ] Implement CfpConfig value object
-- [ ] Implement Conference entity
-- [ ] Implement ConferenceValidationService
-- [ ] Write and pass all domain tests
-
-### Phase 2: Domain Interfaces
-- [ ] Define ConferenceRepository interface
-- [ ] Implement domain event types
-- [ ] Implement domain exception classes
-- [ ] Write and pass interface tests
-
-### Phase 3: Infrastructure & Application
-- [ ] Create database migrations
-- [ ] Configure RLS policies
+**Step 3: Implement to Pass Tests**
+- [ ] Implement value objects (ConferenceId, Name, Slug, Status)
+- [ ] Implement Conference entity with create() method
+- [ ] Implement CreateConference command and handler
 - [ ] Implement ConferenceRepository
-- [ ] Implement CreateConference use case
-- [ ] Write and pass integration tests
+- [ ] Make all tests pass
 
-### Phase 4: RESTful API
-- [ ] Implement POST /api/v1/conferences
-- [ ] Implement GET /api/v1/conferences
-- [ ] Implement GET /api/v1/conferences/:id
-- [ ] Add authentication/authorization
-- [ ] Write and pass API tests
+**Step 4: Refactor**
+- [ ] Clean up code
+- [ ] Maintain test coverage ≥95% for domain
+- [ ] Document behaviors
 
-### Phase 5: User Interface
-- [ ] Implement ConferenceCreationForm component
-- [ ] Implement ConferenceList component
-- [ ] Add form validation
-- [ ] Implement error handling
-- [ ] Write and pass component tests
+### Phase 4: Validate E2E (Outside-In)
 
-### Phase 6: Validation
-- [ ] Run E2E test (should pass)
-- [ ] Run all unit tests
-- [ ] Run linting
-- [ ] Run type checking
-- [ ] Verify test coverage
+**Step 5: Run E2E Test**
+- [ ] Run E2E test from Phase 0
+- [ ] **Expected to PASS** - goal achieved!
+- [ ] Fix any remaining issues
 
 ---
 
 ## 🔗 Dependencies
 
-### Internal Dependencies
-- Authentication module (Auth0 integration)
-- Email service (Resend - optional)
-- Database client (Supabase)
+### Blocks
+- [ ] This feature must be complete before: CfP Configuration feature
+- [ ] This feature must be complete before: Journey 01 E2E validation
 
-### External Dependencies
-- Auth0 for authentication
-- Resend for email notifications
-- Supabase for database and storage
+### Blocked By
+- [ ] This feature requires: Database schema and migrations
+- [ ] This feature requires: Auth0 authentication setup
 
 ---
 
-## 📚 Related Documentation
+## ✅ Acceptance Criteria
 
-- [Journey 01 - Setup Conference](./journey-01-setup-conference.md)
-- [Conference Entity](../entities/conference.md)
-- [CfpConfig Entity](../entities/cfp-config.md)
-- [Business Rules](../business-rules/)
-- [Invariants](../invariants/)
-- [Architecture Decision Records](../../adr/)
+**Given** the organizer is authenticated on the dashboard
+**When** they enter conference name, description, and logo URL
+**Then** the system creates a Conference in DRAFT state
+**And** publishes ConferenceCreated domain event
+**And** returns the conference with generated slug
+
+### Test Scenarios
+1. **Happy Path:** Valid conference name creates conference successfully
+2. **Name Too Short:** Name <3 characters shows validation error
+3. **Name Too Long:** Name >100 characters shows validation error
+4. **Duplicate Slug:** Existing slug shows conflict error with suggestion
+5. **Free Tier Limit:** Exceeding 5 conferences shows upgrade prompt
+6. **Invalid Logo URL:** Malformed URL shows validation error
 
 ---
 
-*Feature specification derived from Journey 01 user flow.*
-*Last updated: 2026-07-03*
+## 📝 Implementation Notes
+
+- **Slug Generation:** Convert to lowercase, replace spaces with hyphens, remove special characters
+- **Slug Uniqueness:** Check database before creation, append numeric suffix if duplicate
+- **Free Tier Limit:** Check organizer's active conference count before creation
+- **Transaction:** Create conference and CfpConfig in same transaction
+- **Domain Events:** Use event publisher interface (not direct email calls)
+
+---
+
+## 🔗 Related Documentation
+
+- [Parent Flow Documentation](./journey-01-setup-conference.md)
+- [Development Plan](./journey-01-setup-conference-plan.md)
+- [Conference Entity Documentation](../entities/conference.md)
+- [ConferenceId Value Object](../value-objects/conference-id.md)
+- [ConferenceName Value Object](../value-objects/conference-name.md)
+- [ConferenceSlug Value Object](../value-objects/conference-slug.md)
+- [ADR-009: DDD Structure](../../../adr/009-adopt-domain-driven-design-structure.md)
+- [ADR-007: Zod Validation](../../../adr/007-use-zod-for-validation.md)
+
+---
+
+## 📊 Progress Tracking
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| E2E Contract | 📋 | Write failing E2E test (Phase 0) |
+| Tests Written | 📋 | Write unit/integration tests |
+| Implementation | 📋 | Implement to pass tests |
+| Refactoring | 📋 | Clean up while tests pass |
+| E2E Validation | 📋 | Run E2E - should PASS |
+
+---
+
+*This feature spec is part of the Journey 01 development plan and follows Hybrid TDD (Outside-In + Inside-Out).*
