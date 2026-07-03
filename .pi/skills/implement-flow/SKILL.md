@@ -14,6 +14,17 @@ This skill guides feature implementation through flow-driven analysis, planning,
 
 **Important**: Follow AGENTS.md for all code conventions, testing standards, and quality requirements.
 
+### Step 0: Read ADR Index First
+- **Always start** by reading `docs/adr/README.md` to understand the complete ADR landscape
+- Use the ADR index to identify which ADRs are relevant to your task
+- Read specific ADRs in detail based on what the index reveals
+- **Do not assume** specific ADR numbers - let the index guide your discovery
+- Pay special attention to:
+  - Core Technology Stack ADRs
+  - Architecture Decisions (DDD, CQRS, etc.)
+  - Authentication & Storage strategies
+  - Data Access patterns
+
 ### Step 1: Understand the Flow
 - Read flow documentation in `docs/product/bounded-contexts/[context]/flows/`
 - Identify which DDD layer(s) are affected
@@ -21,7 +32,7 @@ This skill guides feature implementation through flow-driven analysis, planning,
 
 ### Step 2: Review Existing Patterns
 - Search `src/` for similar implementations (`rg` command)
-- Review relevant ADRs in `docs/adr/`
+- Review relevant ADRs identified from the index
 - Follow conventions in AGENTS.md
 
 ### Step 3: Implement Incrementally (Hybrid TDD)
@@ -38,9 +49,12 @@ This skill guides feature implementation through flow-driven analysis, planning,
    - Write tests for entities → Implement → Verify
    - Write tests for domain services → Implement → Verify
 
-3. **Build Application Layer** (Inside-Out)
-   - Write use case tests (with mocked repository) → Implement → Verify
+3. **Build Application Layer** (Inside-Out - CQRS Pattern)
+   - Write command tests (with mocked repository) → Implement → Verify
+   - Write query tests (with mocked repository) → Implement → Verify
    - Write repository interface tests (mocked) → Implement → Verify
+   - **Follow CQRS Pattern** (Commands for writes, Queries for reads)
+   - Create Response DTOs for API contracts
 
 4. **Build Infrastructure** (Inside-Out)
    - Write integration tests for repository → Implement → Verify
@@ -68,7 +82,7 @@ This skill guides feature implementation through flow-driven analysis, planning,
 9. Implement API/UI → E2E PASSES!
 ```
 
-**Module-Based Organization:**
+**Module-Based Organization with CQRS:**
 ```
 src/
 ├── modules/                    # Feature modules (bounded contexts)
@@ -78,8 +92,18 @@ src/
 │   │   │   ├── value-objects/
 │   │   │   ├── services/
 │   │   │   └── repositories/   # Interface
-│   │   ├── application/        # Use cases for this module
-│   │   │   └── use-cases/
+│   │   ├── application/        # Application layer with CQRS
+│   │   │   ├── commands/       # Write operations (Create, Update, Delete)
+│   │   │   │   └── [command-name]/
+│   │   │   │       ├── [command-name].command.ts
+│   │   │   │       ├── [command-name].handler.ts
+│   │   │   │       └── [command-name].dto.ts
+│   │   │   ├── queries/        # Read operations (Get, List, Search)
+│   │   │   │   └── [query-name]/
+│   │   │   │       ├── [query-name].query.ts
+│   │   │   │       ├── [query-name].handler.ts
+│   │   │   │       └── [query-name].dto.ts
+│   │   │   └── dto/            # Shared DTOs
 │   │   ├── infrastructure/     # Implementations for this module
 │   │   │   └── database/
 │   │   └── interfaces/         # API/UI for this module
@@ -89,6 +113,14 @@ src/
     ├── domain/                 # Shared VOs, exceptions
     └── infrastructure/         # Shared database client, etc.
 ```
+
+**CQRS Principles:**
+- **Commands are verbs**: `CreateConference`, `UpdateConference`, `DeleteConference`
+- **Queries are nouns**: `GetConference`, `ListConferences`, `SearchSubmissions`
+- **Commands change state**: They have side effects and return success/failure
+- **Queries read state**: They have no side effects and return data
+- **Response DTOs**: Separate from domain entities, optimized for API needs
+- **Handlers are single-responsibility**: One command/query per handler
 
 *Note: Adjust based on feature requirements and existing patterns.*
 
@@ -154,8 +186,11 @@ src/
 
 ## ✅ Success Criteria
 
+- **ADR Compliance**: All relevant ADRs identified from index and followed
 - Follows AGENTS.md definition of done
 - Development plan updated with completed tasks
+- CQRS pattern implemented correctly (commands vs queries separated)
+- Response DTOs created for API contracts
 - All tests pass (`npm test`)
 - Linting passes (`npm run lint`)
 - Type checking passes (`npm run typecheck`)

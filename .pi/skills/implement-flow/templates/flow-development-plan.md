@@ -24,15 +24,25 @@ This document outlines the development plan for implementing **[Flow Name]**.
 
 ---
 
-## 📋 Prerequisites
+## 📋 ADR Discovery & Prerequisites
 
-*Note: Add relevant ADRs that apply to this flow/feature.*
+**Important:** Before listing ADRs, read `docs/adr/README.md` to understand the complete ADR landscape and identify which decisions apply to this flow.
 
-| ADR | Decision | Status | Impact |
-|-----|----------|--------|--------|
-| [ADR-XXX] | [Decision name] | ✅ Approved | [Impact area] |
-| [ADR-XXX] | [Decision name] | ✅ Approved | [Impact area] |
-| [ADR-XXX] | [Decision name] | ✅ Approved | [Impact area] |
+### ADR Index Review
+- [ ] Read ADR README index to identify relevant decisions
+- [ ] Review Core Technology Stack ADRs
+- [ ] Review Architecture Decisions (DDD, CQRS, etc.)
+- [ ] Review Authentication & Storage strategies
+- [ ] Review Data Access patterns
+
+### Relevant ADRs for This Flow
+*Based on ADR index review, list the specific ADRs that apply to this implementation.*
+
+| ADR # | Decision | Status | Impact on This Flow |
+|-------|----------|--------|---------------------|
+| [Fill from index] | [Decision name] | ✅ Approved | [How it affects this flow] |
+| [Fill from index] | [Decision name] | ✅ Approved | [How it affects this flow] |
+| [Fill from index] | [Decision name] | ✅ Approved | [How it affects this flow] |
 
 ---
 
@@ -63,9 +73,9 @@ This plan follows a **hybrid TDD approach** combining outside-in and inside-out 
 
 ---
 
-## 🏗️ Module-Based DDD Structure - [Bounded Context]
+## 🏗️ Module-Based DDD Structure with CQRS - [Bounded Context]
 
-### Project Layout (Modular Architecture)
+### Project Layout (Modular Architecture with CQRS)
 
 ```
 src/
@@ -81,10 +91,18 @@ src/
 │       │   │   └── [domain-service].[ext]
 │       │   └── repositories/
 │       │       └── [entity]-repository.[ext]   # Interface
-│       ├── application/        # Use cases for this module
-│       │   ├── use-cases/
-│       │   │   └── [use-case].[ext]
-│       │   └── dto/
+│       ├── application/        # Application layer with CQRS
+│       │   ├── commands/       # Write operations
+│       │   │   └── [command-name]/
+│       │   │       ├── [command-name].command.ts
+│       │   │       ├── [command-name].handler.ts
+│       │   │       └── [command-name].dto.ts
+│       │   ├── queries/        # Read operations
+│       │   │   └── [query-name]/
+│       │   │       ├── [query-name].query.ts
+│       │   │       ├── [query-name].handler.ts
+│       │   │       └── [query-name].dto.ts
+│       │   └── dto/            # Shared DTOs
 │       │       └── [resource]-dto.[ext]
 │       ├── infrastructure/     # Implementations for this module
 │       │   └── database/
@@ -93,7 +111,7 @@ src/
 │           └── api/
 │               └── v1/
 │                   └── [resource]/
-│                       └── [handler].[ext]
+│                       └── [controller].[ext]
 │
 └── shared/                     # Cross-cutting concerns
     ├── domain/                 # Shared VOs, exceptions
@@ -101,6 +119,14 @@ src/
 ```
 
 *Note: `[ext]` represents the language-specific file extension (e.g., `.ts`, `.kt`, `.java`)*
+
+**CQRS Principles:**
+- **Commands are verbs**: `CreateConference`, `UpdateConference`, `DeleteConference`
+- **Queries are nouns**: `GetConference`, `ListConferences`, `SearchSubmissions`
+- **Commands change state**: They have side effects and return success/failure
+- **Queries read state**: They have no side effects and return data
+- **Response DTOs**: Separate from domain entities, optimized for API needs
+- **Handlers are single-responsibility**: One command/query per handler
 
 **Advantages of Module-Based Organization:**
 - ✅ High cohesion - all code for a feature is together
@@ -204,10 +230,10 @@ src/
 #### Deliverables
 - [ ] `modules/[context]/entities/[entity].[ext]`
 - [ ] `modules/[context]/entities/[child-entity].[ext]`
-- [ ] `modules/[context]/value-objects/*.`[ext] (8 files)
+- [ ] `modules/[context]/value-objects/*.[ext]` (8 files)
 - [ ] `modules/[context]/services/[domain-service].[ext]`
-- [ ] `tests/unit/[context]/value-objects/*.test.`[ext]
-- [ ] `tests/unit/[context]/entities/*.test.`[ext]
+- [ ] `tests/unit/[context]/value-objects/*.test.[ext]`
+- [ ] `tests/unit/[context]/entities/*.test.[ext]`
 
 ---
 
@@ -250,27 +276,33 @@ src/
 
 #### Deliverables
 - [ ] `modules/[context]/repositories/[entity]-repository.[ext]`
-- [ ] `modules/[context]/events/*.`[ext] (8 event types)
-- [ ] `modules/[context]/exceptions/*.`[ext] (6 error classes)
-- [ ] `tests/unit/[context]/repository-interface.test.`[ext]
-- [ ] `tests/unit/[context]/events.test.`[ext]
+- [ ] `modules/[context]/events/*.[ext]` (8 event types)
+- [ ] `modules/[context]/exceptions/*.[ext]` (6 error classes)
+- [ ] `tests/unit/[context]/repository-interface.test.[ext]`
+- [ ] `tests/unit/[context]/events.test.[ext]`
 
 ---
 
-### Phase 3: Infrastructure & Application
+### Phase 3: Infrastructure & Application (CQRS Pattern)
 
-**Goal:** Implement database layer and use cases using TDD.
+**Goal:** Implement database layer and CQRS handlers using TDD.
 
 #### Tasks
 
 **Step 1: Write Tests First**
-1. **Use Case Tests (Mocked Repository)**
-   - [ ] Test `[CreateResource]` use case happy path
-   - [ ] Test `[CreateResource]` use case error paths
-   - [ ] Test `[UpdateResource]` use case
+1. **Command Tests (Mocked Repository)**
+   - [ ] Test `[CreateResource]` command happy path
+   - [ ] Test `[CreateResource]` command error paths (validation, conflicts, etc.)
+   - [ ] Test `[UpdateResource]` command
    - [ ] Test validation failures
+   - [ ] Test domain event publishing
 
-2. **Repository Integration Tests**
+2. **Query Tests (Mocked Repository)**
+   - [ ] Test `[GetResource]` query returns correct data
+   - [ ] Test `[ListResources]` query returns list
+   - [ ] Test query error handling
+
+3. **Repository Integration Tests**
    - [ ] Test `save()` persists correctly
    - [ ] Test `findById()` retrieves correctly
    - [ ] Test transaction support
@@ -288,9 +320,14 @@ src/
    - [ ] Implement `[Entity]Repository` with all methods
    - [ ] Add transaction support
 
-4. **Use Cases**
-   - [ ] Implement `[CreateResource]` use case
-   - [ ] Implement `[UpdateResource]` use case
+4. **CQRS Implementation**
+   - [ ] Implement `[CreateResource]` command definition
+   - [ ] Implement `[CreateResource]` command handler
+   - [ ] Implement `[CreateResource]` response DTO
+   - [ ] Implement `[GetResource]` query definition
+   - [ ] Implement `[GetResource]` query handler
+   - [ ] Implement `[GetResource]` response DTO
+   - [ ] Implement additional commands/queries as needed
 
 **Step 3: Verify**
 - [ ] Run tests: `<test command>`
@@ -301,37 +338,46 @@ src/
 - [ ] Database migration files
 - [ ] RLS policies defined
 - [ ] `modules/[context]/infrastructure/database/[entity]-repository.[ext]`
-- [ ] `modules/[context]/application/use-cases/*.`[ext] (6-8 use cases)
-- [ ] `tests/integration/[context]/repository.test.`[ext]
-- [ ] `tests/unit/[context]/use-cases/*.test.`[ext]
+- [ ] `modules/[context]/application/commands/[command-name]/` (command, handler, DTO)
+- [ ] `modules/[context]/application/queries/[query-name]/` (query, handler, DTO)
+- [ ] `modules/[context]/application/dto/` (shared DTOs)
+- [ ] `tests/integration/[context]/repository.test.[ext]`
+- [ ] `tests/unit/[context]/commands/*.test.[ext]`
+- [ ] `tests/unit/[context]/queries/*.test.[ext]`
 
 ---
 
-### Phase 4: RESTful API
+### Phase 4: RESTful API with CQRS Integration
 
-**Goal:** Implement API endpoints using TDD.
+**Goal:** Implement API endpoints that use CQRS handlers using TDD.
 
 #### Tasks
 
 **Step 1: Write Tests First**
-1. **API Endpoint Tests (Mocked Use Cases)**
-   - [ ] Test `GET /api/v1/[resource]s` returns list
-   - [ ] Test `POST /api/v1/[resource]s` creates resource
-   - [ ] Test `GET /api/v1/[resource]s/:id` returns resource
-   - [ ] Test `PATCH /api/v1/[resource]s/:id` updates resource
-   - [ ] Test `DELETE /api/v1/[resource]s/:id` deletes resource
+1. **API Endpoint Tests (Mocked CQRS Handlers)**
+   - [ ] Test `POST /api/v1/[resource]s` creates resource via command
+   - [ ] Test `GET /api/v1/[resource]s` returns list via query
+   - [ ] Test `GET /api/v1/[resource]s/:id` returns resource via query
+   - [ ] Test `PATCH /api/v1/[resource]s/:id` updates via command
+   - [ ] Test `DELETE /api/v1/[resource]s/:id` deletes via command
    - [ ] Test authentication/authorization errors
    - [ ] Test validation errors
+   - [ ] Test proper response DTOs returned
 
 **Step 2: Implement to Pass Tests**
 1. **API Structure**
-   - [ ] Implement `/api/v1/[resource]s` - GET, POST
-   - [ ] Implement `/api/v1/[resource]s/:id` - GET, PATCH, DELETE
+   - [ ] Implement `/api/v1/[resource]s` - POST (command), GET (query)
+   - [ ] Implement `/api/v1/[resource]s/:id` - GET (query), PATCH (command), DELETE (command)
    - [ ] Implement error response format
+   - [ ] Integrate CQRS handlers into API controllers
 
 2. **Authentication**
    - [ ] Verify user authorization
    - [ ] RLS integration
+
+3. **Request Validation**
+   - [ ] Implement Zod validation schemas
+   - [ ] Map request to Command/Query objects
 
 **Step 3: Verify**
 - [ ] Run tests: `<test command>`
@@ -341,9 +387,9 @@ src/
 #### Deliverables
 - [ ] API endpoints with proper status codes
 - [ ] Validation schemas for request/response
-- [ ] `tests/api/[context]/[resource].test.`[ext]
+- [ ] `tests/api/[context]/[resource].test.[ext]`
 - [ ] API documentation (OpenAPI format)
-- [ ] `modules/[context]/interfaces/api/v1/[resource]/[handler].[ext]`
+- [ ] `modules/[context]/interfaces/api/v1/[resource]/[controller].ts`
 
 ---
 
@@ -386,7 +432,7 @@ src/
 - [ ] UI pages/views
 - [ ] Reusable components
 - [ ] Form validation
-- [ ] `tests/components/[context]/[resource].test.`[ext]
+- [ ] `tests/components/[context]/[resource].test.[ext]`
 - [ ] Component tests
 - [ ] `modules/[context]/interfaces/web/[resource]/[view-component].[ext]`
 
@@ -423,7 +469,7 @@ src/
 - [ ] All checks pass
 
 #### Deliverables
-- [ ] E2E test suite (`tests/e2e/[flow-name].spec.`[ext]) - **NOW PASSING**
+- [ ] E2E test suite (`tests/e2e/[flow-name].spec.[ext]`) - **NOW PASSING**
 - [ ] Test coverage reports (≥80% overall)
 - [ ] User testing feedback incorporated
 - [ ] Final documentation
@@ -445,10 +491,11 @@ src/
 - Multiple features may contribute to a single flow
 
 ### From Technical Architecture
-- [Fill in relevant technical constraints from project ADRs]
-- [Example: [ADR-[XXX]] API design pattern]
-- [Example: [ADR-[XXX]] Database strategy]
-- [Example: [ADR-[XXX]] Authentication approach]
+*Based on ADR index review, list the technical architecture decisions that apply to this flow.*
+
+- [Fill from ADR index - e.g., API design pattern, Database strategy, Authentication approach, etc.]
+- [Fill from ADR index - e.g., Validation strategy, Data access pattern, etc.]
+- [Fill from ADR index - e.g., Any other relevant technical decisions]
 
 ---
 
@@ -460,11 +507,14 @@ src/
 - [ ] Can [cancel/delete] [resource] ([allowed states] only)
 - [ ] All domain invariants enforced
 - [ ] All flow steps completed successfully
+- [ ] [Fill from ADR index - e.g., Architecture pattern compliance]
 
 ### Non-Functional
 - [ ] 95%+ test coverage for domain
-- [ ] 90%+ for use cases
+- [ ] 90%+ for application layer
 - [ ] API response <200ms (P95)
+- [ ] [Fill from ADR index - e.g., Architecture pattern compliance]
+- [ ] [Fill from ADR index - e.g., Data access pattern compliance]
 - [ ] Zero data corruption incidents
 - [ ] Zero unauthorized access incidents
 
@@ -481,3 +531,4 @@ src/
 ---
 
 *This development plan is derived from the project's ADRs and domain specifications.*
+*Last updated: [Date]*
