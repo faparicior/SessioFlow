@@ -49,12 +49,11 @@ This skill guides feature implementation through flow-driven analysis, planning,
    - Write tests for entities → Implement → Verify
    - Write tests for domain services → Implement → Verify
 
-3. **Build Application Layer** (Inside-Out - CQRS Pattern)
-   - Write command tests (with mocked repository) → Implement → Verify
-   - Write query tests (with mocked repository) → Implement → Verify
+3. **Build Application Layer** (Inside-Out)
+   - Write application logic tests (with mocked repository) → Implement → Verify
    - Write repository interface tests (mocked) → Implement → Verify
-   - **Follow CQRS Pattern** (Commands for writes, Queries for reads)
-   - Create Response DTOs for API contracts
+   - Follow architectural patterns identified from ADR index review
+   - Create appropriate response DTOs for API contracts
 
 4. **Build Infrastructure** (Inside-Out)
    - Write integration tests for repository → Implement → Verify
@@ -82,7 +81,7 @@ This skill guides feature implementation through flow-driven analysis, planning,
 9. Implement API/UI → E2E PASSES!
 ```
 
-**Module-Based Organization with CQRS:**
+**Module-Based Organization:**
 ```
 src/
 ├── modules/                    # Feature modules (bounded contexts)
@@ -92,18 +91,8 @@ src/
 │   │   │   ├── value-objects/
 │   │   │   ├── services/
 │   │   │   └── repositories/   # Interface
-│   │   ├── application/        # Application layer with CQRS
-│   │   │   ├── commands/       # Write operations (Create, Update, Delete)
-│   │   │   │   └── [command-name]/
-│   │   │   │       ├── [command-name].command.ts
-│   │   │   │       ├── [command-name].handler.ts
-│   │   │   │       └── [command-name].dto.ts
-│   │   │   ├── queries/        # Read operations (Get, List, Search)
-│   │   │   │   └── [query-name]/
-│   │   │   │       ├── [query-name].query.ts
-│   │   │   │       ├── [query-name].handler.ts
-│   │   │   │       └── [query-name].dto.ts
-│   │   │   └── dto/            # Shared DTOs
+│   │   ├── application/        # Application layer
+│   │   │   └── [pattern-based structure from ADRs]
 │   │   ├── infrastructure/     # Implementations for this module
 │   │   │   └── database/
 │   │   └── interfaces/         # API/UI for this module
@@ -114,13 +103,7 @@ src/
     └── infrastructure/         # Shared database client, etc.
 ```
 
-**CQRS Principles:**
-- **Commands are verbs**: `CreateConference`, `UpdateConference`, `DeleteConference`
-- **Queries are nouns**: `GetConference`, `ListConferences`, `SearchSubmissions`
-- **Commands change state**: They have side effects and return success/failure
-- **Queries read state**: They have no side effects and return data
-- **Response DTOs**: Separate from domain entities, optimized for API needs
-- **Handlers are single-responsibility**: One command/query per handler
+*Note: Application layer structure should follow patterns identified from ADR index review (e.g., CQRS, use cases, services, etc.)*
 
 *Note: Adjust based on feature requirements and existing patterns.*
 
@@ -186,11 +169,10 @@ src/
 
 ## ✅ Success Criteria
 
-- **ADR Compliance**: All relevant ADRs identified from index and followed
+- **ADR Compliance**: All relevant ADRs identified from `docs/adr/README.md` index and followed
 - Follows AGENTS.md definition of done
 - Development plan updated with completed tasks
-- CQRS pattern implemented correctly (commands vs queries separated)
-- Response DTOs created for API contracts
+- Application layer follows architectural patterns from ADR index review
 - All tests pass (`npm test`)
 - Linting passes (`npm run lint`)
 - Type checking passes (`npm run typecheck`)
