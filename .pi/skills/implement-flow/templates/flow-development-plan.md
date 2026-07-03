@@ -38,53 +38,48 @@ This document outlines the development plan for implementing **[Flow Name]**.
 
 ## 🏗️ DDD Structure - [Bounded Context]
 
-### Project Layout
+### Project Layout (Technology-Agnostic)
 
 ```
 src/
-├── domains/
+├── domain/                    # Business logic (vendor-agnostic)
 │   └── [context]/
 │       ├── entities/
-│       │   ├── [entity].ts           # Entity name
-│       │   └── [child-entity].ts     # Child entity
+│       │   ├── [entity].[ext]           # Entity name
+│       │   └── [child-entity].[ext]     # Child entity
 │       ├── value-objects/
-│       │   ├── [vo1].ts              # Value object
-│       │   ├── [vo2].ts              # Value object
-│       │   └── ...                   # More value objects
+│       │   ├── [vo1].[ext]              # Value object
+│       │   └── [vo2].[ext]              # Value object
 │       ├── services/
-│       │   └── [domain-service].ts   # Business rules
+│       │   └── [domain-service].[ext]   # Business rules
 │       └── repositories/
-│           └── [entity]-repository.ts   # Interface
+│           └── [entity]-repository.[ext]   # Interface
 │
-├── application/
+├── application/               # Use cases
 │   └── [context]/
 │       ├── use-cases/
-│       │   ├── [use-case].ts         # POST /api/v1/[resource]
-│       │   └── ...                   # More use cases
+│       │   └── [use-case].[ext]         # Business logic
 │       └── dto/                      # Request/Response types
-│           ├── [resource]-dto.ts
-│           └── ...
+│           └── [resource]-dto.[ext]
 │
-├── infrastructure/
-│   └── database/
-│       └── [entity]-repository.ts    # Supabase implementation
+├── infrastructure/            # External implementations
+│   ├── external/              # Email, payments, etc.
+│   └── database/              # Database implementations
+│       └── [entity]-repository.[ext]    # Concrete implementation
 │
-└── interfaces/
-    └── web/
-        └── (dashboard)/
-            ├── [resource]/
-            │   ├── new/
-            │   │   └── page.tsx      # Creation form
-            │   └── [id]/
-            │       ├── page.tsx      # Details page
-            │       └── ...           # Sub-pages
-        └── api/
-            └── v1/
-                └── [resource]s/
-                    ├── route.ts      # List & create
-                    └── [id]/
-                        └── route.ts  # Read, update, delete
+└── interfaces/                # Entry points (API, UI, CLI, etc.)
+    ├── api/                   # API endpoints
+    │   └── v1/
+    │       └── [resource]/
+    │           └── [route-handler].[ext]
+    └── web/                   # Web UI (technology TBD)
+        └── [resource]/
+            └── [view-component].[ext]
 ```
+
+*Note: `[ext]` represents the language-specific file extension (e.g., `.ts`, `.kt`, `.java`)*
+
+*Note: File extensions and specific technologies will be determined during implementation.*
 
 ---
 
@@ -138,17 +133,17 @@ src/
    - [ ] Implement `[DomainService]`
 
 **Step 3: Verify**
-- [ ] Run tests: `npm test`
+- [ ] Run tests: `<test command>`
 - [ ] All tests pass
 - [ ] Coverage ≥ 95% for domain layer
 
 #### Deliverables
-- [ ] `domains/[context]/entities/[entity].ts`
-- [ ] `domains/[context]/entities/[child-entity].ts`
-- [ ] `domains/[context]/value-objects/*.ts` (8 files)
-- [ ] `domains/[context]/services/[domain-service].ts`
-- [ ] `tests/unit/[context]/value-objects/*.test.ts`
-- [ ] `tests/unit/[context]/entities/*.test.ts`
+- [ ] `domains/[context]/entities/[entity].[ext]`
+- [ ] `domains/[context]/entities/[child-entity].[ext]`
+- [ ] `domains/[context]/value-objects/*.`[ext] (8 files)
+- [ ] `domains/[context]/services/[domain-service].[ext]`
+- [ ] `tests/unit/[context]/value-objects/*.test.`[ext]
+- [ ] `tests/unit/[context]/entities/*.test.`[ext]
 
 ---
 
@@ -185,16 +180,16 @@ src/
    - [ ] Implement custom error classes
 
 **Step 3: Verify**
-- [ ] Run tests: `npm test`
+- [ ] Run tests: `<test command>`
 - [ ] All tests pass
 - [ ] Coverage ≥ 90%
 
 #### Deliverables
-- [ ] `domains/[context]/repositories/[entity]-repository.ts`
-- [ ] `domains/[context]/events/*.ts` (8 event types)
-- [ ] `domains/[context]/exceptions/*.ts` (6 error classes)
-- [ ] `tests/unit/[context]/repository-interface.test.ts`
-- [ ] `tests/unit/[context]/events.test.ts`
+- [ ] `domains/[context]/repositories/[entity]-repository.[ext]`
+- [ ] `domains/[context]/events/*.`[ext] (8 event types)
+- [ ] `domains/[context]/exceptions/*.`[ext] (6 error classes)
+- [ ] `tests/unit/[context]/repository-interface.test.`[ext]
+- [ ] `tests/unit/[context]/events.test.`[ext]
 
 ---
 
@@ -221,9 +216,9 @@ src/
    - [ ] Create `[resources]` table with RLS
    - [ ] Create `[child-table]` table with foreign keys
 
-2. **Supabase Client Setup**
-   - [ ] Implement `infrastructure/database/supabase-client.ts`
-   - [ ] Configure RLS policies
+2. **Database Client Setup**
+   - [ ] Implement database client
+   - [ ] Configure access policies
 
 3. **Repository Implementation**
    - [ ] Implement `[Entity]Repository` with all methods
@@ -234,17 +229,17 @@ src/
    - [ ] Implement `[UpdateResource]` use case
 
 **Step 3: Verify**
-- [ ] Run tests: `npm test`
+- [ ] Run tests: `<test command>`
 - [ ] All tests pass
 - [ ] Integration tests pass
 
 #### Deliverables
 - [ ] Database migration files
 - [ ] RLS policies defined
-- [ ] `infrastructure/database/[entity]-repository.ts`
-- [ ] `application/[context]/use-cases/*.ts` (6-8 use cases)
-- [ ] `tests/integration/[context]/repository.test.ts`
-- [ ] `tests/unit/[context]/use-cases/*.test.ts`
+- [ ] `infrastructure/database/[entity]-repository.[ext]`
+- [ ] `application/[context]/use-cases/*.`[ext] (6-8 use cases)
+- [ ] `tests/integration/[context]/repository.test.`[ext]
+- [ ] `tests/unit/[context]/use-cases/*.test.`[ext]
 
 ---
 
@@ -275,59 +270,59 @@ src/
    - [ ] RLS integration
 
 **Step 3: Verify**
-- [ ] Run tests: `npm test`
+- [ ] Run tests: `<test command>`
 - [ ] All API tests pass
 - [ ] Response times <200ms (P95)
 
 #### Deliverables
 - [ ] API endpoints with proper status codes
-- [ ] Zod schemas for request/response
-- [ ] `tests/api/[context]/[resource].test.ts`
+- [ ] Validation schemas for request/response
+- [ ] `tests/api/[context]/[resource].test.`[ext]
 - [ ] API documentation (OpenAPI format)
 
 ---
 
-### Phase 5: Frontend
+### Phase 5: User Interface
 
-**Goal:** Implement Next.js pages and components using TDD.
+**Goal:** Implement user interface layer using TDD (technology to be determined).
 
 #### Tasks
 
 **Step 1: Write Tests First**
-1. **Component Tests**
+1. **Component/View Tests**
    - [ ] Test `[Resource]CreationForm` renders correctly
-   - [ ] Test form validation with Zod
+   - [ ] Test form validation
    - [ ] Test form submission
    - [ ] Test error handling
 
-2. **Page Tests**
-   - [ ] Test `/dashboard/[resource]s` renders list
-   - [ ] Test `/dashboard/[resource]s/new` renders form
-   - [ ] Test `/dashboard/[resource]s/[id]` renders details
+2. **Page/View Tests**
+   - [ ] Test `[Resource]List` view renders list
+   - [ ] Test `[Resource]Creation` view renders form
+   - [ ] Test `[Resource]Detail` view renders details
 
 **Step 2: Implement to Pass Tests**
 1. **Resource List & Creation**
-   - [ ] Implement `/dashboard/[resource]s` - List resources table
-   - [ ] Implement `/dashboard/[resource]s/new` - Resource creation form
-   - [ ] Implement resource table with status badges
-   - [ ] Implement Zod form validation with React Hook Form
+   - [ ] Implement `[Resource]List` - List resources view
+   - [ ] Implement `[Resource]Creation` - Resource creation form
+   - [ ] Implement resource list with status indicators
+   - [ ] Implement form validation
 
 2. **Resource Dashboard**
-   - [ ] Implement `/dashboard/[resource]s/[id]` - Resource overview
+   - [ ] Implement `[Resource]Detail` - Resource overview
    - [ ] Implement resource status display
    - [ ] Implement quick actions
 
 **Step 3: Verify**
-- [ ] Run tests: `npm test`
+- [ ] Run tests: `<test command>`
 - [ ] All component tests pass
 - [ ] Component coverage ≥ 80%
 
 #### Deliverables
-- [ ] Next.js pages and layouts
+- [ ] UI pages/views
 - [ ] Reusable components
-- [ ] Zod form validation
-- [ ] `tests/components/[context]/[resource].test.tsx`
-- [ ] Component tests (React Testing Library)
+- [ ] Form validation
+- [ ] `tests/components/[context]/[resource].test.`[ext]
+- [ ] Component tests
 
 ---
 
@@ -359,15 +354,15 @@ src/
    - [ ] Documentation updates
 
 **Step 3: Final Validation**
-- [ ] Run tests: `npm test`
-- [ ] Run E2E: `npm run test:e2e`
-- [ ] Run lint: `npm run lint`
-- [ ] Run typecheck: `npm run typecheck`
+- [ ] Run tests: `<test command>`
+- [ ] Run E2E: `<e2e command>`
+- [ ] Run lint: `<lint command>`
+- [ ] Run typecheck: `<typecheck command>`
 - [ ] All checks pass
 
 #### Deliverables
 - [ ] Test coverage reports (≥80% overall)
-- [ ] E2E test suite (`tests/e2e/[flow-name].spec.ts`)
+- [ ] E2E test suite (`tests/e2e/[flow-name].spec.`[ext])
 - [ ] User testing feedback incorporated
 - [ ] Final documentation
 
@@ -380,10 +375,10 @@ src/
 - Value objects encapsulate validation
 - Repository pattern for infrastructure abstraction
 
-### From ADR-007 (Zod)
+### From ADR-007 (Validation)
 - Client-side validation before API calls
 - Server-side validation in API routes
-- Zod schemas in `lib/validations/`
+- Validation schemas in `lib/validations/`
 
 ### From Flow Documentation
 - Flow steps must be implemented in order
@@ -397,9 +392,9 @@ src/
 - HTTP verbs for actions
 - Standard status codes (200, 201, 400, 404, 409)
 
-### From ADR-002 (Supabase)
+### From ADR-002 (Database)
 - RLS for [context] isolation
-- PostgreSQL foreign keys for relationships
+- Database foreign keys for relationships
 - Soft delete with `deleted_at` column
 
 ---

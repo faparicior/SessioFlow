@@ -53,21 +53,21 @@
 ### Files to Create/Modify
 
 **Domain Layer:**
-- [ ] `domains/[context]/entities/[entity].ts`
-- [ ] `domains/[context]/value-objects/[vo].ts`
-- [ ] `domains/[context]/services/[service].ts`
+- [ ] `domains/[context]/entities/[entity].[ext]`
+- [ ] `domains/[context]/value-objects/[vo].[ext]`
+- [ ] `domains/[context]/services/[service].[ext]`
 
 **Application Layer:**
-- [ ] `application/[context]/use-cases/[use-case].ts`
-- [ ] `application/[context]/dto/[dto].ts`
+- [ ] `application/[context]/use-cases/[use-case].[ext]`
+- [ ] `application/[context]/dto/[dto].[ext]`
 
 **Infrastructure Layer:**
-- [ ] `infrastructure/database/[entity]-repository.ts`
+- [ ] `infrastructure/database/[entity]-repository.[ext]`
 - [ ] Database migrations
 
 **Interface Layer:**
-- [ ] `interfaces/api/v1/[resource]/route.ts`
-- [ ] `interfaces/web/[resource]/page.tsx`
+- [ ] `interfaces/api/v1/[resource]/[handler].[ext]`
+- [ ] `interfaces/web/[resource]/[view-component].[ext]`
 
 ---
 
