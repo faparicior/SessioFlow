@@ -1,406 +1,574 @@
-# Journey 01: Setup Conference (CfP Configuration) - Development Plan
+# Journey 01: Setup Conference - Development Plan
 
 * **Date:** 2026-07-03
 * **Status:** 📋 **Planning Phase**
-* **Flow:** `journey-01-setup-conference.md`
-* **Context:** Conference (Bounded Context)
+* **Flow:** journey-01-setup-conference.md
+* **Context:** Conference Bounded Context (see [README](../README.md))
 
 ---
 
 ## 🎯 Overview
 
-This document outlines the development plan for implementing **Journey 01: Setup Conference**. The organizer creates a new conference and configures its Call for Papers (CfP) settings in a single flow, transitioning the conference from creation through `DRAFT` → `CFP_OPEN` with an active CfP submission window.
+This document outlines the development plan for implementing **Journey 01: Setup Conference (C4P Configuration)**.
 
-**Flow Description:** A conference organizer authenticates, fills out a conference creation form (name, description, CfP dates), and submits. The system validates input, checks slug uniqueness, creates the `Conference` aggregate in `DRAFT` state, calls `publishCfp()` to transition to `CFP_OPEN`, creates a linked `CfpConfig` child entity, publishes domain events, and returns a shareable CfP URL.
+**Flow Description:** As a conference organizer, I want to create a new conference and configure its Call for Papers (CfP) settings so that I can share a submission link with potential speakers and start collecting proposals.
+
+**Related Flow Documentation:** See `journey-01-setup-conference.md` for complete user journey details.
 
 **Associated Features:**
 | Feature | Description | Status |
 |---------|-------------|--------|
-| Conference Creation | Create a new conference with validated input | 📋 Planned |
-| CfP Configuration | Set submission dates and CfP settings | 📋 Planned |
-| Slug Generation | Generate unique URL-safe slugs for conferences | 📋 Planned |
-| Domain Events | Publish ConferenceCreated and CfpOpened events | 📋 Planned |
-| Welcome Email | Send welcome email after successful creation | 📋 Planned |
+| Conference Creation | Create new conference with basic details | 📋 Planned |
+| CfP Configuration | Set up submission window and settings | 📋 Planned |
+| Slug Generation | Auto-generate unique conference slug | 📋 Planned |
+| Domain Events | Publish events for analytics and email | 📋 Planned |
 
 ---
 
-## 📋 Prerequisites
+## 📋 ADR Discovery & Prerequisites
 
-| ADR | Decision | Status | Impact |
-|-----|----------|--------|--------|
-| ADR-002 | Use Supabase for Backend & Database | ✅ Approved | Database schema, RLS policies, Supabase client setup |
-| ADR-004 | Use Auth0 for Authentication | ✅ Approved | JWT-based auth, organizer identity, RLS integration |
-| ADR-006 | Use RESTful API Design | ✅ Approved | `POST /api/v1/conferences` endpoint structure |
-| ADR-007 | Use Zod for Validation | ✅ Approved | Zod schemas for input validation (client & server) |
-| ADR-009 | Adopt DDD Structure | ✅ Approved | Layer separation, domain methods, repository pattern |
+**Important:** Before listing ADRs, read `docs/adr/README.md` to understand the complete ADR landscape and identify which decisions apply to this flow.
+
+### ADR Index Review
+- [x] Read ADR README index to identify relevant decisions
+- [x] Review Core Technology Stack ADRs
+- [x] Review Architecture Decisions (DDD, CQRS, etc.)
+- [x] Review Authentication & Storage strategies
+- [x] Review Data Access patterns
+
+### Relevant ADRs for This Flow
+*Based on ADR index review, the following ADRs apply to this implementation.*
+
+| ADR # | Decision | Status | Impact on This Flow |
+|-------|----------|--------|---------------------|
+| ADR-002-01 | Supabase with DDD Abstraction | ✅ Approved | Database layer with repository pattern |
+| ADR-004-01 | Auth0 with DDD Abstraction | ✅ Approved | Authentication via Auth0 with abstraction |
+| ADR-006 | RESTful API Design | ✅ Approved | API endpoint structure |
+| ADR-007 | Zod for Validation | ✅ Approved | Input validation strategy |
+| ADR-009 | Domain-Driven Design Structure | ✅ Approved | DDD layer organization |
+| ADR-015 | CQRS Pattern for Application Layer | ✅ Approved | Commands and queries separation |
+| ADR-011-01 | Optional Email Abstraction | ✅ Optional | Welcome email via Resend |
 
 ---
 
-## 🏗️ DDD Structure - Conference Context
+## 🎯 Hybrid TDD Strategy
 
-### Project Layout
+This plan follows a **hybrid TDD approach** combining outside-in and inside-out strategies:
+
+### Phase 0: Define E2E Contract (Outside-In)
+- Write E2E test that describes the complete user journey
+- Document acceptance criteria from flow documentation
+- **This test FAILS initially** - it defines the goal
+
+### Phase 1-5: Build Inside-Out
+- Implement domain → application → infrastructure → interfaces
+- Each layer has its own tests
+- E2E test still FAILS until all layers are complete
+
+### Phase 6: Validate E2E (Outside-In)
+- Run the E2E test from Phase 0
+- Fix any remaining issues
+- **E2E test PASSES** - goal achieved!
+
+**Benefits:**
+- ✅ E2E vision from the start
+- ✅ Solid domain model (inside-out)
+- ✅ Working feature at the end (outside-in validation)
+- ✅ Clear progress tracking (E2E as the "North Star")
+
+---
+
+## 🏗️ Module-Based DDD Structure with CQRS - Conference
+
+### Project Layout (Modular Architecture with CQRS)
 
 ```
 src/
-├── domain/
-│   └── conference/
-│       ├── conference.ts              # Conference aggregate root
-│       ├── cfp-config.ts              # CfpConfig child entity
-│       ├── value-objects/
-│       │   ├── conference-id.ts       # ConferenceId UUID
-│       │   ├── conference-name.ts     # ConferenceName (3-100 chars)
-│       │   ├── conference-slug.ts     # ConferenceSlug (URL-safe)
-│       │   ├── conference-status.ts   # ConferenceStatus enum
-│       │   ├── cfp-config-status.ts   # CfpConfigStatus enum
-│       │   └── cfp-dates.ts           # CfpDates (start/end with validation)
-│       ├── services/
-│       │   └── conference-domain-service.ts  # Business rule checks
-│       └── repositories/
-│           └── conference-repository.ts  # Repository interface
+├── modules/                    # Feature modules (bounded contexts)
+│   └── conference/             # Conference bounded context
+│       ├── domain/             # Domain layer for this module
+│       │   ├── entities/
+│       │   │   ├── conference.ts
+│       │   │   └── submission.ts
+│       │   ├── value-objects/
+│       │   │   ├── conference-id.ts
+│       │   │   ├── conference-name.ts
+│       │   │   ├── conference-slug.ts
+│       │   │   ├── conference-status.ts
+│       │   │   ├── cfp-start-date.ts
+│       │   │   ├── cfp-end-date.ts
+│       │   │   └── cfp-config.ts
+│       │   ├── services/
+│       │   │   └── conference-validation-service.ts
+│       │   └── repositories/
+│       │       └── conference-repository.ts   # Interface
+│       ├── application/        # Application layer with CQRS
+│       │   ├── commands/       # Write operations
+│       │   │   └── create-conference/
+│       │   │       ├── create-conference.command.ts
+│       │   │       ├── create-conference.handler.ts
+│       │   │       └── create-conference.dto.ts
+│       │   ├── queries/        # Read operations
+│       │   │   └── get-conference/
+│       │   │       ├── get-conference.query.ts
+│       │   │       ├── get-conference.handler.ts
+│       │   │       └── get-conference.dto.ts
+│       │   └── dto/            # Shared DTOs
+│       │       └── conference-dto.ts
+│       ├── infrastructure/     # Implementations for this module
+│       │   └── database/
+│       │       └── conference-repository.ts   # Concrete impl
+│       └── interfaces/         # API/UI for this module
+│           └── api/
+│               └── v1/
+│                   └── conferences/
+│                       └── index.ts
 │
-├── application/
-│   └── conference/
-│       ├── use-cases/
-│       │   └── create-conference.ts    # POST /api/v1/conferences
-│       └── dto/
-│           └── create-conference.dto.ts  # Request/Response types
-│
-├── infrastructure/
-│   ├── external/
-│   │   └── email-service.ts           # Resend email adapter
-│   └── database/
-│       ├── supabase-client.ts         # Supabase client
-│       └── conference-repository.ts   # Supabase implementation
-│
-└── interfaces/
-    ├── web/
-    │   └── (dashboard)/
-    │       └── conferences/
-    │           ├── new/
-    │           │   └── page.tsx        # Creation form
-    │           └── [id]/
-    │               └── page.tsx        # Dashboard overview
-    └── api/
-        └── v1/
-            └── conferences/
-                └── route.ts           # POST (create) & GET (list)
+└── shared/                     # Cross-cutting concerns
+    ├── domain/                 # Shared VOs, exceptions
+    └── infrastructure/         # Shared database client, etc.
 ```
+
+**CQRS Principles:**
+- **Commands are verbs**: `CreateConference`, `UpdateConference`, `DeleteConference`
+- **Queries are nouns**: `GetConference`, `ListConferences`, `SearchSubmissions`
+- **Commands change state**: They have side effects and return success/failure
+- **Queries read state**: They have no side effects and return data
+- **Response DTOs**: Separate from domain entities, optimized for API needs
+- **Handlers are single-responsibility**: One command/query per handler
 
 ---
 
-## 🗺️ Conference Lifecycle (State Machine)
+## 🗺️ Entity Lifecycle Reference
 
-```mermaid
-stateDiagram-v2
-    [*] --> Draft: Conference.create()
-    Draft --> CfpOpen: publishCfp()
-    CfpOpen --> CfpClosed: closeCfp()
-    CfpClosed --> CfpOpen: reopenCfp()
-    CfpOpen --> Published: publishSchedule()
-    CfpClosed --> Published: publishSchedule()
-    Published --> Completed: conferenceDatePassed()
+**Source:** See [Journey 01 Documentation](./journey-01-setup-conference.md) for complete state machine diagrams.
 
-    note right of Draft
-        Conference created with
-        basic details, CfpConfig
-        not yet configured
-    end note
+**Key States for This Flow:**
+| State | Description | Phase Created |
+|-------|-------------|---------------|
+| `DRAFT` | Conference created but not yet published | Phase 1 |
+| `CFP_OPEN` | Conference is live and accepting submissions | Phase 1 |
 
-    note right of CfpOpen
-        CfP active, accepting
-        submissions
-    end note
-```
+**Key Transitions:**
+| Transition | Method | Flow Steps |
+|------------|--------|------------|
+| NotCreated → Draft | `Conference.create()` | Steps 9-10 |
+| Draft → CfpOpen | `Conference.publishCfp()` | Steps 11-12 |
 
 ---
 
 ## 📦 Implementation Phases
 
-### Phase 1: Core Domain
+### Phase 0: Define E2E Contract (Outside-In)
 
-**Goal:** Implement the domain model — entities, value objects, and domain services. This is the foundation that no other layer depends on.
+**Goal:** Define the complete user journey as a failing E2E test.
 
 #### Tasks
 
-1. **Value Objects**
-   - [ ] `ConferenceId` — UUIDv4 generation, immutable identifier
-   - [ ] `ConferenceName` — 3-100 characters, sanitization, uniqueness context
-   - [ ] `ConferenceSlug` — URL-safe generation from name, uniqueness validation
-   - [ ] `ConferenceStatus` — Enum: `DRAFT`, `CFP_OPEN`, `CFP_CLOSED`, `PUBLISHED`, `COMPLETED`
-   - [ ] `CfpConfigStatus` — Enum: `ACTIVE`, `INACTIVE`, `CLOSED`
-   - [ ] `CfpDates` — Start/end date pair with validation (end > start, not in past, max 180 days)
+**Step 1: Write E2E Test**
+- [ ] Write E2E test for complete flow: Journey 01 - Setup Conference
+- [ ] Document acceptance criteria from flow documentation
+- [ ] Identify key journey steps from journey-01-setup-conference.md
+- [ ] Define success criteria (what makes E2E pass)
 
-2. **Entity: Conference**
-   - [ ] Implement aggregate root with state machine (Draft → CfpOpen → ...)
-   - [ ] Domain method: `Conference.create()` — creates in `DRAFT` state
-   - [ ] Domain method: `publishCfp()` — transitions to `CFP_OPEN`, creates `CfpConfig`
-   - [ ] Domain method: `closeCfp()` — transitions to `CFP_CLOSED`
-   - [ ] Domain method: `reopenCfp()` — transitions back to `CFP_OPEN`
-   - [ ] Domain method: `publishSchedule()` — transitions to `PUBLISHED`
-   - [ ] Domain method: `conferenceDatePassed()` — transitions to `COMPLETED`
-   - [ ] Domain events: `ConferenceCreated`, `CfpOpened`, `CfpClosed`, `CfpReopened`
-   - [ ] Invariants: state transitions only via domain methods (no direct state mutation)
-
-3. **Entity: CfpConfig**
-   - [ ] Child entity with `ACTIVE`/`INACTIVE`/`CLOSED` states
-   - [ ] Method: `validateDates()` — ensures end > start, max 180 days
-   - [ ] Method: `activate()` / `deactivate()`
-   - [ ] Invariant: dates must be valid, must belong to parent Conference
-
-4. **Domain Services**
-   - [ ] `checkFreeTierLimit()` — verify organizer hasn't exceeded 5 active conferences
-   - [ ] `slugExists()` — delegate to repository, handle conflicts
+**Step 2: Run E2E (Expected to Fail)**
+- [ ] Run E2E test → Should FAIL (no implementation yet)
+- [ ] Document what's missing
+- [ ] Use this as the "North Star" for the project
 
 #### Deliverables
-- [ ] `src/domain/conference/conference.ts`
-- [ ] `src/domain/conference/cfp-config.ts`
-- [ ] `src/domain/conference/value-objects/` (6 files)
-- [ ] `src/domain/conference/services/conference-domain-service.ts`
-- [ ] Unit tests for all domain objects (Vitest)
+- [ ] `tests/e2e/journey-01-setup-conference.spec.ts` - E2E test that defines the goal
+- [ ] E2E test documentation (acceptance criteria)
+- [ ] Initial failure report (what's missing)
+
+---
+
+### Phase 1: Core Domain (Inside-Out)
+
+**Goal:** Implement domain model with entities, value objects, and domain services using TDD.
+
+#### Tasks
+
+**Step 1: Write Tests First**
+1. **Value Object Tests**
+   - [ ] Test `ConferenceId` - UUID generation and validation
+   - [ ] Test `ConferenceName` - Length constraints (3-100 chars), sanitization
+   - [ ] Test `ConferenceSlug` - URL-safe generation, uniqueness validation
+   - [ ] Test `ConferenceStatus` - Enum validation
+   - [ ] Test `CfpStartDate` - Future date validation
+   - [ ] Test `CfpEndDate` - Must be after start date
+   - [ ] Test `CfpConfig` - Date validation, status management
+
+2. **Entity Tests**
+   - [ ] Test `Conference.create()` produces correct initial state (DRAFT)
+   - [ ] Test `Conference.publishCfp()` transitions to CFP_OPEN
+   - [ ] Test invalid state transitions throw errors
+   - [ ] Test invariants are enforced (date order, slug uniqueness)
+
+3. **Domain Service Tests**
+   - [ ] Test `ConferenceValidationService.validateCfpDates()` - BR-001
+   - [ ] Test `ConferenceValidationService.validateName()` - BR-002
+
+**Step 2: Implement to Pass Tests**
+1. **Value Objects**
+   - [ ] Implement `ConferenceId` - UUIDv4 generation
+   - [ ] Implement `ConferenceName` - Validation and sanitization
+   - [ ] Implement `ConferenceSlug` - URL-safe slug generation
+   - [ ] Implement `ConferenceStatus` - Status enum
+   - [ ] Implement `CfpStartDate` - Future date validation
+   - [ ] Implement `CfpEndDate` - Date comparison validation
+   - [ ] Implement `CfpConfig` - Child entity with validation
+
+2. **Entity: Conference**
+   - [ ] Implement aggregate root with state machine
+   - [ ] Implement `create()` method
+   - [ ] Implement `publishCfp()` method
+   - [ ] Implement domain events (ConferenceCreated, CfpOpened)
+
+3. **Entity: Submission** (Stubs for future phases)
+   - [ ] Create basic Submission entity structure
+
+4. **Domain Services**
+   - [ ] Implement `ConferenceValidationService`
+
+**Step 3: Verify**
+- [ ] Run tests: `npm test`
+- [ ] All tests pass
+- [ ] Coverage ≥ 95% for domain layer
+
+#### Deliverables
+- [ ] `src/modules/conference/entities/conference.ts`
+- [ ] `src/modules/conference/entities/submission.ts`
+- [ ] `src/modules/conference/value-objects/conference-id.ts`
+- [ ] `src/modules/conference/value-objects/conference-name.ts`
+- [ ] `src/modules/conference/value-objects/conference-slug.ts`
+- [ ] `src/modules/conference/value-objects/conference-status.ts`
+- [ ] `src/modules/conference/value-objects/cfp-start-date.ts`
+- [ ] `src/modules/conference/value-objects/cfp-end-date.ts`
+- [ ] `src/modules/conference/value-objects/cfp-config.ts`
+- [ ] `src/modules/conference/services/conference-validation-service.ts`
+- [ ] `tests/unit/conference/value-objects/*.test.ts`
+- [ ] `tests/unit/conference/entities/*.test.ts`
 
 ---
 
 ### Phase 2: Domain Interfaces
 
-**Goal:** Define repository contracts and the domain event system. These interfaces let infrastructure and application layers depend on abstractions.
+**Goal:** Implement repository interfaces and domain event system using TDD.
 
 #### Tasks
 
+**Step 1: Write Tests First**
+1. **Repository Interface Tests (Mocked)**
+   - [ ] Test `findById()` returns correct entity
+   - [ ] Test `findBySlug()` returns correct entity
+   - [ ] Test `findByOrganizerId()` returns organizer's conferences
+   - [ ] Test `save()` persists aggregate
+   - [ ] Test error handling (not found, etc.)
+
+2. **Domain Event Tests**
+   - [ ] Test `ConferenceCreated` event structure
+   - [ ] Test `CfpOpened` event structure
+   - [ ] Test event publisher interface
+
+3. **Exception Tests**
+   - [ ] Test `InvalidConferenceError` is thrown correctly
+   - [ ] Test `InvalidCfpConfigError` is thrown correctly
+   - [ ] Test `SlugAlreadyExistsError` is thrown correctly
+   - [ ] Test `FreeTierLimitExceededError` is thrown correctly
+
+**Step 2: Implement to Pass Tests**
 1. **Repository Interface**
-   - [ ] `ConferenceRepository` interface in `src/domain/conference/repositories/`
-   - [ ] Methods: `findById(id)`, `findBySlug(slug)`, `findByOrganizerId(organizerId)`, `findByStatus(status)`, `save(conference)`, `delete(id)`
-   - [ ] Return types use domain entities (not DTOs)
+   - [ ] Implement `ConferenceRepository` interface
 
 2. **Domain Event System**
-   - [ ] Create domain event types: `ConferenceCreated`, `CfpOpened`, `CfpClosed`, `CfpReopened`
-   - [ ] Event publisher interface (`DomainEventPublisher`)
-   - [ ] Event listener contracts
+   - [ ] Create `ConferenceCreated` event type
+   - [ ] Create `CfpOpened` event type
+   - [ ] Implement `DomainEventPublisher` interface
 
 3. **Domain Exception System**
-   - [ ] `InvalidConferenceError` — invalid conference data
-   - [ ] `InvalidCfpConfigError` — invalid CfP configuration
-   - [ ] `ConferenceNotFoundError` — conference does not exist
-   - [ ] `FreeTierLimitExceededError` — organizer exceeded free tier
-   - [ ] `SlugAlreadyExistsError` — slug conflict
+   - [ ] Implement `DomainError` base class
+   - [ ] Implement `InvalidConferenceError`
+   - [ ] Implement `InvalidCfpConfigError`
+   - [ ] Implement `SlugAlreadyExistsError`
+   - [ ] Implement `FreeTierLimitExceededError`
+
+**Step 3: Verify**
+- [ ] Run tests: `npm test`
+- [ ] All tests pass
+- [ ] Coverage ≥ 90%
 
 #### Deliverables
-- [ ] `src/domain/conference/repositories/conference-repository.ts`
-- [ ] `src/domain/conference/events/*.ts` (4 event types)
-- [ ] `src/domain/conference/exceptions/*.ts` (5 error classes)
-- [ ] Unit tests for domain events and exceptions
+- [ ] `src/modules/conference/domain/repositories/conference-repository.ts`
+- [ ] `src/modules/conference/domain/events/conference-created.ts`
+- [ ] `src/modules/conference/domain/events/cfp-opened.ts`
+- [ ] `src/modules/conference/domain/events/domain-event-publisher.ts`
+- [ ] `src/modules/conference/domain/exceptions/*.ts` (5 error classes)
+- [ ] `tests/unit/conference/repository-interface.test.ts`
+- [ ] `tests/unit/conference/events.test.ts`
 
 ---
 
-### Phase 3: Infrastructure & Application
+### Phase 3: Infrastructure & Application (CQRS Pattern)
 
-**Goal:** Implement the database layer, use cases, and external adapters.
+**Goal:** Implement database layer and CQRS handlers using TDD.
 
 #### Tasks
 
-1. **Database Schema (Migration)**
-   - [ ] `conferences` table: id (PK, UUID), organizer_id (FK → users), name, slug (UNIQUE), description, logo_url, status, cfp_start_date, cfp_end_date, created_at, updated_at, deleted_at
-   - [ ] `cfp_configs` table: id (PK), conference_id (FK → conferences CASCADE), status, max_submissions, requires_approval, created_at, updated_at
-   - [ ] RLS policies for conference and cfp_configs isolation
+**Step 1: Write Tests First**
+1. **Command Tests (Mocked Repository)**
+   - [ ] Test `CreateConference` command happy path
+   - [ ] Test `CreateConference` command error paths (validation, slug conflict, tier limit)
+   - [ ] Test validation failures
+   - [ ] Test domain event publishing
 
-2. **Supabase Client**
-   - [ ] `infrastructure/database/supabase-client.ts`
-   - [ ] Auth integration with JWT token
+2. **Query Tests (Mocked Repository)**
+   - [ ] Test `GetConference` query returns correct data
+   - [ ] Test `ListConferences` query returns list
+   - [ ] Test query error handling
+
+3. **Repository Integration Tests**
+   - [ ] Test `save()` persists correctly to Supabase
+   - [ ] Test `findById()` retrieves correctly
+   - [ ] Test `findBySlug()` checks uniqueness
+   - [ ] Test transaction support
+
+**Step 2: Implement to Pass Tests**
+1. **Database Schema**
+   - [ ] Create `conferences` table migration
+   - [ ] Create `cfp_configs` table migration
+   - [ ] Configure RLS policies for conferences
+   - [ ] Configure RLS policies for cfp_configs
+
+2. **Database Client Setup**
+   - [ ] Implement Supabase database client
+   - [ ] Configure authentication integration
 
 3. **Repository Implementation**
-   - [ ] `ConferenceRepository` with all interface methods
-   - [ ] Transaction support for Conference + CfpConfig atomic save
-   - [ ] Slug uniqueness check via `findBySlug`
-   - [ ] Soft delete with `deleted_at`
+   - [ ] Implement `ConferenceRepository` with all methods
+   - [ ] Add transaction support for aggregate persistence
 
-4. **Use Cases**
-   - [ ] `CreateConference` — validates input with Zod, checks slug uniqueness, creates Conference aggregate, publishes CfP, saves, publishes domain events
-   - [ ] `ListConferences` — fetch by organizerId with status filtering
-   - [ ] `GetConference` — fetch by id with organizer authorization
+4. **CQRS Implementation**
+   - [ ] Implement `CreateConferenceCommand` definition
+   - [ ] Implement `CreateConferenceHandler` command handler
+   - [ ] Implement `CreateConferenceDto` response DTO
+   - [ ] Implement `GetConferenceQuery` definition
+   - [ ] Implement `GetConferenceHandler` query handler
+   - [ ] Implement `GetConferenceDto` response DTO
 
-5. **Email Adapter**
-   - [ ] `EmailService` interface with `sendWelcomeEmail()`
-   - [ ] Resend integration (async, best-effort)
+**Step 3: Verify**
+- [ ] Run tests: `npm test`
+- [ ] All tests pass
+- [ ] Integration tests pass
 
 #### Deliverables
-- [ ] Database migration files
-- [ ] RLS policies defined
-- [ ] `src/infrastructure/database/supabase-client.ts`
-- [ ] `src/infrastructure/database/conference-repository.ts`
-- [ ] `src/application/conference/use-cases/create-conference.ts`
-- [ ] `src/application/conference/use-cases/list-conferences.ts`
-- [ ] `src/application/conference/use-cases/get-conference.ts`
-- [ ] `src/infrastructure/external/email-service.ts`
-- [ ] Unit tests for repository and use cases
+- [ ] Database migration files for `conferences` and `cfp_configs`
+- [ ] RLS policies defined in migration
+- [ ] `src/modules/conference/infrastructure/database/conference-repository.ts`
+- [ ] `src/modules/conference/application/commands/create-conference/`
+- [ ] `src/modules/conference/application/queries/get-conference/`
+- [ ] `src/modules/conference/application/dto/conference-dto.ts`
+- [ ] `src/shared/infrastructure/database/supabase-client.ts`
+- [ ] `tests/integration/conference/repository.test.ts`
+- [ ] `tests/unit/conference/commands/create-conference.test.ts`
+- [ ] `tests/unit/conference/queries/get-conference.test.ts`
 
 ---
 
-### Phase 4: RESTful API
+### Phase 4: RESTful API with CQRS Integration
 
-**Goal:** Implement API endpoints following ADR-006 RESTful conventions.
+**Goal:** Implement API endpoints that use CQRS handlers using TDD.
 
 #### Tasks
 
+**Step 1: Write Tests First**
+1. **API Endpoint Tests (Mocked CQRS Handlers)**
+   - [ ] Test `POST /api/v1/conferences` creates conference via command
+   - [ ] Test `GET /api/v1/conferences` returns list via query
+   - [ ] Test `GET /api/v1/conferences/:id` returns conference via query
+   - [ ] Test authentication errors (401)
+   - [ ] Test validation errors (400)
+   - [ ] Test slug conflict errors (409)
+   - [ ] Test tier limit errors (403)
+   - [ ] Test proper response DTOs returned
+
+**Step 2: Implement to Pass Tests**
 1. **API Structure**
-   - [ ] Zod request/response schemas in `src/application/conference/dto/`
-   - [ ] Standard error response format
+   - [ ] Implement `POST /api/v1/conferences` - Create conference (command)
+   - [ ] Implement `GET /api/v1/conferences` - List conferences (query)
+   - [ ] Implement `GET /api/v1/conferences/:id` - Get conference (query)
+   - [ ] Implement proper error response format
+   - [ ] Integrate CQRS handlers into API controllers
 
-2. **Endpoints**
-   - [ ] `GET /api/v1/conferences` — List organizer's conferences (with status filter)
-   - [ ] `POST /api/v1/conferences` — Create conference with CfP configuration
-   - [ ] `GET /api/v1/conferences/:id` — Get conference details
+2. **Authentication**
+   - [ ] Verify user authorization via Auth0
+   - [ ] Integrate with RLS policies
 
-3. **Authentication**
-   - [ ] Extract organizerId from JWT (Auth0)
-   - [ ] Verify organizer authorization on all endpoints
-   - [ ] Return 401/403 for unauthorized access
+3. **Validation**
+   - [ ] Implement `conferenceCreateSchema` Zod validation
+   - [ ] Map request to Command/Query objects
+
+**Step 3: Verify**
+- [ ] Run tests: `npm test`
+- [ ] All API tests pass
+- [ ] Response times <200ms (P95)
 
 #### Deliverables
-- [ ] `src/interfaces/api/v1/conferences/route.ts`
-- [ ] `src/application/conference/dto/create-conference.dto.ts`
-- [ ] `src/application/conference/dto/conference-response.dto.ts`
-- [ ] Unit tests for each endpoint
-- [ ] API tests with mocked repository
+- [ ] API endpoints with proper status codes (201, 400, 401, 403, 409)
+- [ ] Validation schemas for request/response
+- [ ] `tests/api/conference/conferences.test.ts`
+- [ ] API documentation (OpenAPI format)
+- [ ] `src/modules/conference/interfaces/api/v1/conferences/index.ts`
+- [ ] `src/modules/conference/application/dto/conference-dto.ts`
 
 ---
 
-### Phase 5: Frontend
+### Phase 5: User Interface
 
-**Goal:** Build the Next.js pages and components for the conference setup flow.
+**Goal:** Implement user interface layer using TDD.
 
 #### Tasks
 
-1. **Conference Creation Form**
-   - [ ] `/dashboard/conferences/new/page.tsx` — Conference creation page
-   - [ ] Form fields: name, description, logo URL, CfP start date, CfP end date, max submissions, requires approval
-   - [ ] Client-side Zod validation with React Hook Form
-   - [ ] Date picker with validation (end > start, future dates)
-   - [ ] Auto-generated slug preview
-   - [ ] Loading state and error handling
+**Step 1: Write Tests First**
+1. **Component/View Tests**
+   - [ ] Test `ConferenceCreationForm` renders correctly
+   - [ ] Test form validation with Zod
+   - [ ] Test form submission
+   - [ ] Test error handling and display
 
-2. **Conference Dashboard**
-   - [ ] `/dashboard/conferences/page.tsx` — List conferences with status badges
-   - [ ] Conference cards with CfP status, submission count
-   - [ ] Quick action: create new conference
-   - [ ] Navigation to CfP URL
+2. **Page/View Tests**
+   - [ ] Test `Dashboard` view renders conference list
+   - [ ] Test `CreateConference` page renders form
+   - [ ] Test success redirect after creation
 
-3. **Conference Detail**
-   - [ ] `/dashboard/conferences/[id]/page.tsx` — Conference overview
-   - [ ] Display CfP URL with copy button
-   - [ ] Status indicator and quick actions
+**Step 2: Implement to Pass Tests**
+1. **Resource List & Creation**
+   - [ ] Implement `ConferenceList` - List conferences view
+   - [ ] Implement `CreateConference` - Conference creation form
+   - [ ] Implement form validation with Zod
+   - [ ] Implement loading states
+
+2. **Resource Dashboard**
+   - [ ] Implement `ConferenceDetail` - Conference overview
+   - [ ] Implement status display (DRAFT, CFP_OPEN, etc.)
+   - [ ] Implement CfP link sharing
+
+**Step 3: Verify**
+- [ ] Run tests: `npm test`
+- [ ] All component tests pass
+- [ ] Component coverage ≥ 80%
 
 #### Deliverables
-- [ ] Next.js pages and layouts
+- [ ] UI pages/views for conference management
 - [ ] Reusable form components
-- [ ] Zod form validation integration
-- [ ] Component tests (React Testing Library)
+- [ ] Form validation integration
+- [ ] `tests/components/conference/conference-creation.test.tsx`
+- [ ] Component tests
+- [ ] `src/modules/conference/interfaces/web/conference-creation-form.tsx`
+- [ ] `src/modules/conference/interfaces/web/conference-list.tsx`
 
 ---
 
-### Phase 6: Testing & Refinement
+### Phase 6: Validate E2E & Refinement (Outside-In)
 
-**Goal:** Comprehensive test coverage and end-to-end flow validation.
+**Goal:** Validate complete flow with E2E test from Phase 0 and achieve comprehensive coverage.
 
 #### Tasks
 
-1. **Unit Tests**
-   - [ ] Domain objects: 95%+ coverage
-   - [ ] Use cases: 90%+ coverage
-   - [ ] Value objects: 100% coverage
+**Step 1: Run E2E Test (From Phase 0)**
+1. **Execute E2E**
+   - [ ] Run E2E test: Journey 01 - Setup Conference
+   - [ ] Check if E2E PASSES
+   - [ ] If FAILS, identify missing pieces
 
-2. **Integration Tests**
-   - [ ] Conference creation: create → publish CfP → verify CfpConfig
-   - [ ] State transition validation (all legal transitions)
-   - [ ] Error path testing (validation, slug conflicts, tier limits)
+2. **Fix Remaining Issues**
+   - [ ] Fix any failing E2E steps
+   - [ ] Address edge cases not covered
+   - [ ] Validate error scenarios
 
-3. **E2E Tests**
-   - [ ] **Flow E2E: Journey 01** — Complete user journey: login → create conference → verify CfP URL → dashboard redirect
-   - [ ] Journey steps from `journey-01-setup-conference.md`
-   - [ ] Error scenarios: invalid dates, duplicate slug, unauthenticated access
+**Step 2: Integration Tests**
+1. **Integration Tests**
+   - [ ] Test complete Conference lifecycle: DRAFT → CFP_OPEN
+   - [ ] Test state transition validation
+   - [ ] Test error path coverage
 
-4. **Refinement**
-   - [ ] Performance: API response <200ms (P95)
-   - [ ] Error handling polish across all layers
-   - [ ] Documentation updates (API docs, component docs)
+**Step 3: Final Validation**
+- [ ] Run E2E: `npm run test:e2e` - Should PASS
+- [ ] Run tests: `npm test` - Should PASS
+- [ ] Run lint: `npm run lint` - Should PASS
+- [ ] Run typecheck: `npm run typecheck` - Should PASS
+- [ ] All checks pass
 
 #### Deliverables
-- [ ] Test coverage reports
-- [ ] E2E test suite (`tests/e2e/journey-01-setup-conference.spec.ts`)
-- [ ] Performance benchmarks
+- [ ] E2E test suite (`tests/e2e/journey-01-setup-conference.spec.ts`) - **NOW PASSING**
+- [ ] Test coverage reports (≥80% overall)
+- [ ] User testing feedback incorporated
 - [ ] Final documentation
 
 ---
 
 ## 🚨 Key Constraints & Considerations
 
-### From ADR-009 (DDD)
-- Domain entities use methods (`publishCfp()`, `closeCfp()`), not public setters
-- Value objects encapsulate all validation logic
-- Repository pattern abstracts Supabase from domain
-- No circular dependencies between layers
+### From Project Guidelines
+- **AGENTS.md**: Follow definition of done (tests, lint, typecheck all pass)
+- **AGENTS.md**: Maximum 300 lines per file - split large files
+- **AGENTS.md**: Use Zod for all input validation
+- **AGENTS.md**: Follow DDD layer boundaries strictly
+- **AGENTS.md**: Think before coding - plan and validate approach
+- **AGENTS.md**: Search before creating - look for existing code first
 
-### From ADR-007 (Zod)
-- Client-side validation before API calls (React Hook Form)
-- Server-side validation in API routes (same schema)
-- Zod schemas in `src/application/conference/dto/`
+### From Flow Documentation
+- Flow steps must be implemented in order (Steps 1-17)
+- Conference must be created in DRAFT state, then transition to CFP_OPEN
+- Domain events must be published (ConferenceCreated, CfpOpened)
+- E2E tests validate complete flow completion
+- Multiple business rules must be enforced (BR-001 to BR-004)
 
-### From ADR-006 (REST)
-- Resource-based URLs: `/api/v1/conferences`
-- HTTP verbs for actions (POST for create)
-- Standard status codes: 201 Created, 400 Bad Request, 403 Forbidden, 409 Conflict, 500 Internal Server Error
+### From Technical Architecture
+*Based on ADR index review, list the technical architecture decisions that apply to this flow.*
 
-### From ADR-002 (Supabase)
-- RLS policies for organizer isolation
-- PostgreSQL foreign keys with CASCADE delete for CfpConfig
-- Soft delete with `deleted_at` column
-
-### From Journey 01 Flow Documentation
-- Conference goes `DRAFT` → `CFP_OPEN` in single operation (no intermediate save)
-- CfpConfig created atomically with Conference
-- Domain events published before response is sent
-- Welcome email is async/best-effort (never blocks response)
-- Free tier limit (5 active conferences) checked before creation
-- Slug uniqueness enforced via database constraint + application-level check
+- [Fill from ADR index - e.g., API design pattern, Database strategy, Authentication approach, etc.]
+- [Fill from ADR index - e.g., Validation strategy, Data access pattern, etc.]
+- [Fill from ADR index - e.g., Any other relevant technical decisions]
 
 ---
 
 ## 🎯 Success Criteria
 
 ### Functional
-- [ ] Organizer can create a conference with valid name, dates, and CfP settings
-- [ ] Conference transitions from `DRAFT` → `CFP_OPEN` on creation
-- [ ] `CfpConfig` is created atomically with the conference
-- [ ] Slug is generated and unique across all conferences
-- [ ] `ConferenceCreated` and `CfpOpened` domain events are published
-- [ ] Welcome email is sent asynchronously after creation
-- [ ] Organizer is redirected to dashboard with CfP link on success
-- [ ] Validation errors display inline (invalid dates, slug conflicts)
-- [ ] Free tier limit (5 conferences) is enforced
+- [ ] Can create conference in DRAFT state
+- [ ] Can transition to CFP_OPEN state via `publishCfp()`
+- [ ] Can cancel conference (DRAFT or CFP_OPEN only)
+- [ ] All domain invariants enforced (date order, slug uniqueness, tier limits)
+- [ ] All flow steps completed successfully (17 steps)
+- [ ] Domain events published correctly
+- [ ] [Fill from ADR index - e.g., Architecture pattern compliance]
 
 ### Non-Functional
 - [ ] 95%+ test coverage for domain layer
-- [ ] 90%+ for use cases and application layer
+- [ ] 90%+ for application layer
+- [ ] 80%+ overall coverage
 - [ ] API response <200ms (P95)
+- [ ] [Fill from ADR index - e.g., Architecture pattern compliance]
+- [ ] [Fill from ADR index - e.g., Data access pattern compliance]
 - [ ] Zero data corruption incidents
 - [ ] Zero unauthorized access incidents
-- [ ] All ADR compliance checks passed
+- [ ] All linting rules pass
+- [ ] All type checks pass
 
 ---
 
 ## 🔗 Related Documentation
 
-- [Bounded Context README](./README.md)
-- [Conference Entity](../entities/conference.md)
-- [CfpConfig Entity](../entities/cfp-config.md)
-- [Business Rule: CfP Dates Validation](../business-rules/BR-001-cfp-dates-validation.md)
-- [Business Rule: Conference Name Validation](../business-rules/BR-002-conference-name-validation.md)
-- [Business Rule: Slug Uniqueness](../business-rules/BR-003-slug-uniqueness.md)
-- [Business Rule: Free Tier Limit](../business-rules/BR-004-free-tier-conference-limit.md)
-- [Invariant: State Transition Validity](../invariants/INV-001-state-transition-validity.md)
-- [Invariant: Cfp Date Order](../invariants/INV-002-cfp-date-order.md)
-- [Invariant: Slug Uniqueness](../invariants/INV-003-slug-uniqueness.md)
+- [Conference Bounded Context README](../README.md)
+- [Conference Entity Documentation](../entities/conference.md)
+- [CfpConfig Entity Documentation](../entities/cfp-config.md)
+- [Conference Value Objects](../value-objects/)
 - **Flow Documentation:** [./journey-01-setup-conference.md](./journey-01-setup-conference.md)
-- [Architecture Decision Records](../../../adr/)
+- [Architecture Decision Records](../../adr/)
+- [AGENTS.md](../../../../AGENTS.md) - Project conventions and quality standards
 
 ---
 
-*This development plan is derived from the project's ADRs, domain specifications, and Journey 01 flow documentation.*
+*This development plan is derived from the project's ADRs and domain specifications.*
+*Last updated: 2026-07-03*
