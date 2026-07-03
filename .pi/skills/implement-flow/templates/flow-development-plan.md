@@ -63,56 +63,69 @@ This plan follows a **hybrid TDD approach** combining outside-in and inside-out 
 
 ---
 
-## 🏗️ DDD Structure - [Bounded Context]
+## 🏗️ Module-Based DDD Structure - [Bounded Context]
 
-### Project Layout (Technology-Agnostic)
+### Project Layout (Modular Architecture)
 
 ```
 src/
-├── domain/                    # Business logic (vendor-agnostic)
-│   └── [context]/
-│       ├── entities/
-│       │   ├── [entity].[ext]           # Entity name
-│       │   └── [child-entity].[ext]     # Child entity
-│       ├── value-objects/
-│       │   ├── [vo1].[ext]              # Value object
-│       │   └── [vo2].[ext]              # Value object
-│       ├── services/
-│       │   └── [domain-service].[ext]   # Business rules
-│       └── repositories/
-│           └── [entity]-repository.[ext]   # Interface
+├── modules/                    # Feature modules (bounded contexts)
+│   └── [context]/              # e.g., conference, event, submission
+│       ├── domain/             # Domain layer for this module
+│       │   ├── entities/
+│       │   │   ├── [entity].[ext]
+│       │   │   └── [child-entity].[ext]
+│       │   ├── value-objects/
+│       │   │   └── [vo].[ext]
+│       │   ├── services/
+│       │   │   └── [domain-service].[ext]
+│       │   └── repositories/
+│       │       └── [entity]-repository.[ext]   # Interface
+│       ├── application/        # Use cases for this module
+│       │   ├── use-cases/
+│       │   │   └── [use-case].[ext]
+│       │   └── dto/
+│       │       └── [resource]-dto.[ext]
+│       ├── infrastructure/     # Implementations for this module
+│       │   └── database/
+│       │       └── [entity]-repository.[ext]   # Concrete impl
+│       └── interfaces/         # API/UI for this module
+│           └── api/
+│               └── v1/
+│                   └── [resource]/
+│                       └── [handler].[ext]
 │
-├── application/               # Use cases
-│   └── [context]/
-│       ├── use-cases/
-│       │   └── [use-case].[ext]         # Business logic
-│       └── dto/                      # Request/Response types
-│           └── [resource]-dto.[ext]
-│
-├── infrastructure/            # External implementations
-│   ├── external/              # Email, payments, etc.
-│   └── database/              # Database implementations
-│       └── [entity]-repository.[ext]    # Concrete implementation
-│
-└── interfaces/                # Entry points (API, UI, CLI, etc.)
-    ├── api/                   # API endpoints
-    │   └── v1/
-    │       └── [resource]/
-    │           └── [route-handler].[ext]
-    └── web/                   # Web UI (technology TBD)
-        └── [resource]/
-            └── [view-component].[ext]
+└── shared/                     # Cross-cutting concerns
+    ├── domain/                 # Shared VOs, exceptions
+    └── infrastructure/         # Shared database client, etc.
 ```
 
 *Note: `[ext]` represents the language-specific file extension (e.g., `.ts`, `.kt`, `.java`)*
 
-*Note: File extensions and specific technologies will be determined during implementation.*
+**Advantages of Module-Based Organization:**
+- ✅ High cohesion - all code for a feature is together
+- ✅ Independent modules - change one feature without affecting others
+- ✅ Easier navigation - find all conference code in one place
+- ✅ Better for scaling - add features without touching existing code
+- ✅ Clear boundaries - no accidental dependencies between features
 
 ---
 
-## 🗺️ [Primary Entity] Lifecycle (State Machine)
+## 🗺️ Entity Lifecycle Reference
 
-[Include state machine diagram for the main entity in this flow]
+**Source:** See [Flow Documentation](./[flow-filename].md) for complete state machine diagrams.
+
+**Key States for This Flow:**
+| State | Description | Phase Created |
+|-------|-------------|---------------|
+| [State 1] | [Brief description] | Phase [X] |
+| [State 2] | [Brief description] | Phase [X] |
+
+**Key Transitions:**
+| Transition | Method | Flow Steps |
+|------------|--------|------------|
+| [Transition 1] | `[method1]()` | Steps [X-Y] |
+| [Transition 2] | `[method2]()` | Steps [Y-Z] |
 
 ---
 
@@ -189,10 +202,10 @@ src/
 - [ ] Coverage ≥ 95% for domain layer
 
 #### Deliverables
-- [ ] `domains/[context]/entities/[entity].[ext]`
-- [ ] `domains/[context]/entities/[child-entity].[ext]`
-- [ ] `domains/[context]/value-objects/*.`[ext] (8 files)
-- [ ] `domains/[context]/services/[domain-service].[ext]`
+- [ ] `modules/[context]/entities/[entity].[ext]`
+- [ ] `modules/[context]/entities/[child-entity].[ext]`
+- [ ] `modules/[context]/value-objects/*.`[ext] (8 files)
+- [ ] `modules/[context]/services/[domain-service].[ext]`
 - [ ] `tests/unit/[context]/value-objects/*.test.`[ext]
 - [ ] `tests/unit/[context]/entities/*.test.`[ext]
 
@@ -236,9 +249,9 @@ src/
 - [ ] Coverage ≥ 90%
 
 #### Deliverables
-- [ ] `domains/[context]/repositories/[entity]-repository.[ext]`
-- [ ] `domains/[context]/events/*.`[ext] (8 event types)
-- [ ] `domains/[context]/exceptions/*.`[ext] (6 error classes)
+- [ ] `modules/[context]/repositories/[entity]-repository.[ext]`
+- [ ] `modules/[context]/events/*.`[ext] (8 event types)
+- [ ] `modules/[context]/exceptions/*.`[ext] (6 error classes)
 - [ ] `tests/unit/[context]/repository-interface.test.`[ext]
 - [ ] `tests/unit/[context]/events.test.`[ext]
 
@@ -287,8 +300,8 @@ src/
 #### Deliverables
 - [ ] Database migration files
 - [ ] RLS policies defined
-- [ ] `infrastructure/database/[entity]-repository.[ext]`
-- [ ] `application/[context]/use-cases/*.`[ext] (6-8 use cases)
+- [ ] `modules/[context]/infrastructure/database/[entity]-repository.[ext]`
+- [ ] `modules/[context]/application/use-cases/*.`[ext] (6-8 use cases)
 - [ ] `tests/integration/[context]/repository.test.`[ext]
 - [ ] `tests/unit/[context]/use-cases/*.test.`[ext]
 
@@ -330,6 +343,7 @@ src/
 - [ ] Validation schemas for request/response
 - [ ] `tests/api/[context]/[resource].test.`[ext]
 - [ ] API documentation (OpenAPI format)
+- [ ] `modules/[context]/interfaces/api/v1/[resource]/[handler].[ext]`
 
 ---
 
@@ -374,6 +388,7 @@ src/
 - [ ] Form validation
 - [ ] `tests/components/[context]/[resource].test.`[ext]
 - [ ] Component tests
+- [ ] `modules/[context]/interfaces/web/[resource]/[view-component].[ext]`
 
 ---
 

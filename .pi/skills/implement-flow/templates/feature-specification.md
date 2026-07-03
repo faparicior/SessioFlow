@@ -53,21 +53,21 @@
 ### Files to Create/Modify
 
 **Domain Layer:**
-- [ ] `domains/[context]/entities/[entity].[ext]`
-- [ ] `domains/[context]/value-objects/[vo].[ext]`
-- [ ] `domains/[context]/services/[service].[ext]`
+- [ ] `modules/[context]/entities/[entity].[ext]`
+- [ ] `modules/[context]/value-objects/[vo].[ext]`
+- [ ] `modules/[context]/services/[service].[ext]`
 
 **Application Layer:**
-- [ ] `application/[context]/use-cases/[use-case].[ext]`
-- [ ] `application/[context]/dto/[dto].[ext]`
+- [ ] `modules/[context]/application/use-cases/[use-case].[ext]`
+- [ ] `modules/[context]/application/dto/[dto].[ext]`
 
 **Infrastructure Layer:**
-- [ ] `infrastructure/database/[entity]-repository.[ext]`
+- [ ] `modules/[context]/infrastructure/database/[entity]-repository.[ext]`
 - [ ] Database migrations
 
 **Interface Layer:**
-- [ ] `interfaces/api/v1/[resource]/[handler].[ext]`
-- [ ] `interfaces/web/[resource]/[view-component].[ext]`
+- [ ] `modules/[context]/interfaces/api/v1/[resource]/[handler].[ext]`
+- [ ] `modules/[context]/interfaces/web/[resource]/[view-component].[ext]`
 
 ---
 

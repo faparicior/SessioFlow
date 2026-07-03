@@ -68,6 +68,28 @@ This skill guides feature implementation through flow-driven analysis, planning,
 9. Implement API/UI → E2E PASSES!
 ```
 
+**Module-Based Organization:**
+```
+src/
+├── modules/                    # Feature modules (bounded contexts)
+│   ├── [module-name]/          # e.g., conference, event, submission
+│   │   ├── domain/             # Domain layer for this module
+│   │   │   ├── entities/
+│   │   │   ├── value-objects/
+│   │   │   ├── services/
+│   │   │   └── repositories/   # Interface
+│   │   ├── application/        # Use cases for this module
+│   │   │   └── use-cases/
+│   │   ├── infrastructure/     # Implementations for this module
+│   │   │   └── database/
+│   │   └── interfaces/         # API/UI for this module
+│   │       └── api/
+│   └── [module-name]/
+└── shared/                     # Cross-cutting concerns
+    ├── domain/                 # Shared VOs, exceptions
+    └── infrastructure/         # Shared database client, etc.
+```
+
 *Note: Adjust based on feature requirements and existing patterns.*
 
 ### Step 4: Validate & Update
