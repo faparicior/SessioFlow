@@ -417,15 +417,10 @@ src/
 
 ## 🚨 Key Constraints & Considerations
 
-### From ADR-009 (DDD)
-- Domain entities use methods, not public setters
-- Value objects encapsulate validation
-- Repository pattern for infrastructure abstraction
-
-### From ADR-007 (Validation)
-- Client-side validation before API calls
-- Server-side validation in API routes
-- Validation schemas in `lib/validations/`
+### From Project Guidelines
+- [Fill in relevant constraints from AGENTS.md or project documentation]
+- [Example: [ADR-[XXX]] Specific constraint description]
+- [Example: [ADR-[XXX]] Specific constraint description]
 
 ### From Flow Documentation
 - Flow steps must be implemented in order
@@ -434,15 +429,11 @@ src/
 - E2E tests validate complete flow completion
 - Multiple features may contribute to a single flow
 
-### From ADR-006 (REST)
-- Resource-based URLs
-- HTTP verbs for actions
-- Standard status codes (200, 201, 400, 404, 409)
-
-### From ADR-002 (Database)
-- RLS for [context] isolation
-- Database foreign keys for relationships
-- Soft delete with `deleted_at` column
+### From Technical Architecture
+- [Fill in relevant technical constraints from project ADRs]
+- [Example: [ADR-[XXX]] API design pattern]
+- [Example: [ADR-[XXX]] Database strategy]
+- [Example: [ADR-[XXX]] Authentication approach]
 
 ---
 
