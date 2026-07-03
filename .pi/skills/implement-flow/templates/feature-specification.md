@@ -71,9 +71,18 @@
 
 ---
 
-## 🧪 Test-Driven Implementation
+## 🧪 Hybrid TDD Implementation
 
-### Step 1: Write Tests First
+### Phase 0: Define E2E Contract (Outside-In)
+
+**Step 1: Write E2E Test**
+- [ ] Write E2E test for complete flow: [Flow step]
+- [ ] Document acceptance criteria
+- [ ] **Expected to FAIL initially** - defines the goal
+
+### Phase 1-3: Build Inside-Out
+
+**Step 2: Write Tests First**
 
 **Unit Tests:**
 - [ ] Test `[Entity]` creates with valid data
@@ -85,22 +94,23 @@
 - [ ] Test `[UseCase]` with mocked dependencies
 - [ ] Test repository integration
 
-**E2E Tests:**
-- [ ] Test complete flow step: [which step in the parent flow]
-- [ ] Related to: [journey-XX-[name].md]
-
-### Step 2: Implement to Pass Tests
-
+**Step 3: Implement to Pass Tests**
 - [ ] Implement domain objects
 - [ ] Implement use cases
 - [ ] Implement infrastructure
 - [ ] Make all tests pass
 
-### Step 3: Refactor
-
+**Step 4: Refactor**
 - [ ] Clean up code
 - [ ] Maintain test coverage
 - [ ] Document behavior
+
+### Phase 4: Validate E2E (Outside-In)
+
+**Step 5: Run E2E Test**
+- [ ] Run E2E test from Phase 0
+- [ ] **Expected to PASS** - goal achieved!
+- [ ] Fix any remaining issues
 
 ---
 
@@ -146,12 +156,12 @@
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Tests Written | 📋 | Write tests first |
+| E2E Contract | 📋 | Write failing E2E test (Phase 0) |
+| Tests Written | 📋 | Write unit/integration tests |
 | Implementation | 📋 | Implement to pass tests |
 | Refactoring | 📋 | Clean up while tests pass |
-| Integration | 📋 | Integration tests |
-| E2E | 📋 | End-to-end validation |
+| E2E Validation | 📋 | Run E2E - should PASS |
 
 ---
 
-*This feature spec is part of the [Flow Name] development plan and follows Test-Driven Development.*
+*This feature spec is part of the [Flow Name] development plan and follows Hybrid TDD (Outside-In + Inside-Out).*

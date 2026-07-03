@@ -36,6 +36,33 @@ This document outlines the development plan for implementing **[Flow Name]**.
 
 ---
 
+## 🎯 Hybrid TDD Strategy
+
+This plan follows a **hybrid TDD approach** combining outside-in and inside-out strategies:
+
+### Phase 0: Define E2E Contract (Outside-In)
+- Write E2E test that describes the complete user journey
+- Document acceptance criteria from flow documentation
+- **This test FAILS initially** - it defines the goal
+
+### Phase 1-5: Build Inside-Out
+- Implement domain → application → infrastructure → interfaces
+- Each layer has its own tests
+- E2E test still FAILS until all layers are complete
+
+### Phase 6: Validate E2E (Outside-In)
+- Run the E2E test from Phase 0
+- Fix any remaining issues
+- **E2E test PASSES** - goal achieved!
+
+**Benefits:**
+- ✅ E2E vision from the start
+- ✅ Solid domain model (inside-out)
+- ✅ Working feature at the end (outside-in validation)
+- ✅ Clear progress tracking (E2E as the "North Star")
+
+---
+
 ## 🏗️ DDD Structure - [Bounded Context]
 
 ### Project Layout (Technology-Agnostic)
@@ -91,7 +118,31 @@ src/
 
 ## 📦 Implementation Phases
 
-### Phase 1: Core Domain
+### Phase 0: Define E2E Contract (Outside-In)
+
+**Goal:** Define the complete user journey as a failing E2E test.
+
+#### Tasks
+
+**Step 1: Write E2E Test**
+- [ ] Write E2E test for complete flow: [Flow Name]
+- [ ] Document acceptance criteria from flow documentation
+- [ ] Identify key journey steps from [journey-XX-[name].md]
+- [ ] Define success criteria (what makes E2E pass)
+
+**Step 2: Run E2E (Expected to Fail)**
+- [ ] Run E2E test → Should FAIL (no implementation yet)
+- [ ] Document what's missing
+- [ ] Use this as the "North Star" for the project
+
+#### Deliverables
+- [ ] `tests/e2e/[flow-name].spec.[ext]` - E2E test that defines the goal
+- [ ] E2E test documentation (acceptance criteria)
+- [ ] Initial failure report (what's missing)
+
+---
+
+### Phase 1: Core Domain (Inside-Out)
 
 **Goal:** Implement domain model with entities, value objects, and domain services using TDD.
 
@@ -326,43 +377,39 @@ src/
 
 ---
 
-### Phase 6: E2E Testing & Refinement
+### Phase 6: Validate E2E & Refinement (Outside-In)
 
-**Goal:** Validate complete flow and achieve comprehensive coverage.
+**Goal:** Validate complete flow with E2E test from Phase 0 and achieve comprehensive coverage.
 
 #### Tasks
 
-**Step 1: Write E2E Tests First**
-1. **Flow E2E Tests**
-   - [ ] Test complete user journey: [Flow Name]
-   - [ ] Test each journey step from flow documentation
-   - [ ] Test error scenarios
+**Step 1: Run E2E Test (From Phase 0)**
+1. **Execute E2E**
+   - [ ] Run E2E test: [Flow Name]
+   - [ ] Check if E2E PASSES
+   - [ ] If FAILS, identify missing pieces
 
-2. **Integration Tests**
+2. **Fix Remaining Issues**
+   - [ ] Fix any failing E2E steps
+   - [ ] Address edge cases not covered
+   - [ ] Validate error scenarios
+
+**Step 2: Integration Tests**
+1. **Integration Tests**
    - [ ] Test complete [entity] lifecycle: DRAFT → COMPLETED
    - [ ] Test state transition validation
    - [ ] Test error path coverage
 
-**Step 2: Verify & Refine**
-1. **Run E2E Tests**
-   - [ ] All E2E tests pass
-   - [ ] Fix any failing tests
-
-2. **Refinement**
-   - [ ] Performance optimization
-   - [ ] Error handling polish
-   - [ ] Documentation updates
-
 **Step 3: Final Validation**
+- [ ] Run E2E: `<e2e command>` - Should PASS
 - [ ] Run tests: `<test command>`
-- [ ] Run E2E: `<e2e command>`
 - [ ] Run lint: `<lint command>`
 - [ ] Run typecheck: `<typecheck command>`
 - [ ] All checks pass
 
 #### Deliverables
+- [ ] E2E test suite (`tests/e2e/[flow-name].spec.`[ext]) - **NOW PASSING**
 - [ ] Test coverage reports (≥80% overall)
-- [ ] E2E test suite (`tests/e2e/[flow-name].spec.`[ext])
 - [ ] User testing feedback incorporated
 - [ ] Final documentation
 

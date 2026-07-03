@@ -24,35 +24,49 @@ This skill guides feature implementation through flow-driven analysis, planning,
 - Review relevant ADRs in `docs/adr/`
 - Follow conventions in AGENTS.md
 
-### Step 3: Implement Incrementally (Test-Driven Development)
+### Step 3: Implement Incrementally (Hybrid TDD)
 
-**Recommended Progression** (TDD - Red-Green-Refactor):
+**Hybrid Approach** (Outside-In + Inside-Out):
 
-1. **Domain Layer**
+1. **Define E2E Contract** (Outside)
+   - Write E2E test that describes complete user journey
+   - Document acceptance criteria from flow documentation
+   - This test will FAIL initially (defines the goal)
+
+2. **Build Domain Core** (Inside-Out)
    - Write tests for value objects → Implement → Verify
    - Write tests for entities → Implement → Verify
    - Write tests for domain services → Implement → Verify
 
-2. **Domain Interfaces**
-   - Write tests for repository interface (mocked) → Implement → Verify
-   - Write tests for domain events → Implement → Verify
-   - Write tests for domain exceptions → Implement → Verify
+3. **Build Application Layer** (Inside-Out)
+   - Write use case tests (with mocked repository) → Implement → Verify
+   - Write repository interface tests (mocked) → Implement → Verify
 
-3. **Infrastructure & Application**
-   - Write tests for use cases (with mocked repository) → Implement → Verify
+4. **Build Infrastructure** (Inside-Out)
    - Write integration tests for repository → Implement → Verify
+   - Implement database schema and migrations
 
-4. **Interfaces**
-   - Write API tests (with mocked use cases) → Implement → Verify
-   - Write frontend component tests → Implement → Verify
+5. **Build Interface Layer** (Outside-In)
+   - Write API tests → Implement → Verify
+   - Write UI component tests → Implement → Verify
 
-5. **E2E Testing**
-   - Write E2E test for complete flow → Implement missing pieces → Verify
+6. **Validate E2E** (Outside)
+   - Run the E2E test from Step 1
+   - Fix any failing tests
+   - Verify complete user journey works
 
-**TDD Workflow for Each Feature**:
-1. **Red**: Write a failing test that defines expected behavior
-2. **Green**: Implement minimum code to pass the test
-3. **Refactor**: Clean up while keeping tests passing
+**Hybrid TDD Workflow:**
+```
+1. Write E2E test (fails) - defines the goal
+2. Write domain tests (fails) - defines the core
+3. Implement domain → E2E still fails (missing layers)
+4. Write use case tests (fails)
+5. Implement use cases → E2E still fails (missing infrastructure)
+6. Write integration tests (fails)
+7. Implement infrastructure → E2E still fails (missing API/UI)
+8. Write API/UI tests (fails)
+9. Implement API/UI → E2E PASSES!
+```
 
 *Note: Adjust based on feature requirements and existing patterns.*
 
