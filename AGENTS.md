@@ -56,25 +56,29 @@ npm run start            # Start production server
 
 ```
 src/
-├── app/                    # Next.js routing only
-├── domain/                 # Business logic (vendor-agnostic)
-│   └── conference/
-│       ├── conference.ts  # Conference entity
-│       ├── submission.ts  # Submission entity
-│       ├── value-objects/ # ConferenceId, ConferenceName, CfpDates
-│       ├── services/      # Domain services
-│       └── repositories/  # Repository interfaces
-├── application/            # Use cases
-│   └── conference/             # CreateConference, SubmitProposal
-├── infrastructure/         # External implementations
-│   ├── external/          # Auth0, Resend, Cloudflare R2
-│   └── database/          # Supabase repositories
-└── interfaces/            # Web and API entry points
-    ├── web/               # Next.js pages
-    └── api/               # RESTful endpoints
+├── modules/                    # Feature modules (bounded contexts)
+│   ├── conference/             # Conference bounded context
+│   │   ├── domain/             # Domain layer
+│   │   │   ├── conference.ts   # Conference entity
+│   │   │   ├── submission.ts   # Submission entity
+│   │   │   ├── value-objects/  # ConferenceId, ConferenceName, CfpDates
+│   │   │   ├── services/       # Domain services
+│   │   │   └── repositories/   # Repository interfaces
+│   │   ├── application/        # Application layer
+│   │   │   └── use-cases/      # CreateConference, SubmitProposal
+│   │   ├── infrastructure/     # Infrastructure layer
+│   │   │   └── database/       # Repository implementations
+│   │   └── interfaces/         # Interface layer
+│   │       ├── api/            # API endpoints
+│   │       └── web/            # Web UI components
+│   └── [other-modules]/        # Other bounded contexts
+│
+└── shared/                     # Cross-cutting concerns
+    ├── domain/                 # Shared domain objects
+    └── infrastructure/         # Shared infrastructure
 
-docs/                       # Documentation (ARCHITECTURE.md, ADRS.md, etc.)
-tests/                      # Unit, integration, and E2E tests
+ docs/                          # Documentation
+ tests/                         # Unit, integration, and E2E tests
 ```
 
 ## 💻 Code Style
@@ -128,15 +132,15 @@ try {
 ## 🧪 Testing Guidelines
 
 ### Test Organization
-- **Unit tests**: `tests/unit/[domain]/[feature].test.ts`
-- **Integration tests**: `tests/integration/[feature].test.ts`
+- **Unit tests**: `tests/unit/[module]/[feature].test.ts`
+- **Integration tests**: `tests/integration/[module]/[feature].test.ts`
 - **E2E tests**: `tests/e2e/[feature].spec.ts`
 
 ### Test Example
 ```typescript
 // tests/unit/conference/conference-name.test.ts
 import { describe, it, expect } from 'vitest';
-import { ConferenceName } from '@/domains/conference/value-objects/conference-name';
+import { ConferenceName } from '@/modules/conference/domain/value-objects/conference-name';
 
 describe('ConferenceName', () => {
   it('creates valid conference name', () => {
@@ -221,8 +225,8 @@ All AI agents working on this project must follow these 6 core principles:
 
 **Before creating new code:**
 - Use `rg` (ripgrep) to search for similar functionality
-- Check `src/domains/` for existing value objects or entities
-- Look in `src/application/` for similar use cases
+- Check `src/modules/[context]/domain/` for existing value objects or entities
+- Look in `src/modules/[context]/application/` for similar use cases
 - Review existing tests for patterns
 - **Only create new code if nothing suitable exists**
 

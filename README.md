@@ -248,125 +248,55 @@ Key decisions that shape the SessioFlow architecture:
 
 ## 🏗️ Project Structure
 
-SessioFlow follows Domain-Driven Design (DDD) principles with vendor abstraction layers:
+SessioFlow follows Domain-Driven Design (DDD) principles with modular architecture and vendor abstraction layers:
 
 ```
 src/
-├── domain/                     # Domain layer (business logic)
-│   ├── auth/                   # Authentication bounded context
-│   │   ├── auth.provider.ts    # AuthProvider interface
-│   │   ├── user.ts             # User entity
-│   │   ├── value-objects/      # UserId, Email, Role
-│   │   └── services/           # Auth rules, validation
-│   ├── storage/                # Storage bounded context
-│   │   ├── storage.provider.ts # StorageProvider interface
-│   │   ├── file.ts             # File entity
-│   │   ├── value-objects/      # FileId, ContentType
-│   │   └── services/           # Storage rules
-│   ├── email/                  # Email bounded context (optional)
-│   │   ├── email.provider.ts   # EmailProvider interface
-│   │   └── value-objects/      # EmailAddress, EmailTemplate
+├── modules/                    # Feature modules (bounded contexts)
 │   ├── conference/             # Conference bounded context
-│   │   ├── conference.ts       # Conference entity
-│   │   ├── conference.repository.ts
-│   │   ├── value-objects/      # ConferenceId, ConferenceName, CfpDates
-│   │   └── services/           # Conference domain rules
+│   │   ├── domain/             # Domain layer
+│   │   │   ├── conference.ts   # Conference entity
+│   │   │   ├── cfp-config.ts   # CfpConfig child entity
+│   │   │   ├── value-objects/  # ConferenceId, ConferenceName, CfpDates, etc.
+│   │   │   ├── services/       # Domain services
+│   │   │   └── repositories/   # Repository interfaces
+│   │   ├── application/        # Application layer
+│   │   │   └── use-cases/      # CreateConference, PublishCfp, etc.
+│   │   ├── infrastructure/     # Infrastructure layer
+│   │   │   └── database/       # Repository implementations
+│   │   └── interfaces/         # Interface layer
+│   │       └── api/            # API endpoints
 │   ├── submission/             # Submission bounded context
-│   │   ├── submission.ts       # Submission entity
-│   │   ├── speaker.ts          # Speaker entity
-│   │   ├── submission.repository.ts
-│   │   ├── value-objects/      # SubmissionId, Abstract, Title
-│   │   └── services/           # Submission validation rules
+│   │   ├── domain/
+│   │   ├── application/
+│   │   ├── infrastructure/
+│   │   └── interfaces/
 │   ├── review/                 # Review bounded context
-│   │   ├── review.ts           # Review entity
-│   │   ├── reviewer.ts         # Reviewer entity
-│   │   ├── review.repository.ts
-│   │   ├── value-objects/      # ReviewId, Criteria, Rating
-│   │   └── services/           # Review algorithms, bias detection
+│   │   ├── domain/
+│   │   ├── application/
+│   │   ├── infrastructure/
+│   │   └── interfaces/
 │   └── scheduling/             # Scheduling bounded context
-│       ├── schedule.ts         # Schedule entity
-│       ├── time-slot.ts        # TimeSlot entity
-│       ├── schedule.repository.ts
-│       ├── value-objects/      # SlotId, Conflict, Availability
-│       └── services/           # Scheduling algorithms, conflict detection
+│       ├── domain/
+│       ├── application/
+│       ├── infrastructure/
+│       └── interfaces/
 │
-├── application/                # Application layer (CQRS pattern)
-│   ├── auth/
-│   │   ├── commands/
-│   │   │   ├── login/
-│   │   │   │   ├── login.command.ts
-│   │   │   │   ├── login.handler.ts
-│   │   │   │   └── login.dto.ts
-│   │   │   └── logout/
-│   │   ├── queries/
-│   │   │   └── get-current-user/
-│   │   │       ├── get-current-user.query.ts
-│   │   │       ├── get-current-user.handler.ts
-│   │   │       └── get-current-user.dto.ts
-│   ├── storage/
-│   │   ├── commands/
-│   │   │   └── upload-file/
-│   │   └── queries/
-│   │       └── get-file-url/
-│   ├── email/
-│   │   └── commands/
-│   │       └── send-email/
-│   ├── conference/
-│   │   ├── commands/
-│   │   │   ├── create-conference/
-│   │   │   │   ├── create-conference.command.ts
-│   │   │   │   ├── create-conference.handler.ts
-│   │   │   │   └── create-conference.dto.ts
-│   │   │   ├── update-conference/
-│   │   │   └── publish-cfp/
-│   │   ├── queries/
-│   │   │   ├── get-conference/
-│   │   │   │   ├── get-conference.query.ts
-│   │   │   │   ├── get-conference.handler.ts
-│   │   │   │   └── get-conference.dto.ts
-│   │   │   └── list-conferences/
-│   │   └── conference-dto.ts                     # Shared DTOs
-│   ├── submission/
-│   │   ├── commands/
-│   │   │   ├── submit-proposal/
-│   │   │   │   ├── submit-proposal.command.ts
-│   │   │   │   ├── submit-proposal.handler.ts
-│   │   │   │   └── submit-proposal.dto.ts
-│   │   └── queries/
-│   │       └── get-submission/
-│   ├── review/
-│   │   ├── commands/
-│   │   │   ├── submit-review/
-│   │   │   └── assign-reviewers/
-│   │   └── queries/
-│   │       └── get-reviews/
-│   └── scheduling/
-│       ├── commands/
-│       │   └── generate-schedule/
-│       └── queries/
-│           └── get-schedule/
-│
-├── infrastructure/             # Infrastructure layer (implementations)
-│   ├── database/               # Repository implementations
-│   │   ├── conference-repository.ts
-│   │   ├── submission-repository.ts
-│   │   └── review-repository.ts
-│   └── external/               # External service adapters
-│       ├── auth/
-│       │   ├── auth0-provider.ts
-│       │   ├── nextauth-provider.ts
-│       │   └── supabase-auth-adapter.ts
-│       ├── storage/
-│       │   ├── supabase-storage-adapter.ts
-│       │   ├── cloudflare-r2-adapter.ts
-│       │   └── minio-adapter.ts
-│       └── email/
-│           └── resend-email-adapter.ts
-│
-└── interfaces/                 # Interface layer (entry points)
-    ├── web/                    # Next.js pages and components
-    └── api/                    # API endpoints
+└── shared/                     # Cross-cutting concerns
+    ├── domain/                 # Shared domain objects
+    │   ├── user.ts             # User entity
+    │   ├── value-objects/      # UserId, Email, etc.
+    │   └── exceptions/         # Shared exceptions
+    └── infrastructure/         # Shared infrastructure
+        └── database/           # Database client, etc.
 ```
+
+**Module-Based Architecture Benefits:**
+- ✅ **High cohesion** - All code for a feature is together
+- ✅ **Independent modules** - Change one feature without affecting others
+- ✅ **Easier navigation** - Find all conference code in `modules/conference/`
+- ✅ **Better scaling** - Add features without touching existing code
+- ✅ **Clear boundaries** - No accidental dependencies between features
 
 ---
 
