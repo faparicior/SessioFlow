@@ -10,8 +10,12 @@
 
 - The journey plan is not marked as done. Still is in "planned"
 - Not all implementred. We have a checklist to take care about the progress?
+- Used swql ditectly instead of drizzlekit
 
 # Not a problem. 
+
+Supabase Postgresql RLS. We ddo not use at this moment
+
 
 ```
 You're right to call this out. I didn't actually say "shadcn not exists" - I created minimal stub implementations of 

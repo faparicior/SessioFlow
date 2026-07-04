@@ -463,6 +463,31 @@ R2_BUCKET_NAME=your-bucket
 RESEND_API_KEY=re_your-api-key
 ```
 
+### Database Setup
+
+The project uses Drizzle Kit for database migrations. Local PostgreSQL is managed via Docker Compose.
+
+```bash
+# Start local PostgreSQL (Docker)
+docker compose up -d
+
+# Generate migration from schema (after schema changes)
+npm run db:generate
+
+# Apply migrations to database
+npm run db:migrate
+
+# Push schema directly (no migration file)
+npm run db:push
+
+# Open Drizzle Studio (database GUI)
+npm run db:studio
+```
+
+**Migration files are stored in:** `drizzle/`
+
+**Schema is defined in:** `src/modules/conference/infrastructure/database/drizzle-schema.ts`
+
 ---
 
 ## 📖 Development

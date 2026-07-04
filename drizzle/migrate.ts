@@ -1,4 +1,4 @@
-import { migrations } from 'drizzle-orm/postgres-js/migrator';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { schema } from '../src/modules/conference/infrastructure/database/drizzle-schema';
@@ -20,7 +20,7 @@ async function main() {
   const client = postgres(DATABASE_URL, { max: 1 });
   const db = drizzle(client);
 
-  await migrations(db, { migrationsFolder: './drizzle' });
+  await migrate(db, { migrationsFolder: './drizzle' });
 
   console.log('Migrations completed successfully!');
   

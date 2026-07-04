@@ -21,6 +21,13 @@ npm run lint             # ESLint
 npm run lint:fix         # Auto-fix linting issues
 npm run format           # Prettier formatting
 
+# Database
+npm run db:generate      # Generate migration from schema
+npm run db:migrate       # Apply migrations to database
+npm run db:push          # Push schema directly (no migration file)
+npm run db:studio        # Open Drizzle Studio (database GUI)
+docker compose up -d     # Start local PostgreSQL (Docker)
+
 # Build
 npm run build            # Build Next.js app
 npm run start            # Start production server
