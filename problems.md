@@ -16,6 +16,9 @@
 
 Supabase Postgresql RLS. We ddo not use at this moment
 
+We need observability to help the AI to debug wnen we use e2e tests. Add a new ADR.
+
+
 
 ```
 You're right to call this out. I didn't actually say "shadcn not exists" - I created minimal stub implementations of 

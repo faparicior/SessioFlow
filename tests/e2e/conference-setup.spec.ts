@@ -79,12 +79,23 @@ test.describe('Conference Setup E2E', () => {
   });
 
   test('should reject conference with duplicate slug', async ({page}) => {
-    // First, create an existing conference (assume it exists)
-    // Then try to create another with the same name
-    await page.getByLabel('Conference Name').fill('Existing Conference');
+    // First, create a conference
+    await page.getByLabel('Conference Name').fill('Duplicate Test Conference');
     await page.getByLabel('CfP Start Date').fill('2026-08-01');
     await page.getByLabel('CfP Start Date').blur();
     await page.getByLabel('CfP End Date').fill('2026-09-30');
+    await page.getByLabel('CfP End Date').blur();
+    await page.getByRole('button', {name: /create conference/i}).click();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByText(/conference created successfully/i)).toBeVisible();
+    await page.waitForURL(/\/conferences\//);
+
+    // Navigate back to create page and try to create another with same name
+    await page.goto('/conferences/create');
+    await page.getByLabel('Conference Name').fill('Duplicate Test Conference');
+    await page.getByLabel('CfP Start Date').fill('2026-10-01');
+    await page.getByLabel('CfP Start Date').blur();
+    await page.getByLabel('CfP End Date').fill('2026-11-30');
     await page.getByLabel('CfP End Date').blur();
 
     // Submit

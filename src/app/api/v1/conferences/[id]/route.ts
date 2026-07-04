@@ -17,8 +17,9 @@ export async function GET(
   { params }: { params: { id: string } },
 ) {
   try {
+    const { id } = await params;
     const repository = new SupabaseConferenceRepository();
-    const conference = await repository.findById({ value: params.id });
+    const conference = await repository.findById({ value: id });
 
     if (!conference) {
       return NextResponse.json(

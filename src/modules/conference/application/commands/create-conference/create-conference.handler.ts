@@ -6,6 +6,8 @@ import {ConferenceCreatedEvent} from '@/modules/conference/domain/events/confere
 import {CfpOpenedEvent} from '@/modules/conference/domain/events/cfp-opened';
 import {CfpDatesInvalidError} from '@/modules/conference/domain/exceptions/cfp-dates-invalid-error';
 import {ConferenceNameTooShortError} from '@/modules/conference/domain/exceptions/conference-name-too-short-error';
+import {ConferenceFreeTierLimitError} from '@/modules/conference/domain/exceptions/conference-free-tier-limit-error';
+import {getLogger, getCorrelationId} from '@/shared/infrastructure/logging';
 
 /**
  * Email provider interface (best-effort, no side effects in tests).
@@ -36,14 +38,43 @@ export class CreateConferenceHandler {
       findBySlug(slug: {value: string}): Promise<Conference | undefined>;
       save(conference: Conference): Promise<void>;
       findByStatus(status: ConferenceStatus): Promise<Conference[]>;
+      findByOrganizerId(organizerId: string): Promise<Conference[]>;
     },
     private readonly emailProvider: EmailProvider,
   ) {}
 
   async execute(command: CreateConferenceCommand): Promise<CreateConferenceResult> {
+    const logger = getLogger();
     const {input} = command;
+    const correlationId = getCorrelationId() || 'unknown';
+
+    const context = {
+      correlationId,
+      conferenceName: input.name,
+      organizerId: input.organizerId,
+    };
+
+    logger.info('Starting conference creation', context);
 
     try {
+
+      // 0. Check free tier limit (max 5 active conferences for free users)
+      const organizerConferences = await this.repository.findByOrganizerId(input.organizerId);
+      const activeCount = organizerConferences.filter(c =>
+        c.status === 'CFP_OPEN' || c.status === 'DRAFT',
+      ).length;
+      
+      if (activeCount >= 5) {
+        logger.warn('Free tier limit exceeded', {
+          ...context,
+          activeCount,
+        });
+        return {
+          success: false,
+          errors: [{code: 'FREE_TIER_LIMIT', message: 'upgrade your plan to create more conferences'}],
+        };
+      }
+
       // 1. Check slug uniqueness by creating a temporary conference
       const temporaryConference = Conference.create({
         name: input.name,
@@ -54,9 +85,18 @@ export class CreateConferenceHandler {
         requiresApproval: input.requiresApproval,
       });
       const {slug} = temporaryConference;
+      
+      logger.debug('Generated slug', {
+        ...context,
+        slug: slug.value,
+      });
 
       const existing = await this.repository.findBySlug(slug);
       if (existing) {
+        logger.warn('Slug already exists', {
+          ...context,
+          slug: slug.value,
+        });
         return {
           success: false,
           errors: [{code: 'SLUG_EXISTS', message: 'A conference with this name already exists'}],
@@ -73,11 +113,25 @@ export class CreateConferenceHandler {
         maxSubmissions: input.maxSubmissions,
         requiresApproval: input.requiresApproval,
       });
+      
+      logger.debug('Conference entity created', {
+        ...context,
+        conferenceId: conference.id.value,
+      });
 
       const {events} = conference.publishCfp();
 
       // 3. Save to repository
+      logger.debug('Saving conference to repository', {
+        conferenceId: conference.id.value,
+      });
       await this.repository.save(conference);
+      
+      logger.info('Conference saved successfully', {
+        ...context,
+        conferenceId: conference.id.value,
+        slug: conference.slug.value,
+      });
 
       // 4. Send welcome email (best-effort)
       try {
@@ -86,8 +140,16 @@ export class CreateConferenceHandler {
           subject: `Welcome to SessioFlow - ${conference.name.value} is live!`,
           body: `Your conference ${conference.name.value} is now accepting submissions.`,
         });
-      } catch {
-        // Best-effort: log but don't fail
+        
+        logger.info('Welcome email sent', {
+          ...context,
+          conferenceId: conference.id.value,
+        });
+      } catch (error) {
+        logger.warn('Failed to send welcome email (best-effort)', error as Error, {
+          ...context,
+          conferenceId: conference.id.value,
+        });
       }
 
       // 5. Return response
@@ -110,12 +172,33 @@ export class CreateConferenceHandler {
         },
       };
     } catch (error) {
+      const errorContext = {
+        ...context,
+        errorType: (error as Error).name,
+        errorMessage: (error as Error).message,
+      };
+      
+      logger.error('Conference creation failed', error as Error, errorContext);
+      
+      if (error instanceof ConferenceFreeTierLimitError) {
+        return {
+          success: false,
+          errors: [{code: 'FREE_TIER_LIMIT', message: 'upgrade your plan to create more conferences'}],
+        };
+      }
+
       if (error instanceof ConferenceNameTooShortError || error instanceof Error) {
         const errorMessage = error.message;
         if (errorMessage.includes('at least 3 characters')) {
           return {
             success: false,
             errors: [{code: 'NAME_TOO_SHORT', message: errorMessage}],
+          };
+        }
+        if (errorMessage.includes('future')) {
+          return {
+            success: false,
+            errors: [{code: 'CFP_DATES_INVALID', message: 'dates must be in the future'}],
           };
         }
       }

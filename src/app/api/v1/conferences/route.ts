@@ -52,15 +52,20 @@ export async function POST(request: NextRequest) {
     if (!result.success) {
       const error = result.errors![0];
       let status = 400;
+      let message = error.message;
 
       if (error.code === 'SLUG_EXISTS') {
         status = 409;
+        message = 'conference name already taken';
       } else if (error.code === 'FREE_TIER_LIMIT') {
         status = 403;
+        message = 'upgrade your plan to create more conferences';
+      } else if (error.code === 'CFP_DATES_INVALID') {
+        message = 'dates must be in the future';
       }
 
       return NextResponse.json(
-        { error: { code: error.code, message: error.message } },
+        { error: { code: error.code, message } },
         { status },
       );
     }

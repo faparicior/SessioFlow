@@ -1,6 +1,6 @@
 import {eq} from 'drizzle-orm';
 import {conferencesTable} from './drizzle-schema';
-import {getSupabaseClient} from '@/shared/infrastructure/database/db-client';
+import {getDb} from '@/shared/infrastructure/database/db-client';
 import {type ConferenceRepository} from '@/modules/conference/domain/repositories/conference-repository';
 import {Conference} from '@/modules/conference/domain/entities/conference';
 import {ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
@@ -14,80 +14,72 @@ import {RequiresApproval} from '@/modules/conference/domain/value-objects/requir
 import {ConferenceName} from '@/modules/conference/domain/value-objects/conference-name';
 
 /**
- * ConferenceRepository - Supabase/Drizzle implementation.
+ * ConferenceRepository - PostgreSQL/Drizzle implementation.
  *
  * Implements the ConferenceRepository interface using Drizzle ORM
- * with Supabase PostgreSQL.
+ * with PostgreSQL.
  */
 export class SupabaseConferenceRepository implements ConferenceRepository {
   async findById(id: ConferenceId): Promise<Conference | undefined> {
-    const supabase = getSupabaseClient();
-    const result = await supabase
-      .from(conferencesTable)
+    const db = getDb();
+    const rows = await db
       .select()
+      .from(conferencesTable)
       .where(eq(conferencesTable.id, id.value))
-      .single();
+      .limit(1);
 
-    if (result.error || !result.data) {
-      return null;
+    if (rows.length === 0) {
+      return undefined;
     }
 
-    return this.mapToConference(result.data);
+    return this.mapToConference(rows[0]);
   }
 
   async findBySlug(slug: ConferenceSlug): Promise<Conference | undefined> {
-    const supabase = getSupabaseClient();
-    const result = await supabase
-      .from(conferencesTable)
+    const db = getDb();
+    const rows = await db
       .select()
+      .from(conferencesTable)
       .where(eq(conferencesTable.slug, slug.value))
-      .single();
+      .limit(1);
 
-    if (result.error || !result.data) {
-      return null;
+    console.log('[Repo] findBySlug rows:', JSON.stringify(rows));
+
+    if (rows.length === 0) {
+      return undefined;
     }
 
-    return this.mapToConference(result.data);
+    return this.mapToConference(rows[0]);
   }
 
   async findByOrganizerId(organizerId: string): Promise<Conference[]> {
-    const supabase = getSupabaseClient();
-    const result = await supabase
-      .from(conferencesTable)
+    const db = getDb();
+    const rows = await db
       .select()
+      .from(conferencesTable)
       .where(eq(conferencesTable.organizerId, organizerId));
 
-    if (result.error) {
-      return [];
-    }
-
-    return (result.data || []).map(row => this.mapToConference(row));
+    return rows.map(row => this.mapToConference(row));
   }
 
   async findByStatus(status: ConferenceStatus): Promise<Conference[]> {
-    const supabase = getSupabaseClient();
-    const result = await supabase
-      .from(conferencesTable)
+    const db = getDb();
+    const rows = await db
       .select()
+      .from(conferencesTable)
       .where(eq(conferencesTable.status, status));
 
-    if (result.error) {
-      return [];
-    }
-
-    return (result.data || []).map(row => this.mapToConference(row));
+    return rows.map(row => this.mapToConference(row));
   }
 
   async save(conference: Conference): Promise<void> {
-    const supabase = getSupabaseClient();
+    const db = getDb();
 
-    const cfpConfig = {
-      startDate: conference.cfpConfig.startDate.toISOString(),
-      endDate: conference.cfpConfig.endDate.toISOString(),
-      maxSubmissions: conference.cfpConfig.maxSubmissions.value,
-      requiresApproval: conference.cfpConfig.requiresApproval.value,
-      status: conference.cfpConfig.status,
-    };
+    console.log('[Repo] Saving conference:', {
+      id: conference.id.value,
+      name: conference.name.value,
+      organizerId: conference.organizerId,
+    });
 
     const data = {
       id: conference.id.value,
@@ -96,37 +88,42 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
       slug: conference.slug.value,
       status: conference.status,
       organizerId: conference.organizerId,
-      cfpConfig,
-      updatedAt: new Date().toISOString(),
+      cfpConfig: {
+        startDate: conference.cfpConfig.startDate.toISOString(),
+        endDate: conference.cfpConfig.endDate.toISOString(),
+        maxSubmissions: conference.cfpConfig.maxSubmissions.value,
+        requiresApproval: conference.cfpConfig.requiresApproval.value,
+        status: conference.cfpConfig.status,
+      },
+      updatedAt: new Date(),
     };
 
     // Check if conference exists
-    const existing = await supabase
+    const existing = await db
+      .select({id: conferencesTable.id})
       .from(conferencesTable)
-      .select('id')
       .where(eq(conferencesTable.id, conference.id.value))
-      .single();
+      .limit(1);
 
-    if (existing.data) {
+    if (existing.length > 0) {
       // Update
-      await supabase
-        .from(conferencesTable)
-        .update(data)
+      await db
+        .update(conferencesTable)
+        .set(data)
         .where(eq(conferencesTable.id, conference.id.value));
     } else {
       // Insert
-      await supabase.from(conferencesTable).insert({
+      await db.insert(conferencesTable).values({
         ...data,
-        createdAt: conference.createdAt.toISOString(),
+        createdAt: conference.createdAt,
       });
     }
   }
 
   async delete(id: ConferenceId): Promise<void> {
-    const supabase = getSupabaseClient();
-    await supabase
-      .from(conferencesTable)
-      .delete()
+    const db = getDb();
+    await db
+      .delete(conferencesTable)
       .where(eq(conferencesTable.id, id.value));
   }
 
@@ -134,7 +131,10 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
    * Map a database row to a Conference entity.
    */
   private mapToConference(row: any): Conference {
-    const cfpConfig = row.cfp_config || {};
+    const cfpConfig = row.cfpConfig || {};
+    console.log('[Repo] mapToConference row.cfp_config type:', typeof row.cfp_config);
+    console.log('[Repo] mapToConference row.cfp_config:', JSON.stringify(cfpConfig));
+    console.log('[Repo] mapToConference cfpConfig.startDate:', cfpConfig.startDate, typeof cfpConfig.startDate);
 
     return Conference.fromData({
       id: ConferenceId.fromString(row.id),

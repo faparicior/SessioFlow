@@ -15,7 +15,7 @@ export const conferencesTable = pgTable('conferences', {
   description: varchar('description', {length: 1000}).default(''),
   slug: varchar('slug', {length: 200}).notNull(),
   status: varchar('status', {length: 20}).notNull().default('DRAFT'),
-  organizerId: uuid('organizer_id').notNull(),
+  organizerId: varchar('organizer_id', {length: 255}).notNull(),
   cfpConfig: jsonb('cfp_config').notNull().$type<{
     startDate: string;
     endDate: string;

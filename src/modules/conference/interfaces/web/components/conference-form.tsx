@@ -24,6 +24,7 @@ import {Alert, AlertDescription} from '@/components/ui/alert';
  */
 type ConferenceFormProps = {
   readonly onSubmit: (data: ConferenceFormData) => Promise<{success: boolean; data?: any; errors?: any[]}>;
+  readonly onSuccess?: (data: any) => void;
 };
 
 export type ConferenceFormData = {
@@ -115,6 +116,9 @@ export function ConferenceForm({onSubmit}: ConferenceFormProps) {
           cfpStartDate: '',
           cfpEndDate: '',
         });
+        if (onSuccess && result.data) {
+          onSuccess(result.data);
+        }
       } else if (result.errors) {
         setErrors({general: result.errors[0]?.message || 'An error occurred'});
       }

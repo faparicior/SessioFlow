@@ -1,36 +1,37 @@
-import {createClient, type SupabaseClient} from '@supabase/supabase-js';
+import {pg} from 'drizzle-orm/pg-core';
+import {drizzle} from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 
 /**
- * Supabase database client singleton.
+ * PostgreSQL database client singleton.
  *
- * Uses environment variables for configuration:
- *   - NEXT_PUBLIC_SUPABASE_URL
- *   - NEXT_PUBLIC_SUPABASE_ANON_KEY
- *
- * For server-side operations, use service_role key (not exposed to client).
+ * Uses DATABASE_URL environment variable for configuration.
  */
-let supabaseClient: SupabaseClient | undefined = null;
+let db: ReturnType<typeof drizzle> | undefined = null;
 
-export function getSupabaseClient(): SupabaseClient {
-  if (supabaseClient) {
-    return supabaseClient;
+export function getDb() {
+  if (db) {
+    return db;
   }
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!url || (!anonKey && !serviceRoleKey)) {
-    throw new Error('Missing Supabase environment variables');
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error('Missing DATABASE_URL environment variable');
   }
 
-  supabaseClient = createClient(url, serviceRoleKey || anonKey);
-  return supabaseClient;
+  const client = postgres(connectionString, {
+    max: 10,
+    idle_timeout: 30,
+    connect_timeout: 10,
+  });
+
+  db = drizzle(client);
+  return db;
 }
 
 /**
  * Reset the client (useful for testing).
  */
-export function resetSupabaseClient(): void {
-  supabaseClient = null;
+export function resetDb(): void {
+  db = undefined;
 }

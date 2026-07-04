@@ -32,6 +32,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [015](015-adopt-cqrs-pattern.md) | Adopt CQRS Pattern for Application Layer | ✅ **Approved** | 2026-06-29 |
 | [016](016-dependency-injection-strategy-for-nextjs.md) | Dependency Injection Strategy for Next.js | ⚠️ Proposed | 2026-07-01 |
 | [017](017-use-drizzle-orm-with-ddd-transactions.md) | Use Drizzle ORM with Transaction Support at Application Layer | ⚠️ Proposed | 2026-07-01 |
+| [018](018-implement-observability-for-debugging.md) | Implement Observability for AI-Assisted Debugging | ✅ Accepted | 2026-07-04 |
 
 ---
 
@@ -79,6 +80,9 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 
 ### 💾 Data Access & Persistence
 - **017** - **ORM Selection: Drizzle with DDD Transactions**
+
+### 🔍 Observability & Debugging
+- **018** - **Observability for AI-Assisted Debugging (Proposed)**
 
 ---
 
@@ -266,15 +270,15 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 24 (including amendments and analyses) |
-| **Proposed** | 12 |
+| **Total ADRs** | 25 (including amendments and analyses) |
+| **Proposed** | 13 |
 | **Accepted** | 7 |
 | **Amendments** | 4 |
 | **Optional** | 1 |
-| **Date Range** | 2026-06-05 to 2026-07-01 |
+| **Date Range** | 2026-06-05 to 2026-07-04 |
 | **Most Active Category** | Core Technology Stack (6 decisions) |
 
 ---
 
-**Last Updated**: 2026-07-01
+**Last Updated**: 2026-07-04
 **Maintained By**: Technical Team
