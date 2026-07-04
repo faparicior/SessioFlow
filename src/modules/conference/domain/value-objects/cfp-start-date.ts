@@ -8,9 +8,6 @@ import {z} from 'zod';
  *   - Must be a valid date
  *   - Must be in the future (or today) at creation time
  */
-export type CfpStartDate = {
-  readonly value: Date;
-};
 
 export class CfpStartDate implements CfpStartDate {
   private constructor(private readonly _value: Date) {}

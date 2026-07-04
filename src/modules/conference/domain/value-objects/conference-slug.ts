@@ -6,9 +6,6 @@
  *   - Must be URL-safe (lowercase, hyphens instead of spaces, no special chars)
  *   - Must be unique across all conferences (enforced at application layer)
  */
-export type ConferenceSlug = {
-  readonly value: string;
-};
 
 export class ConferenceSlug implements ConferenceSlug {
   private constructor(private readonly _value: string) {}

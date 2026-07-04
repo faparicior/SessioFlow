@@ -7,9 +7,6 @@
  *   - Must not be empty or whitespace-only
  *   - Whitespace is trimmed
  */
-export type ConferenceName = {
-  readonly value: string;
-};
 
 export class ConferenceName implements ConferenceName {
   private constructor(private readonly _value: string) {}

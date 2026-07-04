@@ -6,11 +6,7 @@ import {v4 as uuidv4} from 'uuid';
  * Value Object: UUIDv4
  * Invariant: Must be a valid UUIDv4
  */
-export type ConferenceId = {
-  readonly value: string;
-};
-
-export class ConferenceId implements ConferenceId {
+export class ConferenceId {
   private constructor(private readonly _value: string) {}
 
   static create(): ConferenceId {

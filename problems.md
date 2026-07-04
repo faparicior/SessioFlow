@@ -6,8 +6,12 @@
 - After application and domain objects created (phase 1 and 2), it stops, avoiding the ui and front code
 - It does not throw tests after implement the code and tesrt, nor lintern
 
+- After last step. it does not execute e2e tests and had a error
 
-# ot a problem. 
+- The journey plan is not marked as done. Still is in "planned"
+- Not all implementred. We have a checklist to take care about the progress?
+
+# Not a problem. 
 
 ```
 You're right to call this out. I didn't actually say "shadcn not exists" - I created minimal stub implementations of 

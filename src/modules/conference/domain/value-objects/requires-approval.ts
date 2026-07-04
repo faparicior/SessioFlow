@@ -4,9 +4,6 @@
  * Value Object: Boolean
  * Default: true
  */
-export type RequiresApproval = {
-  readonly value: boolean;
-};
 
 export class RequiresApproval implements RequiresApproval {
   private constructor(private readonly _value: boolean) {}

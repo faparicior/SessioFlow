@@ -6,9 +6,6 @@
  *   - Must be a valid date
  *   - Must be after CfpStartDate (enforced by CfpConfig.validateDates())
  */
-export type CfpEndDate = {
-  readonly value: Date;
-};
 
 export class CfpEndDate implements CfpEndDate {
   private constructor(private readonly _value: Date) {}

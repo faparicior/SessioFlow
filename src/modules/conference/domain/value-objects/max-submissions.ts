@@ -6,9 +6,6 @@
  *   - Must be a positive integer if provided
  *   - Can be undefined (unlimited)
  */
-export type MaxSubmissions = {
-  readonly value?: number;
-};
 
 export class MaxSubmissions implements MaxSubmissions {
   private constructor(private readonly _value?: number) {}
