@@ -28,6 +28,7 @@ const xoConfig: FlatXoConfig = [
       '@stylistic/jsx-quotes': 'off',
       '@stylistic/operator-linebreak': 'off',
       '@stylistic/indent-binary-ops': 'off',
+      '@typescript-eslint/naming-convention': 'off',
       'react/jsx-tag-spacing': 'off',
       'new-cap': 'off',
       'react/new-cap': 'off',
