@@ -10,8 +10,8 @@ export const ConferenceCreateSchema = z
     name: z.string().min(3, 'Name must be at least 3 characters').max(100),
     description: z.string().max(1000).optional().default(''),
     organizerId: z.string().uuid().optional(),
-    cfpStartDate: z.string().datetime({message: 'Start date must be a valid date'}),
-    cfpEndDate: z.string().datetime({message: 'End date must be a valid date'}),
+    cfpStartDate: z.string().date({message: 'Start date must be a valid date'}),
+    cfpEndDate: z.string().date({message: 'End date must be a valid date'}),
     maxSubmissions: z.number().int().positive().optional(),
     requiresApproval: z.boolean().optional().default(true),
   })

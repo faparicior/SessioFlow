@@ -39,8 +39,8 @@ describe('Conference API - POST /api/v1/conferences', () => {
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Tech Conference',
       organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: '2026-08-01T00:00:00Z',
-      cfpEndDate: '2026-09-30T00:00:00Z',
+      cfpStartDate: '2026-08-01',
+      cfpEndDate: '2026-09-30',
     });
 
     const response = await handleConferenceCreate(
@@ -59,8 +59,8 @@ describe('Conference API - POST /api/v1/conferences', () => {
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Ab', // Too short - will fail Zod validation
       organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: '2026-08-01T00:00:00Z',
-      cfpEndDate: '2026-09-30T00:00:00Z',
+      cfpStartDate: '2026-08-01',
+      cfpEndDate: '2026-09-30',
     });
 
     const response = await handleConferenceCreate(
@@ -91,8 +91,8 @@ describe('Conference API - POST /api/v1/conferences', () => {
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Existing Conference',
       organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: '2026-08-01T00:00:00Z',
-      cfpEndDate: '2026-09-30T00:00:00Z',
+      cfpStartDate: '2026-08-01',
+      cfpEndDate: '2026-09-30',
     });
 
     const response = await handleConferenceCreate(
@@ -110,8 +110,8 @@ describe('Conference API - POST /api/v1/conferences', () => {
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Test Conference',
       organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: '2026-08-01T00:00:00Z',
-      cfpEndDate: '2026-09-30T00:00:00Z',
+      cfpStartDate: '2026-08-01',
+      cfpEndDate: '2026-09-30',
     });
 
     const response = await handleConferenceCreate(
