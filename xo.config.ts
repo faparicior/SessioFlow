@@ -5,6 +5,9 @@ const xoConfig: FlatXoConfig = [
     space: true,
     semicolon: true,
     react: true,
+    rules: {
+      'unicorn/empty-brace-spaces': 'off',
+    },
   },
   {
     files: ['src/**/*.{ts,tsx}'],
