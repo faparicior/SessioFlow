@@ -28,13 +28,19 @@ test.describe('Conference Setup E2E', () => {
     await page.goto('/conferences/create');
   });
 
-  test('should create a conference with CfP configuration (Happy Path)', async ({page}) => {
+  test('should create a conference with CfP configuration (Happy Path)', async ({
+    page,
+  }) => {
     // Step 1: Fill conference name (use timestamp for uniqueness)
     const timestamp = Date.now();
-    await page.getByLabel('Conference Name').fill(`Tech Conference ${timestamp}`);
+    await page
+      .getByLabel('Conference Name')
+      .fill(`Tech Conference ${timestamp}`);
 
     // Step 2: Fill description
-    await page.getByLabel('Description').fill('A conference about technology and innovation');
+    await page
+      .getByLabel('Description')
+      .fill('A conference about technology and innovation');
 
     // Step 3: Select CfP start date (must be in future)
     await page.getByLabel('CfP Start Date').fill('2026-08-01');
@@ -45,7 +51,9 @@ test.describe('Conference Setup E2E', () => {
     await page.getByLabel('CfP End Date').blur();
 
     // Step 5: Verify CfP URL preview updates
-    await expect(page.getByText(`https://sessioflow.app/cfp/tech-conference-${timestamp}`)).toBeVisible();
+    await expect(
+      page.getByText(`https://sessioflow.app/cfp/tech-conference-${timestamp}`),
+    ).toBeVisible();
 
     // Step 6: Submit the form
     await page.getByRole('button', {name: /create conference/i}).click();
@@ -74,7 +82,9 @@ test.describe('Conference Setup E2E', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify validation error is displayed
-    await expect(page.getByText(/end date must be after start date/i)).toBeVisible();
+    await expect(
+      page.getByText(/end date must be after start date/i),
+    ).toBeVisible();
   });
 
   test('should reject conference with duplicate slug', async ({page}) => {
@@ -107,14 +117,20 @@ test.describe('Conference Setup E2E', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify conflict error is displayed
-    await expect(page.getByText(/conference name already taken/i)).toBeVisible();
+    await expect(
+      page.getByText(/conference name already taken/i),
+    ).toBeVisible();
   });
 
-  test('should reject conference with free tier limit exceeded', async ({page}) => {
+  test('should reject conference with free tier limit exceeded', async ({
+    page,
+  }) => {
     // First, create 5 conferences to hit the free tier limit
     for (let i = 0; i < 5; i++) {
       const timestamp = Date.now() + i;
-      await page.getByLabel('Conference Name').fill(`Limit Test Conference ${timestamp}`);
+      await page
+        .getByLabel('Conference Name')
+        .fill(`Limit Test Conference ${timestamp}`);
       await page.getByLabel('CfP Start Date').fill('2026-08-01');
       await page.getByLabel('CfP Start Date').blur();
       await page.getByLabel('CfP End Date').fill('2026-09-30');
@@ -132,7 +148,9 @@ test.describe('Conference Setup E2E', () => {
 
     // Now try to create a 6th conference - should fail with free tier limit
     const timestamp = Date.now();
-    await page.getByLabel('Conference Name').fill(`Too Many Conferences ${timestamp}`);
+    await page
+      .getByLabel('Conference Name')
+      .fill(`Too Many Conferences ${timestamp}`);
     await page.getByLabel('CfP Start Date').fill('2026-08-01');
     await page.getByLabel('CfP Start Date').blur();
     await page.getByLabel('CfP End Date').fill('2026-09-30');
@@ -151,7 +169,9 @@ test.describe('Conference Setup E2E', () => {
   test('should reject conference with past CfP date', async ({page}) => {
     // Fill form with past date
     const timestamp = Date.now();
-    await page.getByLabel('Conference Name').fill(`Past Date Conference ${timestamp}`);
+    await page
+      .getByLabel('Conference Name')
+      .fill(`Past Date Conference ${timestamp}`);
     await page.getByLabel('CfP Start Date').fill('2020-01-01'); // Past date
     await page.getByLabel('CfP Start Date').blur();
     await page.getByLabel('CfP End Date').fill('2026-09-30');

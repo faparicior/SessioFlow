@@ -54,7 +54,9 @@ export class GetConferenceHandler {
     } catch {
       return {
         success: false,
-        errors: [{code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}],
+        errors: [
+          {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'},
+        ],
       };
     }
   }

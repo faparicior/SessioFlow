@@ -5,7 +5,9 @@ describe('ConferenceId', () => {
   it('creates a valid UUIDv4', () => {
     const id = ConferenceId.create();
     expect(id.value).toBeDefined();
-    expect(id.value).toMatch(/^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i);
+    expect(id.value).toMatch(
+      /^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i,
+    );
   });
 
   it('creates a unique ID each time', () => {
@@ -21,7 +23,9 @@ describe('ConferenceId', () => {
   });
 
   it('rejects an invalid UUID string', () => {
-    expect(() => ConferenceId.fromString('not-a-uuid')).toThrow('Invalid ConferenceId');
+    expect(() => ConferenceId.fromString('not-a-uuid')).toThrow(
+      'Invalid ConferenceId',
+    );
   });
 
   it('converts to string', () => {

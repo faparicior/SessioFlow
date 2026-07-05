@@ -9,9 +9,15 @@
  */
 
 import {NodeSDK} from '@opentelemetry/sdk-node';
-import {ConsoleSpanExporter, SimpleSpanProcessor} from '@opentelemetry/sdk-trace-base';
+import {
+  ConsoleSpanExporter,
+  SimpleSpanProcessor,
+} from '@opentelemetry/sdk-trace-base';
 import {resourceFromAttributes} from '@opentelemetry/resources';
-import {ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION} from '@opentelemetry/semantic-conventions';
+import {
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION,
+} from '@opentelemetry/semantic-conventions';
 
 type InstrumentationConfig = {
   serviceName: string;
@@ -58,7 +64,9 @@ export class ObservabilityInstrumentation {
       });
 
       this.sdk.start();
-      console.log(`[Observability] Initialized for ${this.config.serviceName} (${this.config.environment})`);
+      console.log(
+        `[Observability] Initialized for ${this.config.serviceName} (${this.config.environment})`,
+      );
     } catch (error) {
       console.error('[Observability] Failed to initialize:', error);
     }
@@ -90,7 +98,9 @@ export class ObservabilityInstrumentation {
 // Global instrumentation instance
 let instrumentation: ObservabilityInstrumentation | undefined = null;
 
-export function initObservability(config?: Partial<InstrumentationConfig>): ObservabilityInstrumentation {
+export function initObservability(
+  config?: Partial<InstrumentationConfig>,
+): ObservabilityInstrumentation {
   if (!instrumentation) {
     const defaultConfig: InstrumentationConfig = {
       serviceName: config?.serviceName || 'sessioflow',

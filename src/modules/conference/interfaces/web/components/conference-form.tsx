@@ -6,7 +6,11 @@ import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {Label} from '@/components/ui/label';
 import {
-  Card, CardContent, CardDescription, CardHeader, CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import {Alert, AlertDescription} from '@/components/ui/alert';
 
@@ -23,7 +27,9 @@ import {Alert, AlertDescription} from '@/components/ui/alert';
  * ADR-007: Use Zod for Validation (client-side validation mirrors server schema)
  */
 type ConferenceFormProps = {
-  readonly onSubmit: (data: ConferenceFormData) => Promise<{success: boolean; data?: any; errors?: any[]}>;
+  readonly onSubmit: (
+    data: ConferenceFormData,
+  ) => Promise<{success: boolean; data?: any; errors?: any[]}>;
   readonly onSuccess?: (data: any) => void;
 };
 
@@ -142,69 +148,76 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
     }
   };
 
-  const generateSlug = (name: string) => name
-    .toLowerCase()
-    .trim()
-    .replaceAll(/[^a-z\d\s-]/g, '')
-    .replaceAll(/\s+/g, '-')
-    .replaceAll(/-+/g, '-')
-    .replaceAll(/^-|-$/g, '');
+  const generateSlug = (name: string) =>
+    name
+      .toLowerCase()
+      .trim()
+      .replaceAll(/[^a-z\d\s-]/g, '')
+      .replaceAll(/\s+/g, '-')
+      .replaceAll(/-+/g, '-')
+      .replaceAll(/^-|-$/g, '');
 
   const slug = formData.name ? generateSlug(formData.name) : '';
   const cfpUrl = slug ? `https://sessioflow.app/cfp/${slug}` : '';
 
   return (
-    <Card className='w-full max-w-2xl mx-auto'>
+    <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Create New Conference</CardTitle>
         <CardDescription>
-          Set up your conference and Call for Papers (CfP) to start accepting proposals.
+          Set up your conference and Call for Papers (CfP) to start accepting
+          proposals.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {isSuccess
-          ? <Alert className='mb-4 bg-green-50 border-green-200'>
-            <AlertDescription className='text-green-800'>
-              Conference created successfully! You can now share the CfP link with potential speakers.
+        {isSuccess ? (
+          <Alert className="mb-4 bg-green-50 border-green-200">
+            <AlertDescription className="text-green-800">
+              Conference created successfully! You can now share the CfP link
+              with potential speakers.
             </AlertDescription>
           </Alert>
-          : null}
+        ) : null}
 
-        {errors.general
-          ? <Alert className='mb-4 bg-red-50 border-red-200'>
-            <AlertDescription className='text-red-800'>{errors.general}</AlertDescription>
+        {errors.general ? (
+          <Alert className="mb-4 bg-red-50 border-red-200">
+            <AlertDescription className="text-red-800">
+              {errors.general}
+            </AlertDescription>
           </Alert>
-          : null}
+        ) : null}
 
-        <form className='space-y-4' onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Conference Name */}
-          <div className='space-y-2'>
-            <Label htmlFor='name'>Conference Name</Label>
+          <div className="space-y-2">
+            <Label htmlFor="name">Conference Name</Label>
             <Input
               required
-              id='name'
-              type='text'
-              placeholder='e.g., Tech Conference 2026'
+              id="name"
+              type="text"
+              placeholder="e.g., Tech Conference 2026"
               value={formData.name}
               className={errors.name ? 'border-red-500' : ''}
               onChange={e => {
                 handleChange('name', e.target.value);
               }}
             />
-            {errors.name ? <p className='text-sm text-red-600'>{errors.name}</p> : null}
-            {slug
-              ? <p className='text-sm text-muted-foreground'>
+            {errors.name ? (
+              <p className="text-sm text-red-600">{errors.name}</p>
+            ) : null}
+            {slug ? (
+              <p className="text-sm text-muted-foreground">
                 Slug: <code>{slug}</code>
               </p>
-              : null}
+            ) : null}
           </div>
 
           {/* Description */}
-          <div className='space-y-2'>
-            <Label htmlFor='description'>Description (optional)</Label>
+          <div className="space-y-2">
+            <Label htmlFor="description">Description (optional)</Label>
             <Textarea
-              id='description'
-              placeholder='Describe your conference...'
+              id="description"
+              placeholder="Describe your conference..."
               value={formData.description}
               className={errors.description ? 'border-red-500' : ''}
               rows={3}
@@ -212,71 +225,73 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
                 handleChange('description', e.target.value);
               }}
             />
-            {formData.description
-              ? <p className='text-xs text-muted-foreground'>
+            {formData.description ? (
+              <p className="text-xs text-muted-foreground">
                 {formData.description.length}/1000 characters
               </p>
-              : null}
-            {errors.description ? <p className='text-sm text-red-600'>{errors.description}</p> : null}
+            ) : null}
+            {errors.description ? (
+              <p className="text-sm text-red-600">{errors.description}</p>
+            ) : null}
           </div>
 
           {/* CfP Dates */}
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='cfpStartDate'>CfP Start Date</Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="cfpStartDate">CfP Start Date</Label>
               <Input
                 required
-                id='cfpStartDate'
-                type='date'
+                id="cfpStartDate"
+                type="date"
                 value={formData.cfpStartDate}
                 className={errors.cfpStartDate ? 'border-red-500' : ''}
                 onChange={e => {
                   handleChange('cfpStartDate', e.target.value);
                 }}
               />
-              {errors.cfpStartDate ? <p className='text-sm text-red-600'>{errors.cfpStartDate}</p> : null}
+              {errors.cfpStartDate ? (
+                <p className="text-sm text-red-600">{errors.cfpStartDate}</p>
+              ) : null}
             </div>
 
-            <div className='space-y-2'>
-              <Label htmlFor='cfpEndDate'>CfP End Date</Label>
+            <div className="space-y-2">
+              <Label htmlFor="cfpEndDate">CfP End Date</Label>
               <Input
                 required
-                id='cfpEndDate'
-                type='date'
+                id="cfpEndDate"
+                type="date"
                 value={formData.cfpEndDate}
                 className={errors.cfpEndDate ? 'border-red-500' : ''}
                 onChange={e => {
                   handleChange('cfpEndDate', e.target.value);
                 }}
               />
-              {errors.cfpEndDate ? <p className='text-sm text-red-600'>{errors.cfpEndDate}</p> : null}
+              {errors.cfpEndDate ? (
+                <p className="text-sm text-red-600">{errors.cfpEndDate}</p>
+              ) : null}
             </div>
           </div>
 
           {/* CfP URL Preview */}
-          {cfpUrl
-            ? <div className='space-y-2'>
+          {cfpUrl ? (
+            <div className="space-y-2">
               <Label>CfP URL Preview</Label>
-              <div className='flex items-center gap-2 p-2 bg-muted rounded-md'>
-                <code className='text-sm flex-1'>{cfpUrl}</code>
+              <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
+                <code className="text-sm flex-1">{cfpUrl}</code>
                 <Button
-                  type='button'
-                  variant='outline'
-                  size='sm'
+                  type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={async () => navigator.clipboard.writeText(cfpUrl)}
                 >
                   Copy
                 </Button>
               </div>
             </div>
-            : null}
+          ) : null}
 
           {/* Submit Button */}
-          <Button
-            type='submit'
-            className='w-full'
-            disabled={isSubmitting}
-          >
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? 'Creating...' : 'Create Conference'}
           </Button>
         </form>

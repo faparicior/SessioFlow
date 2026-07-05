@@ -5,10 +5,11 @@
  * Verifies logging functionality, context handling, and error tracking.
  */
 
+import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest';
 import {
-  describe, it, expect, vi, beforeEach, afterEach,
-} from 'vitest';
-import {PinoLogger, getLogger} from '@/shared/infrastructure/logging/pino-logger.js';
+  PinoLogger,
+  getLogger,
+} from '@/shared/infrastructure/logging/pino-logger.js';
 import type {LogContext} from '@/shared/domain/logging/logger.js';
 
 describe('PinoLogger', () => {

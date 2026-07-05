@@ -15,11 +15,15 @@ export class ConferenceName implements ConferenceName {
     const trimmed = name.trim();
 
     if (trimmed.length < 3) {
-      throw new Error(`ConferenceName must be at least 3 characters, got ${trimmed.length}`);
+      throw new Error(
+        `ConferenceName must be at least 3 characters, got ${trimmed.length}`,
+      );
     }
 
     if (trimmed.length > 100) {
-      throw new Error(`ConferenceName must be at most 100 characters, got ${trimmed.length}`);
+      throw new Error(
+        `ConferenceName must be at most 100 characters, got ${trimmed.length}`,
+      );
     }
 
     return new ConferenceName(trimmed);

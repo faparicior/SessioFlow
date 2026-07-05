@@ -63,14 +63,16 @@ export async function handleConferenceCreate(
     }
 
     // 4. Return success response
-    return NextResponse.json(
-      {data: result.data},
-      {status: 201},
-    );
+    return NextResponse.json({data: result.data}, {status: 201});
   } catch (error) {
     console.error('Conference creation error:', error);
     return NextResponse.json(
-      {error: {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}},
+      {
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An unexpected error occurred',
+        },
+      },
       {status: 500},
     );
   }

@@ -1,6 +1,4 @@
-import {
-  describe, it, expect, vi,
-} from 'vitest';
+import {describe, it, expect, vi} from 'vitest';
 import {createNextRequest} from './fixtures';
 import {handleConferenceCreate} from '@/modules/conference/interfaces/api/v1/conferences/create';
 import {handleGetConference} from '@/modules/conference/interfaces/api/v1/conferences/get';
@@ -45,7 +43,11 @@ describe('Conference API - POST /api/v1/conferences', () => {
       cfpEndDate: '2026-09-30T00:00:00Z',
     });
 
-    const response = await handleConferenceCreate(request, mockCreateConferenceHandler, mockGetAuthUser);
+    const response = await handleConferenceCreate(
+      request,
+      mockCreateConferenceHandler,
+      mockGetAuthUser,
+    );
 
     expect(response.status).toBe(201);
     const body = await response.json();
@@ -61,7 +63,11 @@ describe('Conference API - POST /api/v1/conferences', () => {
       cfpEndDate: '2026-09-30T00:00:00Z',
     });
 
-    const response = await handleConferenceCreate(request, mockCreateConferenceHandler, mockGetAuthUser);
+    const response = await handleConferenceCreate(
+      request,
+      mockCreateConferenceHandler,
+      mockGetAuthUser,
+    );
 
     expect(response.status).toBe(400);
     const body = await response.json();
@@ -74,7 +80,12 @@ describe('Conference API - POST /api/v1/conferences', () => {
   it('returns 409 for duplicate slug', async () => {
     mockCreateConferenceHandler.execute.mockResolvedValue({
       success: false,
-      errors: [{code: 'SLUG_EXISTS', message: 'A conference with this name already exists'}],
+      errors: [
+        {
+          code: 'SLUG_EXISTS',
+          message: 'A conference with this name already exists',
+        },
+      ],
     });
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
@@ -84,7 +95,11 @@ describe('Conference API - POST /api/v1/conferences', () => {
       cfpEndDate: '2026-09-30T00:00:00Z',
     });
 
-    const response = await handleConferenceCreate(request, mockCreateConferenceHandler, mockGetAuthUser);
+    const response = await handleConferenceCreate(
+      request,
+      mockCreateConferenceHandler,
+      mockGetAuthUser,
+    );
 
     expect(response.status).toBe(409);
   });
@@ -99,7 +114,11 @@ describe('Conference API - POST /api/v1/conferences', () => {
       cfpEndDate: '2026-09-30T00:00:00Z',
     });
 
-    const response = await handleConferenceCreate(request, mockCreateConferenceHandler, unauthenticatedGetAuthUser);
+    const response = await handleConferenceCreate(
+      request,
+      mockCreateConferenceHandler,
+      unauthenticatedGetAuthUser,
+    );
 
     expect(response.status).toBe(401);
   });
@@ -127,9 +146,17 @@ describe('Conference API - GET /api/v1/conferences/:id', () => {
     });
 
     const validUuid = '12345678-1234-4123-8123-123456789012';
-    const request = createNextRequest('GET', `/api/v1/conferences/${validUuid}`);
+    const request = createNextRequest(
+      'GET',
+      `/api/v1/conferences/${validUuid}`,
+    );
 
-    const response = await handleGetConference(request, validUuid, mockGetConferenceHandler, mockGetAuthUser);
+    const response = await handleGetConference(
+      request,
+      validUuid,
+      mockGetConferenceHandler,
+      mockGetAuthUser,
+    );
 
     expect(response.status).toBe(200);
     const body = await response.json();
@@ -142,9 +169,17 @@ describe('Conference API - GET /api/v1/conferences/:id', () => {
       data: null,
     });
 
-    const request = createNextRequest('GET', '/api/v1/conferences/12345678-1234-4123-8123-123456789012');
+    const request = createNextRequest(
+      'GET',
+      '/api/v1/conferences/12345678-1234-4123-8123-123456789012',
+    );
 
-    const response = await handleGetConference(request, '12345678-1234-4123-8123-123456789012', mockGetConferenceHandler, mockGetAuthUser);
+    const response = await handleGetConference(
+      request,
+      '12345678-1234-4123-8123-123456789012',
+      mockGetConferenceHandler,
+      mockGetAuthUser,
+    );
 
     expect(response.status).toBe(404);
   });

@@ -21,7 +21,10 @@ export async function POST(request: NextRequest) {
     const parsed = ConferenceCreateSchema.safeParse(body);
 
     if (!parsed.success) {
-      logger.error('[API] Validation failed:', parsed.error.flatten().fieldErrors);
+      logger.error(
+        '[API] Validation failed:',
+        parsed.error.flatten().fieldErrors,
+      );
       return NextResponse.json(
         {
           error: {
@@ -54,7 +57,9 @@ export async function POST(request: NextRequest) {
       ...parsed.data,
       organizerId: user.id,
     });
-    logger.debug('[API] Executing create conference command:', {name: parsed.data.name});
+    logger.debug('[API] Executing create conference command:', {
+      name: parsed.data.name,
+    });
 
     const result = await handler.execute(command);
     logger.debug('[API] Command result:', result);
@@ -85,26 +90,25 @@ export async function POST(request: NextRequest) {
 
           break;
         }
-      // No default
+        // No default
       }
 
-      return NextResponse.json(
-        {error: {code: error.code, message}},
-        {status},
-      );
+      return NextResponse.json({error: {code: error.code, message}}, {status});
     }
 
     logger.info('[API] Conference created successfully');
 
     // 5. Return success response
-    return NextResponse.json(
-      {data: result.data},
-      {status: 201},
-    );
+    return NextResponse.json({data: result.data}, {status: 201});
   } catch (error) {
     logger.error('[API] Conference creation error:', error as Error);
     return NextResponse.json(
-      {error: {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}},
+      {
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An unexpected error occurred',
+        },
+      },
       {status: 500},
     );
   }

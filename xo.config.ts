@@ -5,16 +5,30 @@ const xoConfig: FlatXoConfig = [
     space: true,
     semicolon: true,
     react: true,
+  },
+  {
+    files: ['**/*.{ts,tsx}'],
     rules: {
       'unicorn/empty-brace-spaces': 'off',
       'import-x/extensions': 'off',
-    },
-  },
-  {
-    files: ['src/**/*.{ts,tsx}'],
-    rules: {
-      '@stylistic/max-len': ['error', 100],
+      '@stylistic/max-len': [
+        'error',
+        {
+          code: 100,
+          ignorePattern: String.raw`^import\s`,
+          ignoreUrls: true,
+          ignoreStrings: true,
+          ignoreTemplateLiterals: true,
+          ignoreRegExpLiterals: true,
+        },
+      ],
       '@stylistic/curly-newline': 'off',
+      '@stylistic/object-curly-newline': 'off',
+      '@stylistic/function-paren-newline': 'off',
+      '@stylistic/jsx-quotes': 'off',
+      '@stylistic/operator-linebreak': 'off',
+      '@stylistic/indent-binary-ops': 'off',
+      'react/jsx-tag-spacing': 'off',
       'new-cap': 'off',
       'react/new-cap': 'off',
       // React 17+ JSX transform: no need to import React for JSX

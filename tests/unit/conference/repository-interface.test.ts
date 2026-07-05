@@ -1,6 +1,4 @@
-import {
-  describe, it, expect, vi,
-} from 'vitest';
+import {describe, it, expect, vi} from 'vitest';
 import {Conference} from '@/modules/conference/domain/entities/conference';
 import {type ConferenceRepository} from '@/modules/conference/domain/repositories/conference-repository';
 
@@ -32,7 +30,9 @@ describe('ConferenceRepository', () => {
     }
 
     async save(conference: Conference): Promise<void> {
-      const existingIndex = this.conferences.findIndex(c => c.id.value === conference.id.value);
+      const existingIndex = this.conferences.findIndex(
+        c => c.id.value === conference.id.value,
+      );
       if (existingIndex === -1) {
         this.conferences.push(conference);
       } else {

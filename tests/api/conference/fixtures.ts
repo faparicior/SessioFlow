@@ -10,7 +10,9 @@ export function createNextRequest(
   headers?: Record<string, string>,
 ): NextRequest {
   // NextRequest requires absolute URLs
-  const absoluteUrl = url.startsWith('http') ? url : `http://localhost:3000${url}`;
+  const absoluteUrl = url.startsWith('http')
+    ? url
+    : `http://localhost:3000${url}`;
 
   return new NextRequest(absoluteUrl, {
     method,

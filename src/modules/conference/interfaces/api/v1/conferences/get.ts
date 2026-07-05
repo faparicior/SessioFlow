@@ -42,7 +42,12 @@ export async function handleGetConference(
 
     if (!result.success) {
       return NextResponse.json(
-        {error: {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}},
+        {
+          error: {
+            code: 'INTERNAL_ERROR',
+            message: 'An unexpected error occurred',
+          },
+        },
         {status: 500},
       );
     }
@@ -55,14 +60,16 @@ export async function handleGetConference(
       );
     }
 
-    return NextResponse.json(
-      {data: result.data},
-      {status: 200},
-    );
+    return NextResponse.json({data: result.data}, {status: 200});
   } catch (error) {
     console.error('Conference retrieval error:', error);
     return NextResponse.json(
-      {error: {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}},
+      {
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An unexpected error occurred',
+        },
+      },
       {status: 500},
     );
   }

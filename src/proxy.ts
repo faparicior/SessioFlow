@@ -13,10 +13,10 @@ import {generateCorrelationId} from '@/shared/infrastructure/logging/request-con
 
 export function proxy(request: NextRequest) {
   // Generate or extract correlation ID
-  const correlationId
-    = request.headers.get('x-correlation-id')
-      || request.headers.get('x-request-id')
-      || generateCorrelationId();
+  const correlationId =
+    request.headers.get('x-correlation-id') ||
+    request.headers.get('x-request-id') ||
+    generateCorrelationId();
 
   // Extract user context if available
   const userId = request.headers.get('x-user-id') || undefined;
@@ -32,7 +32,9 @@ export function proxy(request: NextRequest) {
 
   // Log request entry (in development, this will be visible)
   if (process.env.NODE_ENV === 'development') {
-    console.log(`[Request] ${request.method} ${request.nextUrl.pathname} [${correlationId}]${userId ? ` userId=${userId}` : ''}`);
+    console.log(
+      `[Request] ${request.method} ${request.nextUrl.pathname} [${correlationId}]${userId ? ` userId=${userId}` : ''}`,
+    );
   }
 
   // Attach context to response for use in API routes

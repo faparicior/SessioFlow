@@ -43,7 +43,12 @@ export async function GET(
   } catch (error) {
     console.error('Conference retrieval error:', error);
     return NextResponse.json(
-      {error: {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}},
+      {
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'An unexpected error occurred',
+        },
+      },
       {status: 500},
     );
   }

@@ -120,9 +120,7 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
 
   async delete(id: ConferenceId): Promise<void> {
     const db = getDb();
-    await db
-      .delete(conferencesTable)
-      .where(eq(conferencesTable.id, id.value));
+    await db.delete(conferencesTable).where(eq(conferencesTable.id, id.value));
   }
 
   /**
@@ -143,7 +141,9 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
         startDate: CfpStartDate.fromISOString(cfpConfig.startDate),
         endDate: CfpEndDate.fromISOString(cfpConfig.endDate),
         maxSubmissions: MaxSubmissions.create(cfpConfig.maxSubmissions),
-        requiresApproval: RequiresApproval.create(cfpConfig.requiresApproval ?? true),
+        requiresApproval: RequiresApproval.create(
+          cfpConfig.requiresApproval ?? true,
+        ),
       }),
       createdAt: new Date(row.createdAt),
       updatedAt: new Date(row.updatedAt),

@@ -25,10 +25,13 @@ export class PinoLogger implements Logger {
 
   constructor(config: PinoLoggerConfig = {}) {
     // Read from environment variables if not explicitly provided
-    const envDestination = process.env.LOG_DESTINATION as 'console' | 'file' | 'both';
+    const envDestination = process.env.LOG_DESTINATION as
+      | 'console'
+      | 'file'
+      | 'both';
     const envLogPath = process.env.LOG_PATH || './logs/app.log';
     const envLevel = process.env.LOG_LEVEL || 'info';
-    const envFormat = process.env.LOG_FORMAT as 'json' | 'pretty' || 'json';
+    const envFormat = (process.env.LOG_FORMAT as 'json' | 'pretty') || 'json';
 
     const {
       level = envLevel,
@@ -138,10 +141,10 @@ export class PinoLogger implements Logger {
   error(message: string, error?: Error, context?: LogContext): void {
     const errorContext = error
       ? {
-        error: error.message,
-        stack: error.stack,
-        name: error.name,
-      }
+          error: error.message,
+          stack: error.stack,
+          name: error.name,
+        }
       : {};
 
     this.log('error', message, {...context, ...errorContext});
@@ -165,11 +168,17 @@ export class PinoLogger implements Logger {
     this.boundContext = {...this.boundContext, ...context};
   }
 
-  private log(level: pino.LevelWithSilent, message: string, context?: LogContext): void {
+  private log(
+    level: pino.LevelWithSilent,
+    message: string,
+    context?: LogContext,
+  ): void {
     const mergedContext = {...this.boundContext, ...context};
 
     // Remove undefined values
-    const cleanContext = Object.fromEntries(Object.entries(mergedContext).filter(([_, value]) => value !== undefined));
+    const cleanContext = Object.fromEntries(
+      Object.entries(mergedContext).filter(([_, value]) => value !== undefined),
+    );
 
     if (Object.keys(cleanContext).length > 0) {
       this.logger[level](cleanContext, message);
@@ -187,7 +196,10 @@ export function getLogger(config?: PinoLoggerConfig): PinoLogger {
   return globalLogger;
 }
 
-export function createChildLogger(parent: PinoLogger, context: LogContext): PinoLogger {
+export function createChildLogger(
+  parent: PinoLogger,
+  context: LogContext,
+): PinoLogger {
   const child = new PinoLogger();
   child.bind(context);
   return child;

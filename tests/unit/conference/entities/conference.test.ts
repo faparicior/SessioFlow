@@ -54,7 +54,9 @@ describe('Conference', () => {
 
   it('create() sets CfpConfig with correct dates', () => {
     const conference = createConference();
-    expect(conference.cfpConfig.startDate.value).toEqual(new Date('2026-08-01'));
+    expect(conference.cfpConfig.startDate.value).toEqual(
+      new Date('2026-08-01'),
+    );
     expect(conference.cfpConfig.endDate.value).toEqual(new Date('2026-09-30'));
   });
 

@@ -1,5 +1,8 @@
 import {type ConferenceResponseDto} from '../../dto/conference-response.dto';
-import {type CreateConferenceCommand, CreateConferenceInput} from './create-conference.command';
+import {
+  type CreateConferenceCommand,
+  CreateConferenceInput,
+} from './create-conference.command';
 import {Conference} from '@/modules/conference/domain/entities/conference';
 import {type ConferenceStatus} from '@/modules/conference/domain/value-objects/conference-status';
 import {ConferenceCreatedEvent} from '@/modules/conference/domain/events/conference-created';
@@ -12,7 +15,11 @@ import {getLogger, getCorrelationId} from '@/shared/infrastructure/logging';
 /**
  * Email provider interface (best-effort, no side effects in tests).
  */
-export type EmailProvider = (data: {to: string; subject: string; body: string}) => Promise<void>;
+export type EmailProvider = (data: {
+  to: string;
+  subject: string;
+  body: string;
+}) => Promise<void>;
 
 export type CreateConferenceResult = {
   success: boolean;
@@ -43,7 +50,9 @@ export class CreateConferenceHandler {
     private readonly emailProvider: EmailProvider,
   ) {}
 
-  async execute(command: CreateConferenceCommand): Promise<CreateConferenceResult> {
+  async execute(
+    command: CreateConferenceCommand,
+  ): Promise<CreateConferenceResult> {
     const logger = getLogger();
     const {input} = command;
     const correlationId = getCorrelationId() || 'unknown';
@@ -58,9 +67,12 @@ export class CreateConferenceHandler {
 
     try {
       // 0. Check free tier limit (max 5 active conferences for free users)
-      const organizerConferences = await this.repository.findByOrganizerId(input.organizerId);
-      const activeCount = organizerConferences.filter(c =>
-        c.status === 'CFP_OPEN' || c.status === 'DRAFT').length;
+      const organizerConferences = await this.repository.findByOrganizerId(
+        input.organizerId,
+      );
+      const activeCount = organizerConferences.filter(
+        c => c.status === 'CFP_OPEN' || c.status === 'DRAFT',
+      ).length;
 
       if (activeCount >= 5) {
         logger.warn('Free tier limit exceeded', {
@@ -69,7 +81,12 @@ export class CreateConferenceHandler {
         });
         return {
           success: false,
-          errors: [{code: 'FREE_TIER_LIMIT', message: 'upgrade your plan to create more conferences'}],
+          errors: [
+            {
+              code: 'FREE_TIER_LIMIT',
+              message: 'upgrade your plan to create more conferences',
+            },
+          ],
         };
       }
 
@@ -97,7 +114,12 @@ export class CreateConferenceHandler {
         });
         return {
           success: false,
-          errors: [{code: 'SLUG_EXISTS', message: 'A conference with this name already exists'}],
+          errors: [
+            {
+              code: 'SLUG_EXISTS',
+              message: 'A conference with this name already exists',
+            },
+          ],
         };
       }
 
@@ -144,10 +166,14 @@ export class CreateConferenceHandler {
           conferenceId: conference.id.value,
         });
       } catch (error) {
-        logger.warn('Failed to send welcome email (best-effort)', error as Error, {
-          ...context,
-          conferenceId: conference.id.value,
-        });
+        logger.warn(
+          'Failed to send welcome email (best-effort)',
+          error as Error,
+          {
+            ...context,
+            conferenceId: conference.id.value,
+          },
+        );
       }
 
       // 5. Return response
@@ -181,11 +207,19 @@ export class CreateConferenceHandler {
       if (error instanceof ConferenceFreeTierLimitError) {
         return {
           success: false,
-          errors: [{code: 'FREE_TIER_LIMIT', message: 'upgrade your plan to create more conferences'}],
+          errors: [
+            {
+              code: 'FREE_TIER_LIMIT',
+              message: 'upgrade your plan to create more conferences',
+            },
+          ],
         };
       }
 
-      if (error instanceof ConferenceNameTooShortError || error instanceof Error) {
+      if (
+        error instanceof ConferenceNameTooShortError ||
+        error instanceof Error
+      ) {
         const errorMessage = error.message;
         if (errorMessage.includes('at least 3 characters')) {
           return {
@@ -197,7 +231,12 @@ export class CreateConferenceHandler {
         if (errorMessage.includes('future')) {
           return {
             success: false,
-            errors: [{code: 'CFP_DATES_INVALID', message: 'dates must be in the future'}],
+            errors: [
+              {
+                code: 'CFP_DATES_INVALID',
+                message: 'dates must be in the future',
+              },
+            ],
           };
         }
       }
@@ -211,7 +250,9 @@ export class CreateConferenceHandler {
 
       return {
         success: false,
-        errors: [{code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}],
+        errors: [
+          {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'},
+        ],
       };
     }
   }

@@ -1,6 +1,4 @@
-import {
-  describe, it, expect, vi,
-} from 'vitest';
+import {describe, it, expect, vi} from 'vitest';
 import {CreateConferenceCommand} from '@/modules/conference/application/commands/create-conference/create-conference.command';
 import {CreateConferenceHandler} from '@/modules/conference/application/commands/create-conference/create-conference.handler';
 import {Conference} from '@/modules/conference/domain/entities/conference';
@@ -27,7 +25,9 @@ class MockConferenceRepository {
   }
 
   async save(conference: Conference) {
-    const existingIndex = this.conferences.findIndex(c => c.id.value === conference.id.value);
+    const existingIndex = this.conferences.findIndex(
+      c => c.id.value === conference.id.value,
+    );
     if (existingIndex === -1) {
       this.conferences.push(conference);
     } else {
@@ -50,8 +50,7 @@ describe('CreateConference Command', () => {
 
   beforeEach(() => {
     repo = new MockConferenceRepository();
-    handler = new CreateConferenceHandler(repo, async () => {
-    });
+    handler = new CreateConferenceHandler(repo, async () => {});
   });
 
   it('creates a conference in happy path', async () => {
@@ -69,7 +68,9 @@ describe('CreateConference Command', () => {
     expect(result.data).toBeDefined();
     expect(result.data!.status).toBe('CFP_OPEN');
     expect(result.data!.name).toBe('Tech Conference 2026');
-    expect(result.data!.cfpUrl).toBe('https://sessioflow.app/cfp/tech-conference-2026');
+    expect(result.data!.cfpUrl).toBe(
+      'https://sessioflow.app/cfp/tech-conference-2026',
+    );
   });
 
   it('returns validation error for short name', async () => {

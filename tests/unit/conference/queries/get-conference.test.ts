@@ -1,6 +1,4 @@
-import {
-  describe, it, expect, vi,
-} from 'vitest';
+import {describe, it, expect, vi} from 'vitest';
 import {GetConferenceQuery} from '@/modules/conference/application/queries/get-conference/get-conference.query';
 import {GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 import {Conference} from '@/modules/conference/domain/entities/conference';
@@ -28,7 +26,9 @@ class MockConferenceRepository {
   }
 
   async save(conference: Conference) {
-    const existingIndex = this.conferences.findIndex(c => c.id.value === conference.id.value);
+    const existingIndex = this.conferences.findIndex(
+      c => c.id.value === conference.id.value,
+    );
     if (existingIndex === -1) {
       this.conferences.push(conference);
     } else {
@@ -72,11 +72,15 @@ describe('GetConference Query', () => {
     expect(result.data!.id).toBe(conference.id.value);
     expect(result.data!.name).toBe('Tech Conference 2026');
     expect(result.data!.status).toBe('CFP_OPEN');
-    expect(result.data!.cfpUrl).toBe('https://sessioflow.app/cfp/tech-conference-2026');
+    expect(result.data!.cfpUrl).toBe(
+      'https://sessioflow.app/cfp/tech-conference-2026',
+    );
   });
 
   it('returns null when conference not found', async () => {
-    const query = new GetConferenceQuery(ConferenceId.fromString('12345678-1234-4123-8123-123456789012'));
+    const query = new GetConferenceQuery(
+      ConferenceId.fromString('12345678-1234-4123-8123-123456789012'),
+    );
     const result = await handler.execute(query);
 
     expect(result.success).toBe(true);
@@ -100,8 +104,12 @@ describe('GetConference Query', () => {
     expect(result.success).toBe(true);
     expect(result.data!.maxSubmissions).toBe(100);
     expect(result.data!.requiresApproval).toBe(false);
-    expect(result.data!.cfpStartDate).toBe(conference.cfpConfig.startDate.toISOString());
-    expect(result.data!.cfpEndDate).toBe(conference.cfpConfig.endDate.toISOString());
+    expect(result.data!.cfpStartDate).toBe(
+      conference.cfpConfig.startDate.toISOString(),
+    );
+    expect(result.data!.cfpEndDate).toBe(
+      conference.cfpConfig.endDate.toISOString(),
+    );
   });
 
   it('returns conference in DRAFT state', async () => {

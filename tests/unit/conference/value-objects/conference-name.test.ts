@@ -13,7 +13,9 @@ describe('ConferenceName', () => {
 
   it('rejects names longer than 100 characters', () => {
     const longName = 'A'.repeat(101);
-    expect(() => ConferenceName.create(longName)).toThrow('at most 100 characters');
+    expect(() => ConferenceName.create(longName)).toThrow(
+      'at most 100 characters',
+    );
   });
 
   it('trims whitespace', () => {

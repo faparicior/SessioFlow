@@ -125,7 +125,9 @@ export class Conference {
    */
   publishCfp(): {events: Array<ConferenceCreatedEvent | CfpOpenedEvent>} {
     if (this._status !== ConferenceStatus.DRAFT) {
-      throw new StateTransitionError(`Cannot publish CfP: conference is in ${this._status} state, must be DRAFT`);
+      throw new StateTransitionError(
+        `Cannot publish CfP: conference is in ${this._status} state, must be DRAFT`,
+      );
     }
 
     // Validate CfP dates
@@ -139,7 +141,12 @@ export class Conference {
 
     // Publish domain events
     const events: Array<ConferenceCreatedEvent | CfpOpenedEvent> = [
-      new ConferenceCreatedEvent(this._id, this._name, this._slug, this._organizerId),
+      new ConferenceCreatedEvent(
+        this._id,
+        this._name,
+        this._slug,
+        this._organizerId,
+      ),
       new CfpOpenedEvent(this._id, this._cfpConfig),
     ];
 
@@ -151,7 +158,9 @@ export class Conference {
    */
   closeCfp(): {events: unknown[]} {
     if (this._status !== ConferenceStatus.CFP_OPEN) {
-      throw new StateTransitionError(`Cannot close CfP: conference is in ${this._status} state, must be CFP_OPEN`);
+      throw new StateTransitionError(
+        `Cannot close CfP: conference is in ${this._status} state, must be CFP_OPEN`,
+      );
     }
 
     this._status = ConferenceStatus.CFP_CLOSED;
@@ -166,10 +175,12 @@ export class Conference {
    */
   cancel(): {events: unknown[]} {
     if (
-      this._status !== ConferenceStatus.DRAFT
-      && this._status !== ConferenceStatus.CFP_OPEN
+      this._status !== ConferenceStatus.DRAFT &&
+      this._status !== ConferenceStatus.CFP_OPEN
     ) {
-      throw new StateTransitionError(`Cannot cancel: conference is in ${this._status} state, must be DRAFT or CFP_OPEN`);
+      throw new StateTransitionError(
+        `Cannot cancel: conference is in ${this._status} state, must be DRAFT or CFP_OPEN`,
+      );
     }
 
     this._status = ConferenceStatus.DELETED;

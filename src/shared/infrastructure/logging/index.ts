@@ -13,11 +13,7 @@ export {
   LoggerSymbol,
 } from '../../domain/logging/logger';
 
-export {
-  PinoLogger,
-  getLogger,
-  createChildLogger,
-} from './pino-logger';
+export {PinoLogger, getLogger, createChildLogger} from './pino-logger';
 
 export {
   ObservabilityInstrumentation,
