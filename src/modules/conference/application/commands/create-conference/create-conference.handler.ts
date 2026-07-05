@@ -57,12 +57,10 @@ export class CreateConferenceHandler {
     logger.info('Starting conference creation', context);
 
     try {
-
       // 0. Check free tier limit (max 5 active conferences for free users)
       const organizerConferences = await this.repository.findByOrganizerId(input.organizerId);
       const activeCount = organizerConferences.filter(c =>
-        c.status === 'CFP_OPEN' || c.status === 'DRAFT',
-      ).length;
+        c.status === 'CFP_OPEN' || c.status === 'DRAFT').length;
 
       if (activeCount >= 5) {
         logger.warn('Free tier limit exceeded', {
@@ -85,7 +83,7 @@ export class CreateConferenceHandler {
         requiresApproval: input.requiresApproval,
       });
       const {slug} = temporaryConference;
-      
+
       logger.debug('Generated slug', {
         ...context,
         slug: slug.value,
@@ -113,7 +111,7 @@ export class CreateConferenceHandler {
         maxSubmissions: input.maxSubmissions,
         requiresApproval: input.requiresApproval,
       });
-      
+
       logger.debug('Conference entity created', {
         ...context,
         conferenceId: conference.id.value,
@@ -126,7 +124,7 @@ export class CreateConferenceHandler {
         conferenceId: conference.id.value,
       });
       await this.repository.save(conference);
-      
+
       logger.info('Conference saved successfully', {
         ...context,
         conferenceId: conference.id.value,
@@ -140,7 +138,7 @@ export class CreateConferenceHandler {
           subject: `Welcome to SessioFlow - ${conference.name.value} is live!`,
           body: `Your conference ${conference.name.value} is now accepting submissions.`,
         });
-        
+
         logger.info('Welcome email sent', {
           ...context,
           conferenceId: conference.id.value,
@@ -177,9 +175,9 @@ export class CreateConferenceHandler {
         errorType: (error as Error).name,
         errorMessage: (error as Error).message,
       };
-      
+
       logger.error('Conference creation failed', error as Error, errorContext);
-      
+
       if (error instanceof ConferenceFreeTierLimitError) {
         return {
           success: false,
@@ -195,6 +193,7 @@ export class CreateConferenceHandler {
             errors: [{code: 'NAME_TOO_SHORT', message: errorMessage}],
           };
         }
+
         if (errorMessage.includes('future')) {
           return {
             success: false,

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getDb } from '@/shared/infrastructure/database/db-client';
-import { SupabaseConferenceRepository } from '@/modules/conference/infrastructure/database/conference-repository';
+import {type NextRequest, NextResponse} from 'next/server';
+import {getDb} from '@/shared/infrastructure/database/db-client';
+import {SupabaseConferenceRepository} from '@/modules/conference/infrastructure/database/conference-repository';
 
 /**
  * GET /api/v1/conferences/:id
@@ -9,17 +9,17 @@ import { SupabaseConferenceRepository } from '@/modules/conference/infrastructur
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  {params}: {params: {id: string}},
 ) {
   try {
-    const { id } = await params;
+    const {id} = await params;
     const repository = new SupabaseConferenceRepository();
-    const conference = await repository.findById({ value: id });
+    const conference = await repository.findById({value: id});
 
     if (!conference) {
       return NextResponse.json(
-        { error: { code: 'NOT_FOUND', message: 'Conference not found' } },
-        { status: 404 },
+        {error: {code: 'NOT_FOUND', message: 'Conference not found'}},
+        {status: 404},
       );
     }
 
@@ -43,8 +43,8 @@ export async function GET(
   } catch (error) {
     console.error('Conference retrieval error:', error);
     return NextResponse.json(
-      { error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred' } },
-      { status: 500 },
+      {error: {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}},
+      {status: 500},
     );
   }
 }

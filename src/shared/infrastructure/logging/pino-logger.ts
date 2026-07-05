@@ -1,26 +1,26 @@
 /**
  * Pino Logger Implementation
- * 
+ *
  * Production-ready logger using Pino with structured JSON output.
  * Supports correlation IDs, error tracking, and context propagation.
- * 
+ *
  * @module shared/infrastructure/logging
  */
 
 import pino from 'pino';
-import { Logger, LogContext } from '../../domain/logging/logger';
+import {type Logger, type LogContext} from '../../domain/logging/logger';
 
-interface PinoLoggerConfig {
+type PinoLoggerConfig = {
   level?: string;
   format?: 'json' | 'pretty';
   enabled?: boolean;
   destination?: 'console' | 'file';
-  logPath?: string;  // Path for file-based logging
+  logPath?: string; // Path for file-based logging
   fileTransport?: string; // Custom pino transport for file (e.g., 'pino-roll')
-}
+};
 
 export class PinoLogger implements Logger {
-  private logger: pino.Logger;
+  private readonly logger: pino.Logger;
   private boundContext: LogContext;
 
   constructor(config: PinoLoggerConfig = {}) {
@@ -30,18 +30,18 @@ export class PinoLogger implements Logger {
     const envLevel = process.env.LOG_LEVEL || 'info';
     const envFormat = process.env.LOG_FORMAT as 'json' | 'pretty' || 'json';
 
-    const { 
+    const {
       level = envLevel,
       format = envFormat,
       enabled = process.env.LOG_ENABLED !== 'false',
       destination = envDestination || 'console',
       logPath = envLogPath,
-      fileTransport = 'pino/file'
+      fileTransport = 'pino/file',
     } = config;
 
     if (!enabled) {
       // Disabled logger - no output
-      this.logger = pino({ level: 'silent' });
+      this.logger = pino({level: 'silent'});
       this.boundContext = {};
       return;
     }
@@ -76,7 +76,7 @@ export class PinoLogger implements Logger {
             },
             {
               target: fileTransport,
-              level: level,
+              level,
               options: {
                 destination: logPath,
                 mkdir: true,
@@ -91,7 +91,7 @@ export class PinoLogger implements Logger {
       transportOptions = {
         ...baseOptions,
         formatters: {
-          level: (label) => ({ level: label.toUpperCase() }),
+          level: label => ({level: label.toUpperCase()}),
         },
         transport: {
           target: fileTransport,
@@ -107,7 +107,7 @@ export class PinoLogger implements Logger {
       transportOptions = {
         ...baseOptions,
         formatters: {
-          level: (label) => ({ level: label.toUpperCase() }),
+          level: label => ({level: label.toUpperCase()}),
         },
         transport: {
           target: 'pino-pretty',
@@ -138,13 +138,13 @@ export class PinoLogger implements Logger {
   error(message: string, error?: Error, context?: LogContext): void {
     const errorContext = error
       ? {
-          error: error.message,
-          stack: error.stack,
-          name: error.name,
-        }
+        error: error.message,
+        stack: error.stack,
+        name: error.name,
+      }
       : {};
 
-    this.log('error', message, { ...context, ...errorContext });
+    this.log('error', message, {...context, ...errorContext});
   }
 
   debug(message: string, context?: LogContext): void {
@@ -157,21 +157,19 @@ export class PinoLogger implements Logger {
 
   child(context: LogContext): Logger {
     const childLogger = new PinoLogger();
-    childLogger.bind({ ...this.boundContext, ...context });
+    childLogger.bind({...this.boundContext, ...context});
     return childLogger;
   }
 
   bind(context: LogContext): void {
-    this.boundContext = { ...this.boundContext, ...context };
+    this.boundContext = {...this.boundContext, ...context};
   }
 
   private log(level: pino.LevelWithSilent, message: string, context?: LogContext): void {
-    const mergedContext = { ...this.boundContext, ...context };
-    
+    const mergedContext = {...this.boundContext, ...context};
+
     // Remove undefined values
-    const cleanContext = Object.fromEntries(
-      Object.entries(mergedContext).filter(([_, value]) => value !== undefined)
-    );
+    const cleanContext = Object.fromEntries(Object.entries(mergedContext).filter(([_, value]) => value !== undefined));
 
     if (Object.keys(cleanContext).length > 0) {
       this.logger[level](cleanContext, message);
@@ -182,12 +180,10 @@ export class PinoLogger implements Logger {
 }
 
 // Singleton instance for application-wide use
-let globalLogger: PinoLogger | null = null;
+let globalLogger: PinoLogger | undefined = null;
 
 export function getLogger(config?: PinoLoggerConfig): PinoLogger {
-  if (!globalLogger) {
-    globalLogger = new PinoLogger(config);
-  }
+  globalLogger ||= new PinoLogger(config);
   return globalLogger;
 }
 

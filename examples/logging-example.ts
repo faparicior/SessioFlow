@@ -1,12 +1,12 @@
 /**
  * Logging Example
- * 
+ *
  * This example demonstrates how to use the structured logging system
  * in SessioFlow. Run with: npx tsx examples/logging-example.ts
  */
 
-import { getLogger, initObservability, withRequestContext } from '../src/shared/infrastructure/logging';
-import { PinoLogger } from '../src/shared/infrastructure/logging/pino-logger.js';
+import {getLogger, initObservability, withRequestContext} from '../src/shared/infrastructure/logging';
+import {PinoLogger} from '../src/shared/infrastructure/logging/pino-logger.js';
 
 // Initialize observability
 initObservability({
@@ -50,7 +50,7 @@ fileLogger.info('Writing to file', {
   message: 'This will be stored in a file',
 });
 
-logger.info('Back to console logging', { test: true });
+logger.info('Back to console logging', {test: true});
 
 // Example 2: Error tracking with context
 console.log('\n=== Example 2: Error Tracking ===\n');
@@ -91,7 +91,7 @@ withRequestContext(
       duration: '234ms',
       conferenceId: 'conf-456',
     });
-  }
+  },
 );
 
 // Example 4: Child logger with additional context

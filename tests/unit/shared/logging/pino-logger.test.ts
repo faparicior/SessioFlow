@@ -1,20 +1,22 @@
 /**
  * Pino Logger Unit Tests
- * 
+ *
  * Tests for the structured logging implementation.
  * Verifies logging functionality, context handling, and error tracking.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { PinoLogger, getLogger } from '@/shared/infrastructure/logging/pino-logger.js';
-import type { LogContext } from '@/shared/domain/logging/logger.js';
+import {
+  describe, it, expect, vi, beforeEach, afterEach,
+} from 'vitest';
+import {PinoLogger, getLogger} from '@/shared/infrastructure/logging/pino-logger.js';
+import type {LogContext} from '@/shared/domain/logging/logger.js';
 
 describe('PinoLogger', () => {
   let logger: PinoLogger;
 
   beforeEach(() => {
     // Create logger with disabled output for tests
-    logger = new PinoLogger({ enabled: false });
+    logger = new PinoLogger({enabled: false});
   });
 
   afterEach(() => {
@@ -24,10 +26,12 @@ describe('PinoLogger', () => {
   describe('info()', () => {
     it('logs informational messages', () => {
       // Create logger with output enabled for this test
-      const testLogger = new PinoLogger({ enabled: true, format: 'pretty' });
-      
+      const testLogger = new PinoLogger({enabled: true, format: 'pretty'});
+
       // Just verify the method doesn't throw
-      expect(() => testLogger.info('Test message')).not.toThrow();
+      expect(() => {
+        testLogger.info('Test message');
+      }).not.toThrow();
     });
 
     it('includes context in log', () => {
@@ -37,7 +41,7 @@ describe('PinoLogger', () => {
       };
 
       logger.info('User action', context);
-      
+
       // Verify context is merged
       expect(logger).toBeDefined();
     });
@@ -47,16 +51,16 @@ describe('PinoLogger', () => {
     it('logs error with message', () => {
       const error = new Error('Test error');
       logger.error('Operation failed', error);
-      
+
       expect(logger).toBeDefined();
     });
 
     it('includes error stack trace', () => {
       const error = new Error('Validation failed');
       error.stack = 'Error: Validation failed\n  at test.ts:10:5';
-      
+
       logger.error('Validation error', error);
-      
+
       expect(logger).toBeDefined();
     });
 
@@ -68,7 +72,7 @@ describe('PinoLogger', () => {
       };
 
       logger.error('Database operation failed', error, context);
-      
+
       expect(logger).toBeDefined();
     });
   });
@@ -92,45 +96,45 @@ describe('PinoLogger', () => {
 
   describe('debug()', () => {
     it('logs debug messages', () => {
-      logger.debug('Entering function', { functionName: 'createConference' });
+      logger.debug('Entering function', {functionName: 'createConference'});
       expect(logger).toBeDefined();
     });
   });
 
   describe('trace()', () => {
     it('logs trace messages', () => {
-      logger.trace('Variable state', { state: { count: 0 } });
+      logger.trace('Variable state', {state: {count: 0}});
       expect(logger).toBeDefined();
     });
   });
 
   describe('child()', () => {
     it('creates child logger with additional context', () => {
-      const childLogger = logger.child({ requestId: 'req-123' });
-      
+      const childLogger = logger.child({requestId: 'req-123'});
+
       expect(childLogger).toBeDefined();
       expect(childLogger).not.toBe(logger);
     });
 
     it('child logger inherits parent context', () => {
-      logger.bind({ userId: 'user-123' });
-      const childLogger = logger.child({ conferenceId: 'conf-456' });
-      
+      logger.bind({userId: 'user-123'});
+      const childLogger = logger.child({conferenceId: 'conf-456'});
+
       expect(childLogger).toBeDefined();
     });
   });
 
   describe('bind()', () => {
     it('binds context to logger instance', () => {
-      logger.bind({ userId: 'user-123' });
-      
+      logger.bind({userId: 'user-123'});
+
       expect(logger).toBeDefined();
     });
 
     it('merges bound context with new context', () => {
-      logger.bind({ userId: 'user-123' });
-      logger.info('Test', { conferenceId: 'conf-456' });
-      
+      logger.bind({userId: 'user-123'});
+      logger.info('Test', {conferenceId: 'conf-456'});
+
       expect(logger).toBeDefined();
     });
   });
@@ -139,7 +143,7 @@ describe('PinoLogger', () => {
     it('returns singleton instance', () => {
       const logger1 = getLogger();
       const logger2 = getLogger();
-      
+
       expect(logger1).toBe(logger2);
     });
 
@@ -148,7 +152,7 @@ describe('PinoLogger', () => {
         level: 'error',
         format: 'json',
       });
-      
+
       expect(customLogger).toBeDefined();
     });
   });

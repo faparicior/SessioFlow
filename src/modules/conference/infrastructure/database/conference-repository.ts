@@ -130,7 +130,7 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
    */
   private mapToConference(row: any): Conference {
     // Drizzle maps snake_case columns to camelCase properties
-    const cfpConfig = row.cfpConfig;
+    const {cfpConfig} = row;
 
     return Conference.fromData({
       id: ConferenceId.fromString(row.id),

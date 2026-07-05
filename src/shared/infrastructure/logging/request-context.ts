@@ -1,23 +1,23 @@
 /**
  * Request Context Management
- * 
+ *
  * Provides request-scoped context with correlation IDs for tracing
  * requests across the application layers.
- * 
+ *
  * @module shared/infrastructure/logging
  */
 
-import { AsyncLocalStorage } from 'async_hooks';
-import { v4 as uuidv4 } from 'uuid';
-import { LogContext } from '../../domain/logging/logger';
+import {AsyncLocalStorage} from 'node:async_hooks';
+import {v4 as uuidv4} from 'uuid';
+import {LogContext} from '../../domain/logging/logger';
 
-interface RequestContextData {
+type RequestContextData = {
   correlationId: string;
   userId?: string;
   requestId: string;
   startTime: number;
   metadata: Record<string, unknown>;
-}
+};
 
 // Async local storage for request-scoped context
 const requestStorage = new AsyncLocalStorage<RequestContextData>();
@@ -25,7 +25,7 @@ const requestStorage = new AsyncLocalStorage<RequestContextData>();
 /**
  * Get the current request context
  */
-export function getRequestContext(): RequestContextData | null {
+export function getRequestContext(): RequestContextData | undefined {
   return requestStorage.getStore() || null;
 }
 
@@ -41,7 +41,7 @@ export function generateCorrelationId(headerValue?: string): string {
  */
 export function withRequestContext<T>(
   context: Partial<RequestContextData>,
-  fn: () => T
+  fn: () => T,
 ): T {
   const defaultContext: RequestContextData = {
     correlationId: context.correlationId || generateCorrelationId(),
@@ -59,7 +59,7 @@ export function withRequestContext<T>(
  */
 export async function withRequestContextAsync<T>(
   context: Partial<RequestContextData>,
-  fn: () => Promise<T>
+  fn: () => Promise<T>,
 ): Promise<T> {
   const defaultContext: RequestContextData = {
     correlationId: context.correlationId || generateCorrelationId(),
@@ -75,7 +75,7 @@ export async function withRequestContextAsync<T>(
 /**
  * Get correlation ID from current request context
  */
-export function getCorrelationId(): string | null {
+export function getCorrelationId(): string | undefined {
   const context = getRequestContext();
   return context?.correlationId || null;
 }
@@ -83,9 +83,12 @@ export function getCorrelationId(): string | null {
 /**
  * Get request duration in milliseconds
  */
-export function getRequestDuration(): number | null {
+export function getRequestDuration(): number | undefined {
   const context = getRequestContext();
-  if (!context) return null;
+  if (!context) {
+    return null;
+  }
+
   return Date.now() - context.startTime;
 }
 

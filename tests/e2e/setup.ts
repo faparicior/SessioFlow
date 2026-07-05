@@ -1,5 +1,5 @@
+import * as path from 'node:path';
 import * as dotenv from 'dotenv';
-import * as path from 'path';
 import postgres from 'postgres';
 
 export default async function setup() {

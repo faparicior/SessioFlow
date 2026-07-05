@@ -1,15 +1,15 @@
 /**
  * Logging Module
- * 
+ *
  * Central export point for all logging functionality.
  * Provides structured logging with correlation IDs and OpenTelemetry integration.
- * 
+ *
  * @module shared/infrastructure/logging
  */
 
 export {
-  Logger,
-  LogContext,
+  type Logger,
+  type LogContext,
   LoggerSymbol,
 } from '../../domain/logging/logger';
 

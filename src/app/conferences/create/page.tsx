@@ -35,11 +35,11 @@ export default function CreateConferencePage() {
       if (response.ok && result.data) {
         console.log('[CreatePage] Returning success');
         return {success: true, data: result.data};
-      } else {
-        const error = result.error || {message: 'An error occurred'};
-        console.log('[CreatePage] Returning error:', error);
-        return {success: false, errors: [{code: error.code, message: error.message}]};
       }
+
+      const error = result.error || {message: 'An error occurred'};
+      console.log('[CreatePage] Returning error:', error);
+      return {success: false, errors: [{code: error.code, message: error.message}]};
     } catch (error) {
       console.error('[CreatePage] Conference creation error:', error);
       return {
@@ -56,9 +56,9 @@ export default function CreateConferencePage() {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">Create New Conference</h1>
-      <ConferenceForm onSubmit={handleSubmit} onSuccess={handleSuccess} />
+    <div className='container mx-auto py-8'>
+      <h1 className='text-3xl font-bold mb-6'>Create New Conference</h1>
+      <ConferenceForm onSubmit={handleSubmit} onSuccess={handleSuccess}/>
     </div>
   );
 }

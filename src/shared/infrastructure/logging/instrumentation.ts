@@ -1,28 +1,27 @@
 /**
  * OpenTelemetry Instrumentation Setup
- * 
+ *
  * Configures OpenTelemetry SDK for distributed tracing.
  * In development, traces are exported to console.
  * In production, can be configured to export to vendors (Datadog, Honeycomb, etc.)
- * 
+ *
  * @module shared/infrastructure/logging
  */
 
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';
-import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { resourceFromAttributes } from '@opentelemetry/resources';
-import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import {NodeSDK} from '@opentelemetry/sdk-node';
+import {ConsoleSpanExporter, SimpleSpanProcessor} from '@opentelemetry/sdk-trace-base';
+import {resourceFromAttributes} from '@opentelemetry/resources';
+import {ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION} from '@opentelemetry/semantic-conventions';
 
-interface InstrumentationConfig {
+type InstrumentationConfig = {
   serviceName: string;
   environment: string;
   enabled?: boolean;
-}
+};
 
 export class ObservabilityInstrumentation {
-  private sdk: NodeSDK | null = null;
-  private config: InstrumentationConfig;
+  private sdk: NodeSDK | undefined = null;
+  private readonly config: InstrumentationConfig;
 
   constructor(config: InstrumentationConfig) {
     this.config = {
@@ -83,13 +82,13 @@ export class ObservabilityInstrumentation {
   /**
    * Get the SDK instance (for advanced usage)
    */
-  getSdk(): NodeSDK | null {
+  getSdk(): NodeSDK | undefined {
     return this.sdk;
   }
 }
 
 // Global instrumentation instance
-let instrumentation: ObservabilityInstrumentation | null = null;
+let instrumentation: ObservabilityInstrumentation | undefined = null;
 
 export function initObservability(config?: Partial<InstrumentationConfig>): ObservabilityInstrumentation {
   if (!instrumentation) {
@@ -106,7 +105,7 @@ export function initObservability(config?: Partial<InstrumentationConfig>): Obse
   return instrumentation;
 }
 
-export function getObservability(): ObservabilityInstrumentation | null {
+export function getObservability(): ObservabilityInstrumentation | undefined {
   return instrumentation;
 }
 

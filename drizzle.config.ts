@@ -1,4 +1,4 @@
-import type { Config } from 'drizzle-kit';
+import type {Config} from 'drizzle-kit';
 
 export default {
   schema: './src/modules/conference/infrastructure/database/drizzle-schema.ts',

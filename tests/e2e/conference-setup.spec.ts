@@ -23,7 +23,7 @@ test.describe('Conference Setup E2E', () => {
   test.beforeEach(async ({page}) => {
     // Clean up conferences before each test to avoid free tier limit
     await deleteConferences();
-    
+
     // Navigate to conference creation page
     await page.goto('/conferences/create');
   });
@@ -86,13 +86,13 @@ test.describe('Conference Setup E2E', () => {
     await page.getByLabel('CfP End Date').fill('2026-09-30');
     await page.getByLabel('CfP End Date').blur();
     await page.getByRole('button', {name: /create conference/i}).click();
-    
+
     // Wait for redirect to conference dashboard
     await page.waitForURL(/\/conferences\//);
-    
+
     // Navigate back to create page
     await page.goto('/conferences/create');
-    
+
     // Try to create another conference with the same name (duplicate slug)
     await page.getByLabel('Conference Name').fill(conferenceName);
     await page.getByLabel('CfP Start Date').fill('2026-10-01');
@@ -122,10 +122,10 @@ test.describe('Conference Setup E2E', () => {
 
       // Submit
       await page.getByRole('button', {name: /create conference/i}).click();
-      
+
       // Wait for navigation to conference dashboard
       await page.waitForURL(/\/conferences\//);
-      
+
       // Go back to create page for next iteration
       await page.goto('/conferences/create');
     }

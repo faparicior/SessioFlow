@@ -25,7 +25,7 @@ export const conferencesTable = pgTable('conferences', {
   }>(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-}, (table) => [
+}, table => [
   uniqueIndex('conferences_slug_unique').on(table.slug),
   index('idx_conferences_organizer_id').on(table.organizerId),
   index('idx_conferences_status').on(table.status),
