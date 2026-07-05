@@ -10,8 +10,8 @@
 
 - The journey plan is not marked as done. Still is in "planned"
 - Not all implementred. We have a checklist to take care about the progress?
-- Used swql ditectly instead of drizzlekit
-
+- Used sql directly instead of drizzlekit
+- happy path test e2e pass with database error. we need to imprive it.
 # Not a problem. 
 
 Supabase Postgresql RLS. We ddo not use at this moment
