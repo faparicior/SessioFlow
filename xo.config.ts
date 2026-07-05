@@ -28,7 +28,45 @@ const xoConfig: FlatXoConfig = [
       '@stylistic/jsx-quotes': 'off',
       '@stylistic/operator-linebreak': 'off',
       '@stylistic/indent-binary-ops': 'off',
-      '@typescript-eslint/naming-convention': 'off',
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          selector: 'default',
+          format: ['camelCase'],
+          leadingUnderscore: 'allow',
+          trailingUnderscore: 'allow',
+        },
+        {
+          selector: 'variable',
+          format: ['camelCase', 'UPPER_CASE'],
+          leadingUnderscore: 'allow',
+          trailingUnderscore: 'allow',
+        },
+        {
+          selector: 'parameter',
+          format: ['camelCase'],
+          leadingUnderscore: 'allow',
+          trailingUnderscore: 'allow',
+        },
+        {
+          selector: 'typeLike',
+          format: ['PascalCase'],
+        },
+        {
+          selector: 'property',
+          format: ['camelCase', 'snake_case', 'UPPER_CASE'],
+          leadingUnderscore: 'allow',
+        },
+        {
+          selector: 'method',
+          format: ['camelCase'],
+          leadingUnderscore: 'allow',
+        },
+        {
+          selector: 'function',
+          format: ['camelCase', 'UPPER_CASE'],
+        },
+      ],
       'react/jsx-tag-spacing': 'off',
       'new-cap': 'off',
       'react/new-cap': 'off',
