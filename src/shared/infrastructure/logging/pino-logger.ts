@@ -8,7 +8,7 @@
  */
 
 import pino from 'pino';
-import { Logger, LogContext } from '../../domain/logging/logger.js';
+import { Logger, LogContext } from '../../domain/logging/logger';
 
 interface PinoLoggerConfig {
   level?: string;
@@ -48,25 +48,26 @@ export class PinoLogger implements Logger {
 
     const baseOptions: pino.LoggerOptions = {
       level,
-      formatters: {
-        level: (label) => ({ level: label.toUpperCase() }),
-      },
       timestamp: pino.stdTimeFunctions.isoTime,
       base: undefined, // Remove default pid, hostname
     };
+
+    // Note: formatters.level is not compatible with multiple transport targets
+    // We'll add it only for single-target configurations
 
     // Determine destination based on config
     let transportOptions: pino.LoggerOptions;
 
     if (destination === 'both') {
-      // Log to both console and file
+      // Log to both console and file - use pino-multistream or simple console
       transportOptions = {
         ...baseOptions,
+        level,
         transport: {
           targets: [
             {
               target: 'pino-pretty',
-              level: level,
+              level: 'info',
               options: {
                 colorize: true,
                 translateTime: 'SYS:standard',
@@ -89,6 +90,9 @@ export class PinoLogger implements Logger {
       // File-based logging using pino transport
       transportOptions = {
         ...baseOptions,
+        formatters: {
+          level: (label) => ({ level: label.toUpperCase() }),
+        },
         transport: {
           target: fileTransport,
           options: {
@@ -102,6 +106,9 @@ export class PinoLogger implements Logger {
       // Pretty printing in development
       transportOptions = {
         ...baseOptions,
+        formatters: {
+          level: (label) => ({ level: label.toUpperCase() }),
+        },
         transport: {
           target: 'pino-pretty',
           options: {

@@ -9,7 +9,7 @@
 
 import { AsyncLocalStorage } from 'async_hooks';
 import { v4 as uuidv4 } from 'uuid';
-import { LogContext } from '../../domain/logging/logger.js';
+import { LogContext } from '../../domain/logging/logger';
 
 interface RequestContextData {
   correlationId: string;

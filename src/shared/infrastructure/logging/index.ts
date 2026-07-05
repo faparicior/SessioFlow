@@ -11,20 +11,20 @@ export {
   Logger,
   LogContext,
   LoggerSymbol,
-} from '../../domain/logging/logger.js';
+} from '../../domain/logging/logger';
 
 export {
   PinoLogger,
   getLogger,
   createChildLogger,
-} from './pino-logger.js';
+} from './pino-logger';
 
 export {
   ObservabilityInstrumentation,
   initObservability,
   getObservability,
   shutdownObservability,
-} from './instrumentation.js';
+} from './instrumentation';
 
 export {
   getRequestContext,
@@ -35,4 +35,4 @@ export {
   getRequestDuration,
   addRequestMetadata,
   getRequestMetadata,
-} from './request-context.js';
+} from './request-context';

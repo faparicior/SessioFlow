@@ -3,6 +3,7 @@ import { ConferenceCreateSchema } from '@/modules/conference/interfaces/api/v1/c
 import { CreateConferenceCommand } from '@/modules/conference/application/commands/create-conference/create-conference.command';
 import { CreateConferenceHandler } from '@/modules/conference/application/commands/create-conference/create-conference.handler';
 import { SupabaseConferenceRepository } from '@/modules/conference/infrastructure/database/conference-repository';
+import { getLogger } from '@/shared/infrastructure/logging';
 
 /**
  * POST /api/v1/conferences
@@ -10,12 +11,17 @@ import { SupabaseConferenceRepository } from '@/modules/conference/infrastructur
  * Creates a new conference with CfP configuration.
  */
 export async function POST(request: NextRequest) {
+  const logger = getLogger();
+  logger.info('[API] Conference creation request received');
+  
   try {
     // 1. Parse and validate request body
     const body = await request.json();
+    logger.debug('[API] Request body:', body);
     const parsed = ConferenceCreateSchema.safeParse(body);
     
     if (!parsed.success) {
+      logger.error('[API] Validation failed:', parsed.error.flatten().fieldErrors);
       return NextResponse.json(
         {
           error: {
@@ -27,6 +33,7 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
+    logger.debug('[API] Validation passed');
 
     // 2. Get authenticated user (TODO: Replace with real auth)
     const user = { id: 'mock-user-id' };
@@ -46,10 +53,13 @@ export async function POST(request: NextRequest) {
       ...parsed.data,
       organizerId: user.id,
     });
+    logger.debug('[API] Executing create conference command:', { name: parsed.data.name });
 
     const result = await handler.execute(command);
+    logger.debug('[API] Command result:', result);
 
     if (!result.success) {
+      logger.error('[API] Conference creation failed:', result.errors);
       const error = result.errors![0];
       let status = 400;
       let message = error.message;
@@ -69,6 +79,7 @@ export async function POST(request: NextRequest) {
         { status },
       );
     }
+    logger.info('[API] Conference created successfully');
 
     // 5. Return success response
     return NextResponse.json(
@@ -76,7 +87,7 @@ export async function POST(request: NextRequest) {
       { status: 201 },
     );
   } catch (error) {
-    console.error('Conference creation error:', error);
+    logger.error('[API] Conference creation error:', error as Error);
     return NextResponse.json(
       { error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred' } },
       { status: 500 },

@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/shared/infrastructure/database/db-client';
-import { ConferenceRepository } from '@/modules/conference/domain/repositories/conference-repository';
+import { getDb } from '@/shared/infrastructure/database/db-client';
 import { SupabaseConferenceRepository } from '@/modules/conference/infrastructure/database/conference-repository';
-import { Conference } from '@/modules/conference/domain/entities/conference';
-import { ConferenceStatus } from '@/modules/conference/domain/value-objects/conference-status';
-import { eq } from 'drizzle-orm';
-import { conferencesTable } from '@/modules/conference/infrastructure/database/drizzle-schema';
 
 /**
  * GET /api/v1/conferences/:id

@@ -1,18 +1,18 @@
 /**
- * Middleware for Request Context & Observability
+ * Proxy for Request Context & Observability
  * 
  * - Injects correlation IDs for request tracing
  * - Adds request timing information
  * - Propagates user context across layers
  * 
- * @module middleware
+ * @module proxy
  */
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { generateCorrelationId } from '@/shared/infrastructure/logging/request-context';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Generate or extract correlation ID
   const correlationId =
     request.headers.get('x-correlation-id') ||
@@ -42,7 +42,7 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-// Configure which routes should use this middleware
+// Configure which routes should use this proxy
 export const config = {
   matcher: [
     /*

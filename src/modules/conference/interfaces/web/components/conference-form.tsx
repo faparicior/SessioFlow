@@ -44,7 +44,7 @@ type FormErrors = {
   general?: string;
 };
 
-export function ConferenceForm({onSubmit}: ConferenceFormProps) {
+export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
   const [formData, setFormData] = useState<ConferenceFormData>({
     name: '',
     description: '',
@@ -117,12 +117,17 @@ export function ConferenceForm({onSubmit}: ConferenceFormProps) {
           cfpEndDate: '',
         });
         if (onSuccess && result.data) {
-          onSuccess(result.data);
+          try {
+            onSuccess(result.data);
+          } catch (error) {
+            console.error('[Form] onSuccess callback error:', error);
+          }
         }
       } else if (result.errors) {
         setErrors({general: result.errors[0]?.message || 'An error occurred'});
       }
-    } catch {
+    } catch (error) {
+      console.error('[Form] Submission error:', error);
       setErrors({general: 'An unexpected error occurred. Please try again.'});
     } finally {
       setIsSubmitting(false);

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,19 +13,22 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
  * Route: /conferences/[id]
  * Displays conference details and allows organizers to manage their conference.
  */
-export default function ConferenceDetailPage({ params }: { params: { id: string } }) {
+export default function ConferenceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [conference, setConference] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchConference();
-  }, [params.id]);
+  // Unwrap params Promise using React.use()
+  const { id } = React.use(params);
 
-  const fetchConference = async () => {
+  useEffect(() => {
+    fetchConference(id);
+  }, [id]);
+
+  const fetchConference = async (conferenceId: string) => {
     try {
-      const response = await fetch(`/api/v1/conferences/${params.id}`);
+      const response = await fetch(`/api/v1/conferences/${conferenceId}`);
       
       if (!response.ok) {
         if (response.status === 404) {

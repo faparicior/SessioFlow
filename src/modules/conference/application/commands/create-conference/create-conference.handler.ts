@@ -63,7 +63,7 @@ export class CreateConferenceHandler {
       const activeCount = organizerConferences.filter(c =>
         c.status === 'CFP_OPEN' || c.status === 'DRAFT',
       ).length;
-      
+
       if (activeCount >= 5) {
         logger.warn('Free tier limit exceeded', {
           ...context,

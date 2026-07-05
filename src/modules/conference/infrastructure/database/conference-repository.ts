@@ -95,6 +95,7 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
         requiresApproval: conference.cfpConfig.requiresApproval.value,
         status: conference.cfpConfig.status,
       },
+      createdAt: conference.createdAt,
       updatedAt: new Date(),
     };
 
@@ -113,10 +114,7 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
         .where(eq(conferencesTable.id, conference.id.value));
     } else {
       // Insert
-      await db.insert(conferencesTable).values({
-        ...data,
-        createdAt: conference.createdAt,
-      });
+      await db.insert(conferencesTable).values(data);
     }
   }
 
@@ -131,10 +129,8 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
    * Map a database row to a Conference entity.
    */
   private mapToConference(row: any): Conference {
-    const cfpConfig = row.cfpConfig || {};
-    console.log('[Repo] mapToConference row.cfp_config type:', typeof row.cfp_config);
-    console.log('[Repo] mapToConference row.cfp_config:', JSON.stringify(cfpConfig));
-    console.log('[Repo] mapToConference cfpConfig.startDate:', cfpConfig.startDate, typeof cfpConfig.startDate);
+    // Drizzle maps snake_case columns to camelCase properties
+    const cfpConfig = row.cfpConfig;
 
     return Conference.fromData({
       id: ConferenceId.fromString(row.id),
@@ -142,15 +138,15 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
       description: row.description || '',
       slug: ConferenceSlug.create(row.slug),
       status: row.status as ConferenceStatus,
-      organizerId: row.organizer_id,
+      organizerId: row.organizerId,
       cfpConfig: CfpConfig.create({
         startDate: CfpStartDate.fromISOString(cfpConfig.startDate),
         endDate: CfpEndDate.fromISOString(cfpConfig.endDate),
         maxSubmissions: MaxSubmissions.create(cfpConfig.maxSubmissions),
         requiresApproval: RequiresApproval.create(cfpConfig.requiresApproval ?? true),
       }),
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at),
+      createdAt: new Date(row.createdAt),
+      updatedAt: new Date(row.updatedAt),
     });
   }
 }

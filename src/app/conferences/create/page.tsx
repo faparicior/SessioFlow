@@ -1,5 +1,6 @@
 'use client';
 
+import {useRouter} from 'next/navigation';
 import {ConferenceForm} from '@/modules/conference/interfaces/web/components/conference-form';
 
 /**
@@ -10,7 +11,10 @@ import {ConferenceForm} from '@/modules/conference/interfaces/web/components/con
  * by calling the POST /api/v1/conferences endpoint.
  */
 export default function CreateConferencePage() {
+  const router = useRouter();
+
   const handleSubmit = async (data: any) => {
+    console.log('[CreatePage] handleSubmit called with data:', data);
     try {
       const response = await fetch('/api/v1/conferences', {
         method: 'POST',
@@ -26,15 +30,18 @@ export default function CreateConferencePage() {
       });
 
       const result = await response.json();
+      console.log('[CreatePage] API response:', response.status, result);
 
       if (response.ok && result.data) {
+        console.log('[CreatePage] Returning success');
         return {success: true, data: result.data};
       } else {
         const error = result.error || {message: 'An error occurred'};
+        console.log('[CreatePage] Returning error:', error);
         return {success: false, errors: [{code: error.code, message: error.message}]};
       }
     } catch (error) {
-      console.error('Conference creation error:', error);
+      console.error('[CreatePage] Conference creation error:', error);
       return {
         success: false,
         errors: [{code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}],
@@ -44,11 +51,8 @@ export default function CreateConferencePage() {
 
   const handleSuccess = (data: any) => {
     console.log('[Page] handleSuccess called with data:', data);
-    // Redirect after a brief delay so the success alert renders
-    setTimeout(() => {
-      console.log('[Page] Redirecting to /conferences/' + data.id);
-      window.location.href = `/conferences/${data.id}`;
-    }, 100);
+    console.log('[Page] Conference ID:', data.id);
+    router.push(`/conferences/${data.id}`);
   };
 
   return (
