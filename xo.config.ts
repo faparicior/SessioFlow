@@ -7,6 +7,7 @@ const xoConfig: FlatXoConfig = [
     react: true,
     rules: {
       'unicorn/empty-brace-spaces': 'off',
+      'import-x/extensions': 'off',
     },
   },
   {
