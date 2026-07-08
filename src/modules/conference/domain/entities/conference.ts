@@ -45,17 +45,7 @@ export class Conference {
    * Factory method to load a Conference from stored data (e.g., database row).
    */
   static fromData(data: ConferenceData): Conference {
-    return new Conference(
-      data.id,
-      data.name,
-      data.description,
-      data.slug,
-      data.status,
-      data.organizerId,
-      data.cfpConfig,
-      data.createdAt,
-      data.updatedAt,
-    );
+    return this.createFromData(data);
   }
 
   /**
@@ -92,29 +82,11 @@ export class Conference {
    * Private factory method shared by create() and fromData().
    */
   private static createFromData(data: ConferenceData): Conference {
-    return new Conference(
-      data.id,
-      data.name,
-      data.description,
-      data.slug,
-      data.status,
-      data.organizerId,
-      data.cfpConfig,
-      data.createdAt,
-      data.updatedAt,
-    );
+    return new Conference(data);
   }
 
   private constructor(
-    private readonly _id: ConferenceId,
-    private readonly _name: ConferenceName,
-    private readonly _description: string,
-    private readonly _slug: ConferenceSlug,
-    private _status: ConferenceStatus,
-    private readonly _organizerId: string,
-    private readonly _cfpConfig: CfpConfig,
-    private readonly _createdAt: Date,
-    private _updatedAt: Date,
+    private readonly _data: ConferenceData,
   ) {}
 
   /**
@@ -124,30 +96,30 @@ export class Conference {
    * It validates pre-conditions and publishes domain events.
    */
   publishCfp(): {events: Array<ConferenceCreatedEvent | CfpOpenedEvent>} {
-    if (this._status !== ConferenceStatus.DRAFT) {
+    if (this._data.status !== ConferenceStatus.DRAFT) {
       throw new StateTransitionError(
-        `Cannot publish CfP: conference is in ${this._status} state, must be DRAFT`,
+        `Cannot publish CfP: conference is in ${this._data.status} state, must be DRAFT`,
       );
     }
 
     // Validate CfP dates
-    if (this._cfpConfig.endDate.isBefore(this._cfpConfig.startDate)) {
+    if (this.cfpConfig.endDate.isBefore(this.cfpConfig.startDate)) {
       throw new CfpDatesInvalidError('CfP end date must be after start date');
     }
 
     // Transition state
-    this._status = ConferenceStatus.CFP_OPEN;
-    this._updatedAt = new Date();
+    this._data.status = ConferenceStatus.CFP_OPEN;
+    this._data.updatedAt = new Date();
 
     // Publish domain events
     const events: Array<ConferenceCreatedEvent | CfpOpenedEvent> = [
       new ConferenceCreatedEvent(
-        this._id,
-        this._name,
-        this._slug,
-        this._organizerId,
+        this.id,
+        this.name,
+        this.slug,
+        this.organizerId,
       ),
-      new CfpOpenedEvent(this._id, this._cfpConfig),
+      new CfpOpenedEvent(this.id, this.cfpConfig),
     ];
 
     return {events};
@@ -157,15 +129,15 @@ export class Conference {
    * Close the CfP: transitions from CFP_OPEN to CFP_CLOSED.
    */
   closeCfp(): {events: unknown[]} {
-    if (this._status !== ConferenceStatus.CFP_OPEN) {
+    if (this._data.status !== ConferenceStatus.CFP_OPEN) {
       throw new StateTransitionError(
-        `Cannot close CfP: conference is in ${this._status} state, must be CFP_OPEN`,
+        `Cannot close CfP: conference is in ${this._data.status} state, must be CFP_OPEN`,
       );
     }
 
-    this._status = ConferenceStatus.CFP_CLOSED;
-    this._cfpConfig.close();
-    this._updatedAt = new Date();
+    this._data.status = ConferenceStatus.CFP_CLOSED;
+    this.cfpConfig.close();
+    this._data.updatedAt = new Date();
 
     return {events: []};
   }
@@ -175,75 +147,75 @@ export class Conference {
    */
   cancel(): {events: unknown[]} {
     if (
-      this._status !== ConferenceStatus.DRAFT &&
-      this._status !== ConferenceStatus.CFP_OPEN
+      this._data.status !== ConferenceStatus.DRAFT &&
+      this._data.status !== ConferenceStatus.CFP_OPEN
     ) {
       throw new StateTransitionError(
-        `Cannot cancel: conference is in ${this._status} state, must be DRAFT or CFP_OPEN`,
+        `Cannot cancel: conference is in ${this._data.status} state, must be DRAFT or CFP_OPEN`,
       );
     }
 
-    this._status = ConferenceStatus.DELETED;
-    this._updatedAt = new Date();
+    this._data.status = ConferenceStatus.DELETED;
+    this._data.updatedAt = new Date();
 
     return {events: []};
   }
 
   // Getters
   get id(): ConferenceId {
-    return this._id;
+    return this._data.id;
   }
 
   get name(): ConferenceName {
-    return this._name;
+    return this._data.name;
   }
 
   get description(): string {
-    return this._description;
+    return this._data.description;
   }
 
   get slug(): ConferenceSlug {
-    return this._slug;
+    return this._data.slug;
   }
 
   get status(): ConferenceStatus {
-    return this._status;
+    return this._data.status;
   }
 
   get organizerId(): string {
-    return this._organizerId;
+    return this._data.organizerId;
   }
 
   get cfpConfig(): CfpConfig {
-    return this._cfpConfig;
+    return this._data.cfpConfig;
   }
 
   get createdAt(): Date {
-    return this._createdAt;
+    return this._data.createdAt;
   }
 
   get updatedAt(): Date {
-    return this._updatedAt;
+    return this._data.updatedAt;
   }
 
   /**
    * Check if the conference is in CFP_OPEN state.
    */
   isCfpOpen(): boolean {
-    return this._status === ConferenceStatus.CFP_OPEN;
+    return this._data.status === ConferenceStatus.CFP_OPEN;
   }
 
   /**
    * Check if the conference is in DRAFT state.
    */
   isDraft(): boolean {
-    return this._status === ConferenceStatus.DRAFT;
+    return this._data.status === ConferenceStatus.DRAFT;
   }
 
   /**
    * Check if the conference is in DELETED state.
    */
   isDeleted(): boolean {
-    return this._status === ConferenceStatus.DELETED;
+    return this._data.status === ConferenceStatus.DELETED;
   }
 }

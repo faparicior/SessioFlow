@@ -37,28 +37,22 @@ export class CfpConfig {
     maxSubmissions: MaxSubmissions;
     requiresApproval: RequiresApproval;
   }): CfpConfig {
-    return new CfpConfig(
-      parameters.startDate,
-      parameters.endDate,
-      parameters.maxSubmissions,
-      parameters.requiresApproval,
-      CfpStatus.ACTIVE,
-    );
+    return new CfpConfig({
+      startDate: parameters.startDate,
+      endDate: parameters.endDate,
+      maxSubmissions: parameters.maxSubmissions,
+      requiresApproval: parameters.requiresApproval,
+      status: CfpStatus.ACTIVE,
+    });
   }
 
-  private constructor(
-    private readonly _startDate: CfpStartDate,
-    private readonly _endDate: CfpEndDate,
-    private readonly _maxSubmissions: MaxSubmissions,
-    private readonly _requiresApproval: RequiresApproval,
-    private _status: CfpStatus,
-  ) {}
+  private constructor(private readonly _params: CfpConfigData) {}
 
   /**
    * Validate CfP dates: end date must be after start date.
    */
   validateDates(): void {
-    if (this._endDate.isBefore(this._startDate)) {
+    if (this.endDate.isBefore(this.startDate)) {
       throw new CfpDatesInvalidError('CfP end date must be after start date');
     }
   }
@@ -67,50 +61,50 @@ export class CfpConfig {
    * Check if CfP is currently active (accepting submissions).
    */
   isActive(): boolean {
-    if (this._status !== CfpStatus.ACTIVE) {
+    if (this.status !== CfpStatus.ACTIVE) {
       return false;
     }
 
     const now = new Date();
-    return now >= this._startDate.value && now <= this._endDate.value;
+    return now >= this.startDate.value && now <= this.endDate.value;
   }
 
   /**
    * Close the CfP submission window.
    */
   close(): void {
-    if (this._status !== CfpStatus.ACTIVE) {
+    if (this.status !== CfpStatus.ACTIVE) {
       throw new Error('Cannot close CfP: status is not ACTIVE');
     }
 
-    this._status = CfpStatus.CLOSED;
+    this._params.status = CfpStatus.CLOSED;
   }
 
   /**
    * Check if a date falls within the CfP window.
    */
   isWithinWindow(date: Date): boolean {
-    return date >= this._startDate.value && date <= this._endDate.value;
+    return date >= this.startDate.value && date <= this.endDate.value;
   }
 
   // Getters
   get startDate(): CfpStartDate {
-    return this._startDate;
+    return this._params.startDate;
   }
 
   get endDate(): CfpEndDate {
-    return this._endDate;
+    return this._params.endDate;
   }
 
   get maxSubmissions(): MaxSubmissions {
-    return this._maxSubmissions;
+    return this._params.maxSubmissions;
   }
 
   get requiresApproval(): RequiresApproval {
-    return this._requiresApproval;
+    return this._params.requiresApproval;
   }
 
   get status(): CfpStatus {
-    return this._status;
+    return this._params.status;
   }
 }
