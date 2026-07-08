@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "xo",
     "lint:fix": "xo --fix",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
