@@ -1,11 +1,12 @@
 import {describe, it, expect, vi} from 'vitest';
 import {render, screen, fireEvent, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import 'vitest-axe';
 import '@testing-library/jest-dom/vitest';
 import {ConferenceForm} from '@/modules/conference/interfaces/web/components/conference-form';
 
 // Mock the API call
-const mockCreateConference = vi.fn();
+const mockCreateConference = vi.fn<() => Promise<unknown>>();
 
 describe('ConferenceForm Component', () => {
   beforeEach(() => {

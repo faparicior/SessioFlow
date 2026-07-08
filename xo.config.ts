@@ -21,7 +21,6 @@ const xoConfig: FlatXoConfig = [
     rules: {
       'unicorn/empty-brace-spaces': 'off',
 
-
       // --- Relax rules that do not match project conventions / modern standards ---
       'react/prop-types': 'off',
       'require-unicode-regexp': 'off',
@@ -289,7 +288,14 @@ const xoConfig: FlatXoConfig = [
   //     ...nextPlugin.configs.recommended.rules,
   //     ...nextPlugin.configs['core-web-vitals'].rules,
   //   },
-  // },
+  {
+    files: ['tests/**/*.{ts,tsx}'],
+    rules: {
+      'import-x/no-unassigned-import': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
 ];
 
 export default xoConfig;
