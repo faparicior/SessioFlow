@@ -12,9 +12,9 @@ import postgres from 'postgres';
  *   npx tsx drizzle/migrate.mts
  */
 
-const databaseUrl = process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/sessioflow';
+const DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/sessioflow';
 
-const client = postgres(databaseUrl, {max: 1});
+const client = postgres(DATABASE_URL, {max: 1});
 const db = drizzle(client);
 
 console.log('Running Drizzle migrations...');

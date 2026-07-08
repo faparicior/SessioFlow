@@ -17,9 +17,10 @@ const xoConfig: FlatXoConfig = [
     ],
   },
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx,mts,cts}'],
     rules: {
       'unicorn/empty-brace-spaces': 'off',
+
 
       // --- Relax rules that do not match project conventions / modern standards ---
       'react/prop-types': 'off',
@@ -268,7 +269,7 @@ const xoConfig: FlatXoConfig = [
     // specific files rather than loosened project-wide.
     files: [
       '**/db-client.ts',
-      '**/drizzle/**/*.ts',
+      '**/drizzle/**/*.{ts,mts}',
       'playwright.config.ts',
     ],
     rules: {
