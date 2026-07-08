@@ -20,6 +20,24 @@ import {deleteConferences} from './utils/cleanup';
  */
 
 test.describe('Conference Setup E2E', () => {
+  /**
+   * Helper: Create a conference via the UI.
+   * Extracted to avoid await-in-loop lint errors.
+   */
+  async function createConference(
+    page: import('@playwright/test').Page,
+    name: string,
+  ): Promise<void> {
+    await page.getByLabel('Conference Name').fill(name);
+    await page.getByLabel('CfP Start Date').fill('2026-08-01');
+    await page.getByLabel('CfP Start Date').blur();
+    await page.getByLabel('CfP End Date').fill('2026-09-30');
+    await page.getByLabel('CfP End Date').blur();
+    await page.getByRole('button', {name: /create conference/i}).click();
+    await page.waitForURL(/\/conferences\/[\da-fA-F-]{36}$/);
+    await page.goto('/conferences/create');
+  }
+
   test.beforeEach(async ({page}) => {
     // Clean up conferences before each test to avoid free tier limit
     await deleteConferences();
@@ -128,22 +146,8 @@ test.describe('Conference Setup E2E', () => {
     // First, create 5 conferences to hit the free tier limit
     for (let i = 0; i < 5; i++) {
       const timestamp = Date.now() + i;
-      await page
-        .getByLabel('Conference Name')
-        .fill(`Limit Test Conference ${timestamp}`);
-      await page.getByLabel('CfP Start Date').fill('2026-08-01');
-      await page.getByLabel('CfP Start Date').blur();
-      await page.getByLabel('CfP End Date').fill('2026-09-30');
-      await page.getByLabel('CfP End Date').blur();
-
-      // Submit
-      await page.getByRole('button', {name: /create conference/i}).click();
-
-      // Wait for navigation to conference dashboard (UUID)
-      await page.waitForURL(/\/conferences\/[\da-fA-F-]{36}$/);
-
-      // Go back to create page for next iteration
-      await page.goto('/conferences/create');
+      // eslint-disable-next-line no-await-in-loop
+      await createConference(page, `Limit Test Conference ${timestamp}`);
     }
 
     // Now try to create a 6th conference - should fail with free tier limit

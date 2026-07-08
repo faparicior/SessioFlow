@@ -73,8 +73,8 @@ describe('Conference API - POST /api/v1/conferences', () => {
     const body = await response.json();
     expect(body.error).toBeDefined();
     expect(body.error.code).toBe('VALIDATION_ERROR');
-    expect(body.error.details.name).toHaveLength(1);
-    expect(body.error.details.name[0]).toContain('at least 3 characters');
+    expect(body.error.details.properties.name.errors).toHaveLength(1);
+    expect(body.error.details.properties.name.errors[0]).toContain('at least 3 characters');
   });
 
   it('returns 409 for duplicate slug', async () => {
