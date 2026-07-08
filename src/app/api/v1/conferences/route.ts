@@ -1,3 +1,4 @@
+import {z} from 'zod';
 import {type NextRequest, NextResponse} from 'next/server';
 import {ConferenceCreateSchema} from '@/modules/conference/interfaces/api/v1/conferences/conference-create.schema';
 import {CreateConferenceCommand} from '@/modules/conference/application/commands/create-conference/create-conference.command';
@@ -23,14 +24,14 @@ export async function POST(request: NextRequest) {
     if (!parsed.success) {
       logger.error(
         '[API] Validation failed:',
-        parsed.error.flatten().fieldErrors,
+        JSON.stringify(z.treeifyError(parsed.error)),
       );
       return NextResponse.json(
         {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Invalid request body',
-            details: parsed.error.flatten().fieldErrors,
+            details: z.treeifyError(parsed.error),
           },
         },
         {status: 400},

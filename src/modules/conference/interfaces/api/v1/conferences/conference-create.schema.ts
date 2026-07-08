@@ -9,9 +9,9 @@ export const ConferenceCreateSchema = z
   .object({
     name: z.string().min(3, 'Name must be at least 3 characters').max(100),
     description: z.string().max(1000).optional().default(''),
-    organizerId: z.string().uuid().optional(),
-    cfpStartDate: z.string().date({message: 'Start date must be a valid date'}),
-    cfpEndDate: z.string().date({message: 'End date must be a valid date'}),
+    organizerId: z.guid().optional().transform(v => v ?? ''),
+    cfpStartDate: z.iso.date({message: 'Start date must be a valid date'}),
+    cfpEndDate: z.iso.date({message: 'End date must be a valid date'}),
     maxSubmissions: z.number().int().positive().optional(),
     requiresApproval: z.boolean().optional().default(true),
   })
@@ -24,7 +24,7 @@ export const ConferenceCreateSchema = z
  * Zod validation schema for conference response (for API documentation).
  */
 export const ConferenceResponseSchema = z.object({
-  id: z.string().uuid(),
+  id: z.guid(),
   name: z.string(),
   slug: z.string(),
   status: z.enum([
@@ -37,13 +37,13 @@ export const ConferenceResponseSchema = z.object({
     'COMPLETED',
     'DELETED',
   ]),
-  cfpStartDate: z.string().datetime(),
-  cfpEndDate: z.string().datetime(),
+  cfpStartDate: z.iso.datetime(),
+  cfpEndDate: z.iso.datetime(),
   cfpStatus: z.enum(['ACTIVE', 'CLOSED', 'ARCHIVED']),
   maxSubmissions: z.number().int().positive().nullable(),
   requiresApproval: z.boolean(),
-  cfpUrl: z.string().url(),
+  cfpUrl: z.url(),
   events: z.array(z.unknown()),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
 });

@@ -38,7 +38,27 @@ This reference document outlines key linting conventions and guidelines enforced
     constructor(props: ConferenceProps) {}
     ```
 
-## 📝 Schema Validation (Zod)
-* **Use Modern/Non-deprecated Zod Methods:** Avoid deprecated method chains. Use recommended alternatives such as:
-  * `z.uuid()` instead of the legacy deprecated `uuid()` configurations.
-  * Modern date validation helpers instead of legacy `date()` or `datetime()` configurations.
+## 📝 Schema Validation (Zod v4)
+* **UUID Validation:**
+  * `z.uuid()` validates strictly per RFC 9562 (variant bits must be `10`). Returns a **branded UUID type**, not plain `string`.
+  * `z.guid()` is permissive (UUID-like) and returns a plain `string`. Use this when you need string compatibility.
+  * `z.string().uuid()` and `z.string().guid()` are **deprecated**. Use `z.uuid()` or `z.guid()` directly.
+  * When a branded UUID type isn't compatible with expected `string`, add `.transform(v => v ?? '')`.
+  * *Good:* `z.guid().optional().transform(v => v ?? '')`
+  * *Good:* `z.uuid()` (when branded type is acceptable)
+* **Date/Time Validation:**
+  * `z.iso.date()` instead of `z.string().date()`
+  * `z.iso.datetime()` instead of `z.string().datetime()`
+  * `z.url()` instead of `z.string().url()`
+* **Error Handling:**
+  * `z.treeifyError(err)` instead of `err.flatten()` or `err.format()`
+  * `z.treeifyError()` returns an object (not `Error`), so pass `JSON.stringify()` to loggers expecting `Error` type.
+  * *Good:* `logger.error('msg', JSON.stringify(z.treeifyError(err)))`
+  * *Good:* `return NextResponse.json({ details: z.treeifyError(err) })`
+* **Avoid Deprecated Patterns:**
+  * `z.string().email()` → `z.email()`
+  * `z.string().ipv4()` / `z.string().ipv6()` → `z.ipv4()` / `z.ipv6()`
+  * `z.string().cidr()` → `z.cidrv4()` / `z.cidrv6()` (use union for both)
+  * `z.string().base64url()` → `z.base64url()`
+  * `z.ostring()`, `z.onumber()` etc. → removed, use `.optional()` instead
+  * `z.strict()` / `z.passthrough()` → use `z.strictObject()` / `z.looseObject()`

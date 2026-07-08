@@ -34,7 +34,7 @@ export async function handleConferenceCreate(
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Invalid request body',
-            details: parsed.error.flatten().fieldErrors,
+            details: z.treeifyError(parsed.error),
           },
         },
         {status: 400},
