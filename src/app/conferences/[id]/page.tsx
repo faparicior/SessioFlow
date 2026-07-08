@@ -2,6 +2,7 @@
 
 import React, {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
+import {Alert, AlertDescription} from '@/components/ui/alert';
 import {Button} from '@/components/ui/button';
 import {
   Card,
@@ -10,7 +11,37 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {Alert, AlertDescription} from '@/components/ui/alert';
+
+type ConferenceData = {
+  id: string;
+  name: string;
+  status: string;
+  cfpStartDate: string;
+  cfpEndDate: string;
+  cfpStatus?: string;
+  maxSubmissions?: number;
+  requiresApproval?: boolean;
+  cfpUrl?: string;
+};
+
+type ApiResponse<T> = {
+  data?: T;
+  error?: {code?: string; message?: string};
+};
+
+function assumeType<T>(value: unknown): asserts value is T {
+  if (value === undefined) {
+    throw new TypeError('Value is undefined');
+  }
+}
+
+async function parseJson<T>(
+  response: Response,
+): Promise<ApiResponse<T>> {
+  const json: unknown = await response.json();
+  assumeType<ApiResponse<T>>(json);
+  return json;
+}
 
 /**
  * Conference Detail Page
@@ -24,7 +55,7 @@ export default function ConferenceDetailPage({
   readonly params: Promise<{id: string}>;
 }) {
   const router = useRouter();
-  const [conference, setConference] = useState<any>(null);
+  const [conference, setConference] = useState<ConferenceData | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | undefined>(null);
 
@@ -32,7 +63,7 @@ export default function ConferenceDetailPage({
   const {id} = React.use(params);
 
   useEffect(() => {
-    fetchConference(id);
+    void fetchConference(id);
   }, [id]);
 
   const fetchConference = async (conferenceId: string) => {
@@ -48,7 +79,7 @@ export default function ConferenceDetailPage({
         throw new Error('Failed to fetch conference');
       }
 
-      const data = await response.json();
+      const data = await parseJson<ConferenceData>(response);
       setConference(data.data);
     } catch (error_) {
       setError(error_ instanceof Error ? error_.message : 'An error occurred');
@@ -126,8 +157,9 @@ export default function ConferenceDetailPage({
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={async () =>
-                  navigator.clipboard.writeText(conference.cfpUrl)}
+                onClick={() => {
+                  void navigator.clipboard.writeText(conference.cfpUrl ?? '');
+                }}
               >
                 Copy
               </Button>
@@ -144,7 +176,9 @@ export default function ConferenceDetailPage({
             </Button>
             <Button
               variant="outline"
-              onClick={() => window.open(conference.cfpUrl, '_blank')}
+              onClick={() => {
+                void window.open(conference.cfpUrl, '_blank');
+              }}
             >
               Open CfP
             </Button>

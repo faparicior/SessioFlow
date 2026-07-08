@@ -113,12 +113,12 @@ export class Conference {
 
     // Publish domain events
     const events: Array<ConferenceCreatedEvent | CfpOpenedEvent> = [
-      new ConferenceCreatedEvent(
-        this.id,
-        this.name,
-        this.slug,
-        this.organizerId,
-      ),
+      new ConferenceCreatedEvent({
+        conferenceId: this.id,
+        conferenceName: this.name,
+        conferenceSlug: this.slug,
+        organizerId: this.organizerId,
+      }),
       new CfpOpenedEvent(this.id, this.cfpConfig),
     ];
 

@@ -21,12 +21,36 @@ export class ConferenceCreatedEvent {
   readonly type = 'ConferenceCreated';
 
   constructor(
-    readonly conferenceId: ConferenceId,
-    readonly conferenceName: ConferenceName,
-    readonly conferenceSlug: ConferenceSlug,
-    readonly organizerId: string,
-    readonly timestamp: Date = new Date(),
-  ) {}
+    private readonly _params: {
+      conferenceId: ConferenceId;
+      conferenceName: ConferenceName;
+      conferenceSlug: ConferenceSlug;
+      organizerId: string;
+      timestamp: Date;
+    },
+  ) {
+    this._params.timestamp ??= new Date();
+  }
+
+  get conferenceId() {
+    return this._params.conferenceId;
+  }
+
+  get conferenceName() {
+    return this._params.conferenceName;
+  }
+
+  get conferenceSlug() {
+    return this._params.conferenceSlug;
+  }
+
+  get organizerId() {
+    return this._params.organizerId;
+  }
+
+  get timestamp() {
+    return this._params.timestamp;
+  }
 
   toJSON(): ConferenceCreatedEventData {
     return {
