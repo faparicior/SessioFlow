@@ -13,7 +13,7 @@
     "test:e2e": "playwright test",
     "postinstall": "playwright install --with-deps",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx drizzle/migrate.ts",
+    "db:migrate": "tsx drizzle/migrate.mts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio"
   },
