@@ -21,7 +21,9 @@ export default function DashboardPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <Button
-          onClick={() => (globalThis.location.href = '/conferences/create')}
+          onClick={() => {
+            globalThis.location.href = '/conferences/create';
+          }}
         >
           Create New Conference
         </Button>
@@ -39,8 +41,9 @@ export default function DashboardPage() {
             <div className="text-center py-8 text-muted-foreground">
               <p className="mb-4">You don&apos;t have any conferences yet.</p>
               <Button
-                onClick={() =>
-                  (globalThis.location.href = '/conferences/create')}
+                onClick={() => {
+                  globalThis.location.href = '/conferences/create';
+                }}
               >
                 Create Your First Conference
               </Button>

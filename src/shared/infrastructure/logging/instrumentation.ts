@@ -96,7 +96,7 @@ export class ObservabilityInstrumentation {
 }
 
 // Global instrumentation instance
-let instrumentation: ObservabilityInstrumentation | undefined = undefined;
+let instrumentation: ObservabilityInstrumentation | undefined;
 
 export function initObservability(
   config?: Partial<InstrumentationConfig>,

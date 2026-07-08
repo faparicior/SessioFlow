@@ -25,13 +25,18 @@ export class PinoLogger implements Logger {
 
   constructor(config: PinoLoggerConfig = {}) {
     // Read from environment variables if not explicitly provided
-    const envDestination = process.env.LOG_DESTINATION as
-      | 'console'
-      | 'file'
-      | 'both';
+    const envDestination = process.env.LOG_DESTINATION ?? 'console';
+
+    if (envDestination !== 'console' && envDestination !== 'file' && envDestination !== 'both') {
+      console.warn(`Invalid LOG_DESTINATION: ${envDestination}`);
+    }
+
     const envLogPath = process.env.LOG_PATH ?? './logs/app.log';
     const envLevel = process.env.LOG_LEVEL ?? 'info';
-    const envFormat = (process.env.LOG_FORMAT as 'json' | 'pretty') ?? 'json';
+    const envFormat = process.env.LOG_FORMAT ?? 'json';
+    if (envFormat !== 'json' && envFormat !== 'pretty') {
+      console.warn(`Invalid LOG_FORMAT: ${envFormat}`);
+    }
 
     const {
       level = envLevel,
@@ -189,7 +194,7 @@ export class PinoLogger implements Logger {
 }
 
 // Singleton instance for application-wide use
-let globalLogger: PinoLogger | undefined = undefined;
+let globalLogger: PinoLogger | undefined;
 
 export function getLogger(config?: PinoLoggerConfig): PinoLogger {
   globalLogger ??= new PinoLogger(config);

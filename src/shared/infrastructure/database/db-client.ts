@@ -6,7 +6,7 @@ import postgres from 'postgres';
  *
  * Uses DATABASE_URL environment variable for configuration.
  */
-let db: ReturnType<typeof drizzle> | undefined = undefined;
+let db: ReturnType<typeof drizzle> | undefined;
 
 export function getDb() {
   if (db) {

@@ -1,4 +1,8 @@
 import {describe, it, expect} from 'vitest';
+
+function isErrorWithMessage(error: unknown): error is ConferenceStatusValidationError {
+  return error instanceof ConferenceStatusValidationError;
+}
 import {
   ConferenceStatus,
   ConferenceStatusFromString,
@@ -26,10 +30,10 @@ describe('ConferenceStatus', () => {
     });
 
     it('returns false for non-string values', () => {
-      expect(isConferenceStatus(123 as unknown as string)).toBe(false);
+      expect(isConferenceStatus(123)).toBe(false);
       expect(isConferenceStatus(null)).toBe(false);
       expect(isConferenceStatus(undefined)).toBe(false);
-      expect(isConferenceStatus({} as string)).toBe(false);
+      expect(isConferenceStatus({})).toBe(false);
     });
   });
 
@@ -54,7 +58,7 @@ describe('ConferenceStatus', () => {
     });
 
     it('throws for non-string values', () => {
-      expect(() => ConferenceStatusFromString(123 as unknown as string)).toThrow(
+      expect(() => ConferenceStatusFromString(123)).toThrow(
         ConferenceStatusValidationError,
       );
       expect(() => ConferenceStatusFromString(null)).toThrow(
@@ -70,7 +74,10 @@ describe('ConferenceStatus', () => {
         ConferenceStatusFromString('BOGUS');
         expect.unreachable('Should have thrown');
       } catch (error) {
-        expect((error as ConferenceStatusValidationError).message).toContain(
+        if (!isErrorWithMessage(error)) {
+          throw new Error('Expected ConferenceStatusValidationError');
+        }
+        expect(error.message).toContain(
           'BOGUS',
         );
       }
@@ -81,7 +88,10 @@ describe('ConferenceStatus', () => {
         ConferenceStatusFromString('INVALID');
         expect.unreachable('Should have thrown');
       } catch (error) {
-        const message = (error as ConferenceStatusValidationError).message;
+        if (!isErrorWithMessage(error)) {
+          throw new Error('Expected ConferenceStatusValidationError');
+        }
+        const { message } = error;
         expect(message).toContain('DRAFT');
         expect(message).toContain('CFP_OPEN');
         expect(message).toContain('COMPLETED');
