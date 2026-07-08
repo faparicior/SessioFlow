@@ -22,3 +22,37 @@ export enum ConferenceStatus {
   COMPLETED = 'COMPLETED',
   DELETED = 'DELETED',
 }
+
+export const ConferenceStatusValues: readonly ConferenceStatus[] = [
+  ConferenceStatus.DRAFT,
+  ConferenceStatus.CFP_OPEN,
+  ConferenceStatus.CFP_CLOSED,
+  ConferenceStatus.REVIEWING,
+  ConferenceStatus.SCHEDULED,
+  ConferenceStatus.PUBLISHED,
+  ConferenceStatus.COMPLETED,
+  ConferenceStatus.DELETED,
+];
+
+export class ConferenceStatusValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ConferenceStatusValidationError';
+  }
+}
+
+export function ConferenceStatusFromString(value: unknown): ConferenceStatus {
+  if (typeof value !== 'string') {
+    throw new ConferenceStatusValidationError(
+      `Invalid ConferenceStatus: expected string, got ${typeof value}`,
+    );
+  }
+
+  if (!(ConferenceStatusValues as unknown[]).includes(value)) {
+    throw new ConferenceStatusValidationError(
+      `Invalid ConferenceStatus: "${value}". Expected one of: ${ConferenceStatusValues.join(', ')}`,
+    );
+  }
+
+  return value as unknown as ConferenceStatus;
+}

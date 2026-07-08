@@ -5,7 +5,7 @@ import {type ConferenceRepository} from '@/modules/conference/domain/repositorie
 import {Conference} from '@/modules/conference/domain/entities/conference';
 import {ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
 import {ConferenceSlug} from '@/modules/conference/domain/value-objects/conference-slug';
-import {type ConferenceStatus} from '@/modules/conference/domain/value-objects/conference-status';
+import {type ConferenceStatus, ConferenceStatusFromString} from '@/modules/conference/domain/value-objects/conference-status';
 import {CfpConfig} from '@/modules/conference/domain/entities/cfp-config';
 import {CfpStartDate} from '@/modules/conference/domain/value-objects/cfp-start-date';
 import {CfpEndDate} from '@/modules/conference/domain/value-objects/cfp-end-date';
@@ -138,7 +138,7 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
       name: ConferenceName.create(row.name),
       description: row.description ?? '',
       slug: ConferenceSlug.create(row.slug),
-      status: row.status as ConferenceStatus,
+      status: ConferenceStatusFromString(row.status),
       organizerId: row.organizerId,
       cfpConfig: CfpConfig.create({
         startDate: CfpStartDate.fromISOString(cfpConfig.startDate),
