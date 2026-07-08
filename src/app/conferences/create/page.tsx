@@ -1,7 +1,17 @@
 'use client';
 
 import {useRouter} from 'next/navigation';
-import {ConferenceForm} from '@/modules/conference/interfaces/web/components/conference-form';
+import {type ConferenceFormData, ConferenceForm} from '@/modules/conference/interfaces/web/components/conference-form';
+
+type ConferenceResponse = {
+  id: string;
+  name: string;
+};
+
+type ApiResponse = {
+  data?: ConferenceResponse;
+  error?: {code?: string; message?: string};
+};
 
 /**
  * Conference Creation Page
@@ -13,7 +23,7 @@ import {ConferenceForm} from '@/modules/conference/interfaces/web/components/con
 export default function CreateConferencePage() {
   const router = useRouter();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: ConferenceFormData) => {
     console.log('[CreatePage] handleSubmit called with data:', data);
     try {
       const response = await fetch('/api/v1/conferences', {
@@ -29,7 +39,8 @@ export default function CreateConferencePage() {
         }),
       });
 
-      const result = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const result: ApiResponse = await response.json();
       console.log('[CreatePage] API response:', response.status, result);
 
       if (response.ok && result.data) {
@@ -54,7 +65,7 @@ export default function CreateConferencePage() {
     }
   };
 
-  const handleSuccess = (data: any) => {
+  const handleSuccess = (data: ConferenceResponse) => {
     console.log('[Page] handleSuccess called with data:', data);
     console.log('[Page] Conference ID:', data.id);
     router.push(`/conferences/${data.id}`);

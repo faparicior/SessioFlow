@@ -13,6 +13,7 @@ import {conferencesTable} from '@/modules/conference/infrastructure/database/dri
  */
 export async function GET(request: NextRequest) {
   try {
+    // eslint-disable-next-line no-warning-comments
     // TODO: Get user from auth context (Auth0, Supabase Auth, etc.)
     // For now, return a mock user for development
     const user = {
