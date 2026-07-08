@@ -37,6 +37,21 @@ This reference document outlines key linting conventions and guidelines enforced
   const body = await request.json();
   assumeType<RequestSchema>(body);
   ```
+* **Enum Validation from External Data:** When mapping external data (e.g., database rows) to enum types, use a type predicate for validation.
+  ```typescript
+  export const StatusValues = [Status.A, Status.B, Status.C] as const;
+
+  export function isStatus(value: unknown): value is Status {
+    return typeof value === 'string' && StatusValues.includes(value as Status);
+  }
+
+  export function StatusFromString(value: unknown): Status {
+    if (!isStatus(value)) {
+      throw new Error(`Invalid status: ${String(value)}`);
+    }
+    return value;
+  }
+  ```
 
 ## 🔀 Coalescing Operators
 * **Prefer Nullish Coalescing (`??`):** Use `??` instead of logical OR (`||`) when assigning fallback values. `||` incorrectly coerces falsy values (like `0` or empty strings `""`).
