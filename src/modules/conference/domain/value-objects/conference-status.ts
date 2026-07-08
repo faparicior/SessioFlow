@@ -41,18 +41,17 @@ export class ConferenceStatusValidationError extends Error {
   }
 }
 
+export function isConferenceStatus(value: unknown): value is ConferenceStatus {
+  return typeof value === 'string' &&
+    (ConferenceStatusValues as readonly unknown[]).includes(value);
+}
+
 export function ConferenceStatusFromString(value: unknown): ConferenceStatus {
-  if (typeof value !== 'string') {
+  if (!isConferenceStatus(value)) {
     throw new ConferenceStatusValidationError(
-      `Invalid ConferenceStatus: expected string, got ${typeof value}`,
+      `Invalid ConferenceStatus: "${String(value)}". Expected one of: ${ConferenceStatusValues.join(', ')}`,
     );
   }
 
-  if (!(ConferenceStatusValues as unknown[]).includes(value)) {
-    throw new ConferenceStatusValidationError(
-      `Invalid ConferenceStatus: "${value}". Expected one of: ${ConferenceStatusValues.join(', ')}`,
-    );
-  }
-
-  return value as unknown as ConferenceStatus;
+  return value;
 }
