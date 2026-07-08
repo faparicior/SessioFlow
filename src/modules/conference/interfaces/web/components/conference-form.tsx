@@ -170,22 +170,26 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {isSuccess ? (
-          <Alert className="mb-4 bg-green-50 border-green-200">
-            <AlertDescription className="text-green-800">
-              Conference created successfully! You can now share the CfP link
-              with potential speakers.
-            </AlertDescription>
-          </Alert>
-        ) : null}
+        {isSuccess
+          ? (
+            <Alert className="mb-4 bg-green-50 border-green-200">
+              <AlertDescription className="text-green-800">
+                Conference created successfully! You can now share the CfP link
+                with potential speakers.
+              </AlertDescription>
+            </Alert>
+          )
+          : null}
 
-        {errors.general ? (
-          <Alert className="mb-4 bg-red-50 border-red-200">
-            <AlertDescription className="text-red-800">
-              {errors.general}
-            </AlertDescription>
-          </Alert>
-        ) : null}
+        {errors.general
+          ? (
+            <Alert className="mb-4 bg-red-50 border-red-200">
+              <AlertDescription className="text-red-800">
+                {errors.general}
+              </AlertDescription>
+            </Alert>
+          )
+          : null}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Conference Name */}
@@ -202,14 +206,18 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
                 handleChange('name', e.target.value);
               }}
             />
-            {errors.name ? (
-              <p className="text-sm text-red-600">{errors.name}</p>
-            ) : null}
-            {slug ? (
-              <p className="text-sm text-muted-foreground">
-                Slug: <code>{slug}</code>
-              </p>
-            ) : null}
+            {errors.name
+              ? (
+                <p className="text-sm text-red-600">{errors.name}</p>
+              )
+              : null}
+            {slug
+              ? (
+                <p className="text-sm text-muted-foreground">
+                  Slug: <code>{slug}</code>
+                </p>
+              )
+              : null}
           </div>
 
           {/* Description */}
@@ -225,14 +233,18 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
                 handleChange('description', e.target.value);
               }}
             />
-            {formData.description ? (
-              <p className="text-xs text-muted-foreground">
-                {formData.description.length}/1000 characters
-              </p>
-            ) : null}
-            {errors.description ? (
-              <p className="text-sm text-red-600">{errors.description}</p>
-            ) : null}
+            {formData.description
+              ? (
+                <p className="text-xs text-muted-foreground">
+                  {formData.description.length}/1000 characters
+                </p>
+              )
+              : null}
+            {errors.description
+              ? (
+                <p className="text-sm text-red-600">{errors.description}</p>
+              )
+              : null}
           </div>
 
           {/* CfP Dates */}
@@ -249,9 +261,11 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
                   handleChange('cfpStartDate', e.target.value);
                 }}
               />
-              {errors.cfpStartDate ? (
-                <p className="text-sm text-red-600">{errors.cfpStartDate}</p>
-              ) : null}
+              {errors.cfpStartDate
+                ? (
+                  <p className="text-sm text-red-600">{errors.cfpStartDate}</p>
+                )
+                : null}
             </div>
 
             <div className="space-y-2">
@@ -266,29 +280,33 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
                   handleChange('cfpEndDate', e.target.value);
                 }}
               />
-              {errors.cfpEndDate ? (
-                <p className="text-sm text-red-600">{errors.cfpEndDate}</p>
-              ) : null}
+              {errors.cfpEndDate
+                ? (
+                  <p className="text-sm text-red-600">{errors.cfpEndDate}</p>
+                )
+                : null}
             </div>
           </div>
 
           {/* CfP URL Preview */}
-          {cfpUrl ? (
-            <div className="space-y-2">
-              <Label>CfP URL Preview</Label>
-              <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                <code className="text-sm flex-1">{cfpUrl}</code>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => navigator.clipboard.writeText(cfpUrl)}
-                >
-                  Copy
-                </Button>
+          {cfpUrl
+            ? (
+              <div className="space-y-2">
+                <Label>CfP URL Preview</Label>
+                <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
+                  <code className="text-sm flex-1">{cfpUrl}</code>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={async () => navigator.clipboard.writeText(cfpUrl)}
+                  >
+                    Copy
+                  </Button>
+                </div>
               </div>
-            </div>
-          ) : null}
+            )
+            : null}
 
           {/* Submit Button */}
           <Button type="submit" className="w-full" disabled={isSubmitting}>

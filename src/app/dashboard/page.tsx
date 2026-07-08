@@ -40,8 +40,7 @@ export default function DashboardPage() {
               <p className="mb-4">You don&apos;t have any conferences yet.</p>
               <Button
                 onClick={() =>
-                  (globalThis.location.href = '/conferences/create')
-                }
+                  (globalThis.location.href = '/conferences/create')}
               >
                 Create Your First Conference
               </Button>

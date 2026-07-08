@@ -1,4 +1,4 @@
-import type { FlatXoConfig } from 'xo';
+import type {FlatXoConfig} from 'xo';
 // Optional: Next.js-specific lint rules (no-img-element, no-html-link-for-pages, etc.)
 // npm install --save-dev @next/eslint-plugin-next
 // import nextPlugin from '@next/eslint-plugin-next';
@@ -20,6 +20,11 @@ const xoConfig: FlatXoConfig = [
     files: ['**/*.{ts,tsx}'],
     rules: {
       'unicorn/empty-brace-spaces': 'off',
+
+      // --- Relax rules that do not match project conventions / modern standards ---
+      'react/prop-types': 'off',
+      'require-unicode-regexp': 'off',
+      '@typescript-eslint/class-literal-property-style': 'off',
 
       // --- Import resolution: Next.js bundler resolves extensions itself ---
       'import-x/extensions': 'off',
@@ -72,7 +77,12 @@ const xoConfig: FlatXoConfig = [
           trailingUnderscore: 'allow',
         },
         {
-          // camelCase: normal variables
+          // Allow any casing/naming format for third-party or component imports
+          selector: 'import',
+          format: null,
+        },
+        {
+          // CamelCase: normal variables
           // UPPER_CASE: true constants (e.g. MAX_RETRIES, API_BASE_URL)
           // PascalCase: arrow-function React components (const Button = () => ...)
           selector: 'variable',
@@ -132,7 +142,7 @@ const xoConfig: FlatXoConfig = [
           format: null,
         },
         {
-          // camelCase: normal functions
+          // CamelCase: normal functions
           // PascalCase: function-declaration React components (function Button() {...})
           selector: 'function',
           format: ['camelCase', 'PascalCase'],
@@ -242,7 +252,7 @@ const xoConfig: FlatXoConfig = [
     },
   },
   {
-    // next.config.js/mjs is often CommonJS for compatibility reasons —
+    // Next.config.js/mjs is often CommonJS for compatibility reasons —
     // don't force ESM conversion on it
     files: ['next.config.{js,mjs,ts}'],
     rules: {

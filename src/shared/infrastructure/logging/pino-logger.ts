@@ -141,10 +141,10 @@ export class PinoLogger implements Logger {
   error(message: string, error?: Error, context?: LogContext): void {
     const errorContext = error
       ? {
-          error: error.message,
-          stack: error.stack,
-          name: error.name,
-        }
+        error: error.message,
+        stack: error.stack,
+        name: error.name,
+      }
       : {};
 
     this.log('error', message, {...context, ...errorContext});

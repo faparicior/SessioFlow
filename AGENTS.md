@@ -181,6 +181,7 @@ A task is complete when ALL of the following pass:
 | Architecture Decisions | `docs/adr/README.md` |
 | Testing Strategy | `docs/TESTING.md` |
 | API Design | `docs/API-DESIGN.md` |
+| Coding Rules & Linting | `DEV-RULES.md` |
 
 ## 🏛️ Architecture Principles
 

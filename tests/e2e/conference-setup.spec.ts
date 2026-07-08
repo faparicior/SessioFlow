@@ -59,7 +59,7 @@ test.describe('Conference Setup E2E', () => {
     await page.getByRole('button', {name: /create conference/i}).click();
 
     // Step 7: Wait for redirect to conference dashboard (UUID)
-    await page.waitForURL(/\/conferences\/[0-9a-fA-F-]{36}$/);
+    await page.waitForURL(/\/conferences\/[\da-fA-F-]{36}$/);
 
     // Step 8: Verify CfP link is displayed in dashboard
     await expect(page.getByText(/cfp\/tech-conference-/i)).toBeVisible();
@@ -98,7 +98,7 @@ test.describe('Conference Setup E2E', () => {
     await page.getByRole('button', {name: /create conference/i}).click();
 
     // Wait for redirect to conference dashboard (UUID)
-    await page.waitForURL(/\/conferences\/[0-9a-fA-F-]{36}$/);
+    await page.waitForURL(/\/conferences\/[\da-fA-F-]{36}$/);
 
     // Navigate back to create page
     await page.goto('/conferences/create');
@@ -140,7 +140,7 @@ test.describe('Conference Setup E2E', () => {
       await page.getByRole('button', {name: /create conference/i}).click();
 
       // Wait for navigation to conference dashboard (UUID)
-      await page.waitForURL(/\/conferences\/[0-9a-fA-F-]{36}$/);
+      await page.waitForURL(/\/conferences\/[\da-fA-F-]{36}$/);
 
       // Go back to create page for next iteration
       await page.goto('/conferences/create');

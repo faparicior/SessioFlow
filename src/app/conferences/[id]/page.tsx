@@ -107,9 +107,11 @@ export default function ConferenceDetailPage({
                 End Date: {new Date(conference.cfpEndDate).toLocaleDateString()}
               </li>
               <li>Status: {conference.cfpStatus}</li>
-              {conference.maxSubmissions ? (
-                <li>Max Submissions: {conference.maxSubmissions}</li>
-              ) : null}
+              {conference.maxSubmissions
+                ? (
+                  <li>Max Submissions: {conference.maxSubmissions}</li>
+                )
+                : null}
               <li>
                 Requires Approval: {conference.requiresApproval ? 'Yes' : 'No'}
               </li>
@@ -125,8 +127,7 @@ export default function ConferenceDetailPage({
                 variant="outline"
                 size="sm"
                 onClick={async () =>
-                  navigator.clipboard.writeText(conference.cfpUrl)
-                }
+                  navigator.clipboard.writeText(conference.cfpUrl)}
               >
                 Copy
               </Button>
