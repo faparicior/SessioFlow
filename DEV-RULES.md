@@ -27,6 +27,16 @@ This reference document outlines key linting conventions and guidelines enforced
     return json;
   }
   ```
+* **Request Body Parsing:** When parsing request bodies (e.g., `request.json()` returns `any`), cast to `unknown` first, then validate with Zod or use `assumeType`.
+  ```typescript
+  // Option 1: Cast to unknown, then validate with Zod
+  const body = (await request.json()) as unknown;
+  const parsed = schema.safeParse(body);
+
+  // Option 2: Use assumeType for direct narrowing
+  const body = await request.json();
+  assumeType<RequestSchema>(body);
+  ```
 
 ## 🔀 Coalescing Operators
 * **Prefer Nullish Coalescing (`??`):** Use `??` instead of logical OR (`||`) when assigning fallback values. `||` incorrectly coerces falsy values (like `0` or empty strings `""`).

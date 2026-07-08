@@ -59,7 +59,8 @@ try {
   // Simulate an error
   throw new Error('Database connection failed');
 } catch (error) {
-  logger.error('Failed to connect to database', error as Error, {
+  const err = error instanceof Error ? error : new Error(String(error));
+  logger.error('Failed to connect to database', err, {
     host: 'localhost:5432',
     database: 'sessioflow_dev',
     retryAttempt: 1,

@@ -26,7 +26,7 @@ export async function handleConferenceCreate(
     }
 
     // 2. Parse and validate request body
-    const body = await request.json();
+    const body = (await request.json()) as unknown;
     const parsed = ConferenceCreateSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
