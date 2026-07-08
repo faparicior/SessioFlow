@@ -1,4 +1,4 @@
-import {eq} from 'drizzle-orm';
+import {type InferSelectModel, eq} from 'drizzle-orm';
 import {conferencesTable} from './drizzle-schema';
 import {getDb} from '@/shared/infrastructure/database/db-client';
 import {type ConferenceRepository} from '@/modules/conference/domain/repositories/conference-repository';
@@ -12,6 +12,9 @@ import {CfpEndDate} from '@/modules/conference/domain/value-objects/cfp-end-date
 import {MaxSubmissions} from '@/modules/conference/domain/value-objects/max-submissions';
 import {RequiresApproval} from '@/modules/conference/domain/value-objects/requires-approval';
 import {ConferenceName} from '@/modules/conference/domain/value-objects/conference-name';
+
+/** Database row type for conferences table (Drizzle $inferSelect). */
+type ConferenceRow = InferSelectModel<typeof conferencesTable>;
 
 /**
  * ConferenceRepository - PostgreSQL/Drizzle implementation.
@@ -126,7 +129,7 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
   /**
    * Map a database row to a Conference entity.
    */
-  private mapToConference(row: any): Conference {
+  private mapToConference(row: ConferenceRow): Conference {
     // Drizzle maps snake_case columns to camelCase properties
     const {cfpConfig} = row;
 

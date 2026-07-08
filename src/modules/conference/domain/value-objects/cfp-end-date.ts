@@ -8,10 +8,8 @@
  */
 
 export class CfpEndDate implements CfpEndDate {
-  private constructor(private readonly _value: Date) {}
-
   static create(date: Date): CfpEndDate {
-    if (isNaN(date.getTime())) {
+    if (Number.isNaN(date.getTime())) {
       throw new TypeError('Invalid date format for CfpEndDate');
     }
 
@@ -20,12 +18,14 @@ export class CfpEndDate implements CfpEndDate {
 
   static fromISOString(isoString: string): CfpEndDate {
     const date = new Date(isoString);
-    if (isNaN(date.getTime())) {
+    if (Number.isNaN(date.getTime())) {
       throw new TypeError('Invalid date format for CfpEndDate');
     }
 
     return this.create(date);
   }
+
+  private constructor(private readonly _value: Date) {}
 
   get value(): Date {
     return this._value;

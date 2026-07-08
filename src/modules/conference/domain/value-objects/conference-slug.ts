@@ -8,8 +8,6 @@
  */
 
 export class ConferenceSlug implements ConferenceSlug {
-  private constructor(private readonly _value: string) {}
-
   static create(name: string): ConferenceSlug {
     const slug = name
       .toLowerCase()
@@ -25,6 +23,8 @@ export class ConferenceSlug implements ConferenceSlug {
 
     return new ConferenceSlug(slug);
   }
+
+  private constructor(private readonly _value: string) {}
 
   get value(): string {
     return this._value;

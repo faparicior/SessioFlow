@@ -8,11 +8,11 @@
  */
 
 export type LogContext = {
+  [key: string]: unknown;
   correlationId?: string;
   userId?: string;
   conferenceId?: string;
   submissionId?: string;
-  [key: string]: unknown;
 };
 
 export type Logger = {

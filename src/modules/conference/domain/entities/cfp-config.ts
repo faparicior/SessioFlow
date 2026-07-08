@@ -28,14 +28,6 @@ export type CfpConfigData = {
 };
 
 export class CfpConfig {
-  private constructor(
-    private readonly _startDate: CfpStartDate,
-    private readonly _endDate: CfpEndDate,
-    private readonly _maxSubmissions: MaxSubmissions,
-    private readonly _requiresApproval: RequiresApproval,
-    private _status: CfpStatus,
-  ) {}
-
   /**
    * Factory method to create a new CfpConfig in ACTIVE state.
    */
@@ -53,6 +45,14 @@ export class CfpConfig {
       CfpStatus.ACTIVE,
     );
   }
+
+  private constructor(
+    private readonly _startDate: CfpStartDate,
+    private readonly _endDate: CfpEndDate,
+    private readonly _maxSubmissions: MaxSubmissions,
+    private readonly _requiresApproval: RequiresApproval,
+    private _status: CfpStatus,
+  ) {}
 
   /**
    * Validate CfP dates: end date must be after start date.

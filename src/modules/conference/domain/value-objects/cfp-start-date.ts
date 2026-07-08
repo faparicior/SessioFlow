@@ -10,8 +10,6 @@ import {z} from 'zod';
  */
 
 export class CfpStartDate implements CfpStartDate {
-  private constructor(private readonly _value: Date) {}
-
   static create(date: Date): CfpStartDate {
     if (date.getTime() < new Date().setHours(0, 0, 0, 0)) {
       throw new Error('CfpStartDate must be in the future or today');
@@ -22,12 +20,14 @@ export class CfpStartDate implements CfpStartDate {
 
   static fromISOString(isoString: string): CfpStartDate {
     const date = new Date(isoString);
-    if (isNaN(date.getTime())) {
+    if (Number.isNaN(date.getTime())) {
       throw new TypeError('Invalid date format for CfpStartDate');
     }
 
     return this.create(date);
   }
+
+  private constructor(private readonly _value: Date) {}
 
   get value(): Date {
     return this._value;

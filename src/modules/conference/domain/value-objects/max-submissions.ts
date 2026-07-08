@@ -8,8 +8,6 @@
  */
 
 export class MaxSubmissions implements MaxSubmissions {
-  private constructor(private readonly _value?: number) {}
-
   static create(max?: number): MaxSubmissions {
     if (max !== undefined && (!Number.isInteger(max) || max <= 0)) {
       throw new Error('MaxSubmissions must be a positive integer');
@@ -17,6 +15,8 @@ export class MaxSubmissions implements MaxSubmissions {
 
     return new MaxSubmissions(max);
   }
+
+  private constructor(private readonly _value?: number) {}
 
   get value(): number | undefined {
     return this._value;

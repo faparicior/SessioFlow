@@ -41,17 +41,22 @@ export type ConferenceData = {
 };
 
 export class Conference {
-  private constructor(
-    private readonly _id: ConferenceId,
-    private readonly _name: ConferenceName,
-    private readonly _description: string,
-    private readonly _slug: ConferenceSlug,
-    private _status: ConferenceStatus,
-    private readonly _organizerId: string,
-    private readonly _cfpConfig: CfpConfig,
-    private readonly _createdAt: Date,
-    private _updatedAt: Date,
-  ) {}
+  /**
+   * Factory method to load a Conference from stored data (e.g., database row).
+   */
+  static fromData(data: ConferenceData): Conference {
+    return new Conference(
+      data.id,
+      data.name,
+      data.description,
+      data.slug,
+      data.status,
+      data.organizerId,
+      data.cfpConfig,
+      data.createdAt,
+      data.updatedAt,
+    );
+  }
 
   /**
    * Factory method to create a new Conference in DRAFT state.
@@ -84,23 +89,6 @@ export class Conference {
   }
 
   /**
-   * Factory method to load a Conference from stored data (e.g., database row).
-   */
-  static fromData(data: ConferenceData): Conference {
-    return new Conference(
-      data.id,
-      data.name,
-      data.description,
-      data.slug,
-      data.status,
-      data.organizerId,
-      data.cfpConfig,
-      data.createdAt,
-      data.updatedAt,
-    );
-  }
-
-  /**
    * Private factory method shared by create() and fromData().
    */
   private static createFromData(data: ConferenceData): Conference {
@@ -116,6 +104,18 @@ export class Conference {
       data.updatedAt,
     );
   }
+
+  private constructor(
+    private readonly _id: ConferenceId,
+    private readonly _name: ConferenceName,
+    private readonly _description: string,
+    private readonly _slug: ConferenceSlug,
+    private _status: ConferenceStatus,
+    private readonly _organizerId: string,
+    private readonly _cfpConfig: CfpConfig,
+    private readonly _createdAt: Date,
+    private _updatedAt: Date,
+  ) {}
 
   /**
    * Publish the CfP: transitions from DRAFT to CFP_OPEN.

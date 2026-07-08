@@ -6,11 +6,11 @@
  */
 
 export class RequiresApproval implements RequiresApproval {
-  private constructor(private readonly _value: boolean) {}
-
   static create(approval = true): RequiresApproval {
     return new RequiresApproval(approval);
   }
+
+  private constructor(private readonly _value: boolean) {}
 
   get value(): boolean {
     return this._value;

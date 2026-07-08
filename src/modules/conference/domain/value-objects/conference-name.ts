@@ -9,8 +9,6 @@
  */
 
 export class ConferenceName implements ConferenceName {
-  private constructor(private readonly _value: string) {}
-
   static create(name: string): ConferenceName {
     const trimmed = name.trim();
 
@@ -28,6 +26,8 @@ export class ConferenceName implements ConferenceName {
 
     return new ConferenceName(trimmed);
   }
+
+  private constructor(private readonly _value: string) {}
 
   get value(): string {
     return this._value;
