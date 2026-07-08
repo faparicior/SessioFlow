@@ -13,6 +13,20 @@ This reference document outlines key linting conventions and guidelines enforced
     interface UserResponse { name: string; }
     const name = (response as UserResponse).name;
     ```
+* **External JSON Parsing:** When parsing JSON from external APIs (e.g., `fetch().json()` returns `any`), use a type assertion function with `asserts` keyword instead of `as` casts or eslint suppressions.
+  ```typescript
+  function assumeType<T>(value: unknown): asserts value is T {
+    if (value === undefined) {
+      throw new TypeError('Value is undefined');
+    }
+  }
+
+  async function parseJson<T>(response: Response): Promise<ApiResponse<T>> {
+    const json: unknown = await response.json();
+    assumeType<ApiResponse<T>>(json);
+    return json;
+  }
+  ```
 
 ## 🔀 Coalescing Operators
 * **Prefer Nullish Coalescing (`??`):** Use `??` instead of logical OR (`||`) when assigning fallback values. `||` incorrectly coerces falsy values (like `0` or empty strings `""`).
