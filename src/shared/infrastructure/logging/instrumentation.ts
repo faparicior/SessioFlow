@@ -26,7 +26,7 @@ type InstrumentationConfig = {
 };
 
 export class ObservabilityInstrumentation {
-  private sdk: NodeSDK | undefined = null;
+  private sdk: NodeSDK | undefined = undefined;
   private readonly config: InstrumentationConfig;
 
   constructor(config: InstrumentationConfig) {
@@ -96,7 +96,7 @@ export class ObservabilityInstrumentation {
 }
 
 // Global instrumentation instance
-let instrumentation: ObservabilityInstrumentation | undefined = null;
+let instrumentation: ObservabilityInstrumentation | undefined = undefined;
 
 export function initObservability(
   config?: Partial<InstrumentationConfig>,
@@ -122,6 +122,6 @@ export function getObservability(): ObservabilityInstrumentation | undefined {
 export async function shutdownObservability(): Promise<void> {
   if (instrumentation) {
     await instrumentation.shutdown();
-    instrumentation = null;
+    instrumentation = undefined;
   }
 }

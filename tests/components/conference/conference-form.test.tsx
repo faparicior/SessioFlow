@@ -1,7 +1,6 @@
 import {describe, it, expect, vi, beforeEach} from 'vitest';
 import {render, screen, fireEvent, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import 'vitest-axe';
 import '@testing-library/jest-dom/vitest';
 import {type ConferenceFormData, ConferenceForm} from '@/modules/conference/interfaces/web/components/conference-form';
 

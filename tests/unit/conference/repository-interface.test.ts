@@ -14,11 +14,11 @@ describe('ConferenceRepository', () => {
     private conferences: Conference[] = [];
 
     async findById(id: any): Promise<Conference | undefined> {
-      return this.conferences.find(c => c.id.value === id.value) ?? null;
+      return this.conferences.find(c => c.id.value === id.value);
     }
 
     async findBySlug(slug: any): Promise<Conference | undefined> {
-      return this.conferences.find(c => c.slug.value === slug.value) ?? null;
+      return this.conferences.find(c => c.slug.value === slug.value);
     }
 
     async findByOrganizerId(organizerId: string): Promise<Conference[]> {
@@ -55,7 +55,7 @@ describe('ConferenceRepository', () => {
   it('findById returns null for non-existent ID', async () => {
     repo = new MockConferenceRepository();
     const result = await repo.findById({value: 'non-existent'});
-    expect(result).toBeNull();
+    expect(result).toBeUndefined();
   });
 
   it('findById returns conference for existing ID', async () => {
@@ -76,7 +76,7 @@ describe('ConferenceRepository', () => {
   it('findBySlug returns null for non-existent slug', async () => {
     repo = new MockConferenceRepository();
     const result = await repo.findBySlug({value: 'non-existent'});
-    expect(result).toBeNull();
+    expect(result).toBeUndefined();
   });
 
   it('findBySlug returns conference for existing slug', async () => {
@@ -178,6 +178,6 @@ describe('ConferenceRepository', () => {
 
     await repo.delete(conference.id);
     const result = await repo.findById(conference.id);
-    expect(result).toBeNull();
+    expect(result).toBeUndefined();
   });
 });

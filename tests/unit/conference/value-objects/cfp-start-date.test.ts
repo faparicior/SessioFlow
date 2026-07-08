@@ -37,7 +37,7 @@ describe('CfpStartDate', () => {
     const start1 = CfpStartDate.create(date1);
     const start2 = CfpStartDate.create(date2);
 
-    expect(start1.isBefore(start2)).toBe(true);
-    expect(start2.isBefore(start1)).toBe(false);
+    expect(start1.isBefore(start2.value)).toBe(true);
+    expect(start2.isBefore(start1.value)).toBe(false);
   });
 });

@@ -19,7 +19,7 @@ export type GetConferenceResult = {
  * DDD Pattern: Query handler is read-only, no side effects.
  */
 export class GetConferenceHandler {
-  constructor(private readonly repository: ConferenceRepository) {}
+  constructor(public readonly repository: ConferenceRepository) {}
 
   async execute(query: GetConferenceQuery): Promise<GetConferenceResult> {
     try {
@@ -28,7 +28,7 @@ export class GetConferenceHandler {
       if (!conference) {
         return {
           success: true,
-          data: null,
+          data: undefined,
         };
       }
 

@@ -273,6 +273,7 @@ const xoConfig: FlatXoConfig = [
     ],
     rules: {
       '@typescript-eslint/naming-convention': 'off',
+      'unicorn/prefer-module': 'off',
     },
   },
 

@@ -14,7 +14,7 @@ export type ConferenceResponseDto = {
   maxSubmissions: number | undefined;
   requiresApproval: boolean;
   cfpUrl: string;
-  events: unknown[];
+  events: Array<{type: string}>;
   createdAt: string;
   updatedAt: string;
 };

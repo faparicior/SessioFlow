@@ -41,11 +41,11 @@ export class CfpStartDate implements CfpStartDate {
     return this._value.getTime() === other._value.getTime();
   }
 
-  isBefore(other: CfpStartDate): boolean {
-    return this._value.getTime() < other._value.getTime();
+  isBefore(other: Date): boolean {
+    return this._value.getTime() < other.getTime();
   }
 
-  isAfter(other: CfpStartDate): boolean {
-    return this._value.getTime() > other._value.getTime();
+  isAfter(other: Date): boolean {
+    return this._value.getTime() > other.getTime();
   }
 }

@@ -52,7 +52,7 @@ export class CfpConfig {
    * Validate CfP dates: end date must be after start date.
    */
   validateDates(): void {
-    if (this.endDate.isBefore(this.startDate)) {
+    if (this.endDate.isBefore(this.startDate.value)) {
       throw new CfpDatesInvalidError('CfP end date must be after start date');
     }
   }

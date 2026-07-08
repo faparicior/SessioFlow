@@ -57,7 +57,7 @@ export default function ConferenceDetailPage({
   const router = useRouter();
   const [conference, setConference] = useState<ConferenceData | undefined>(undefined);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | undefined>(null);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   // Unwrap params Promise using React.use()
   const {id} = React.use(params);
@@ -96,7 +96,7 @@ export default function ConferenceDetailPage({
     );
   }
 
-  if (error !== null || !conference) {
+  if (error !== undefined || !conference) {
     return (
       <div className="container mx-auto py-8">
         <Alert variant="destructive">

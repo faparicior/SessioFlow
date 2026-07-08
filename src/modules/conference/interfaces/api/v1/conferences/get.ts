@@ -2,7 +2,6 @@ import {type NextRequest, NextResponse} from 'next/server';
 import {GetConferenceQuery} from '@/modules/conference/application/queries/get-conference/get-conference.query';
 import {type GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 import {ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
-import {getSupabaseClient} from '@/shared/infrastructure/database/db-client';
 
 /**
  * GET /api/v1/conferences/:id

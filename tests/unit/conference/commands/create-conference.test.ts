@@ -1,4 +1,4 @@
-import {describe, it, expect, vi} from 'vitest';
+import {beforeEach, describe, it, expect, vi} from 'vitest';
 import {CreateConferenceCommand} from '@/modules/conference/application/commands/create-conference/create-conference.command';
 import {CreateConferenceHandler} from '@/modules/conference/application/commands/create-conference/create-conference.handler';
 import {Conference} from '@/modules/conference/domain/entities/conference';
@@ -9,11 +9,11 @@ class MockConferenceRepository {
   private conferences: Conference[] = [];
 
   async findById(id: any) {
-    return this.conferences.find(c => c.id.value === id.value) ?? null;
+    return this.conferences.find(c => c.id.value === id.value);
   }
 
   async findBySlug(slug: any) {
-    return this.conferences.find(c => c.slug.value === slug.value) ?? null;
+    return this.conferences.find(c => c.slug.value === slug.value);
   }
 
   async findByOrganizerId(organizerId: string) {
@@ -155,7 +155,7 @@ describe('CreateConference Command', () => {
     await handler.execute(command);
 
     const saved = await repo.findBySlug({value: 'tech-conference'});
-    expect(saved).not.toBeNull();
+    expect(saved).not.toBeUndefined();
     expect(saved!.status).toBe(ConferenceStatus.CFP_OPEN);
   });
 

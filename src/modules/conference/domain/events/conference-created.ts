@@ -14,7 +14,7 @@ export type ConferenceCreatedEventData = {
   conferenceName: ConferenceName;
   conferenceSlug: ConferenceSlug;
   organizerId: string;
-  timestamp: Date;
+  timestamp?: Date;
 };
 
 export class ConferenceCreatedEvent {
@@ -26,7 +26,7 @@ export class ConferenceCreatedEvent {
       conferenceName: ConferenceName;
       conferenceSlug: ConferenceSlug;
       organizerId: string;
-      timestamp: Date;
+      timestamp?: Date;
     },
   ) {
     this._params.timestamp ??= new Date();

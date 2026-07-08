@@ -24,7 +24,7 @@ describe('CfpEndDate', () => {
     const end1 = CfpEndDate.create(date1);
     const end2 = CfpEndDate.create(date2);
 
-    expect(end2.isAfter(end1)).toBe(true);
-    expect(end1.isAfter(end2)).toBe(false);
+    expect(end2.isAfter(end1.value)).toBe(true);
+    expect(end1.isAfter(end2.value)).toBe(false);
   });
 });

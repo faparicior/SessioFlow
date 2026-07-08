@@ -1,6 +1,4 @@
 import {type NextRequest, NextResponse} from 'next/server';
-import {eq} from 'drizzle-orm';
-import {getSupabaseClient} from '@/shared/infrastructure/database/db-client';
 import {ConferenceRepository} from '@/modules/conference/domain/repositories/conference-repository';
 import {ConferenceStatus} from '@/modules/conference/domain/value-objects/conference-status';
 import {conferencesTable} from '@/modules/conference/infrastructure/database/drizzle-schema';

@@ -39,11 +39,11 @@ export class CfpEndDate implements CfpEndDate {
     return this._value.getTime() === other._value.getTime();
   }
 
-  isBefore(other: CfpEndDate): boolean {
-    return this._value.getTime() < other._value.getTime();
+  isBefore(other: Date): boolean {
+    return this._value.getTime() < other.getTime();
   }
 
-  isAfter(other: CfpEndDate): boolean {
-    return this._value.getTime() > other._value.getTime();
+  isAfter(other: Date): boolean {
+    return this._value.getTime() > other.getTime();
   }
 }

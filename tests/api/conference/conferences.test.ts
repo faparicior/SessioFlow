@@ -6,9 +6,24 @@ import {ConferenceResponseDto} from '@/modules/conference/application/dto/confer
 
 // Mock CQRS handlers
 const mockCreateConferenceHandler = {
+  repository: {
+    findBySlug: vi.fn().mockResolvedValue(undefined),
+    save: vi.fn().mockResolvedValue(undefined),
+    findByStatus: vi.fn().mockResolvedValue([]),
+    findByOrganizerId: vi.fn().mockResolvedValue([]),
+  },
+  emailProvider: vi.fn(),
   execute: vi.fn(),
 };
 const mockGetConferenceHandler = {
+  repository: {
+    findById: vi.fn().mockResolvedValue(undefined),
+    findBySlug: vi.fn().mockResolvedValue(undefined),
+    findByStatus: vi.fn().mockResolvedValue([]),
+    findByOrganizerId: vi.fn().mockResolvedValue([]),
+    save: vi.fn().mockResolvedValue(undefined),
+    delete: vi.fn().mockResolvedValue(undefined),
+  },
   execute: vi.fn(),
 };
 

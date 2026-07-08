@@ -103,7 +103,7 @@ export class Conference {
     }
 
     // Validate CfP dates
-    if (this.cfpConfig.endDate.isBefore(this.cfpConfig.startDate)) {
+    if (this.cfpConfig.endDate.isBefore(this.cfpConfig.startDate.value)) {
       throw new CfpDatesInvalidError('CfP end date must be after start date');
     }
 

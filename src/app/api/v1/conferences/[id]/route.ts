@@ -1,5 +1,5 @@
 import {type NextRequest, NextResponse} from 'next/server';
-import {getDb} from '@/shared/infrastructure/database/db-client';
+import {ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
 import {SupabaseConferenceRepository} from '@/modules/conference/infrastructure/database/conference-repository';
 
 /**
@@ -14,7 +14,7 @@ export async function GET(
   try {
     const {id} = await params;
     const repository = new SupabaseConferenceRepository();
-    const conference = await repository.findById({value: id});
+    const conference = await repository.findById(ConferenceId.fromString(id));
 
     if (!conference) {
       return NextResponse.json(

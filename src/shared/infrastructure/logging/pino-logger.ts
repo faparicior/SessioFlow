@@ -189,7 +189,7 @@ export class PinoLogger implements Logger {
 }
 
 // Singleton instance for application-wide use
-let globalLogger: PinoLogger | undefined = null;
+let globalLogger: PinoLogger | undefined = undefined;
 
 export function getLogger(config?: PinoLoggerConfig): PinoLogger {
   globalLogger ??= new PinoLogger(config);

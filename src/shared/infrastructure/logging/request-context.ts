@@ -26,7 +26,7 @@ const requestStorage = new AsyncLocalStorage<RequestContextData>();
  * Get the current request context
  */
 export function getRequestContext(): RequestContextData | undefined {
-  return requestStorage.getStore() ?? null;
+  return requestStorage.getStore();
 }
 
 /**
@@ -77,7 +77,7 @@ export async function withRequestContextAsync<T>(
  */
 export function getCorrelationId(): string | undefined {
   const context = getRequestContext();
-  return context?.correlationId ?? null;
+  return context?.correlationId;
 }
 
 /**
@@ -86,7 +86,7 @@ export function getCorrelationId(): string | undefined {
 export function getRequestDuration(): number | undefined {
   const context = getRequestContext();
   if (!context) {
-    return null;
+    return undefined;
   }
 
   return Date.now() - context.startTime;

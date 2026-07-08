@@ -41,13 +41,13 @@ export type CreateConferenceResult = {
  */
 export class CreateConferenceHandler {
   constructor(
-    private readonly repository: {
+    public readonly repository: {
       findBySlug(slug: {value: string}): Promise<Conference | undefined>;
       save(conference: Conference): Promise<void>;
       findByStatus(status: ConferenceStatus): Promise<Conference[]>;
       findByOrganizerId(organizerId: string): Promise<Conference[]>;
     },
-    private readonly emailProvider: EmailProvider,
+    public readonly emailProvider: EmailProvider,
   ) {}
 
   async execute(
@@ -168,10 +168,10 @@ export class CreateConferenceHandler {
       } catch (error) {
         logger.warn(
           'Failed to send welcome email (best-effort)',
-          error as Error,
           {
             ...context,
             conferenceId: conference.id.value,
+            error: (error as Error)?.message,
           },
         );
       }

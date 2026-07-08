@@ -1,4 +1,4 @@
-import {describe, it, expect, vi} from 'vitest';
+import {beforeEach, describe, it, expect, vi} from 'vitest';
 import {GetConferenceQuery} from '@/modules/conference/application/queries/get-conference/get-conference.query';
 import {GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 import {Conference} from '@/modules/conference/domain/entities/conference';
@@ -10,11 +10,11 @@ class MockConferenceRepository {
   private conferences: Conference[] = [];
 
   async findById(id: ConferenceId): Promise<Conference | undefined> {
-    return this.conferences.find(c => c.id.value === id.value) ?? null;
+    return this.conferences.find(c => c.id.value === id.value);
   }
 
   async findBySlug(slug: any) {
-    return this.conferences.find(c => c.slug.value === slug.value) ?? null;
+    return this.conferences.find(c => c.slug.value === slug.value);
   }
 
   async findByOrganizerId(organizerId: string) {
@@ -84,7 +84,7 @@ describe('GetConference Query', () => {
     const result = await handler.execute(query);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeNull();
+    expect(result.data).toBeUndefined();
   });
 
   it('returns conference with CfpConfig details', async () => {

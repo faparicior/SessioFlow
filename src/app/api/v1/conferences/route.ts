@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (!parsed.success) {
       logger.error(
         '[API] Validation failed:',
-        JSON.stringify(z.treeifyError(parsed.error)),
+        new Error(JSON.stringify(z.treeifyError(parsed.error))),
       );
       return NextResponse.json(
         {
@@ -66,7 +66,10 @@ export async function POST(request: NextRequest) {
     logger.debug('[API] Command result:', result);
 
     if (!result.success) {
-      logger.error('[API] Conference creation failed:', result.errors);
+      logger.error(
+        '[API] Conference creation failed:',
+        new Error(result.errors?.[0]?.message ?? 'Unknown error'),
+      );
       const error = result.errors![0];
       let status = 400;
       let {message} = error;

@@ -1,4 +1,3 @@
-import {pg} from 'drizzle-orm/pg-core';
 import {drizzle} from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
@@ -7,7 +6,7 @@ import postgres from 'postgres';
  *
  * Uses DATABASE_URL environment variable for configuration.
  */
-let db: ReturnType<typeof drizzle> | undefined = null;
+let db: ReturnType<typeof drizzle> | undefined = undefined;
 
 export function getDb() {
   if (db) {
