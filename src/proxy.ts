@@ -14,12 +14,12 @@ import {generateCorrelationId} from '@/shared/infrastructure/logging/request-con
 export function proxy(request: NextRequest) {
   // Generate or extract correlation ID
   const correlationId =
-    request.headers.get('x-correlation-id') ||
-    request.headers.get('x-request-id') ||
+    request.headers.get('x-correlation-id') ??
+    request.headers.get('x-request-id') ??
     generateCorrelationId();
 
   // Extract user context if available
-  const userId = request.headers.get('x-user-id') || undefined;
+  const userId = request.headers.get('x-user-id') ?? undefined;
 
   // Create response with headers for downstream services
   const response = NextResponse.next();

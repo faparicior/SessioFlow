@@ -55,7 +55,7 @@ export class CreateConferenceHandler {
   ): Promise<CreateConferenceResult> {
     const logger = getLogger();
     const {input} = command;
-    const correlationId = getCorrelationId() || 'unknown';
+    const correlationId = getCorrelationId() ?? 'unknown';
 
     const context = {
       correlationId,

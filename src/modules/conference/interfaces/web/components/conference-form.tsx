@@ -130,7 +130,7 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
           }
         }
       } else if (result.errors) {
-        setErrors({general: result.errors[0]?.message || 'An error occurred'});
+        setErrors({general: result.errors[0]?.message ?? 'An error occurred'});
       }
     } catch (error) {
       console.error('[Form] Submission error:', error);

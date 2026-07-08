@@ -136,7 +136,7 @@ export class SupabaseConferenceRepository implements ConferenceRepository {
     return Conference.fromData({
       id: ConferenceId.fromString(row.id),
       name: ConferenceName.create(row.name),
-      description: row.description || '',
+      description: row.description ?? '',
       slug: ConferenceSlug.create(row.slug),
       status: row.status as ConferenceStatus,
       organizerId: row.organizerId,

@@ -31,8 +31,8 @@ export class ObservabilityInstrumentation {
 
   constructor(config: InstrumentationConfig) {
     this.config = {
-      serviceName: config.serviceName || 'sessioflow',
-      environment: config.environment || 'development',
+      serviceName: config.serviceName ?? 'sessioflow',
+      environment: config.environment ?? 'development',
       enabled: config.enabled ?? true,
     };
   }
@@ -50,7 +50,7 @@ export class ObservabilityInstrumentation {
       // Create resource with service metadata
       const resource = resourceFromAttributes({
         [ATTR_SERVICE_NAME]: this.config.serviceName,
-        [ATTR_SERVICE_VERSION]: process.env.npm_package_version || '0.1.0',
+        [ATTR_SERVICE_VERSION]: process.env.npm_package_version ?? '0.1.0',
         'service.environment': this.config.environment,
       });
 
@@ -103,8 +103,8 @@ export function initObservability(
 ): ObservabilityInstrumentation {
   if (!instrumentation) {
     const defaultConfig: InstrumentationConfig = {
-      serviceName: config?.serviceName || 'sessioflow',
-      environment: config?.environment || process.env.NODE_ENV || 'development',
+      serviceName: config?.serviceName ?? 'sessioflow',
+      environment: config?.environment ?? process.env.NODE_ENV ?? 'development',
       enabled: config?.enabled ?? process.env.NODE_ENV !== 'test',
     };
 

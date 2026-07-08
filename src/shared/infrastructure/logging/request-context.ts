@@ -26,14 +26,14 @@ const requestStorage = new AsyncLocalStorage<RequestContextData>();
  * Get the current request context
  */
 export function getRequestContext(): RequestContextData | undefined {
-  return requestStorage.getStore() || null;
+  return requestStorage.getStore() ?? null;
 }
 
 /**
  * Generate a correlation ID (from headers or new UUID)
  */
 export function generateCorrelationId(headerValue?: string): string {
-  return headerValue || `req-${uuidv4()}`.slice(0, 32);
+  return headerValue ?? `req-${uuidv4()}`.slice(0, 32);
 }
 
 /**
@@ -44,11 +44,11 @@ export function withRequestContext<T>(
   fn: () => T,
 ): T {
   const defaultContext: RequestContextData = {
-    correlationId: context.correlationId || generateCorrelationId(),
+    correlationId: context.correlationId ?? generateCorrelationId(),
     userId: context.userId,
     requestId: uuidv4(),
     startTime: Date.now(),
-    metadata: context.metadata || {},
+    metadata: context.metadata ?? {},
   };
 
   return requestStorage.run(defaultContext, fn);
@@ -62,11 +62,11 @@ export async function withRequestContextAsync<T>(
   fn: () => Promise<T>,
 ): Promise<T> {
   const defaultContext: RequestContextData = {
-    correlationId: context.correlationId || generateCorrelationId(),
+    correlationId: context.correlationId ?? generateCorrelationId(),
     userId: context.userId,
     requestId: uuidv4(),
     startTime: Date.now(),
-    metadata: context.metadata || {},
+    metadata: context.metadata ?? {},
   };
 
   return requestStorage.run(defaultContext, fn);
@@ -77,7 +77,7 @@ export async function withRequestContextAsync<T>(
  */
 export function getCorrelationId(): string | undefined {
   const context = getRequestContext();
-  return context?.correlationId || null;
+  return context?.correlationId ?? null;
 }
 
 /**
@@ -107,5 +107,5 @@ export function addRequestMetadata(key: string, value: unknown): void {
  */
 export function getRequestMetadata(): Record<string, unknown> {
   const context = getRequestContext();
-  return context?.metadata || {};
+  return context?.metadata ?? {};
 }

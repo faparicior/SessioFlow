@@ -29,15 +29,15 @@ export class PinoLogger implements Logger {
       | 'console'
       | 'file'
       | 'both';
-    const envLogPath = process.env.LOG_PATH || './logs/app.log';
-    const envLevel = process.env.LOG_LEVEL || 'info';
-    const envFormat = (process.env.LOG_FORMAT as 'json' | 'pretty') || 'json';
+    const envLogPath = process.env.LOG_PATH ?? './logs/app.log';
+    const envLevel = process.env.LOG_LEVEL ?? 'info';
+    const envFormat = (process.env.LOG_FORMAT as 'json' | 'pretty') ?? 'json';
 
     const {
       level = envLevel,
       format = envFormat,
       enabled = process.env.LOG_ENABLED !== 'false',
-      destination = envDestination || 'console',
+      destination = envDestination ?? 'console',
       logPath = envLogPath,
       fileTransport = 'pino/file',
     } = config;
@@ -192,7 +192,7 @@ export class PinoLogger implements Logger {
 let globalLogger: PinoLogger | undefined = null;
 
 export function getLogger(config?: PinoLoggerConfig): PinoLogger {
-  globalLogger ||= new PinoLogger(config);
+  globalLogger ??= new PinoLogger(config);
   return globalLogger;
 }
 

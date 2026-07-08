@@ -21,7 +21,7 @@ export default function CreateConferencePage() {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           name: data.name,
-          description: data.description || '',
+          description: data.description ?? '',
           cfpStartDate: data.cfpStartDate,
           cfpEndDate: data.cfpEndDate,
           maxSubmissions: data.maxSubmissions,
@@ -37,7 +37,7 @@ export default function CreateConferencePage() {
         return {success: true, data: result.data};
       }
 
-      const error = result.error || {message: 'An error occurred'};
+      const error = result.error ?? {message: 'An error occurred'};
       console.log('[CreatePage] Returning error:', error);
       return {
         success: false,

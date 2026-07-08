@@ -65,11 +65,11 @@ export default function ConferenceDetailPage({
     );
   }
 
-  if (error || !conference) {
+  if (error !== null || !conference) {
     return (
       <div className="container mx-auto py-8">
         <Alert variant="destructive">
-          <AlertDescription>{error || 'Conference not found'}</AlertDescription>
+          <AlertDescription>{error ?? 'Conference not found'}</AlertDescription>
         </Alert>
         <Button
           className="mt-4"

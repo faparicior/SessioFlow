@@ -18,6 +18,10 @@ This reference document outlines key linting conventions and guidelines enforced
 * **Prefer Nullish Coalescing (`??`):** Use `??` instead of logical OR (`||`) when assigning fallback values. `||` incorrectly coerces falsy values (like `0` or empty strings `""`).
   * *Bad:* `const name = input.name || 'Anonymous';`
   * *Good:* `const name = input.name ?? 'Anonymous';`
+* **Boolean Conditions:** When using `||` in boolean conditions (e.g., `if` statements), use explicit null checks to avoid lint false positives.
+  * *Bad:* `if (error || !conference)` — linter flags `||` as potential fallback
+  * *Good:* `if (error !== null || !conference)` — explicit intent, no lint warning
+  * *Why:* The `prefer-nullish-coalescing` rule can't distinguish between fallback `||` and boolean `||` in conditions. Use explicit checks for clarity.
 
 ## 🧱 DDD Entity & Value Object Design
 * **Member Ordering:** Factory methods, static creators (e.g., `create()`, `fromISOString()`, `fromString()`), and static properties must be declared **before** private constructors in domain classes.

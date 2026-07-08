@@ -12,7 +12,7 @@ import {schema} from '../src/modules/conference/infrastructure/database/drizzle-
  *   npx tsx drizzle/migrate.ts
  */
 
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/sessioflow';
+const DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/sessioflow';
 
 async function main() {
   console.log('Running Drizzle migrations...');
