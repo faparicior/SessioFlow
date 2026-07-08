@@ -1,4 +1,4 @@
-import {test, expect} from '@playwright/test';
+import {expect, test, type Page} from '@playwright/test';
 import {deleteConferences} from './utils/cleanup';
 
 /**
@@ -25,7 +25,7 @@ test.describe('Conference Setup E2E', () => {
    * Extracted to avoid await-in-loop lint errors.
    */
   async function createConference(
-    page: import('@playwright/test').Page,
+    page: Page,
     name: string,
   ): Promise<void> {
     await page.getByLabel('Conference Name').fill(name);
