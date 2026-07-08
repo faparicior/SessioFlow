@@ -50,7 +50,7 @@ describe('CreateConference Command', () => {
 
   beforeEach(() => {
     repo = new MockConferenceRepository();
-    handler = new CreateConferenceHandler(repo, async () => {});
+    handler = new CreateConferenceHandler(repo, async () => void 0);
   });
 
   it('creates a conference in happy path', async () => {
