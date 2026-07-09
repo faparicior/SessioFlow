@@ -97,6 +97,17 @@ This reference document outlines key linting conventions and guidelines enforced
     ```
 
 ## 🎨 React & Component Patterns
+* **React 19: Default Parameters Over `defaultProps`:** In React 19, `defaultProps` for function components has been removed. Use ES6 default parameters instead.
+  * *Bad (deprecated):* 
+    ```typescript
+    function Button({ variant = 'default' }) { /* ... */ }
+    Button.defaultProps = { variant: 'default' };
+    ```
+  * *Good (React 19):* 
+    ```typescript
+    function Button({ variant = 'default' }: { variant?: string }) { /* ... */ }
+    ```
+  * *Note:* `defaultProps` still works for class components, but function components should use ES6 defaults.
 * **Async Event Handlers:** When using async functions as event handlers (e.g., `onSubmit`, `onClick`), wrap with `void` to handle the Promise correctly and avoid `@typescript-eslint/strict-void-return` errors.
   * *Bad:* `onSubmit={handleSubmit}` (where handleSubmit is async)
   * *Good:* 
