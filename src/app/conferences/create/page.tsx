@@ -52,7 +52,7 @@ export default function CreateConferencePage() {
       console.log('[CreatePage] Returning error:', error);
       return {
         success: false,
-        errors: [{code: error.code, message: error.message}],
+        errors: [{code: error.code, message: error.message ?? 'An error occurred'}],
       };
     } catch (error) {
       console.error('[CreatePage] Conference creation error:', error);
@@ -65,10 +65,12 @@ export default function CreateConferencePage() {
     }
   };
 
-  const handleSuccess = (data: ConferenceResponse) => {
+  const handleSuccess = (data: unknown) => {
     console.log('[Page] handleSuccess called with data:', data);
-    console.log('[Page] Conference ID:', data.id);
-    router.push(`/conferences/${data.id}`);
+    if (data && typeof data === 'object' && 'id' in data && typeof data.id === 'string') {
+      console.log('[Page] Conference ID:', data.id);
+      router.push(`/conferences/${data.id}`);
+    }
   };
 
   return (

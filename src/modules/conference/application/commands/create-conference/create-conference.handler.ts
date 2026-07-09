@@ -205,7 +205,7 @@ export class CreateConferenceHandler {
         errorMessage,
       };
 
-      logger.error('Conference creation failed', error, errorContext);
+      logger.error('Conference creation failed', error instanceof Error ? error : new Error(String(error)), errorContext);
 
       if (error instanceof ConferenceFreeTierLimitError) {
         return {

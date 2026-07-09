@@ -51,9 +51,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = 'Button';
 
-const defaultProps: Partial<ButtonProps> = {
-  asChild: false,
-};
-Button.defaultProps = defaultProps;
-
 export {Button, buttonVariants};

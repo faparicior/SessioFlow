@@ -20,6 +20,7 @@ const xoConfig: FlatXoConfig = [
     files: ['**/*.{ts,tsx,mts,cts}'],
     rules: {
       'unicorn/empty-brace-spaces': 'off',
+      'react/require-default-props': 'off',
 
       // --- Relax rules that do not match project conventions / modern standards ---
       'react/prop-types': 'off',
