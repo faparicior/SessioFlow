@@ -8,11 +8,11 @@ import {ConferenceStatus} from '@/modules/conference/domain/value-objects/confer
 class MockConferenceRepository {
   private conferences: Conference[] = [];
 
-  async findById(id: { value: string }) {
+  async findById(id: {value: string}) {
     return this.conferences.find(c => c.id.value === id.value);
   }
 
-  async findBySlug(slug: { value: string }) {
+  async findBySlug(slug: {value: string}) {
     return this.conferences.find(c => c.slug.value === slug.value);
   }
 
@@ -35,7 +35,7 @@ class MockConferenceRepository {
     }
   }
 
-  async delete(id: { value: string }) {
+  async delete(id: {value: string}) {
     this.conferences = this.conferences.filter(c => c.id.value !== id.value);
   }
 
