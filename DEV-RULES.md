@@ -6,6 +6,21 @@ This reference document outlines key linting conventions and guidelines enforced
 
 ## 🛡️ Type Safety & `any` Prevention
 * **Avoid `any` Assignments:** Never assign `any` to typed variables. Always define explicit interfaces or use type guards/assertions when dealing with external API responses or JSON parsing.
+* **Safe Type Assertions from `any`/`unknown`:** When asserting types from `any` or `unknown`, cast to `unknown` first, then use type guards to safely access properties.
+  * *Bad:* `const message = error.message;` (when error is `any`)
+  * *Good:* 
+    ```typescript
+    const firstError = result.errors[0] as unknown;
+    if (typeof firstError === 'string') {
+      errorMessage = firstError;
+    } else if (firstError !== null && typeof firstError === 'object' && 'message' in firstError) {
+      const messageValue = (firstError as {message: unknown}).message;
+      errorMessage = typeof messageValue === 'string' ? messageValue : 'Default message';
+    }
+    ```
+* **Explicit `void` Return Types:** Functions that don't return values should explicitly declare `: void` return type to avoid `@typescript-eslint/strict-void-return` errors.
+  * *Good:* `const handleChange = (field: string, value: string): void => { ... }`
+  * *Why:* Makes intent clear and prevents lint warnings when used in event handler contexts.
 * **Property Access:** Do not read properties directly from `any` objects. Cast to a known interface or use `unknown` with a type predicate.
   * *Bad:* `const name = (response as any).name;`
   * *Good:* 
@@ -80,6 +95,28 @@ This reference document outlines key linting conventions and guidelines enforced
     }
     constructor(props: ConferenceProps) {}
     ```
+
+## 🎨 React & Component Patterns
+* **Async Event Handlers:** When using async functions as event handlers (e.g., `onSubmit`, `onClick`), wrap with `void` to handle the Promise correctly and avoid `@typescript-eslint/strict-void-return` errors.
+  * *Bad:* `onSubmit={handleSubmit}` (where handleSubmit is async)
+  * *Good:* 
+    ```typescript
+    onSubmit={event => {
+      void handleSubmit(event);
+    }}
+    ```
+  * *Alternative:* Explicitly return `undefined` at the end of the async function:
+    ```typescript
+    const handleSubmit = async (e: SyntheticEvent): Promise<void> => {
+      // ... logic
+      return undefined;
+    };
+    ```
+* **Arrow Function Syntax:** For single-parameter arrow functions, omit parentheses around the parameter to avoid `@stylistic/arrow-parens` errors.
+  * *Bad:* `onChange={(e) => { handleChange(e.target.value); }}`
+  * *Good:* `onChange={e => { handleChange(e.target.value); }}`
+* **Type Assertions for Record Access:** When accessing object properties dynamically with typed keys, use `Record<string, T>` cast for safer access.
+  * *Good:* `const fieldError = (errors as Record<string, string | undefined>)[field];`
 
 ## 🧪 Testing Guidelines
 

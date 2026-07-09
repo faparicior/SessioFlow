@@ -29,8 +29,12 @@ import {Alert, AlertDescription} from '@/components/ui/alert';
 type ConferenceFormProps = {
   readonly onSubmit: (
     data: ConferenceFormData,
-  ) => Promise<{success: boolean; data?: any; errors?: any[]}>;
-  readonly onSuccess?: (data: any) => void;
+  ) => Promise<{
+    success: boolean;
+    data?: unknown;
+    errors?: Array<{message: string}>;
+  }>;
+  readonly onSuccess?: (data: unknown) => void;
 };
 
 export type ConferenceFormData = {
@@ -143,7 +147,8 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
   const handleChange = (field: keyof ConferenceFormData, value: string) => {
     setFormData(previous => ({...previous, [field]: value}));
     // Clear error when user starts typing
-    if (errors[field as keyof FormErrors]) {
+    const fieldError = (errors as Record<string, string | undefined>)[field];
+    if (fieldError) {
       setErrors(previous => ({...previous, [field]: undefined}));
     }
   };
@@ -191,7 +196,12 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
           )
           : null}
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form
+          className="space-y-4"
+          onSubmit={event => {
+            void handleSubmit(event);
+          }}
+        >
           {/* Conference Name */}
           <div className="space-y-2">
             <Label htmlFor="name">Conference Name</Label>
@@ -299,7 +309,9 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={async () => navigator.clipboard.writeText(cfpUrl)}
+                    onClick={() => {
+                      void navigator.clipboard.writeText(cfpUrl);
+                    }}
                   >
                     Copy
                   </Button>
