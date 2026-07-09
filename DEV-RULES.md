@@ -81,6 +81,49 @@ This reference document outlines key linting conventions and guidelines enforced
     constructor(props: ConferenceProps) {}
     ```
 
+## 🧪 Testing Guidelines
+
+### API Response Validation in Tests
+* **Use Zod Schemas for Type Safety:** When testing API endpoints, validate response bodies with Zod schemas instead of using unsafe type assertions (`as Type`).
+  * *Bad:* 
+    ```typescript
+    const body = await response.json() as {data: ConferenceResponseDto};
+    expect(body.data.name).toBe('Tech Conference');
+    ```
+  * *Good:* 
+    ```typescript
+    const successSchema = z.object({
+      data: z.object({
+        name: z.string(),
+        status: z.string(),
+      }),
+    });
+
+    const body = await response.json();
+    const parsed = successSchema.parse(body);
+    expect(parsed.data.name).toBe('Tech Conference');
+    ```
+* **Benefits of Schema Validation:**
+  - ✅ Eliminates `@typescript-eslint/no-unsafe-type-assertion` errors
+  - ✅ Runtime validation of actual API response shapes
+  - ✅ Type safety without `as` casts
+  - ✅ Catches response format bugs at test time
+  - ✅ Follows Zod-first validation philosophy
+* **Mock Handler Pattern:** Use `vi.spyOn()` with real handler instances instead of creating mock objects with `vi.fn()`:
+  ```typescript
+  const mockRepository = {
+    findBySlug: vi.fn().mockResolvedValue(undefined),
+    save: vi.fn().mockResolvedValue(undefined),
+  };
+
+  const handler = new CreateConferenceHandler(mockRepository, vi.fn());
+
+  vi.spyOn(handler, 'execute').mockResolvedValue({
+    success: true,
+    data: mockData,
+  });
+  ```
+
 ## 📝 Schema Validation (Zod v4)
 * **UUID Validation:**
   * `z.uuid()` validates strictly per RFC 9562 (variant bits must be `10`). Returns a **branded UUID type**, not plain `string`.
