@@ -18,6 +18,36 @@ This reference document outlines key linting conventions and guidelines enforced
       errorMessage = typeof messageValue === 'string' ? messageValue : 'Default message';
     }
     ```
+* **Handling Thrown Errors in `catch` Blocks:** JavaScript/TypeScript `catch (error)` binds `error` to the `unknown` type. Never assert types using `error as Error` directly. Instead, guard access to error properties using `instanceof Error`.
+  * *Bad:*
+    ```typescript
+    } catch (error) {
+      logger.error('failed', error as Error);
+    }
+    ```
+  * *Good:*
+    ```typescript
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      logger.error('failed', error instanceof Error ? error : new Error(String(error)));
+    }
+    ```
+* **Safe Parameter Checks on Unknown Callbacks:** If an interface callback defines a parameter type as `unknown` (e.g. `onSuccess?: (data: unknown) => void`), avoid casting `data as SpecificType` in the receiver function. Instead, verify elements using a type guard or safe property extraction check.
+  * *Bad:*
+    ```typescript
+    const handleSuccess = (data: unknown) => {
+      const conference = data as ConferenceResponse;
+      router.push(`/conferences/${conference.id}`);
+    };
+    ```
+  * *Good:*
+    ```typescript
+    const handleSuccess = (data: unknown) => {
+      if (data && typeof data === 'object' && 'id' in data && typeof data.id === 'string') {
+        router.push(`/conferences/${data.id}`);
+      }
+    };
+    ```
 * **Explicit `void` Return Types:** Functions that don't return values should explicitly declare `: void` return type to avoid `@typescript-eslint/strict-void-return` errors.
   * *Good:* `const handleChange = (field: string, value: string): void => { ... }`
   * *Why:* Makes intent clear and prevents lint warnings when used in event handler contexts.
@@ -128,6 +158,9 @@ This reference document outlines key linting conventions and guidelines enforced
   * *Good:* `onChange={e => { handleChange(e.target.value); }}`
 * **Type Assertions for Record Access:** When accessing object properties dynamically with typed keys, use `Record<string, T>` cast for safer access.
   * *Good:* `const fieldError = (errors as Record<string, string | undefined>)[field];`
+* **No Empty Callback Blocks:** XO linter forbids empty arrow function block statements `() => {}`. Use `() => undefined` or `async () => void 0` instead to prevent linter errors.
+  * *Bad:* `const emailProvider = async () => {};`
+  * *Good:* `const emailProvider = async () => void 0;`
 
 ## 🧪 Testing Guidelines
 
@@ -171,6 +204,18 @@ This reference document outlines key linting conventions and guidelines enforced
     data: mockData,
   });
   ```
+* **Explicit Vitest Imports:** Do not rely on implicit global variables in test files. Always explicitly import testing functions such as `describe`, `it`, `expect`, `beforeEach`, and `vi` from `'vitest'`.
+  * *Bad:*
+    ```typescript
+    describe('My Test', () => {
+      beforeEach(() => {});
+    });
+    ```
+  * *Good:*
+    ```typescript
+    import { describe, it, expect, beforeEach, vi } from 'vitest';
+    ```
+
 
 ## 📝 Schema Validation (Zod v4)
 * **UUID Validation:**
@@ -196,3 +241,7 @@ This reference document outlines key linting conventions and guidelines enforced
   * `z.string().base64url()` → `z.base64url()`
   * `z.ostring()`, `z.onumber()` etc. → removed, use `.optional()` instead
   * `z.strict()` / `z.passthrough()` → use `z.strictObject()` / `z.looseObject()`
+
+## 📂 File Extensions & Module Resolution
+* **Top-Level Await inside scripts:** Scripts or files (such as Drizzle migrations) that use top-level `await` must use the `.mts` extension to declare that the file is an ES Module under the project compiler. Standard `.ts` files inside a CommonJS workspace root will fail compile/lint checks if they contain top-level `await`.
+
