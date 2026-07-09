@@ -13,6 +13,12 @@ type ApiResponse = {
   error?: {code?: string; message?: string};
 };
 
+function assumeType<T>(value: unknown): asserts value is T {
+  if (value === undefined) {
+    throw new TypeError('Value is undefined');
+  }
+}
+
 /**
  * Conference Creation Page
  *
@@ -39,8 +45,9 @@ export default function CreateConferencePage() {
         }),
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const result: ApiResponse = await response.json();
+      const json = await response.json() as unknown;
+      assumeType<ApiResponse>(json);
+      const result = json;
       console.log('[CreatePage] API response:', response.status, result);
 
       if (response.ok && result.data) {
