@@ -1,6 +1,9 @@
-import {describe, it, expect, vi} from 'vitest';
+import {describe, it, expect} from 'vitest';
 import {Conference} from '@/modules/conference/domain/entities/conference';
 import {type ConferenceRepository} from '@/modules/conference/domain/repositories/conference-repository';
+import {ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
+import {ConferenceSlug} from '@/modules/conference/domain/value-objects/conference-slug';
+import {ConferenceStatus} from '@/modules/conference/domain/value-objects/conference-status';
 
 /**
  * ConferenceRepository Interface - Tests using a mock implementation.
@@ -13,11 +16,11 @@ describe('ConferenceRepository', () => {
   class MockConferenceRepository implements ConferenceRepository {
     private conferences: Conference[] = [];
 
-    async findById(id: any): Promise<Conference | undefined> {
+    async findById(id: ConferenceId): Promise<Conference | undefined> {
       return this.conferences.find(c => c.id.value === id.value);
     }
 
-    async findBySlug(slug: any): Promise<Conference | undefined> {
+    async findBySlug(slug: ConferenceSlug): Promise<Conference | undefined> {
       return this.conferences.find(c => c.slug.value === slug.value);
     }
 
@@ -25,7 +28,7 @@ describe('ConferenceRepository', () => {
       return this.conferences.filter(c => c.organizerId === organizerId);
     }
 
-    async findByStatus(status: any): Promise<Conference[]> {
+    async findByStatus(status: ConferenceStatus): Promise<Conference[]> {
       return this.conferences.filter(c => c.status === status);
     }
 
@@ -40,7 +43,7 @@ describe('ConferenceRepository', () => {
       }
     }
 
-    async delete(id: any): Promise<void> {
+    async delete(id: ConferenceId): Promise<void> {
       this.conferences = this.conferences.filter(c => c.id.value !== id.value);
     }
 
@@ -54,7 +57,7 @@ describe('ConferenceRepository', () => {
 
   it('findById returns null for non-existent ID', async () => {
     repo = new MockConferenceRepository();
-    const result = await repo.findById({value: 'non-existent'});
+    const result = await repo.findById(ConferenceId.fromString('12345678-1234-4123-8123-123456789012'));
     expect(result).toBeUndefined();
   });
 
@@ -75,7 +78,7 @@ describe('ConferenceRepository', () => {
 
   it('findBySlug returns null for non-existent slug', async () => {
     repo = new MockConferenceRepository();
-    const result = await repo.findBySlug({value: 'non-existent'});
+    const result = await repo.findBySlug(ConferenceSlug.create('non-existent'));
     expect(result).toBeUndefined();
   });
 
@@ -127,10 +130,10 @@ describe('ConferenceRepository', () => {
 
     repo.add(conf1);
 
-    const drafts = await repo.findByStatus('DRAFT');
+    const drafts = await repo.findByStatus(ConferenceStatus.DRAFT);
     expect(drafts).toHaveLength(0);
 
-    const open = await repo.findByStatus('CFP_OPEN');
+    const open = await repo.findByStatus(ConferenceStatus.CFP_OPEN);
     expect(open).toHaveLength(1);
   });
 

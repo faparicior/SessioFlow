@@ -1,9 +1,10 @@
-import {beforeEach, describe, it, expect, vi} from 'vitest';
+import {beforeEach, describe, it, expect} from 'vitest';
 import {GetConferenceQuery} from '@/modules/conference/application/queries/get-conference/get-conference.query';
 import {GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 import {Conference} from '@/modules/conference/domain/entities/conference';
 import {type ConferenceStatus} from '@/modules/conference/domain/value-objects/conference-status';
 import {ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
+import {type ConferenceSlug} from '@/modules/conference/domain/value-objects/conference-slug';
 
 // Mock repository
 class MockConferenceRepository {
@@ -13,7 +14,7 @@ class MockConferenceRepository {
     return this.conferences.find(c => c.id.value === id.value);
   }
 
-  async findBySlug(slug: any) {
+  async findBySlug(slug: ConferenceSlug) {
     return this.conferences.find(c => c.slug.value === slug.value);
   }
 
