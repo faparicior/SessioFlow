@@ -4,7 +4,7 @@ import {
   CreateConferenceInput,
 } from './create-conference.command';
 import {Conference} from '@/modules/conference/domain/entities/conference';
-import {type ConferenceStatus} from '@/modules/conference/domain/value-objects/conference-status';
+import {ConferenceStatus} from '@/modules/conference/domain/value-objects/conference-status';
 import {ConferenceCreatedEvent} from '@/modules/conference/domain/events/conference-created';
 import {CfpOpenedEvent} from '@/modules/conference/domain/events/cfp-opened';
 import {CfpDatesInvalidError} from '@/modules/conference/domain/exceptions/cfp-dates-invalid-error';
@@ -71,7 +71,7 @@ export class CreateConferenceHandler {
         input.organizerId,
       );
       const activeCount = organizerConferences.filter(
-        c => c.status === 'CFP_OPEN' || c.status === 'DRAFT',
+        c => c.status === ConferenceStatus.CFP_OPEN || c.status === ConferenceStatus.DRAFT,
       ).length;
 
       if (activeCount >= 5) {

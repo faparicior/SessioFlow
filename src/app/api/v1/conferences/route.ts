@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     // 3. Initialize repository and handler
     const repository = new SupabaseConferenceRepository();
-    const handler = new CreateConferenceHandler(repository, async () => void 0);
+    const handler = new CreateConferenceHandler(repository, async () => undefined);
 
     // 4. Execute command
     const command = new CreateConferenceCommand({

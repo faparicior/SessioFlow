@@ -3,10 +3,9 @@ import {createNextRequest} from './fixtures';
 import {handleConferenceCreate} from '@/modules/conference/interfaces/api/v1/conferences/create';
 import {handleGetConference} from '@/modules/conference/interfaces/api/v1/conferences/get';
 import type {ConferenceResponseDto} from '@/modules/conference/application/dto/conference-response.dto';
+import type {CreateConferenceHandler, CreateConferenceResult, EmailProvider} from '@/modules/conference/application/commands/create-conference/create-conference.handler';
 import type {CreateConferenceCommand} from '@/modules/conference/application/commands/create-conference/create-conference.command';
-import type {CreateConferenceResult, CreateConferenceHandler} from '@/modules/conference/application/commands/create-conference/create-conference.handler';
 import type {Conference} from '@/modules/conference/domain/entities/conference';
-import type {EmailProvider} from '@/modules/conference/application/commands/create-conference/create-conference.handler';
 import type {GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 
 // Mock CQRS handlers
@@ -18,7 +17,7 @@ type MockCreateConferenceHandler = {
     findByOrganizerId(organizerId: string): Promise<Conference[]>;
   };
   emailProvider: EmailProvider;
-  execute(command: CreateConferenceCommand): Promise<CreateConferenceResult>;
+  execute: ReturnType<typeof vi.fn>;
 };
 
 const mockCreateConferenceHandler: MockCreateConferenceHandler = {
@@ -41,7 +40,7 @@ type MockGetConferenceHandler = {
     save(conference: Conference): Promise<void>;
     delete(id: {value: string}): Promise<void>;
   };
-  execute(id: string): Promise<any>;
+  execute: ReturnType<typeof vi.fn>;
 };
 
 const mockGetConferenceHandler: MockGetConferenceHandler = {
@@ -69,7 +68,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
       cfpStartDate: '2026-08-01',
       cfpEndDate: '2026-09-30',
       cfpStatus: 'ACTIVE',
-      maxSubmissions: null,
+      maxSubmissions: undefined,
       requiresApproval: true,
       cfpUrl: 'https://sessioflow.app/cfp/tech-conference',
       events: [],
@@ -180,7 +179,7 @@ describe('Conference API - GET /api/v1/conferences/:id', () => {
       cfpStartDate: '2026-08-01',
       cfpEndDate: '2026-09-30',
       cfpStatus: 'ACTIVE',
-      maxSubmissions: null,
+      maxSubmissions: undefined,
       requiresApproval: true,
       cfpUrl: 'https://sessioflow.app/cfp/tech-conference',
       events: [],
