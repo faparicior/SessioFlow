@@ -1,14 +1,15 @@
 import {describe, it, expect} from 'vitest';
 
-function isErrorWithMessage(error: unknown): error is ConferenceStatusValidationError {
-  return error instanceof ConferenceStatusValidationError;
-}
 import {
   ConferenceStatus,
   ConferenceStatusFromString,
   ConferenceStatusValidationError,
   isConferenceStatus,
 } from '@/modules/conference/domain/value-objects/conference-status';
+
+function isErrorWithMessage(error: unknown): error is ConferenceStatusValidationError {
+  return error instanceof ConferenceStatusValidationError;
+}
 
 describe('ConferenceStatus', () => {
   describe('isConferenceStatus', () => {
