@@ -2,10 +2,26 @@ import {describe, it, expect, vi} from 'vitest';
 import {createNextRequest} from './fixtures';
 import {handleConferenceCreate} from '@/modules/conference/interfaces/api/v1/conferences/create';
 import {handleGetConference} from '@/modules/conference/interfaces/api/v1/conferences/get';
-import {ConferenceResponseDto} from '@/modules/conference/application/dto/conference-response.dto';
+import type {ConferenceResponseDto} from '@/modules/conference/application/dto/conference-response.dto';
+import type {CreateConferenceCommand} from '@/modules/conference/application/commands/create-conference/create-conference.command';
+import type {CreateConferenceResult, CreateConferenceHandler} from '@/modules/conference/application/commands/create-conference/create-conference.handler';
+import type {Conference} from '@/modules/conference/domain/entities/conference';
+import type {EmailProvider} from '@/modules/conference/application/commands/create-conference/create-conference.handler';
+import type {GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 
 // Mock CQRS handlers
-const mockCreateConferenceHandler = {
+type MockCreateConferenceHandler = {
+  repository: {
+    findBySlug(slug: {value: string}): Promise<Conference | undefined>;
+    save(conference: Conference): Promise<void>;
+    findByStatus(status: any): Promise<Conference[]>;
+    findByOrganizerId(organizerId: string): Promise<Conference[]>;
+  };
+  emailProvider: EmailProvider;
+  execute(command: CreateConferenceCommand): Promise<CreateConferenceResult>;
+};
+
+const mockCreateConferenceHandler: MockCreateConferenceHandler = {
   repository: {
     findBySlug: vi.fn().mockResolvedValue(undefined),
     save: vi.fn().mockResolvedValue(undefined),
@@ -15,7 +31,20 @@ const mockCreateConferenceHandler = {
   emailProvider: vi.fn(),
   execute: vi.fn(),
 };
-const mockGetConferenceHandler = {
+
+type MockGetConferenceHandler = {
+  repository: {
+    findById(id: {value: string}): Promise<Conference | undefined>;
+    findBySlug(slug: {value: string}): Promise<Conference | undefined>;
+    findByStatus(status: any): Promise<Conference[]>;
+    findByOrganizerId(organizerId: string): Promise<Conference[]>;
+    save(conference: Conference): Promise<void>;
+    delete(id: {value: string}): Promise<void>;
+  };
+  execute(id: string): Promise<any>;
+};
+
+const mockGetConferenceHandler: MockGetConferenceHandler = {
   repository: {
     findById: vi.fn().mockResolvedValue(undefined),
     findBySlug: vi.fn().mockResolvedValue(undefined),
@@ -32,23 +61,25 @@ const mockGetAuthUser = vi.fn().mockResolvedValue({id: 'test-user-id'});
 
 describe('Conference API - POST /api/v1/conferences', () => {
   it('creates a conference and returns 201', async () => {
+    const mockData: ConferenceResponseDto = {
+      id: 'test-id',
+      name: 'Tech Conference',
+      slug: 'tech-conference',
+      status: 'CFP_OPEN',
+      cfpStartDate: '2026-08-01',
+      cfpEndDate: '2026-09-30',
+      cfpStatus: 'ACTIVE',
+      maxSubmissions: null,
+      requiresApproval: true,
+      cfpUrl: 'https://sessioflow.app/cfp/tech-conference',
+      events: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
     mockCreateConferenceHandler.execute.mockResolvedValue({
       success: true,
-      data: {
-        id: 'test-id',
-        name: 'Tech Conference',
-        slug: 'tech-conference',
-        status: 'CFP_OPEN',
-        cfpStartDate: '2026-08-01',
-        cfpEndDate: '2026-09-30',
-        cfpStatus: 'ACTIVE',
-        maxSubmissions: null,
-        requiresApproval: true,
-        cfpUrl: 'https://sessioflow.app/cfp/tech-conference',
-        events: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
+      data: mockData,
     });
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
@@ -60,7 +91,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
     const response = await handleConferenceCreate(
       request,
-      mockCreateConferenceHandler,
+      mockCreateConferenceHandler as unknown as CreateConferenceHandler,
       mockGetAuthUser,
     );
 
@@ -80,7 +111,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
     const response = await handleConferenceCreate(
       request,
-      mockCreateConferenceHandler,
+      mockCreateConferenceHandler as unknown as CreateConferenceHandler,
       mockGetAuthUser,
     );
 
@@ -112,7 +143,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
     const response = await handleConferenceCreate(
       request,
-      mockCreateConferenceHandler,
+      mockCreateConferenceHandler as unknown as CreateConferenceHandler,
       mockGetAuthUser,
     );
 
@@ -131,7 +162,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
     const response = await handleConferenceCreate(
       request,
-      mockCreateConferenceHandler,
+      mockCreateConferenceHandler as unknown as CreateConferenceHandler,
       unauthenticatedGetAuthUser,
     );
 
@@ -141,23 +172,25 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
 describe('Conference API - GET /api/v1/conferences/:id', () => {
   it('returns conference data', async () => {
+    const mockData: ConferenceResponseDto = {
+      id: 'test-id',
+      name: 'Tech Conference',
+      slug: 'tech-conference',
+      status: 'CFP_OPEN',
+      cfpStartDate: '2026-08-01',
+      cfpEndDate: '2026-09-30',
+      cfpStatus: 'ACTIVE',
+      maxSubmissions: null,
+      requiresApproval: true,
+      cfpUrl: 'https://sessioflow.app/cfp/tech-conference',
+      events: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
     mockGetConferenceHandler.execute.mockResolvedValue({
       success: true,
-      data: {
-        id: 'test-id',
-        name: 'Tech Conference',
-        slug: 'tech-conference',
-        status: 'CFP_OPEN',
-        cfpStartDate: '2026-08-01',
-        cfpEndDate: '2026-09-30',
-        cfpStatus: 'ACTIVE',
-        maxSubmissions: null,
-        requiresApproval: true,
-        cfpUrl: 'https://sessioflow.app/cfp/tech-conference',
-        events: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
+      data: mockData,
     });
 
     const validUuid = '12345678-1234-4123-8123-123456789012';
@@ -169,7 +202,7 @@ describe('Conference API - GET /api/v1/conferences/:id', () => {
     const response = await handleGetConference(
       request,
       validUuid,
-      mockGetConferenceHandler,
+      mockGetConferenceHandler as unknown as GetConferenceHandler,
       mockGetAuthUser,
     );
 
@@ -192,7 +225,7 @@ describe('Conference API - GET /api/v1/conferences/:id', () => {
     const response = await handleGetConference(
       request,
       '12345678-1234-4123-8123-123456789012',
-      mockGetConferenceHandler,
+      mockGetConferenceHandler as unknown as GetConferenceHandler,
       mockGetAuthUser,
     );
 
