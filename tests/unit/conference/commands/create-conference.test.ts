@@ -8,11 +8,11 @@ import {ConferenceStatus} from '@/modules/conference/domain/value-objects/confer
 class MockConferenceRepository {
   private conferences: Conference[] = [];
 
-  async findById(id: any) {
+  async findById(id: { value: string }) {
     return this.conferences.find(c => c.id.value === id.value);
   }
 
-  async findBySlug(slug: any) {
+  async findBySlug(slug: { value: string }) {
     return this.conferences.find(c => c.slug.value === slug.value);
   }
 
@@ -35,7 +35,7 @@ class MockConferenceRepository {
     }
   }
 
-  async delete(id: any) {
+  async delete(id: { value: string }) {
     this.conferences = this.conferences.filter(c => c.id.value !== id.value);
   }
 
@@ -50,7 +50,7 @@ describe('CreateConference Command', () => {
 
   beforeEach(() => {
     repo = new MockConferenceRepository();
-    handler = new CreateConferenceHandler(repo, async () => void 0);
+    handler = new CreateConferenceHandler(repo, async () => undefined);
   });
 
   it('creates a conference in happy path', async () => {

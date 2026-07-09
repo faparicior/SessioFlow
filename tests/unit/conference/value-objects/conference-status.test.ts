@@ -76,7 +76,7 @@ describe('ConferenceStatus', () => {
         expect.unreachable('Should have thrown');
       } catch (error) {
         if (!isErrorWithMessage(error)) {
-          throw new Error('Expected ConferenceStatusValidationError');
+          throw new Error('Expected ConferenceStatusValidationError', { cause: error });
         }
         expect(error.message).toContain(
           'BOGUS',
@@ -90,7 +90,7 @@ describe('ConferenceStatus', () => {
         expect.unreachable('Should have thrown');
       } catch (error) {
         if (!isErrorWithMessage(error)) {
-          throw new Error('Expected ConferenceStatusValidationError');
+          throw new Error('Expected ConferenceStatusValidationError', { cause: error });
         }
         const { message } = error;
         expect(message).toContain('DRAFT');
