@@ -166,12 +166,13 @@ export class CreateConferenceHandler {
           conferenceId: conference.id.value,
         });
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
         logger.warn(
           'Failed to send welcome email (best-effort)',
           {
             ...context,
             conferenceId: conference.id.value,
-            error: (error as Error)?.message,
+            error: errorMessage,
           },
         );
       }
@@ -196,13 +197,15 @@ export class CreateConferenceHandler {
         },
       };
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorName = error instanceof Error ? error.name : 'Error';
       const errorContext = {
         ...context,
-        errorType: (error as Error).name,
-        errorMessage: (error as Error).message,
+        errorType: errorName,
+        errorMessage,
       };
 
-      logger.error('Conference creation failed', error as Error, errorContext);
+      logger.error('Conference creation failed', error, errorContext);
 
       if (error instanceof ConferenceFreeTierLimitError) {
         return {

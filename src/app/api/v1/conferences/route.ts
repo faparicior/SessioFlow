@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
   try {
     // 1. Parse and validate request body
-    const body = await request.json();
+    const body = await request.json() as unknown;
     logger.debug('[API] Request body:', body);
     const parsed = ConferenceCreateSchema.safeParse(body);
 
@@ -105,7 +105,8 @@ export async function POST(request: NextRequest) {
     // 5. Return success response
     return NextResponse.json({data: result.data}, {status: 201});
   } catch (error) {
-    logger.error('[API] Conference creation error:', error as Error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('[API] Conference creation error:', error);
     return NextResponse.json(
       {
         error: {
