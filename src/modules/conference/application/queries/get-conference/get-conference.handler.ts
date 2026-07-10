@@ -1,6 +1,5 @@
 import {type ConferenceResponseDto} from '../../dto/conference-response.dto';
-import {type GetConferenceQuery} from './get-conference.query';
-import {Conference} from '@/modules/conference/domain/entities/conference';
+import {ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
 import {type ConferenceRepository} from '@/modules/conference/domain/repositories/conference-repository';
 
 export type GetConferenceResult = {
@@ -13,17 +12,19 @@ export type GetConferenceResult = {
  * GetConference Handler - Application Layer (CQRS).
  *
  * Responsibilities:
- *   1. Retrieve conference from repository by ID
- *   2. Return response DTO (or null if not found)
+ *   1. Validate conference ID format
+ *   2. Retrieve conference from repository by ID
+ *   3. Return response DTO (or null if not found)
  *
  * DDD Pattern: Query handler is read-only, no side effects.
  */
 export class GetConferenceHandler {
   constructor(public readonly repository: ConferenceRepository) {}
 
-  async execute(query: GetConferenceQuery): Promise<GetConferenceResult> {
+  async execute(conferenceId: string): Promise<GetConferenceResult> {
     try {
-      const conference = await this.repository.findById(query.conferenceId);
+      const id = ConferenceId.fromString(conferenceId);
+      const conference = await this.repository.findById(id);
 
       if (!conference) {
         return {
@@ -51,12 +52,19 @@ export class GetConferenceHandler {
           updatedAt: conference.updatedAt.toISOString(),
         },
       };
-    } catch {
+    } catch (error) {
+      // Distinguish validation errors from other failures
+
+      if (error instanceof Error && error.message.includes('Invalid ConferenceId')) {
+        return {
+          success: false,
+          errors: [{code: 'INVALID_ID', message: 'Invalid conference ID format'}],
+        };
+      }
+
       return {
         success: false,
-        errors: [
-          {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'},
-        ],
+        errors: [{code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}],
       };
     }
   }

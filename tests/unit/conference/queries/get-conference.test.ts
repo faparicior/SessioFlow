@@ -1,10 +1,9 @@
 import {beforeEach, describe, it, expect} from 'vitest';
-import {GetConferenceQuery} from '@/modules/conference/application/queries/get-conference/get-conference.query';
-import {GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 import {Conference} from '@/modules/conference/domain/entities/conference';
-import {type ConferenceStatus} from '@/modules/conference/domain/value-objects/conference-status';
-import {ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
 import {type ConferenceSlug} from '@/modules/conference/domain/value-objects/conference-slug';
+import {type ConferenceStatus} from '@/modules/conference/domain/value-objects/conference-status';
+import {type ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
+import {GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 
 // Mock repository
 class MockConferenceRepository {
@@ -65,8 +64,7 @@ describe('GetConference Query', () => {
     conference.publishCfp();
     repo.add(conference);
 
-    const query = new GetConferenceQuery(conference.id);
-    const result = await handler.execute(query);
+    const result = await handler.execute(conference.id.toString());
 
     expect(result.success).toBe(true);
     expect(result.data).toBeDefined();
@@ -79,10 +77,9 @@ describe('GetConference Query', () => {
   });
 
   it('returns null when conference not found', async () => {
-    const query = new GetConferenceQuery(
-      ConferenceId.fromString('12345678-1234-4123-8123-123456789012'),
+    const result = await handler.execute(
+      '12345678-1234-4123-8123-123456789012',
     );
-    const result = await handler.execute(query);
 
     expect(result.success).toBe(true);
     expect(result.data).toBeUndefined();
@@ -99,8 +96,7 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const query = new GetConferenceQuery(conference.id);
-    const result = await handler.execute(query);
+    const result = await handler.execute(conference.id.toString());
 
     expect(result.success).toBe(true);
     expect(result.data!.maxSubmissions).toBe(100);
@@ -122,8 +118,7 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const query = new GetConferenceQuery(conference.id);
-    const result = await handler.execute(query);
+    const result = await handler.execute(conference.id.toString());
 
     expect(result.success).toBe(true);
     expect(result.data!.status).toBe('DRAFT');
@@ -138,8 +133,7 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const query = new GetConferenceQuery(conference.id);
-    const result = await handler.execute(query);
+    const result = await handler.execute(conference.id.toString());
 
     expect(result.success).toBe(true);
     expect(result.data!.createdAt).toBe(conference.createdAt.toISOString());

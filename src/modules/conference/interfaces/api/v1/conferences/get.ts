@@ -1,7 +1,5 @@
-import {type NextRequest, NextResponse} from 'next/server';
-import {GetConferenceQuery} from '@/modules/conference/application/queries/get-conference/get-conference.query';
-import {type GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
-import {ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
+import {NextResponse, type NextRequest} from 'next/server';
+import type {GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 
 /**
  * GET /api/v1/conferences/:id
@@ -25,33 +23,22 @@ export async function handleGetConference(
       );
     }
 
-    // 2. Validate conference ID format
-    try {
-      ConferenceId.fromString(conferenceId);
-    } catch {
-      return NextResponse.json(
-        {error: {code: 'INVALID_ID', message: 'Invalid conference ID format'}},
-        {status: 400},
-      );
-    }
-
-    // 3. Execute CQRS query
-    const query = new GetConferenceQuery(ConferenceId.fromString(conferenceId));
-    const result = await getConferenceHandler.execute(query);
+    // 2. Execute CQRS query — handler validates the ID
+    const result = await getConferenceHandler.execute(conferenceId);
 
     if (!result.success) {
       return NextResponse.json(
         {
           error: {
-            code: 'INTERNAL_ERROR',
-            message: 'An unexpected error occurred',
+            code: result.errors![0].code,
+            message: result.errors![0].message,
           },
         },
-        {status: 500},
+        {status: 400},
       );
     }
 
-    // 4. Return response
+    // 3. Return response
     if (!result.data) {
       return NextResponse.json(
         {error: {code: 'NOT_FOUND', message: 'Conference not found'}},
@@ -64,10 +51,7 @@ export async function handleGetConference(
     console.error('Conference retrieval error:', error);
     return NextResponse.json(
       {
-        error: {
-          code: 'INTERNAL_ERROR',
-          message: 'An unexpected error occurred',
-        },
+        error: {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'},
       },
       {status: 500},
     );
