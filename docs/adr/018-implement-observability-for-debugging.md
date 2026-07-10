@@ -1,6 +1,6 @@
 # Implement Observability for AI-Assisted Debugging
 
-* **Status:** Accepted
+* **Status:** Approved
 * **Date:** 2026-07-04
 * **Decision Makers:** Technical Team
 * **Supersedes:** N/A

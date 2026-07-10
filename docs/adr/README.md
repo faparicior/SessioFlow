@@ -30,9 +30,10 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [013](013-adopt-typescript-with-strict-mode.md) | Adopt TypeScript with Strict Mode | ✅ Approved | 2026-06-05 |
 | [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | ✅ Approved | 2026-06-05 |
 | [015](015-adopt-cqrs-pattern.md) | Adopt CQRS Pattern for Application Layer | ✅ **Approved** | 2026-06-29 |
-| [016](016-dependency-injection-strategy-for-nextjs.md) | Dependency Injection Strategy for Next.js | ⚠️ Proposed | 2026-07-01 |
-| [017](017-use-drizzle-orm-with-ddd-transactions.md) | Use Drizzle ORM with Transaction Support at Application Layer | ⚠️ Proposed | 2026-07-01 |
-| [018](018-implement-observability-for-debugging.md) | Implement Observability for AI-Assisted Debugging | ✅ Accepted | 2026-07-04 |
+| [016](016-dependency-injection-strategy-for-nextjs.md) | Dependency Injection Strategy for Next.js | ✅ Approved | 2026-07-01 |
+| [017](017-use-drizzle-orm-with-ddd-transactions.md) | Use Drizzle ORM with Transaction Support at Application Layer | ✅ Approved | 2026-07-01 |
+| [018](018-implement-observability-for-debugging.md) | Implement Observability for AI-Assisted Debugging | ✅ Approved | 2026-07-04 |
+| [019](019-use-ts-archunit-for-architecture-testing.md) | Use ts-archunit for Architecture Testing | ✅ Approved | 2026-07-10 |
 
 ---
 
@@ -82,7 +83,10 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 - **017** - **ORM Selection: Drizzle with DDD Transactions**
 
 ### 🔍 Observability & Debugging
-- **018** - **Observability for AI-Assisted Debugging (Proposed)**
+- **018** - **Observability for AI-Assisted Debugging**
+
+### 🛡️ Development Practices & Quality
+- **019** - **Architecture Testing: ts-archunit**
 
 ---
 
@@ -270,15 +274,17 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 25 (including amendments and analyses) |
-| **Proposed** | 13 |
-| **Accepted** | 7 |
-| **Amendments** | 4 |
+| **Total ADRs** | 26 (including amendments and analyses) |
+| **Approved** | 19 |
+| **Superseded** | 4 |
+| **Accepted** | 2 |
+| **Completed** | 1 |
+| **Proposed** | 0 |
 | **Optional** | 1 |
-| **Date Range** | 2026-06-05 to 2026-07-04 |
+| **Date Range** | 2026-06-05 to 2026-07-10 |
 | **Most Active Category** | Core Technology Stack (6 decisions) |
 
 ---
 
-**Last Updated**: 2026-07-04
+**Last Updated**: 2026-07-10
 **Maintained By**: Technical Team

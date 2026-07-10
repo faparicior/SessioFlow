@@ -1,6 +1,6 @@
 # Dependency Injection Strategy for Next.js
 
-* **Status:** Proposed
+* **Status:** Approved
 * **Date:** 2026-07-01
 * **Decision Makers:** Technical Team
 * **Supersedes:** N/A

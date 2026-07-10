@@ -1,6 +1,6 @@
 # Use Drizzle ORM with Transaction Support at Application Layer
 
-* **Status:** Proposed
+* **Status:** Approved
 * **Date:** 2026-07-01
 * **Decision Makers:** Technical Team
 * **Supersedes:** N/A
