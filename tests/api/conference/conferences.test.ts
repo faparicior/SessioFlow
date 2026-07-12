@@ -1,11 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
-import { z } from 'zod';
-import { createNextRequest } from './fixtures';
-import { handleConferenceCreate } from '@/modules/conference/interfaces/api/v1/conferences/create';
-import { handleGetConference } from '@/modules/conference/interfaces/api/v1/conferences/get';
-import type { ConferenceResponseDto } from '@/modules/conference/application/dto/conference-response.dto';
-import { CreateConferenceHandler } from '@/modules/conference/application/commands/create-conference/create-conference.handler';
-import { GetConferenceHandler } from '@/modules/conference/application/queries/get-conference/get-conference.handler';
+import {describe, it, expect, vi} from 'vitest';
+import {z} from 'zod';
+import {createNextRequest} from './fixtures';
+import {handleConferenceCreate} from '@/modules/conference/interfaces/api/v1/conferences/create';
+import {handleGetConference} from '@/modules/conference/interfaces/api/v1/conferences/get';
+import type {ConferenceResponseDto} from '@/modules/conference/application/dto/conference-response.dto';
+import {CreateConferenceHandler} from '@/modules/conference/application/commands/create-conference/create-conference.handler';
+import {GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 
 // Zod schemas for testing responses type-safely without type assertions
 const successResponseSchema = z.object({
@@ -52,7 +52,7 @@ const mockGetConferenceRepository = {
 const mockGetConferenceHandler = new GetConferenceHandler(mockGetConferenceRepository);
 
 // Mock auth provider - returns authenticated user by default
-const mockGetAuthUser = vi.fn().mockResolvedValue({ id: 'test-user-id' });
+const mockGetAuthUser = vi.fn().mockResolvedValue({id: 'test-user-id'});
 
 describe('Conference API - POST /api/v1/conferences', () => {
   it('creates a conference and returns 201', async () => {
