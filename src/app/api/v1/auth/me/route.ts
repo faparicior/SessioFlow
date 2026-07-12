@@ -1,7 +1,4 @@
-import {type NextRequest, NextResponse} from 'next/server';
-import {ConferenceRepository} from '@/modules/conference/domain/repositories/conference-repository';
-import {ConferenceStatus} from '@/modules/conference/domain/value-objects/conference-status';
-import {conferencesTable} from '@/modules/conference/infrastructure/database/drizzle-schema';
+import { type NextRequest, NextResponse } from 'next/server';
 
 /**
  * GET /api/v1/auth/me
@@ -20,12 +17,12 @@ export async function GET(request: NextRequest) {
       name: 'Test User',
     };
 
-    return NextResponse.json({data: user});
+    return NextResponse.json({ data: user });
   } catch (error) {
     console.error('Auth error:', error);
     return NextResponse.json(
-      {error: {code: 'UNAUTHORIZED', message: 'Authentication required'}},
-      {status: 401},
+      { error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
+      { status: 401 },
     );
   }
 }

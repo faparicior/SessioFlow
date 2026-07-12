@@ -8,7 +8,7 @@
  * @see docs/adr/019-use-ts-archunit-for-architecture-testing.md
  */
 import {describe, it} from 'vitest';
-import {project, modules, classes, slices} from '@nielspeter/ts-archunit';
+import {project, modules, classes, slices, functions, call, matching} from '@nielspeter/ts-archunit';
 
 const p = project('tsconfig.json');
 
@@ -81,7 +81,7 @@ describe('DDD Architecture', () => {
   });
 
   describe('Interfaces layer dependencies', () => {
-    it('interfaces must only import from interfaces, application, domain, shared, components, and node_modules', () => {
+    it('interfaces must only import from interfaces, application, shared, components, and node_modules', () => {
       modules(p)
         .that()
         .resideInFolder('**/modules/*/interfaces/**')
@@ -89,11 +89,110 @@ describe('DDD Architecture', () => {
         .onlyImportFrom(
           '**/modules/*/interfaces/**',
           '**/modules/*/application/**',
-          '**/modules/**/domain/**',
           '**/shared/**',
           '**/components/**',
           '**/node_modules/**',
         )
+        .check();
+    });
+  });
+
+  describe('Interfaces layer restrictions', () => {
+    it('interfaces must not import repositories directly', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/modules/*/interfaces/**')
+        .should()
+        .notImportFrom('**/modules/**/domain/repositories/**')
+        .because('interfaces must only interact with application layer handlers, never domain repositories directly')
+        .check();
+    });
+  });
+
+  describe('API route restrictions', () => {
+    it('API routes must not import from domain directly', () => {
+      modules(p)
+        .that()
+        .resideInFolder('src/app/api/**')
+        .should()
+        .notImportFrom('**/modules/**/domain/**')
+        .because('API routes must only interact with application CQRS handlers, never domain objects or repositories directly')
+        .check();
+    });
+  });
+
+  describe('CQRS Architecture', () => {
+    it('command handlers and query handlers must end with Handler', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/application/commands/**')
+        .and()
+        .haveNameMatching(/Handler$/)
+        .should()
+        .beExported()
+        .check();
+
+      classes(p)
+        .that()
+        .resideInFolder('**/application/queries/**')
+        .and()
+        .haveNameMatching(/Handler$/)
+        .should()
+        .beExported()
+        .check();
+    });
+
+    it('handlers must implement an execute method', () => {
+      classes(p)
+        .that()
+        .haveNameMatching(/Handler$/)
+        .should()
+        .haveMethodNamed('execute')
+        .because('CQRS handlers must implement an execute method to be executed')
+        .check();
+    });
+
+    it('commands must be named Command', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/application/commands/**')
+        .and()
+        .haveNameMatching(/Command$/)
+        .should()
+        .beExported()
+        .check();
+    });
+
+    it('queries must be named Query', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/application/queries/**')
+        .and()
+        .haveNameMatching(/Query$/)
+        .should()
+        .beExported()
+        .check();
+    });
+
+    it('handler execution methods must return Result or DTO types', () => {
+      functions(p)
+        .that()
+        .resideInFolder('**/application/**')
+        .and()
+        .haveNameMatching(/^execute$/)
+        .should()
+        .haveReturnTypeMatching(matching(/Result|Dto/))
+        .because('CQRS handlers must return Result objects or DTOs to avoid leaking Domain Entities directly')
+        .check();
+    });
+
+    it('query handlers must be read-only (no save/delete repository calls)', () => {
+      functions(p)
+        .that()
+        .resideInFolder('**/application/queries/**')
+        .should()
+        .notContain(call(/\.save$|\.delete$/))
+        .because('query handlers must only perform read operations')
         .check();
     });
   });
