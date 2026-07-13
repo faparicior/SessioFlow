@@ -10,126 +10,131 @@ Map the brainstormed features to specific stages of the user journey, visualizin
 4. Identify which features are critical at each stage
 5. Note any gaps or missing features needed to complete the journey
 
-## Primary Persona Journey
+---
 
-**Persona:** [Name from Step 3]
-
+**Persona:** [Name from Step 3]  
 **Main Goal:** [What is the user trying to achieve?]
 
----
-
-## Journey Stages & Feature Mapping
-
-### Stage 1: [Journey Stage Name]
-**What the user is doing:** [Brief description of user actions/thoughts at this stage]
-
-**Features Supporting This Stage:**
-- ✓ **[Feature Name]** - [Brief explanation of how this feature helps]
-- ✓ **[Feature Name]** - [Brief explanation of how this feature helps]
-
-**Pain Points Addressed:**
-- [Pain point from empathy map/personas that these features address]
-
-**Gaps/Missing Features:**
-- [ ] [Any missing features needed at this stage?]
+> **Context note:** [Optional — any key architectural or product constraint that shapes how this journey works, e.g. event-driven vs API-driven, async vs real-time]
 
 ---
 
-### Stage 2: [Journey Stage Name]
-**What the user is doing:** [Brief description of user actions/thoughts at this stage]
-
-**Features Supporting This Stage:**
-- ✓ **[Feature Name]** - [Brief explanation of how this feature helps]
-- ✓ **[Feature Name]** - [Brief explanation of how this feature helps]
-
-**Pain Points Addressed:**
-- [Pain point from empathy map/personas that these features address]
-
-**Gaps/Missing Features:**
-- [ ] [Any missing features needed at this stage?]
-
----
-
-### Stage 3: [Journey Stage Name]
-**What the user is doing:** [Brief description of user actions/thoughts at this stage]
-
-**Features Supporting This Stage:**
-- ✓ **[Feature Name]** - [Brief explanation of how this feature helps]
-- ✓ **[Feature Name]** - [Brief explanation of how this feature helps]
-
-**Pain Points Addressed:**
-- [Pain point from empathy map/personas that these features address]
-
-**Gaps/Missing Features:**
-- [ ] [Any missing features needed at this stage?]
-
----
-
-### Stage 4: [Journey Stage Name]
-**What the user is doing:** [Brief description of user actions/thoughts at this stage]
-
-**Features Supporting This Stage:**
-- ✓ **[Feature Name]** - [Brief explanation of how this feature helps]
-- ✓ **[Feature Name]** - [Brief explanation of how this feature helps]
-
-**Pain Points Addressed:**
-- [Pain point from empathy map/personas that these features address]
-
-**Gaps/Missing Features:**
-- [ ] [Any missing features needed at this stage?]
-
----
-
-## Journey Overview Visualization
+## Overview Visualization
 
 ```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  Stage 1    │ -> │  Stage 2    │ -> │  Stage 3    │ -> │  Stage 4    │
-│  [Name]     │    │  [Name]     │    │  [Name]     │    │  [Name]     │
-├─────────────┤    ├─────────────┤    ├─────────────┤    ├─────────────┤
-│ • Feature A │    │ • Feature C │    │ • Feature E │    │ • Feature G │
-│ • Feature B │    │ • Feature D │    │ • Feature F │    │ • Feature H │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+[External System / Actor A]    [Your System]                      [Persona / Actor B]
+        │                               │                                  │
+        │─[Event / Action] ───────────→ │ Stage 1: [Stage Name]            │
+        │                               │  · [Use case or process]         │
+        │                               │  · [Domain event emitted]        │
+        │                               │                                  │
+        │─[Event / Action] ───────────→ │ Stage 2: [Stage Name]            │
+        │                               │  · [Use case or process]         │
+        │                               │                                  │
+        │                          [cron/scheduler]                        │
+        │                               │ Stage 3: [Stage Name]            │
+        │                               │  · [Scheduled process]           │
+        │                               │                                  │
+[Actor C]                               │                                  │
+        │─[Event / Action] ───────────→ │ Stage 4: [Stage Name]            │
+        │                               │  · [Use case or process] ───────→│ [outcome]
+        │                               │                                  │
+        │─[Cancellation / End event] →  │ Stage 5: [Stage Name]            │
+        │                               │  · [Cleanup process]             │
 ```
-
-## Critical Path Analysis
-
-**The Minimum Happy Path** (features absolutely required for basic user success):
-1. [Feature] - at Stage [X]
-2. [Feature] - at Stage [X]
-3. [Feature] - at Stage [X]
-4. [Feature] - at Stage [X]
-
-**Enhanced Path** (features that significantly improve the experience):
-- [Feature] - at Stage [X]
-- [Feature] - at Stage [X]
-
-## Feature Coverage Matrix
-
-| Feature Name | Journey Stages Covered | Criticality | Notes |
-|--------------|------------------------|-------------|-------|
-| [Feature A] | Stage 1, 2 | Critical | Required for onboarding |
-| [Feature B] | Stage 1 | Important | Improves first impression |
-| [Feature C] | Stage 2, 3 | Critical | Core value delivery |
-| [Feature D] | Stage 4 | Nice-to-have | Retention feature |
-
-## Insights & Observations
-
-**Journey Completeness:**
-- [ ] Every journey stage has at least one supporting feature
-- [ ] The critical path is fully covered with features
-- [ ] No major gaps in the user experience
-
-**Feature Alignment:**
-- [ ] All brainstormed features map to at least one journey stage
-- [ ] Features that don't map to the journey have been noted for review
-- [ ] Feature dependencies are identified
-
-**Key Insights:**
-- [Observation about feature distribution across the journey]
-- [Observation about any journey stages that are feature-heavy or light]
-- [Observation about any critical gaps discovered]
 
 ---
 
-**Next Step:** With the journey map complete, we'll now sequence these features into waves to define the MVP in the next step.
+## Lifecycle Overview
+
+| Stage | Trigger | Persona's Action | System Response |
+| :--- | :--- | :--- | :--- |
+| **1. [Stage Name]** | [What triggers this stage] | [What the persona does] | [What the system does] |
+| **2. [Stage Name]** | [What triggers this stage] | [What the persona does] | [What the system does] |
+| **3. [Stage Name]** | [What triggers this stage] | _(automatic)_ | [What the system does] |
+| **4. [Stage Name]** | [What triggers this stage] | _(passive)_ | [What the system does] |
+| **5. [Stage Name]** | [What triggers this stage] | [What the persona does] | [What the system does] |
+
+---
+
+## Stage 1: [Stage Name]
+
+**Trigger:** [What initiates this stage — user action, event, external signal]
+
+| Step | Event / Action | Use Case | Output |
+| :--- | :--- | :--- | :--- |
+| 1 | [Incoming event or action] | [Use case called] | [What is produced] |
+| 2 | — | [Next use case] | [What is produced] |
+| 3 | — | — | [Domain event or side effect] |
+
+**Pain points addressed:** [Which persona pain points / needs this resolves]
+
+**Gap:** [Missing feature or known limitation at this stage]
+
+---
+
+## Stage 2: [Stage Name]
+
+**Trigger:** [What initiates this stage]
+
+| Step | Event / Action | Use Case | Output |
+| :--- | :--- | :--- | :--- |
+| 1 | [Incoming event or action] | [Use case called] | [What is produced] |
+| 2 | [Incoming event or action] | [Use case called] | [What is produced] |
+
+**Pain points addressed:** [Which persona pain points / needs this resolves]
+
+**Gap:** [Missing feature or known limitation at this stage]
+
+---
+
+## Stage 3: [Stage Name]
+
+**Trigger:** [What initiates this stage — e.g. cron, manual action, external event]
+
+| Step | What Happens |
+| :--- | :--- |
+| 1 | [First thing the system does] |
+| 2 | [Second thing the system does] |
+| 3 | [Outcome / side effect] |
+
+**Pain points addressed:** [Which persona pain points / needs this resolves]
+
+**Gap:** [Missing feature or known limitation at this stage]
+
+---
+
+## Stage 4: [Stage Name]
+
+**Trigger:** [What initiates this stage]
+
+| Step | Actor | Action / Event | Result |
+| :--- | :--- | :--- | :--- |
+| 1 | [Actor] | [Action or event] | [Result] |
+| 2 | System | [Process] | [Result] |
+| 3 | [Persona] | [Receives / sees] | [Outcome] |
+
+**Pain points addressed:** [Which persona pain points / needs this resolves]
+
+**Gap:** [Missing feature or known limitation at this stage]
+
+---
+
+## Critical Path
+
+**Minimum Happy Path:**
+
+| # | Step | Stage |
+| :--- | :--- | :--- |
+| 1 | [First required step] | Stage 1 |
+| 2 | [Second required step] | Stage 2 |
+| 3 | [Third required step] | Stage 3 |
+| 4 | [Final step — value delivered] | Stage 4 |
+
+**Related journeys:**
+- [Link to related journey file]
+- [Link to related journey file]
+
+---
+
+**Next Step:** In Step 7, we will sequence these features into the MVP Canvas to define the specific releases.

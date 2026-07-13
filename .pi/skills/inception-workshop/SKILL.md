@@ -469,10 +469,12 @@ All flows include:
 
 ---
 
-**Version:** 3.0.0  
-**Last Updated:** 2026-06-14  
-**Changes from v2.0:**
-- Refined product name guidance: consistency and clarity over forced repetition
-- Removed arbitrary "10+ mentions per document" requirement
-- Added guidance for natural language usage after establishing context
-- Maintained critical quality rules for boundaries and tradeoff golden rule
+**Version:** 3.4.0  
+**Last Updated:** 2026-07-13  
+**Changes from v3.3:**
+- Step 5: no tech features rule — features must describe user-facing outcomes, not implementation mechanics (Kafka events, crons, webhooks are excluded). Borderline tech features must be reframed as user outcomes before inclusion
+**Changes from v3.2:**
+- Step 5 template quadrant charts now use `classDef` + `:::className` for per-dot colors and HTML `<span>` swatches in legend tables so colors match the chart exactly
+- Color scheme: Core=`#2ecc71`, Supporting=`#3498db`, Differentiating=`#e67e22`, Nice-to-Have=`#95a5a6`
+- Quadrant placement rule: fixed 6-point grid (0.08 / 0.20 / 0.35 / 0.62 / 0.75 / 0.88) on both axes; overlaps are intentional; offset by ±0.04 only when two features share the exact same slot
+- Legend format: shields.io color-only badge (no text) — `![](https://img.shields.io/badge/_%20_-hexcolor)` — renders a plain color swatch on GitHub and VS Code preview. Use the same hex as the `classDef`
