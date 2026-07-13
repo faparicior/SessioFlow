@@ -15,14 +15,15 @@ Brainstorm and identify potential features based on the personas and user journe
 
 Each category uses a single table. The section heading carries the category color as a shields.io badge: `## ![](https://img.shields.io/badge/_%20_-hexcolor) Category Name`. Colors: Core=`#2ecc71` · Supporting=`#3498db` · Differentiating=`#e67e22` · Nice-to-Have=`#95a5a6`
 
-| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Priority |
-| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: |
+| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Confidence | Priority |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
 
 - **Feature** — short name
 - **Description** — starts with a VERB; what action does the user/system take?
 - **Why it matters** — how does this address a real need or pain point?
 - **Related to** — MUST link the persona name to its file and name the pain/need explicitly, e.g. `[Marta](3-personas/marta-particular-seller.md)'s Pain 2, Need 1`. Link the persona name only — not the individual pain/need ID
 - **Biz Value / Tech Effort / UX Impact** — **High** / Medium / _Low_ (bold High, italic Low)
+- **Confidence** — 🟢 well-understood / 🟡 some uncertainty (unknown scope or dependency) / 🔴 high risk (needs design spike before sequencing)
 - **Priority** — **Must-have** / Should-have / _Nice-to-have_ (bold Must-have, plain Should-have, italic Nice-to-have)
 
 ---
@@ -30,36 +31,36 @@ Each category uses a single table. The section heading carries the category colo
 ## ![](https://img.shields.io/badge/_%20_-2ecc71) Core Features
 *Essential to the primary value proposition.*
 
-| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Priority |
-| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: |
-| **[Feature Name]** | [Verb-first description] | [Why it matters] | [Persona's Pain/Need X] | High/Medium/Low | High/Medium/Low | High/Medium/Low | Must-have |
+| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Confidence | Priority |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **[Feature Name]** | [Verb-first description] | [Why it matters] | [Persona's Pain/Need X] | High/Medium/Low | High/Medium/Low | High/Medium/Low | 🟢/🟡/🔴 | Must-have |
 
 ---
 
 ## ![](https://img.shields.io/badge/_%20_-3498db) Supporting Features
 *Enhance the system but not critical to the core value.*
 
-| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Priority |
-| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: |
-| **[Feature Name]** | [Verb-first description] | [Why it matters] | [Persona's Pain/Need X] | High/Medium/Low | High/Medium/Low | High/Medium/Low | Should-have |
+| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Confidence | Priority |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **[Feature Name]** | [Verb-first description] | [Why it matters] | [Persona's Pain/Need X] | High/Medium/Low | High/Medium/Low | High/Medium/Low | 🟢/🟡/🔴 | Should-have |
 
 ---
 
 ## ![](https://img.shields.io/badge/_%20_-e67e22) Differentiating Features
 *Set the product apart from competitors.*
 
-| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Priority |
-| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: |
-| **[Feature Name]** | [Verb-first description] | [Why it matters] | [Persona's Pain/Need X] | High/Medium/Low | High/Medium/Low | High/Medium/Low | Must-have |
+| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Confidence | Priority |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **[Feature Name]** | [Verb-first description] | [Why it matters] | [Persona's Pain/Need X] | High/Medium/Low | High/Medium/Low | High/Medium/Low | 🟢/🟡/🔴 | Must-have |
 
 ---
 
 ## ![](https://img.shields.io/badge/_%20_-95a5a6) Nice-to-Have Features
 *Could add value but lower priority.*
 
-| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Priority |
-| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: |
-| **[Feature Name]** | [Verb-first description] | [Why it matters] | [Persona's Pain/Need X] | Medium/Low | High/Medium/Low | High/Medium/Low | Nice-to-have |
+| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Confidence | Priority |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **[Feature Name]** | [Verb-first description] | [Why it matters] | [Persona's Pain/Need X] | Medium/Low | High/Medium/Low | High/Medium/Low | 🟢/🟡/🔴 | Nice-to-have |
 
 ---
 
