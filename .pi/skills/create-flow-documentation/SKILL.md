@@ -91,11 +91,32 @@ During flow creation, you MUST identify all business rules and invariants that g
 1. Use the templates provided at:
    - `templates/business-rules.md`
    - `templates/invariants.md`
-2. Extract each identified business rule to:
-   - `docs/product/bounded-contexts/{bounded-context-name}/business-rules/BR-[XXX]-[rule-name].md`
-3. Extract each identified invariant to:
-   - `docs/product/bounded-contexts/{bounded-context-name}/invariants/INV-[XXX]-[invariant-name].md`
-4. Ensure the generated user flow document links to these extracted files under its **Technical Notes & Validation Rules** section using relative markdown links (e.g., `../business-rules/BR-[XXX]-[rule-name].md`)
+2. **Classify each rule by bounded context** — a rule belongs to the context that owns and enforces it, not necessarily the context where it has visible effects. Rules enforced by crons or domain services in context A but triggered by context B belong to A.
+3. Extract each identified business rule to:
+   - `docs/product/bounded-contexts/{owning-bounded-context}/business-rules/BR-[XXX]-[rule-name].md`
+4. Extract each identified invariant to:
+   - `docs/product/bounded-contexts/{owning-bounded-context}/invariants/INV-[XXX]-[invariant-name].md`
+5. Ensure the generated user flow document links to these extracted files under its **Technical Notes & Validation Rules** section using relative markdown links. Use cross-context relative paths when the rule belongs to a different bounded context (e.g., `../../captacion/business-rules/BR-[XXX]-[rule-name].md`)
+
+---
+
+## 📑 Flow Index (README.md)
+
+After creating or updating a flow, you MUST update the flow index at:
+
+```
+docs/product/bounded-contexts/README.md
+```
+
+If the file does not exist, create it from `templates/bounded-contexts-readme.md`. If it exists, add or update the entry for the new flow.
+
+**Rules for updating the index:**
+- If `docs/product/bounded-contexts/README.md` does not exist, create it from `templates/bounded-contexts-readme.md`
+- Add the new flow to the Flow Catalog table
+- Add a Flow Details section for it
+- Update the Cross-Context Flow Diagram to include any new entities or relationships
+- Add any new BRs/INVs to the Business Rules & Invariants table
+- Update the Last Updated date and Total Flows count
 
 ---
 
@@ -140,6 +161,7 @@ The generated flow document should be a **single, comprehensive document** that 
 | `templates/flows.md` | Flow document template with 3 Mermaid diagrams |
 | `templates/business-rules.md` | Business rule documentation template |
 | `templates/invariants.md` | Invariant documentation template |
+| `templates/bounded-contexts-readme.md` | Flow index template — seed for `docs/product/bounded-contexts/README.md` |
 
 ### Guidelines
 | Guideline | Purpose |
