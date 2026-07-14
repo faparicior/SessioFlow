@@ -66,11 +66,13 @@ The Mermaid state machine diagram and the State Definitions/Transition Matrix MU
 
 ## 📁 Output Path
 
-Write the result in:
+Choose the output path based on the DDD classification of what you are documenting:
 
-```
-docs/product/bounded-contexts/{bounded-context-name}/entities/{entity-name}.md
-```
+| Type | Path | When to use |
+|------|------|-------------|
+| Aggregate root / child entity | `docs/product/bounded-contexts/{context}/entities/{EntityName}.md` | Has identity, lifecycle, state machine |
+| Value object | `docs/product/bounded-contexts/{context}/value-objects/{VoName}.md` | No identity, validated at construction, immutable |
+| Domain service | `docs/product/bounded-contexts/{context}/domain-services/{ServiceName}.md` | Stateless logic that doesn't belong to a single entity |
 
 Where `{bounded-context-name}` is the kebab-case name of the bounded context (e.g., `event`, `submission`, `review`, `scheduling`, or any future context)
 
@@ -93,14 +95,29 @@ During entity lifecycle creation, you MUST identify all business rules and invar
 
 ## 📖 Documentation Structure
 
-The generated entity lifecycle document should include:
-
-1. **Definition & Context** - Entity description, database table, primary key
+### Entities (aggregate roots / child entities)
+1. **Definition & Context** - Description, database table, primary key, Kotlin file
 2. **State Machine Diagram** - Mermaid state diagram showing all states and transitions
 3. **State Transition Matrix** - Complete mapping of allowed state changes
 4. **State Definitions** - Detailed criteria for each state
 5. **Invariants & Business Rules** - Links to extracted BRs and INVs
 6. **Linked User Stories & Flows** - References to flows that interact with the entity
+
+### Value Objects
+1. **Definition & Context** - Description, class name, Kotlin file
+2. **State Machine Diagram** - Simplified — typically just VALID / construction failure
+3. **Construction & Validation** - What is accepted, what throws, which exception
+4. **Invariants & Business Rules** - Links to relevant BRs and INVs
+5. **Linked User Stories & Flows** - Which entities embed this VO
+
+### Domain Services
+1. **Definition** - Description, class name, Kotlin file
+2. **Collaborators** - Dependencies and what each provides
+3. **Methods** - Each public method: guards, steps, side effects, return value
+4. **Sequence Diagram** - One diagram showing all method orchestration flows (use `rect` blocks per method)
+5. **Flow Diagram** - One flowchart per method showing branching logic and outcomes
+6. **Invariants** - Links to relevant INVs (no BRs — services enforce invariants, BRs live in the application layer)
+7. **Linked User Stories & Flows** - Which flows invoke which methods and at which step
 
 ---
 
@@ -110,6 +127,8 @@ The generated entity lifecycle document should include:
 | Template | Purpose |
 |----------|---------|
 | `templates/entity-lifecycle.md` | Entity lifecycle document template |
+| `templates/value-object.md` | Value object document template |
+| `templates/domain-service.md` | Domain service document template |
 | `templates/business-rules.md` | Business rule documentation template |
 | `templates/invariants.md` | Invariant documentation template |
 
@@ -128,5 +147,11 @@ The generated entity lifecycle document should include:
 
 ---
 
-**Last Updated:** 2026-06-25  
-**Version:** 1.0
+**Last Updated:** 2026-07-14  
+**Version:** 1.2  
+**Changes from v1.1:**
+- Domain service documentation structure updated: sequence diagram + one flow diagram per method
+- `templates/domain-service.md` updated with separate flow diagram blocks per method and `rect`-based sequence diagram
+**Changes from v1.0:**
+- Output path now distinguishes entities, value-objects, and domain-services folders
+- Documentation Structure split into three sections matching DDD classifications
