@@ -60,11 +60,11 @@ quadrantChart
     quadrant-3 Fill-ins
     quadrant-4 Traps
     classDef core color: #2ecc71
-    "Collect Proposals (CfP)":::core: [0.50, 0.88]
-    "Review & Score Sessions":::core: [0.50, 0.88]
-    "Automate Speaker Communications":::core: [0.50, 0.88]
-    "Assign Schedule Slots":::core: [0.50, 0.75]
-    "Co-Speaker Management":::core: [0.50, 0.88]
+    "Collect Proposals (CfP)":::core: [0.35, 0.88]
+    "Review & Score Sessions":::core: [0.50, 0.85]
+    "Automate Speaker Communications":::core: [0.45, 0.80]
+    "Assign Schedule Slots":::core: [0.55, 0.75]
+    "Co-Speaker Management":::core: [0.62, 0.82]
 ```
 
 | Color | Category |
@@ -88,9 +88,9 @@ quadrantChart
     classDef differentiating color: #e67e22
     classDef nicetohave color: #95a5a6
     "Bulk Update Session Status":::supporting: [0.20, 0.62]
-    "Speaker Travel & Info Dashboard":::supporting: [0.20, 0.88]
-    "Deploy with Standard Tools":::differentiating: [0.50, 0.88]
-    "Expose Public API":::differentiating: [0.20, 0.62]
+    "Speaker Travel & Info Dashboard":::supporting: [0.20, 0.75]
+    "Deploy with Standard Tools":::differentiating: [0.50, 0.70]
+    "Expose Public API":::differentiating: [0.35, 0.50]
     "Collect Attendee Feedback":::nicetohave: [0.20, 0.25]
     "Detect Schedule Conflicts":::nicetohave: [0.50, 0.50]
 ```
