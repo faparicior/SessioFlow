@@ -1,5 +1,5 @@
 import {type NextRequest, NextResponse} from 'next/server';
-import {ConferenceId} from '@/modules/conference/domain/value-objects/conference-id';
+import {GetConferenceHandler} from '@/modules/conference/application/queries/get-conference/get-conference.handler';
 import {SupabaseConferenceRepository} from '@/modules/conference/infrastructure/database/conference-repository';
 
 /**
@@ -14,32 +14,29 @@ export async function GET(
   try {
     const {id} = await params;
     const repository = new SupabaseConferenceRepository();
-    const conference = await repository.findById(ConferenceId.fromString(id));
+    const getConferenceHandler = new GetConferenceHandler(repository);
+    const result = await getConferenceHandler.execute(id);
 
-    if (!conference) {
+    if (!result.success) {
+      return NextResponse.json(
+        {
+          error: {
+            code: result.errors![0].code,
+            message: result.errors![0].message,
+          },
+        },
+        {status: 400},
+      );
+    }
+
+    if (!result.data) {
       return NextResponse.json(
         {error: {code: 'NOT_FOUND', message: 'Conference not found'}},
         {status: 404},
       );
     }
 
-    return NextResponse.json({
-      data: {
-        id: conference.id.value,
-        name: conference.name.value,
-        slug: conference.slug.value,
-        status: conference.status,
-        cfpStartDate: conference.cfpConfig.startDate.toISOString(),
-        cfpEndDate: conference.cfpConfig.endDate.toISOString(),
-        cfpStatus: conference.cfpConfig.status,
-        maxSubmissions: conference.cfpConfig.maxSubmissions.value,
-        requiresApproval: conference.cfpConfig.requiresApproval.value,
-        cfpUrl: `https://sessioflow.app/cfp/${conference.slug.value}`,
-        events: [],
-        createdAt: conference.createdAt.toISOString(),
-        updatedAt: conference.updatedAt.toISOString(),
-      },
-    });
+    return NextResponse.json({data: result.data});
   } catch (error) {
     console.error('Conference retrieval error:', error);
     return NextResponse.json(

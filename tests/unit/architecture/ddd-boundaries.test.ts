@@ -113,7 +113,7 @@ describe('DDD Architecture', () => {
     it('API routes must not import from domain directly', () => {
       modules(p)
         .that()
-        .resideInFolder('src/app/api/**')
+        .resideInFolder('**/src/app/api/**')
         .should()
         .notImportFrom('**/modules/**/domain/**')
         .because('API routes must only interact with application CQRS handlers, never domain objects or repositories directly')
