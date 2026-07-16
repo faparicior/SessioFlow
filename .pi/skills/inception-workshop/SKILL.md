@@ -18,6 +18,51 @@ Facilitate Lean Inception workshops through 8 structured steps: Product Vision -
 - **Product Name Consistency**: Use the exact product name consistently throughout all documents. Include it in titles, introductions, and key sections. After establishing context, use pronouns or "the system" naturally. Focus on clarity, not forced repetition.
 - **Boundary Definitions**: MUST include at least 4 items in EACH of the 4 boundary columns (IS, IS NOT, DOES, DOES NOT) - this is non-negotiable.
 - **Tradeoff Golden Rule**: Exactly ONE check (X) per priority column. If you have 7 priorities, you must have exactly 7 X marks total.
+- **Template Instruction Filtering**: **STRICT RULE** - When generating output documents from templates, ALL instructional text must be removed. Instructions are for the AI agent only, not for the final document. See "Template Usage Guidelines" below for detailed filtering rules.
+
+## Template Usage Guidelines
+
+**CRITICAL: Template instructions must NEVER appear in output documents.**
+
+Templates serve two purposes:
+1. **Structure** - Define the document format (tables, sections, diagrams)
+2. **Guidance** - Tell AI agents how to fill the template
+
+**Only the structure should appear in output documents. Guidance must be stripped.**
+
+### What to Remove (All Modes)
+
+| Instruction Type | Examples | Action |
+|------------------|----------|--------|
+| "Instructions" sections | "Instructions:", "How to use", "Usage:" | **REMOVE ENTIRE SECTION** |
+| "Format" guidelines | "Format:", "Column definitions", "Field explanations" | **REMOVE ENTIRE SECTION** |
+| Validation checklists | "Verify that...", "Ensure...", "Check..." | **REMOVE** |
+| Meta-commentary | "This template contains...", "Fill this field with..." | **REMOVE** |
+| Technical syntax notes | "Use shields.io badges like...", "Mermaid syntax: ..." | **REMOVE** |
+
+### What to Keep
+
+| Content Type | Examples | Action |
+|-------------|----------|--------|
+| Content structure | Table headers, section titles | **KEEP** |
+| Placeholders | `[Feature Name]`, `[Persona Name]` | **KEEP** (as-is or filled) |
+| Actual data | Filled content, real examples | **KEEP** |
+| Diagrams | Mermaid charts, tables | **KEEP** (with actual data) |
+| Next steps | "Next Step: ..." | **KEEP** |
+| Notes sections | "Notes & Observations" | **KEEP** (for actual notes) |
+
+### Validation Checklist
+
+Before finalizing any output document, verify:
+- [ ] No "Instructions" sections remain
+- [ ] No "How to use" guidance remains
+- [ ] No column/field definition lists remain
+- [ ] No validation checklists for the AI remain
+- [ ] Document contains only actual content, not meta-instructions
+
+**Failure to follow this rule results in documents that mix instructions with content, making them unusable as actual deliverables.**
+
+---
 
 ## Natural Language Activation
 
@@ -110,13 +155,33 @@ pi skill inception-workshop --mode validate --step 1 --file docs/inception/1-pro
 
 ### Facilitate Mode (Template -> Fill -> Validate)
 
-The agent should:
+**CRITICAL RULE: Template Instructions Must NOT Leak to Output**
+
+Templates contain instructional guidelines for AI agents. When generating output documents:
+
+**MUST REMOVE:**
+- "Instructions" sections (entire section)
+- "Format" guidelines and field definitions
+- "How to use" instructions
+- Column explanations and usage notes
+- Validation checklists meant for the AI
+- Meta-commentary about the template itself
+
+**MUST KEEP:**
+- Content structure (tables, sections, placeholders)
+- Actual data entries (filled content)
+- Diagrams and visual elements
+- "Next Step" references
+- Notes & Observations sections (for actual observations, not instructions)
+
+**Implementation:**
 1. Read the template file from `templates/`
 2. Create the output file in `docs/inception/`
-3. Prompt the user to fill the document
-4. When ready, validate against the validator criteria
-5. Provide feedback and scoring
-6. Proceed to next step if score ≥ 8
+3. **Strip all instructional text** before writing output
+4. Prompt the user to fill the document
+5. When ready, validate against the validator criteria
+6. Provide feedback and scoring
+7. Proceed to next step if score ≥ 8
 
 **Implementation:** Use read/write/edit tools to manage files, provide interactive guidance to the user.
 
@@ -137,17 +202,37 @@ The agent should:
 
 ### Batch Mode
 
+**CRITICAL RULE: Template Instructions Must NOT Leak to Output**
+
+All templates contain instructional guidelines for AI agents. When generating output documents in batch mode:
+
+**MUST REMOVE:**
+- "Instructions" sections (entire section)
+- "Format" guidelines and field definitions  
+- "How to use" instructions
+- Column explanations and usage notes
+- Validation checklists meant for the AI
+- Meta-commentary about the template itself
+
+**MUST KEEP:**
+- Content structure (tables, sections, placeholders)
+- Actual data entries (filled content)
+- Diagrams and visual elements
+- "Next Step" references
+- Notes & Observations sections (for actual observations, not instructions)
+
 **Agent Implementation:**
 1. Parse the context/product description - EXTRACT the exact product name
 2. Sequentially generate all 8 steps using templates
-3. **Product Name Guidelines:**
+3. **Strip all instructional text** before writing each output file
+4. **Product Name Guidelines:**
    - Include the product name in titles and document headers
    - Use the product name in introductions and key sections
    - After establishing context, use "the system", "the platform", or pronouns naturally
    - Maintain consistency - don't switch between different names
    - Prioritize natural readability over forced repetition
-4. Create output files in `docs/inception/`
-5. Validate each step and report scores
+5. Create output files in `docs/inception/`
+6. Validate each step and report scores
 
 ```bash
 # All 8 steps generated automatically
