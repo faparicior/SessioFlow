@@ -1,107 +1,121 @@
 # Step 5: Features Brainstorming
 
 ## Goal
-Brainstorm and identify potential features for the product based on the personas and empathy maps defined in previous steps. This is a divergent thinking exercise where quantity is encouraged before filtering.
-
-## Instructions
-1. Review the personas and empathy maps from previous steps
-2. Brainstorm feature ideas that address user needs, pain points, and goals
-3. Think broadly - include both essential and nice-to-have features
-4. Organize features into logical categories
-5. For each feature, provide a brief description of what it does and why it matters
-
-## Feature Categories
-
-### Core Features
-*Features that are essential to the product's primary value proposition*
-
-**Feature 1: Collect Proposals (CfP)**
-- **Description:** **Collect** speaker proposals via a public form and allow organizers to **view** them in a dashboard.
-- **Why it matters:** It is the entry point for all content in the conference. Without this, there are no sessions to manage.
-- **Related to:** **Fernando's Need 1** (Single platform that integrates all data) and **Andrea's Primary Goal** (Have easy way to propose sessions).
-
-**Feature 2: Review & Score Sessions**
-- **Description:** **Enable** organizers to **read, score, and select** proposals in a centralized workflow.
-- **Why it matters:** Replaces reliance on spreadsheets and emails to coordinate selection, ensuring a fair and organized process.
-- **Related to:** **Fernando's Pain 2** (Lot of manual work with different sources).
-
-**Feature 3: Automate Speaker Communications**
-- **Description:** **Automatically send** email updates to speakers when their status changes (submitted/accepted/rejected).
-- **Why it matters:** Drastically reduces manual communication effort and keeps speakers informed.
-- **Related to:** **Fernando's Primary Goal** (Reduce administrative overhead) and **Andrea's Secondary Goal** (Clear view of schedule and steps).
-
-**Feature 4: Assign Schedule Slots**
-- **Description:** **Assign** accepted sessions to specific rooms and time slots via simple inputs.
-- **Why it matters:** Transforms the selected list of talks into an actionable conference timeline.
-- **Related to:** **Fernando's Need 1** (Single platform).
-
-**Feature 5: Co-Speaker Management**
-- **Description:** **Allow** a proposer to **invite** a colleague to join the session proposal via unique link or email.
-- **Why it matters:** Many sessions are collaborative; handling this manually is a major pain point for speakers and organizers.
-- **Related to:** **Andrea's Need 2** (Easy way to add a colleague) and **Andrea's Pain 2** (Add a partner is not easy).
-
-### Supporting Features
-*Features that enhance the user experience but are not critical to the core value*
-
-**Feature 1: Bulk Update Session Status**
-- **Description:** **Select** multiple sessions to **change** their status (e.g., "Accepted", "Rejected") in one action.
-- **Why it matters:** Saves time when dealing with hundreds of submissions.
-- **Related to:** **Fernando's Need 3** (Simple, intuitive interface).
-
-**Feature 2: Speaker Travel & Info Dashboard**
-- **Description:** **Display** a dedicated page for accepted speakers with reimbursement guides, hotel deals, and travel info.
-- **Why it matters:** Centralizes logistics info, reducing email questions to organizers.
-- **Related to:** **Andrea's Need 1** (Single point for conference info/travel) and **Andrea's Pain 3** (Hard to find info).
-
-### Differentiating Features
-*Features that set the product apart from competitors*
-
-**Feature 1: Deploy with Standard Tools**
-- **Description:** **Deploy** the application using a standard Docker Compose configuration.
-- **Why it matters:** Enables volunteers to run the platform on low-cost infrastructure.
-- **Related to:** **Fernando's Role** (Volunteer Organizer).
-
-**Feature 2: Expose Public API**
-- **Description:** **Provide** read-only API endpoints for the schedule and speaker details.
-- **Why it matters:** Allows advanced organizers to build custom websites or mobile apps.
-- **Related to:** **Fernando's Tech Savviness** (Intermediate/Comfortable with data tools).
-
-### Nice-to-Have Features
-*Features that could add value but are lower priority*
-
-**Feature 1: Collect Attendee Feedback**
-- **Description:** **Gather** ratings from attendees after sessions occur.
-- **Why it matters:** Provides value to speakers and helps organizers improve future conferences.
-- **Related to:** **Fernando's Secondary Goal** (Offer best experience).
-
-**Feature 2: Detect Schedule Conflicts**
-- **Description:** **Warn** the user if a speaker is double-booked or a room is empty.
-- **Why it matters:** Improving data quality and preventing day-of-conference issues.
-- **Related to:** **Fernando's Need 2** (Automated data validation).
-
-## Initial Feature Assessment
-
-For each brainstormed feature, provide a quick assessment:
-
-| Feature Name | Business Value | Technical Effort | UX Impact | Priority |
-|--------------|----------------|------------------|-----------|----------|
-| Collect Proposals (CfP) | High | Medium | High | Must-have |
-| Review & Score Sessions | High | Medium | High | Must-have |
-| Automate Speaker Communications | High | Medium | High | Must-have |
-| Assign Schedule Slots | High | Medium | Medium | Must-have |
-| Co-Speaker Management | High | Medium | High | Must-have |
-| Bulk Update Session Status | Medium | Low | High | Should-have |
-| Speaker Travel & Info Dashboard | High | Low | High | Should-have |
-| Deploy with Standard Tools | High | Medium | Low | Should-have |
-| Expose Public API | Medium | Low | High | Should-have |
-| Collect Attendee Feedback | Low | Low | Medium | Nice-to-have |
-| Detect Schedule Conflicts | Medium | Medium | Medium | Nice-to-have |
-
-## Notes & Observations
-*   **Persona Integration:** Added features for Andrea (Speaker) to ensure a balanced ecosystem. Without content (Andrea), Fernando has nothing to organize.
-*   **Co-Speakers:** Identified as a specific pain point for Andrea, elevated to Core/High priority to ensure competitive advantage/usability.
-*   **Travel Info:** Added as a dashboard feature to offload organizer support time.
+Brainstorm and identify potential features based on the personas and user journeys defined in previous steps. This is a divergent thinking exercise — quantity first, filtering second.
 
 ---
 
-**Next Step:** After completing this brainstorming, we'll map these features to user journeys in the next step.
+## ![](https://img.shields.io/badge/_%20_-2ecc71) Core Features
+*Essential to the primary value proposition.*
+
+| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Confidence | Priority |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **Collect Proposals (CfP)** | **Collect** speaker proposals via a public form and **allow** organizers to **view** them in a dashboard | Entry point for all content; without this, there are no sessions to manage | [Fernando](3-personas/fernando-volunteer-organizer.md)'s Need 1, [Andrea](3-personas/andrea-external-speaker.md)'s Primary Goal | **High** | Medium | **High** | 🟢 | **Must-have** |
+| **Review & Score Sessions** | **Enable** organizers to **read, score, and select** proposals in a centralized workflow | Replaces spreadsheets and emails, ensuring fair and organized selection process | [Fernando](3-personas/fernando-volunteer-organizer.md)'s Pain 2 | **High** | Medium | **High** | 🟢 | **Must-have** |
+| **Automate Speaker Communications** | **Automatically send** email updates to speakers when status changes (submitted/accepted/rejected) | Drastically reduces manual communication effort and keeps speakers informed | [Fernando](3-personas/fernando-volunteer-organizer.md)'s Primary Goal, [Andrea](3-personas/andrea-external-speaker.md)'s Secondary Goal | **High** | Medium | **High** | 🟡 | **Must-have** |
+| **Assign Schedule Slots** | **Assign** accepted sessions to specific rooms and time slots via simple inputs | Transforms selected talks into an actionable conference timeline | [Fernando](3-personas/fernando-volunteer-organizer.md)'s Need 1 | **High** | Medium | Medium | 🟢 | **Must-have** |
+| **Co-Speaker Management** | **Allow** a proposer to **invite** a colleague to join the session proposal via unique link or email | Many sessions are collaborative; handling this manually is a major pain point | [Andrea](3-personas/andrea-external-speaker.md)'s Need 2, [Andrea](3-personas/andrea-external-speaker.md)'s Pain 2 | **High** | Medium | **High** | 🟡 | **Must-have** |
+
+---
+
+## ![](https://img.shields.io/badge/_%20_-3498db) Supporting Features
+*Enhance the system but not critical to the core value.*
+
+| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Confidence | Priority |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **Bulk Update Session Status** | **Select** multiple sessions to **change** their status (e.g., "Accepted", "Rejected") in one action | Saves time when dealing with hundreds of submissions | [Fernando](3-personas/fernando-volunteer-organizer.md)'s Need 3 | Medium | _Low_ | **High** | 🟢 | Should-have |
+| **Speaker Travel & Info Dashboard** | **Display** a dedicated page for accepted speakers with reimbursement guides, hotel deals, and travel info | Centralizes logistics info, reducing email questions to organizers | [Andrea](3-personas/andrea-external-speaker.md)'s Need 1, [Andrea](3-personas/andrea-external-speaker.md)'s Pain 3 | **High** | _Low_ | **High** | 🟢 | Should-have |
+
+---
+
+## ![](https://img.shields.io/badge/_%20_-e67e22) Differentiating Features
+*Set the product apart from competitors.*
+
+| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Confidence | Priority |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **Deploy with Standard Tools** | **Deploy** the application using a standard Docker Compose configuration | Enables volunteers to run the platform on low-cost infrastructure | [Fernando](3-personas/fernando-volunteer-organizer.md)'s Role | **High** | Medium | _Low_ | 🟢 | Must-have |
+| **Expose Public API** | **Provide** read-only API endpoints for the schedule and speaker details | Allows advanced organizers to build custom websites or mobile apps | [Fernando](3-personas/fernando-volunteer-organizer.md)'s Tech Savviness | Medium | _Low_ | **High** | 🟡 | Should-have |
+
+---
+
+## ![](https://img.shields.io/badge/_%20_-95a5a6) Nice-to-Have Features
+*Could add value but lower priority.*
+
+| Feature | Description | Why it matters | Related to | Biz Value | Tech Effort | UX Impact | Confidence | Priority |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **Collect Attendee Feedback** | **Gather** ratings from attendees after sessions occur | Provides value to speakers and helps organizers improve future conferences | [Fernando](3-personas/fernando-volunteer-organizer.md)'s Secondary Goal | _Low_ | _Low_ | Medium | 🟢 | _Nice-to-have_ |
+| **Detect Schedule Conflicts** | **Warn** the user if a speaker is double-booked or a room is empty | Improving data quality and preventing day-of-conference issues | [Fernando](3-personas/fernando-volunteer-organizer.md)'s Need 2 | Medium | Medium | Medium | 🟡 | _Nice-to-have_ |
+
+---
+
+## Feature Quadrant — Already Shipped (Core)
+
+```mermaid
+quadrantChart
+    title Shipped Features — Business Value vs Technical Effort
+    x-axis Low Effort --> High Effort
+    y-axis Low Value --> High Value
+    quadrant-1 Strategic Bets
+    quadrant-2 Quick Wins
+    quadrant-3 Fill-ins
+    quadrant-4 Traps
+    classDef core color: #2ecc71
+    "Collect Proposals (CfP)":::core: [0.50, 0.88]
+    "Review & Score Sessions":::core: [0.50, 0.88]
+    "Automate Speaker Communications":::core: [0.50, 0.88]
+    "Assign Schedule Slots":::core: [0.50, 0.75]
+    "Co-Speaker Management":::core: [0.50, 0.88]
+```
+
+| Color | Category |
+| :---: | :--- |
+| ![](https://img.shields.io/badge/_%20_-2ecc71) | Core — shipped |
+
+---
+
+## Feature Quadrant — Open Decisions
+
+```mermaid
+quadrantChart
+    title Open Decisions — Business Value vs Technical Effort
+    x-axis Low Effort --> High Effort
+    y-axis Low Value --> High Value
+    quadrant-1 Strategic Bets
+    quadrant-2 Quick Wins
+    quadrant-3 Fill-ins
+    quadrant-4 Traps
+    classDef supporting color: #3498db
+    classDef differentiating color: #e67e22
+    classDef nicetohave color: #95a5a6
+    "Bulk Update Session Status":::supporting: [0.20, 0.62]
+    "Speaker Travel & Info Dashboard":::supporting: [0.20, 0.88]
+    "Deploy with Standard Tools":::differentiating: [0.50, 0.88]
+    "Expose Public API":::differentiating: [0.20, 0.62]
+    "Collect Attendee Feedback":::nicetohave: [0.20, 0.25]
+    "Detect Schedule Conflicts":::nicetohave: [0.50, 0.50]
+```
+
+| Color | Category |
+| :---: | :--- |
+| ![](https://img.shields.io/badge/_%20_-3498db) | Supporting |
+| ![](https://img.shields.io/badge/_%20_-e67e22) | Differentiating |
+| ![](https://img.shields.io/badge/_%20_-95a5a6) | Nice-to-Have |
+
+---
+
+## Notes & Observations
+
+- **Persona Integration:** Added features for Andrea (Speaker) to ensure a balanced ecosystem. Without content (Andrea), Fernando has nothing to organize.
+- **Co-Speakers:** Identified as a specific pain point for Andrea, elevated to Core/High priority to ensure competitive advantage/usability.
+- **Travel Info:** Added as a dashboard feature to offload organizer support time.
+- **Confidence Notes:** 
+  - 🟡 "Automate Speaker Communications" — needs clarity on email provider integration (Resend vs other)
+  - 🟡 "Co-Speaker Management" — scope unclear: unique link vs email invite vs both?
+  - 🟡 "Expose Public API" — authentication strategy needs definition
+  - 🟡 "Detect Schedule Conflicts" — conflict rules need business definition
+
+**Coach's question:** If you could only ship three features from the Core list to validate the primary hypothesis that "SessioFlow reduces organizer workload," which would they be and why?
+
+---
+
+**Next Step:** Map these features to user journeys and define sequencing in Step 7 — Features & Sequencing.
