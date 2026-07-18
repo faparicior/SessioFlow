@@ -10,7 +10,7 @@
 export class CfpStartDate implements CfpStartDate {
   static create(date: Date): CfpStartDate {
     if (Number.isNaN(date.getTime())) {
-      throw new Error('CfpStartDate must be a valid date');
+      throw new TypeError('CfpStartDate must be a valid date');
     }
 
     return new CfpStartDate(date);
