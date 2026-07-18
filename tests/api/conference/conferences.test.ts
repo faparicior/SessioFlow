@@ -57,12 +57,12 @@ const mockGetAuthUser = vi.fn().mockResolvedValue({id: 'test-user-id'});
 describe('Conference API - POST /api/v1/conferences', () => {
   it('creates a conference and returns 201', async () => {
     const mockData: ConferenceResponseDto = {
-      id: 'test-id',
+      id: '12345678-1234-4123-8123-123456789012',
       name: 'Tech Conference',
       slug: 'tech-conference',
       status: 'CFP_OPEN',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: '2026-08-01T00:00:00.000Z',
+      cfpEndDate: '2026-09-30T00:00:00.000Z',
       cfpStatus: 'ACTIVE',
       maxSubmissions: undefined,
       requiresApproval: true,
@@ -203,12 +203,12 @@ describe('Conference API - POST /api/v1/conferences', () => {
 describe('Conference API - GET /api/v1/conferences/:id', () => {
   it('returns conference data', async () => {
     const mockData: ConferenceResponseDto = {
-      id: 'test-id',
+      id: '12345678-1234-4123-8123-123456789012',
       name: 'Tech Conference',
       slug: 'tech-conference',
       status: 'CFP_OPEN',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: '2026-08-01T00:00:00.000Z',
+      cfpEndDate: '2026-09-30T00:00:00.000Z',
       cfpStatus: 'ACTIVE',
       maxSubmissions: undefined,
       requiresApproval: true,

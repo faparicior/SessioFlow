@@ -1,6 +1,6 @@
 import {type NextRequest, NextResponse} from 'next/server';
 import {z} from 'zod';
-import {ConferenceCreateSchema} from './conference-create.schema';
+import {ConferenceCreateSchema, ConferenceResponseSchema} from './conference-create.schema';
 import {CreateConferenceCommand} from '@/modules/conference/application/commands/create-conference/create-conference.command';
 import {type CreateConferenceHandler} from '@/modules/conference/application/commands/create-conference/create-conference.handler';
 
@@ -28,7 +28,7 @@ export async function handleConferenceCreate(
     // 2. Parse and validate request body contract
     const body = (await request.json()) as unknown;
     const parsed = ConferenceCreateSchema.safeParse(body);
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         {
@@ -47,7 +47,7 @@ export async function handleConferenceCreate(
       ...parsed.data,
       organizerId: user.id,
     });
-    
+
     const result = await createConferenceHandler.execute(command);
 
     if (!result.success) {
@@ -67,8 +67,9 @@ export async function handleConferenceCreate(
       );
     }
 
-    // 4. Return success response
-    return NextResponse.json({data: result.data}, {status: 201});
+    // 4. Return success response sanitized by the response schema
+    const responseDto = ConferenceResponseSchema.parse(result.data);
+    return NextResponse.json({data: responseDto}, {status: 201});
   } catch (error) {
     console.error('Conference creation error:', error);
     return NextResponse.json(

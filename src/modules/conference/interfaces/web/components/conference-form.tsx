@@ -55,6 +55,63 @@ type FormErrors = {
   general?: string;
 };
 
+function mapServerErrors(
+  errors: Array<{code?: string; message: string}>,
+  details?: Record<string, string[]>,
+): FormErrors {
+  const formErrors: FormErrors = {};
+
+  if (details) {
+    for (const [field, messages] of Object.entries(details)) {
+      if (messages && messages.length > 0) {
+        switch (field) {
+          case 'name': {
+            formErrors.name = messages[0];
+            break;
+          }
+
+          case 'description': {
+            formErrors.description = messages[0];
+            break;
+          }
+
+          case 'cfpStartDate': {
+            formErrors.cfpStartDate = messages[0];
+            break;
+          }
+
+          case 'cfpEndDate': {
+            formErrors.cfpEndDate = messages[0];
+            break;
+          }
+
+          case 'general': {
+            formErrors.general = messages[0];
+            break;
+          }
+
+          default: {
+            break;
+          }
+        }
+      }
+    }
+  } else {
+    const firstError = errors[0];
+    if (firstError) {
+      if (firstError.code === 'NAME_TOO_SHORT') {
+        formErrors.name = firstError.message;
+      } else if (firstError.code === 'CFP_DATES_INVALID') {
+        formErrors.cfpEndDate = firstError.message;
+      } else {
+        formErrors.general = firstError.message;
+      }
+    }
+  }
+
+  return formErrors;
+}
+
 export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
   const [formData, setFormData] = useState<ConferenceFormData>({
     name: '',
@@ -135,25 +192,7 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
           }
         }
       } else if (result.errors) {
-        const newErrors: FormErrors = {};
-        if (result.details) {
-          Object.entries(result.details).forEach(([field, messages]) => {
-            if (messages && messages.length > 0) {
-              newErrors[field as keyof FormErrors] = messages[0];
-            }
-          });
-        } else {
-          const firstError = result.errors[0];
-          if (firstError) {
-            if (firstError.code === 'NAME_TOO_SHORT') {
-              newErrors.name = firstError.message;
-            } else if (firstError.code === 'CFP_DATES_INVALID') {
-              newErrors.cfpEndDate = firstError.message;
-            } else {
-              newErrors.general = firstError.message;
-            }
-          }
-        }
+        const newErrors = mapServerErrors(result.errors, result.details);
         setErrors(newErrors);
       }
     } catch (error) {

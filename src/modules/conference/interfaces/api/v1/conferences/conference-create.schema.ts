@@ -13,3 +13,31 @@ export const ConferenceCreateSchema = z.object({
   maxSubmissions: z.number().int().positive().optional(),
   requiresApproval: z.boolean().optional().default(true),
 });
+
+/**
+ * Zod validation schema for conference response (for API documentation and serialization).
+ */
+export const ConferenceResponseSchema = z.object({
+  id: z.guid(),
+  name: z.string(),
+  slug: z.string(),
+  status: z.enum([
+    'DRAFT',
+    'CFP_OPEN',
+    'CFP_CLOSED',
+    'REVIEWING',
+    'SCHEDULED',
+    'PUBLISHED',
+    'COMPLETED',
+    'DELETED',
+  ]),
+  cfpStartDate: z.iso.datetime(),
+  cfpEndDate: z.iso.datetime(),
+  cfpStatus: z.enum(['ACTIVE', 'CLOSED', 'ARCHIVED']),
+  maxSubmissions: z.number().int().positive().optional(),
+  requiresApproval: z.boolean(),
+  cfpUrl: z.url(),
+  events: z.array(z.unknown()),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
+});
