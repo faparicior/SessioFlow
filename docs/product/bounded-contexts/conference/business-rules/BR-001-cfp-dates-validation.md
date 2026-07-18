@@ -55,12 +55,15 @@ Scenario: Past start date
 * No async effects - this is a synchronous validation rule that prevents invalid state creation.
 
 ## 4. System Enforcement (How It's Handled)
-*Unlike an invariant (which sits strictly inside an Aggregate Root), a business rule can be enforced via Domain Services, Policy objects, or workflow orchestration (like n8n or Saga patterns).*
+* Enforced via a combination of Value Object design, structural domain invariants, and Aggregate Root creation checks.
 
-* **Enforcement Layer:** Domain Service (`CfpValidationService`) and Value Objects (`CfpStartDate`, `CfpEndDate`)
+* **Enforcement Layer:** 
+  * **Structural Date Format/Validity:** Handled via constructor sanity checks in `CfpStartDate` and `CfpEndDate` value objects (ensuring the parameter represents a valid JavaScript `Date` object).
+  * **Structural Date Order (`cfpEndDate` after `cfpStartDate`):** Enforced as a **Domain Invariant ([INV-002](../invariants/INV-002-cfp-date-order.md))** inside the `CfpConfig` entity constructor, preventing invalid configurations from ever being instantiated.
+  * **Temporal Validity (Start date is today or future at creation):** Enforced inside the `Conference.create()` factory method. This contextual validation is skipped during repository reconstitution (which uses `Conference.fromData()`) so that historical conferences with past start dates can still be loaded from the database.
 * **Handling Violations/Exceptions:** 
-  * Throws `InvalidCfpConfigError` domain exception
-  * HTTP/API returns 422 Unprocessable Entity
+  * Throws `CfpDatesInvalidError` / `InvalidCfpConfigError` domain exception
+  * HTTP/API returns 422 Unprocessable Entity or 409 Conflict
   * Form displays inline validation error to user
   * No state changes occur; transaction is aborted
 

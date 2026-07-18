@@ -21,6 +21,20 @@ describe('Conference', () => {
     expect(conference.status).toBe(ConferenceStatus.DRAFT);
   });
 
+  it('create() rejects a past start date', () => {
+    const pastDate = new Date();
+    pastDate.setDate(pastDate.getDate() - 1);
+    expect(() =>
+      Conference.create({
+        name: 'Tech Conference 2026',
+        description: 'A conference about technology',
+        organizerId: 'org-123',
+        cfpStartDate: pastDate,
+        cfpEndDate: new Date('2026-09-30'),
+      })
+    ).toThrow('CfpStartDate must be in the future or today');
+  });
+
   it('create() generates a unique ID', () => {
     const conference = createConference();
     expect(conference.id.value).toBeDefined();

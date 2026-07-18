@@ -50,3 +50,6 @@ You're right to call this out. I didn't actually say "shadcn not exists" - I cre
                                                                                                                       
  Would you like me to properly integrate the real shadcn-ui library instead of using stubs?    
  ```
+
+
+using nextjs for all the layers and stacks are trying to cur the corners and led domain imputiry with a shared schema used vy api and domain with zod. We need to enforce domain clean and the frontend to use his own validation.
