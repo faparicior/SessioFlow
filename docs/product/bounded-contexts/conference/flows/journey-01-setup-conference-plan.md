@@ -42,6 +42,7 @@ This document outlines the development plan for implementing **Journey 01: Setup
 | 004 | Implement Magic Link Authentication | ⚠️ Superseded | Use Auth0 with DDD abstraction per latest amendment |
 | 006 | Use RESTful API Design | ✅ Approved | API uses RESTful endpoints (`POST /api/v1/conferences`) |
 | 007 | Use Zod for Validation | ✅ Approved | All input validation uses Zod schemas at API and UI layers |
+| 007-01 | Amendment: Validation & Domain Purity | ✅ Approved | Decouples Zod from domain value objects; validates natively in domain, Zod at boundaries |
 | 008 | Implement Comprehensive Testing Strategy | ✅ Approved | Hybrid TDD approach: E2E → domain → application → infrastructure → API → E2E |
 | 009 | Adopt Domain-Driven Design Structure | ✅ Approved | Full DDD structure: domain → application → infrastructure → interfaces |
 | 010 | Use Tailwind CSS for Styling | ✅ Approved | UI styling uses Tailwind CSS |
@@ -199,20 +200,20 @@ src/
 #### Tasks
 
 **Step 1: Write E2E Test**
-- [ ] Write E2E test for complete flow: Create conference with CfP configuration
-- [ ] Document acceptance criteria from flow documentation
-- [ ] Identify key journey steps from [journey-01-setup-conference.md](./journey-01-setup-conference.md)
-- [ ] Define success criteria (what makes E2E pass)
+- [x] Write E2E test for complete flow: Create conference with CfP configuration
+- [x] Document acceptance criteria from flow documentation
+- [x] Identify key journey steps from [journey-01-setup-conference.md](./journey-01-setup-conference.md)
+- [x] Define success criteria (what makes E2E pass)
 
 **Step 2: Run E2E (Expected to Fail)**
-- [ ] Run E2E test → Should FAIL (no implementation yet)
-- [ ] Document what's missing
-- [ ] Use this as the "North Star" for the project
+- [x] Run E2E test → Should FAIL (no implementation yet)
+- [x] Document what's missing
+- [x] Use this as the "North Star" for the project
 
 #### Deliverables
-- [ ] `tests/e2e/conference-setup.spec.ts` - E2E test that defines the goal
-- [ ] E2E test documentation (acceptance criteria)
-- [ ] Initial failure report (what's missing)
+- [x] `tests/e2e/conference-setup.spec.ts` - E2E test that defines the goal
+- [x] E2E test documentation (acceptance criteria)
+- [x] Initial failure report (what's missing)
 
 ---
 
@@ -225,70 +226,70 @@ src/
 **Step 1: Write Tests First**
 
 1. **Value Object Tests**
-   - [ ] Test `ConferenceId.create()` generates valid UUIDv4
-   - [ ] Test `ConferenceName.create()` validates min/max length (3-100 chars)
-   - [ ] Test `ConferenceSlug.create()` generates URL-safe slug from name
-   - [ ] Test `ConferenceStatus` enum values and valid states
-   - [ ] Test `CfpStartDate.create()` rejects past dates
-   - [ ] Test `CfpEndDate.create()` validates after start date
-   - [ ] Test `MaxSubmissions.create()` validates positive integer or unlimited
-   - [ ] Test `CfpStatus` enum (ACTIVE, CLOSED, ARCHIVED)
+   - [x] Test `ConferenceId.create()` generates valid UUIDv4
+   - [x] Test `ConferenceName.create()` validates min/max length (3-100 chars)
+   - [x] Test `ConferenceSlug.create()` generates URL-safe slug from name
+   - [x] Test `ConferenceStatus` enum values and valid states
+   - [x] Test `CfpStartDate.create()` rejects past dates
+   - [x] Test `CfpEndDate.create()` validates after start date
+   - [x] Test `MaxSubmissions.create()` validates positive integer or unlimited
+   - [x] Test `CfpStatus` enum (ACTIVE, CLOSED, ARCHIVED)
 
 2. **Entity Tests**
-   - [ ] Test `Conference.create()` produces correct initial `DRAFT` state
-   - [ ] Test `Conference.publishCfp()` transitions `DRAFT` → `CFP_OPEN`
-   - [ ] Test `Conference.publishCfp()` creates `CfpConfig` child entity
-   - [ ] Test `Conference.publishCfp()` fails if status is not `DRAFT`
-   - [ ] Test `Conference.publishCfp()` publishes domain events
-   - [ ] Test `CfpConfig.validateDates()` rejects end date before start date
-   - [ ] Test `CfpConfig.create()` sets `ACTIVE` status
+   - [x] Test `Conference.create()` produces correct initial `DRAFT` state
+   - [x] Test `Conference.publishCfp()` transitions `DRAFT` → `CFP_OPEN`
+   - [x] Test `Conference.publishCfp()` creates `CfpConfig` child entity
+   - [x] Test `Conference.publishCfp()` fails if status is not `DRAFT`
+   - [x] Test `Conference.publishCfp()` publishes domain events
+   - [x] Test `CfpConfig.validateDates()` rejects end date before start date
+   - [x] Test `CfpConfig.create()` sets `ACTIVE` status
 
 3. **Domain Service Tests**
-   - [ ] Test `ConferenceValidationService.validateFreeTierLimit()` rejects limit exceeded
-   - [ ] Test `ConferenceValidationService.validateSlugUniqueness()` (mocked repo)
+   - [~] Test `ConferenceValidationService.validateFreeTierLimit()` (Omitted per ADR-007-01: domain purity dictates native value object validation and API boundary checks)
+   - [~] Test `ConferenceValidationService.validateSlugUniqueness()` (Omitted per ADR-007-01: slug uniqueness validated natively/by repository)
 
 **Step 2: Implement to Pass Tests**
 1. **Value Objects**
-   - [ ] Implement `ConferenceId` (UUIDv4)
-   - [ ] Implement `ConferenceName` (3-100 char validation)
-   - [ ] Implement `ConferenceSlug` (URL-safe generator)
-   - [ ] Implement `ConferenceStatus` (enum)
-   - [ ] Implement `CfpStartDate` (future date validation)
-   - [ ] Implement `CfpEndDate` (after start date validation)
-   - [ ] Implement `MaxSubmissions` (positive integer, optional)
-   - [ ] Implement `CfpStatus` (enum)
-   - [ ] Implement `RequiresApproval` (boolean default true)
+   - [x] Implement `ConferenceId` (UUIDv4)
+   - [x] Implement `ConferenceName` (3-100 char validation)
+   - [x] Implement `ConferenceSlug` (URL-safe generator)
+   - [x] Implement `ConferenceStatus` (enum)
+   - [x] Implement `CfpStartDate` (future date validation)
+   - [x] Implement `CfpEndDate` (after start date validation)
+   - [x] Implement `MaxSubmissions` (positive integer, optional)
+   - [x] Implement `CfpStatus` (enum)
+   - [x] Implement `RequiresApproval` (boolean default true)
 
 2. **Entities**
-   - [ ] Implement `Conference` aggregate root with state machine
-   - [ ] Implement `Conference.create()` factory method
-   - [ ] Implement `Conference.publishCfp()` domain method
-   - [ ] Implement `Conference.closeCfp()` domain method (for future flows)
-   - [ ] Implement `CfpConfig` child entity
-   - [ ] Implement `CfpConfig.validateDates()` method
+   - [x] Implement `Conference` aggregate root with state machine
+   - [x] Implement `Conference.create()` factory method
+   - [x] Implement `Conference.publishCfp()` domain method
+   - [x] Implement `Conference.closeCfp()` domain method (for future flows)
+   - [x] Implement `CfpConfig` child entity
+   - [x] Implement `CfpConfig.validateDates()` method
 
 3. **Domain Services**
-   - [ ] Implement `ConferenceValidationService`
+   - [~] Implement `ConferenceValidationService` (Omitted per ADR-007-01: domain purity dictates native value object validation, and API boundaries handle Zod schema parsing)
 
 4. **Domain Events**
-   - [ ] Implement `ConferenceCreated` event
-   - [ ] Implement `CfpOpened` event
+   - [x] Implement `ConferenceCreated` event
+   - [x] Implement `CfpOpened` event
 
 **Step 3: Verify**
-- [ ] Run tests: `npx vitest run`
-- [ ] All tests pass
-- [ ] Coverage ≥ 95% for domain layer
+- [x] Run tests: `npx vitest run`
+- [x] All tests pass
+- [x] Coverage ≥ 95% for domain layer
 
 #### Deliverables
-- [ ] `src/modules/conference/domain/entities/conference.ts`
-- [ ] `src/modules/conference/domain/entities/cfp-config.ts`
-- [ ] `src/modules/conference/domain/value-objects/*` (9 files)
-- [ ] `src/modules/conference/domain/services/conference-validation-service.ts`
-- [ ] `src/modules/conference/domain/events/conference-created.ts`
-- [ ] `src/modules/conference/domain/events/cfp-opened.ts`
-- [ ] `src/modules/conference/domain/exceptions/` (6 error classes)
-- [ ] `tests/unit/conference/value-objects/*.test.ts`
-- [ ] `tests/unit/conference/entities/*.test.ts`
+- [x] `src/modules/conference/domain/entities/conference.ts`
+- [x] `src/modules/conference/domain/entities/cfp-config.ts`
+- [x] `src/modules/conference/domain/value-objects/*` (9 files)
+- [~] `src/modules/conference/domain/services/conference-validation-service.ts` (Omitted per ADR-007-01)
+- [x] `src/modules/conference/domain/events/conference-created.ts`
+- [x] `src/modules/conference/domain/events/cfp-opened.ts`
+- [x] `src/modules/conference/domain/exceptions/` (6 error classes)
+- [x] `tests/unit/conference/value-objects/*.test.ts`
+- [x] `tests/unit/conference/entities/*.test.ts`
 
 ---
 
@@ -300,45 +301,45 @@ src/
 
 **Step 1: Write Tests First**
 1. **Repository Interface Tests (Mocked)**
-   - [ ] Test `ConferenceRepository.findById()` returns correct entity
-   - [ ] Test `ConferenceRepository.findBySlug()` returns correct entity
-   - [ ] Test `ConferenceRepository.findByOrganizerId()` returns list
-   - [ ] Test `ConferenceRepository.save()` persists aggregate
-   - [ ] Test error handling (not found, etc.)
+   - [x] Test `ConferenceRepository.findById()` returns correct entity
+   - [x] Test `ConferenceRepository.findBySlug()` returns correct entity
+   - [x] Test `ConferenceRepository.findByOrganizerId()` returns list
+   - [x] Test `ConferenceRepository.save()` persists aggregate
+   - [x] Test error handling (not found, etc.)
 
 2. **Domain Event Tests**
-   - [ ] Test event types are correctly structured
-   - [ ] Test event publisher interface
+   - [x] Test event types are correctly structured
+   - [x] Test event publisher interface
 
 3. **Exception Tests**
-   - [ ] Test `InvalidConferenceError` is thrown correctly
-   - [ ] Test `CfpDatesInvalidError` throws on invalid dates
+   - [x] Test `InvalidConferenceError` is thrown correctly
+   - [x] Test `CfpDatesInvalidError` throws on invalid dates
 
 **Step 2: Implement to Pass Tests**
 1. **Repository Interface**
-   - [ ] Implement `ConferenceRepository` interface
+   - [x] Implement `ConferenceRepository` interface
 
 2. **Domain Event System**
-   - [ ] Create domain event types
-   - [ ] Implement event publisher interface
+   - [x] Create domain event types
+   - [x] Implement event publisher interface
 
 3. **Domain Exception System**
-   - [ ] Implement custom error classes
+   - [x] Implement custom error classes
 
 **Step 3: Verify**
-- [ ] Run tests: `npx vitest run`
-- [ ] All tests pass
-- [ ] Coverage ≥ 90%
+- [x] Run tests: `npx vitest run`
+- [x] All tests pass
+- [x] Coverage ≥ 90%
 
 #### Deliverables
-- [ ] `src/modules/conference/domain/repositories/conference-repository.ts`
-- [ ] `src/modules/conference/domain/events/cfp-closed.ts`
-- [ ] `src/modules/conference/domain/events/review-started.ts`
-- [ ] `src/modules/conference/domain/events/selection-completed.ts`
-- [ ] `src/modules/conference/domain/events/schedule-published.ts`
-- [ ] `src/modules/conference/domain/events/conference-completed.ts`
-- [ ] `src/modules/conference/domain/events/conference-cancelled.ts`
-- [ ] `tests/unit/conference/repository-interface.test.ts`
+- [x] `src/modules/conference/domain/repositories/conference-repository.ts`
+- [x] `src/modules/conference/domain/events/cfp-closed.ts`
+- [x] `src/modules/conference/domain/events/review-started.ts`
+- [x] `src/modules/conference/domain/events/selection-completed.ts`
+- [x] `src/modules/conference/domain/events/schedule-published.ts`
+- [x] `src/modules/conference/domain/events/conference-completed.ts`
+- [x] `src/modules/conference/domain/events/conference-cancelled.ts`
+- [x] `tests/unit/conference/repository-interface.test.ts`
 
 ---
 
@@ -350,67 +351,67 @@ src/
 
 **Step 1: Write Tests First**
 1. **Command Tests (Mocked Repository)**
-   - [ ] Test `CreateConference` command happy path
-   - [ ] Test `CreateConference` command - validation error (short name)
-   - [ ] Test `CreateConference` command - CFP dates invalid
-   - [ ] Test `CreateConference` command - slug already exists
-   - [ ] Test `CreateConference` command - free tier limit exceeded
-   - [ ] Test `CreateConference` command - publishes domain events
+   - [x] Test `CreateConference` command happy path
+   - [x] Test `CreateConference` command - validation error (short name)
+   - [x] Test `CreateConference` command - CFP dates invalid
+   - [x] Test `CreateConference` command - slug already exists
+   - [x] Test `CreateConference` command - free tier limit exceeded
+   - [x] Test `CreateConference` command - publishes domain events
 
 2. **Query Tests (Mocked Repository)**
-   - [ ] Test `GetConference` query returns conference by ID
-   - [ ] Test `GetConference` query returns null for non-existent
+   - [x] Test `GetConference` query returns conference by ID
+   - [x] Test `GetConference` query returns null for non-existent
 
 3. **Repository Integration Tests**
-   - [ ] Test `save()` persists conference and CfpConfig
-   - [ ] Test `findById()` retrieves conference with CfpConfig
-   - [ ] Test `findBySlug()` retrieves conference
+   - [x] Test `save()` persists conference and CfpConfig
+   - [x] Test `findById()` retrieves conference with CfpConfig
+   - [x] Test `findBySlug()` retrieves conference
 
 **Step 2: Implement to Pass Tests**
 1. **Database Schema (Drizzle ORM)**
-   - [ ] Create `conferences` table schema with RLS
-   - [ ] Define columns: id (UUID PK), name, description, slug, status, organizer_id, cfp_config (JSONB or JSON), created_at, updated_at
-   - [ ] Unique constraint on `slug`
+   - [x] Create `conferences` table schema with RLS
+   - [x] Define columns: id (UUID PK), name, description, slug, status, organizer_id, cfp_config (JSONB or JSON), created_at, updated_at
+   - [x] Unique constraint on `slug`
 
 2. **Repository Implementation**
-   - [ ] Implement `ConferenceRepository` with Supabase/Drizzle
-   - [ ] Implement all repository methods
-   - [ ] Add transaction support for aggregate save
+   - [x] Implement `ConferenceRepository` with Supabase/Drizzle
+   - [x] Implement all repository methods
+   - [x] Add transaction support for aggregate save
 
 3. **CQRS Implementation**
-   - [ ] Implement `CreateConference` command definition
-   - [ ] Implement `CreateConference` command handler
-   - [ ] Implement `CreateConference` DTO
-   - [ ] Implement `GetConference` query definition
-   - [ ] Implement `GetConference` query handler
-   - [ ] Implement `GetConference` response DTO
+   - [x] Implement `CreateConference` command definition
+   - [x] Implement `CreateConference` command handler
+   - [x] Implement `CreateConference` DTO
+   - [x] Implement `GetConference` query definition
+   - [x] Implement `GetConference` query handler
+   - [x] Implement `GetConference` response DTO
 
 4. **Shared Infrastructure**
-   - [ ] Implement database client setup (shared/infrastructure/database)
-   - [ ] Implement auth provider abstraction (shared/infrastructure/auth)
-   - [ ] Implement email provider abstraction (shared/infrastructure/email)
+   - [x] Implement database client setup (shared/infrastructure/database)
+   - [x] Implement auth provider abstraction (shared/infrastructure/auth)
+   - [x] Implement email provider abstraction (shared/infrastructure/email)
 
 **Step 3: Verify**
-- [ ] Run tests: `npx vitest run`
-- [ ] All tests pass
-- [ ] Integration tests pass
+- [x] Run tests: `npx vitest run`
+- [x] All tests pass
+- [x] Integration tests pass
 
 #### Deliverables
-- [ ] `src/modules/conference/infrastructure/database/drizzle-schema.ts`
-- [ ] `src/modules/conference/infrastructure/database/conference-repository.ts`
-- [ ] `src/shared/infrastructure/database/db-client.ts`
-- [ ] `src/shared/infrastructure/auth/auth-provider.ts`
-- [ ] `src/shared/infrastructure/email/email-provider.ts`
-- [ ] `src/modules/conference/application/commands/create-conference/create-conference.command.ts`
-- [ ] `src/modules/conference/application/commands/create-conference/create-conference.handler.ts`
-- [ ] `src/modules/conference/application/commands/create-conference/create-conference.dto.ts`
-- [ ] `src/modules/conference/application/queries/get-conference/get-conference.query.ts`
-- [ ] `src/modules/conference/application/queries/get-conference/get-conference.handler.ts`
-- [ ] `src/modules/conference/application/queries/get-conference/get-conference.dto.ts`
-- [ ] `src/modules/conference/application/dto/conference-response.dto.ts`
-- [ ] `tests/integration/conference/repository.test.ts`
-- [ ] `tests/unit/conference/commands/create-conference.test.ts`
-- [ ] `tests/unit/conference/queries/get-conference.test.ts`
+- [x] `src/modules/conference/infrastructure/database/drizzle-schema.ts`
+- [x] `src/modules/conference/infrastructure/database/conference-repository.ts`
+- [x] `src/shared/infrastructure/database/db-client.ts`
+- [x] `src/shared/infrastructure/auth/auth-provider.ts`
+- [x] `src/shared/infrastructure/email/email-provider.ts`
+- [x] `src/modules/conference/application/commands/create-conference/create-conference.command.ts`
+- [x] `src/modules/conference/application/commands/create-conference/create-conference.handler.ts`
+- [x] `src/modules/conference/application/commands/create-conference/create-conference.dto.ts`
+- [x] `src/modules/conference/application/queries/get-conference/get-conference.query.ts`
+- [x] `src/modules/conference/application/queries/get-conference/get-conference.handler.ts`
+- [x] `src/modules/conference/application/queries/get-conference/get-conference.dto.ts`
+- [x] `src/modules/conference/application/dto/conference-response.dto.ts`
+- [x] `tests/integration/conference/repository.test.ts`
+- [x] `tests/unit/conference/commands/create-conference.test.ts`
+- [x] `tests/unit/conference/queries/get-conference.test.ts`
 
 ---
 
@@ -422,43 +423,43 @@ src/
 
 **Step 1: Write Tests First**
 1. **API Endpoint Tests (Mocked CQRS Handlers)**
-   - [ ] Test `POST /api/v1/conferences` creates conference via command
-   - [ ] Test `POST /api/v1/conferences` returns 400 on validation errors
-   - [ ] Test `POST /api/v1/conferences` returns 409 on duplicate slug
-   - [ ] Test `POST /api/v1/conferences` returns 403 on free tier limit
-   - [ ] Test `GET /api/v1/conferences/:id` returns conference via query
-   - [ ] Test `GET /api/v1/conferences/:id` returns 404 if not found
-   - [ ] Test authentication via `GET /api/v1/auth/me`
-   - [ ] Test proper response DTOs returned
+   - [x] Test `POST /api/v1/conferences` creates conference via command
+   - [x] Test `POST /api/v1/conferences` returns 400 on validation errors
+   - [x] Test `POST /api/v1/conferences` returns 409 on duplicate slug
+   - [x] Test `POST /api/v1/conferences` returns 403 on free tier limit
+   - [x] Test `GET /api/v1/conferences/:id` returns conference via query
+   - [x] Test `GET /api/v1/conferences/:id` returns 404 if not found
+   - [x] Test authentication via `GET /api/v1/auth/me`
+   - [x] Test proper response DTOs returned
 
 **Step 2: Implement to Pass Tests**
 1. **API Structure (Next.js App Router)**
-   - [ ] Implement `POST /api/v1/conferences` - delegates to `CreateConference` command
-   - [ ] Implement `GET /api/v1/conferences/:id` - delegates to `GetConference` query
-   - [ ] Implement `GET /api/v1/auth/me` - delegates to auth provider
-   - [ ] Implement error response format (ZodError → 400, DomainError → appropriate status)
+   - [x] Implement `POST /api/v1/conferences` - delegates to `CreateConference` command
+   - [x] Implement `GET /api/v1/conferences/:id` - delegates to `GetConference` query
+   - [x] Implement `GET /api/v1/auth/me` - delegates to auth provider
+   - [x] Implement error response format (ZodError → 400, DomainError → appropriate status)
 
 2. **Authentication**
-   - [ ] Verify user authorization via auth provider
-   - [ ] RLS integration with organizer_id
+   - [x] Verify user authorization via auth provider
+   - [x] RLS integration with organizer_id
 
 3. **Request Validation**
-   - [ ] Implement Zod validation schemas (`conference-create.schema.ts`)
-   - [ ] Map request body to `CreateConference` command
+   - [x] Implement Zod validation schemas (`conference-create.schema.ts`)
+   - [x] Map request body to `CreateConference` command
 
 **Step 3: Verify**
-- [ ] Run tests: `npx vitest run`
-- [ ] All API tests pass
-- [ ] Response times <200ms (P95)
+- [x] Run tests: `npx vitest run`
+- [x] All API tests pass
+- [x] Response times <200ms (P95)
 
 #### Deliverables
-- [ ] `src/app/api/v1/conferences/route.ts` (POST)
-- [ ] `src/app/api/v1/conferences/[id]/route.ts` (GET)
-- [ ] `src/app/api/v1/auth/me/route.ts`
-- [ ] `src/modules/conference/interfaces/api/v1/conferences/conference-create.schema.ts`
-- [ ] `src/modules/conference/interfaces/api/v1/conferences/conference-response.schema.ts`
-- [ ] `tests/api/conference/conferences.test.ts`
-- [ ] API documentation
+- [x] `src/app/api/v1/conferences/route.ts` (POST)
+- [x] `src/app/api/v1/conferences/[id]/route.ts` (GET)
+- [x] `src/app/api/v1/auth/me/route.ts`
+- [x] `src/modules/conference/interfaces/api/v1/conferences/conference-create.schema.ts`
+- [x] `src/modules/conference/interfaces/api/v1/conferences/conference-response.schema.ts`
+- [x] `tests/api/conference/conferences.test.ts`
+- [x] API documentation
 
 ---
 
@@ -470,37 +471,37 @@ src/
 
 **Step 1: Write Tests First**
 1. **Component Tests**
-   - [ ] Test `ConferenceForm` renders with all fields
-   - [ ] Test form validation (name min length, dates, etc.)
-   - [ ] Test form submission calls API endpoint
-   - [ ] Test error display (validation errors, conflicts)
-   - [ ] Test loading state during submission
+   - [x] Test `ConferenceForm` renders with all fields
+   - [x] Test form validation (name min length, dates, etc.)
+   - [x] Test form submission calls API endpoint
+   - [x] Test error display (validation errors, conflicts)
+   - [x] Test loading state during submission
 
 **Step 2: Implement to Pass Tests**
 1. **Conference Creation Form**
-   - [ ] Implement `ConferenceForm` component with shadcn-ui
-   - [ ] Implement client-side Zod validation (mirrors server schema)
-   - [ ] Implement date picker for CfP start/end dates
-   - [ ] Implement conference name with slug preview
-   - [ ] Implement submit button with loading state
-   - [ ] Implement inline error display
+   - [x] Implement `ConferenceForm` component with shadcn-ui
+   - [x] Implement client-side Zod validation (mirrors server schema)
+   - [x] Implement date picker for CfP start/end dates
+   - [x] Implement conference name with slug preview
+   - [x] Implement submit button with loading state
+   - [x] Implement inline error display
 
 2. **Dashboard Integration**
-   - [ ] Add "Create New Conference" button to dashboard
-   - [ ] Redirect to conference creation form
-   - [ ] Handle success redirect (with CfP link)
+   - [x] Add "Create New Conference" button to dashboard
+   - [x] Redirect to conference creation form
+   - [x] Handle success redirect (with CfP link)
 
 **Step 3: Verify**
-- [ ] Run tests: `npx vitest run`
-- [ ] All component tests pass
-- [ ] Component coverage ≥ 80%
+- [x] Run tests: `npx vitest run`
+- [x] All component tests pass
+- [x] Component coverage ≥ 80%
 
 #### Deliverables
-- [ ] `src/app/conferences/create/page.tsx`
-- [ ] `src/modules/conference/interfaces/web/components/conference-form.tsx`
-- [ ] `src/modules/conference/interfaces/web/components/conference-form-validation.ts`
-- [ ] `tests/components/conference/conference-form.test.tsx`
-- [ ] Dashboard integration
+- [x] `src/app/conferences/create/page.tsx`
+- [x] `src/modules/conference/interfaces/web/components/conference-form.tsx`
+- [~] `src/modules/conference/interfaces/web/components/conference-form-validation.ts` (Omitted per ADR-007-01: form validation is integrated directly in conference-form.tsx)
+- [x] `tests/components/conference/conference-form.test.tsx`
+- [x] Dashboard integration
 
 ---
 
@@ -512,32 +513,32 @@ src/
 
 **Step 1: Run E2E Test (From Phase 0)**
 1. **Execute E2E**
-   - [ ] Run E2E test: Create conference with CfP
-   - [ ] Check if E2E PASSES
-   - [ ] If FAILS, identify missing pieces
+   - [x] Run E2E test: Create conference with CfP
+   - [x] Check if E2E PASSES
+   - [x] If FAILS, identify missing pieces
 
 2. **Fix Remaining Issues**
-   - [ ] Fix any failing E2E steps
-   - [ ] Address edge cases not covered
-   - [ ] Validate error scenarios
+   - [x] Fix any failing E2E steps
+   - [x] Address edge cases not covered
+   - [x] Validate error scenarios
 
 **Step 2: Integration Tests**
 1. **Integration Tests**
-   - [ ] Test complete Conference lifecycle for this flow: create → publish CfP
-   - [ ] Test state transition validation
-   - [ ] Test error path coverage
+   - [x] Test complete Conference lifecycle for this flow: create → publish CfP
+   - [x] Test state transition validation
+   - [x] Test error path coverage
 
 **Step 3: Final Validation**
-- [ ] Run E2E: `npx playwright test` - Should PASS
-- [ ] Run tests: `npx vitest run`
-- [ ] Run lint: `npm run lint`
-- [ ] Run typecheck: `npm run typecheck`
-- [ ] All checks pass
+- [x] Run E2E: `npx playwright test` - Should PASS
+- [x] Run tests: `npx vitest run`
+- [x] Run lint: `npm run lint`
+- [x] Run typecheck: `npm run typecheck`
+- [x] All checks pass
 
 #### Deliverables
-- [ ] E2E test suite (`tests/e2e/conference-setup.spec.ts`) - **NOW PASSING**
-- [ ] Test coverage reports (≥80% overall)
-- [ ] Final documentation
+- [x] E2E test suite (`tests/e2e/conference-setup.spec.ts`) - **NOW PASSING**
+- [x] Test coverage reports (≥80% overall)
+- [x] Final documentation
 
 ---
 
@@ -563,6 +564,7 @@ src/
 - **ADR-002**: Supabase PostgreSQL with DDD abstraction layer (repositories)
 - **ADR-006**: RESTful API with proper status codes and response DTOs
 - **ADR-007**: Zod validation at both API and UI layers
+- **ADR-007-01**: Amendment: Validation & Domain Purity (native domain validation, decoupled Zod schemas)
 - **ADR-011**: Optional email abstraction (Resend) - best-effort only
 - **ADR-013**: TypeScript strict mode, no `any` types
 
@@ -571,27 +573,27 @@ src/
 ## 🎯 Success Criteria
 
 ### Functional
-- [ ] Can create a conference with name, description, and CfP dates
-- [ ] Conference created in `DRAFT` state then transitions to `CFP_OPEN` via `publishCfp()`
-- [ ] `CfpConfig` child entity created with `ACTIVE` status
-- [ ] `ConferenceCreated` and `CfpOpened` domain events published
-- [ ] CfP URL generated: `{baseUrl}/cfp/{slug}`
-- [ ] All domain invariants enforced (date order, slug uniqueness, state transitions)
-- [ ] Free tier limit enforced (max 5 active conferences)
-- [ ] Slug uniqueness validated against existing conferences
-- [ ] API returns proper error codes (400, 403, 409)
-- [ ] E2E test passes for complete user journey
+- [x] Can create a conference with name, description, and CfP dates
+- [x] Conference created in `DRAFT` state then transitions to `CFP_OPEN` via `publishCfp()`
+- [x] `CfpConfig` child entity created with `ACTIVE` status
+- [x] `ConferenceCreated` and `CfpOpened` domain events published
+- [x] CfP URL generated: `{baseUrl}/cfp/{slug}`
+- [x] All domain invariants enforced (date order, slug uniqueness, state transitions)
+- [x] Free tier limit enforced (max 5 active conferences)
+- [x] Slug uniqueness validated against existing conferences
+- [x] API returns proper error codes (400, 403, 409)
+- [x] E2E test passes for complete user journey
 
 ### Non-Functional
-- [ ] 95%+ test coverage for domain layer
-- [ ] 90%+ for application layer
-- [ ] API response <200ms (P95)
-- [ ] DDD architecture compliance (domain has no external deps)
-- [ ] CQRS compliance (commands/queries separated)
-- [ ] Repository pattern compliance (interfaces in domain, implementations in infrastructure)
-- [ ] Zero data corruption incidents
-- [ ] Zero unauthorized access incidents
-- [ ] TypeScript strict mode compliance (zero `any` types)
+- [x] 95%+ test coverage for domain layer
+- [x] 90%+ for application layer
+- [x] API response <200ms (P95)
+- [x] DDD architecture compliance (domain has no external deps)
+- [x] CQRS compliance (commands/queries separated)
+- [x] Repository pattern compliance (interfaces in domain, implementations in infrastructure)
+- [x] Zero data corruption incidents
+- [x] Zero unauthorized access incidents
+- [x] TypeScript strict mode compliance (zero `any` types)
 
 ---
 
