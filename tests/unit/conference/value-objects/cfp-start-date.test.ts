@@ -16,7 +16,6 @@ describe('CfpStartDate', () => {
     expect(startDate.value).toBe(today);
   });
 
-
   it('creates from ISO string', () => {
     const isoString = '2026-08-01T00:00:00.000Z';
     const startDate = CfpStartDate.fromISOString(isoString);

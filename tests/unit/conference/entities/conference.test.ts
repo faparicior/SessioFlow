@@ -31,7 +31,7 @@ describe('Conference', () => {
         organizerId: 'org-123',
         cfpStartDate: pastDate,
         cfpEndDate: new Date('2026-09-30'),
-      })
+      }),
     ).toThrow('CfpStartDate must be in the future or today');
   });
 
