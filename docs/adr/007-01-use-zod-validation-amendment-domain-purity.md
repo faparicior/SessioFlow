@@ -31,10 +31,10 @@ To satisfy both domain purity and robust input validation, we adopt the **Decoup
    * Value Objects validate their invariants natively using standard language features (e.g., throwing custom typed exceptions like `ConferenceNameTooShortError`).
    * No `zod` imports are allowed within the `domain/` directory.
 
-2. **Zod Validation at the API Route Entry (Boundary)**:
+2. **Zod Validation & Sanitization at API Boundaries**:
    * Next.js API routes use standalone Zod schemas (e.g., `ConferenceCreateSchema`) to validate request structure and types (syntactic contract validation).
-   * Schema validations are strictly syntactic (e.g. format, basic type presence) and do not replicate business rules (such as string length or date bounds).
-   * If parsing fails, the API route returns a structured `400 Bad Request` with Zod validation details (`z.treeifyError(err)`).
+   * API routes use corresponding response schemas (e.g., `ConferenceResponseSchema`) to parse and sanitize outgoing DTOs, ensuring internal properties are stripped and matching the documented contract.
+   * If input parsing fails, the API route returns a structured `400 Bad Request` with Zod validation details (`z.treeifyError(err)`).
 
 3. **Frontend Independent Validation**:
    * The frontend form components execute client-side validation for instant UX feedback.
@@ -46,7 +46,8 @@ To satisfy both domain purity and robust input validation, we adopt the **Decoup
 
 * **Positive:**
   * **Domain Purity**: Bypasses any temptation to couple domain rules with API schemas in Next.js.
-  * **Clean API Contracts**: The Zod schema serves as a clear entry gatekeeper for the API.
+  * **Clean API Contracts**: Zod schemas serve as clear entry and exit gatekeepers for the API.
+  * **Payload Sanitization**: Response schemas automatically filter out internal database metadata or auditing fields before sending responses.
   * **Minimal Duplication**: API schema only validates formats/types, while business validation resides entirely in the domain.
   * **Dynamic UI Mapping**: Errors from both layers (structural and business rules) are mapped inline, preserving a high-quality user experience.
 
