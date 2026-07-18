@@ -10,7 +10,7 @@ type ConferenceResponse = {
 
 type ApiResponse = {
   data?: ConferenceResponse;
-  error?: {code?: string; message?: string};
+  error?: {code?: string; message?: string; details?: Record<string, string[]>};
 };
 
 function assumeType<T>(value: unknown): asserts value is T {
@@ -60,6 +60,7 @@ export default function CreateConferencePage() {
       return {
         success: false,
         errors: [{code: error.code, message: error.message ?? 'An error occurred'}],
+        details: error.details,
       };
     } catch (error) {
       console.error('[CreatePage] Conference creation error:', error);

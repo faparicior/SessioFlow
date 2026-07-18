@@ -4,7 +4,7 @@
 * **Date:** 2026-06-05
 * **Decision Makers:** Product Team, Technical Lead
 * **Supersedes:** N/A
-* **Amended By:** N/A
+* **Amended By:** [007-01-Use Zod Validation Amendment: Domain Purity and Decoupled Layers](file:///home/fernando/src/sessioflow/docs/adr/007-01-use-zod-validation-amendment-domain-purity.md)
 
 ## Context and Problem Statement
 

@@ -20,7 +20,7 @@ const validationErrorResponseSchema = z.object({
     code: z.string(),
     details: z.object({
       properties: z.object({
-        name: z.object({
+        cfpStartDate: z.object({
           errors: z.array(z.string()),
         }),
       }),
@@ -99,9 +99,9 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
   it('returns 400 for validation errors (Zod)', async () => {
     const request = createNextRequest('POST', '/api/v1/conferences', {
-      name: 'Ab', // Too short - will fail Zod validation
+      name: 'Tech Conference',
       organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: '2026-08-01',
+      cfpStartDate: 'invalid-date', // Fails Zod validation
       cfpEndDate: '2026-09-30',
     });
 
@@ -115,8 +115,42 @@ describe('Conference API - POST /api/v1/conferences', () => {
     const body = await response.json();
     const parsed = validationErrorResponseSchema.parse(body);
     expect(parsed.error.code).toBe('VALIDATION_ERROR');
-    expect(parsed.error.details.properties.name.errors).toHaveLength(1);
-    expect(parsed.error.details.properties.name.errors[0]).toContain('at least 3 characters');
+    expect(parsed.error.details.properties.cfpStartDate.errors).toHaveLength(1);
+    expect(parsed.error.details.properties.cfpStartDate.errors[0]).toContain('valid date');
+  });
+
+  it('returns 400 for validation errors (domain)', async () => {
+    vi.spyOn(mockCreateConferenceHandler, 'execute').mockResolvedValue({
+      success: false,
+      errors: [
+        {
+          code: 'NAME_TOO_SHORT',
+          message: 'ConferenceName must be at least 3 characters',
+        },
+      ],
+    });
+
+    const request = createNextRequest('POST', '/api/v1/conferences', {
+      name: 'Ab', // Too short - will fail domain validation
+      organizerId: '12345678-1234-4123-8123-123456789012',
+      cfpStartDate: '2026-08-01',
+      cfpEndDate: '2026-09-30',
+    });
+
+    const response = await handleConferenceCreate(
+      request,
+      mockCreateConferenceHandler,
+      mockGetAuthUser,
+    );
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body).toEqual({
+      error: {
+        code: 'NAME_TOO_SHORT',
+        message: expect.stringContaining('at least 3 characters'),
+      },
+    });
   });
 
   it('returns 409 for duplicate slug', async () => {

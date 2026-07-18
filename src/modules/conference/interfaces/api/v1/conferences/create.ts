@@ -25,9 +25,10 @@ export async function handleConferenceCreate(
       );
     }
 
-    // 2. Parse and validate request body
+    // 2. Parse and validate request body contract
     const body = (await request.json()) as unknown;
     const parsed = ConferenceCreateSchema.safeParse(body);
+    
     if (!parsed.success) {
       return NextResponse.json(
         {
@@ -42,7 +43,11 @@ export async function handleConferenceCreate(
     }
 
     // 3. Execute CQRS command
-    const command = new CreateConferenceCommand(parsed.data);
+    const command = new CreateConferenceCommand({
+      ...parsed.data,
+      organizerId: user.id,
+    });
+    
     const result = await createConferenceHandler.execute(command);
 
     if (!result.success) {
@@ -77,3 +82,4 @@ export async function handleConferenceCreate(
     );
   }
 }
+

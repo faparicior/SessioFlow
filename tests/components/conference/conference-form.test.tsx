@@ -72,6 +72,10 @@ describe('ConferenceForm Component', () => {
 
   it('submits form with valid data', async () => {
     const user = userEvent.setup();
+    mockCreateConference.mockResolvedValue({
+      success: true,
+      data: {id: 'test-id'},
+    });
     render(<ConferenceForm onSubmit={mockCreateConference} />);
 
     const nameInput = screen.getByLabelText(/conference name/i);
