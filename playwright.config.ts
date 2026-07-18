@@ -13,6 +13,7 @@ export default defineConfig({
   workers: 1,
   reporter: 'html',
   globalSetup: require.resolve('./tests/e2e/setup'),
+  globalTeardown: require.resolve('./tests/e2e/teardown'),
   use: {
     baseURL: 'http://localhost:3010',
     trace: 'on-first-retry',
