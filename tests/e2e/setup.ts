@@ -1,4 +1,5 @@
 import * as path from 'node:path';
+import {execSync} from 'node:child_process';
 import * as dotenv from 'dotenv';
 import postgres from 'postgres';
 
@@ -6,16 +7,58 @@ export default async function setup() {
   // Load environment variables from .env.local
   dotenv.config({path: path.resolve(process.cwd(), '.env.local')});
 
-  // Clean up test conferences to avoid hitting free tier limit
+  console.log('[E2E Setup] Starting Docker Compose...');
+  try {
+    execSync('docker compose up -d', {stdio: 'inherit'});
+  } catch (error) {
+    console.error('[E2E Setup] Failed to start Docker Compose:', error);
+    throw error;
+  }
+
   const connectionString = process.env.DATABASE_URL;
-  if (connectionString) {
+  if (!connectionString) {
+    throw new Error('DATABASE_URL is not set in environment variables');
+  }
+
+  // Poll database until connection is ready (up to 30 seconds)
+  console.log('[E2E Setup] Waiting for database to be ready...');
+  let retries = 30;
+  let sql;
+  /* eslint-disable no-await-in-loop */
+  while (retries > 0) {
     try {
-      const sql = postgres(connectionString);
-      await sql`DELETE FROM conferences WHERE organizer_id = 'mock-user-id'`;
+      sql = postgres(connectionString);
+      // Run a simple query to verify connection
+      await sql`SELECT 1`;
       await sql.end();
-      console.log('[E2E Setup] Cleaned up test conferences');
+      console.log('[E2E Setup] Database is ready');
+      break;
     } catch (error) {
-      console.error('[E2E Setup] Failed to clean up databases:', error);
+      retries--;
+      if (sql) {
+        await sql.end();
+      }
+
+      if (retries === 0) {
+        console.error('[E2E Setup] Database connection timed out');
+        throw error;
+      }
+
+      // Wait 1 second before retrying
+      await new Promise<void>(resolve => {
+        setTimeout(resolve, 1000);
+      });
     }
+  }
+  /* eslint-enable no-await-in-loop */
+
+  // Clean up test conferences to avoid hitting free tier limit
+  try {
+    const cleanSql = postgres(connectionString);
+    await cleanSql`DELETE FROM conferences WHERE organizer_id = 'mock-user-id'`;
+    await cleanSql.end();
+    console.log('[E2E Setup] Cleaned up test conferences');
+  } catch (error) {
+    console.error('[E2E Setup] Failed to clean up databases:', error);
   }
 }
