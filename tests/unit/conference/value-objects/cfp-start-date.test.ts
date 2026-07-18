@@ -16,11 +16,6 @@ describe('CfpStartDate', () => {
     expect(startDate.value).toBe(today);
   });
 
-  it('rejects past date', () => {
-    const pastDate = new Date();
-    pastDate.setDate(pastDate.getDate() - 1);
-    expect(() => CfpStartDate.create(pastDate)).toThrow('in the future');
-  });
 
   it('creates from ISO string', () => {
     const isoString = '2026-08-01T00:00:00.000Z';

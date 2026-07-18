@@ -9,8 +9,8 @@
 
 export class CfpStartDate implements CfpStartDate {
   static create(date: Date): CfpStartDate {
-    if (date.getTime() < new Date().setHours(0, 0, 0, 0)) {
-      throw new Error('CfpStartDate must be in the future or today');
+    if (Number.isNaN(date.getTime())) {
+      throw new Error('CfpStartDate must be a valid date');
     }
 
     return new CfpStartDate(date);

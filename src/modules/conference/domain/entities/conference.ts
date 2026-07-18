@@ -60,6 +60,12 @@ export class Conference {
     maxSubmissions?: number;
     requiresApproval?: boolean;
   }): Conference {
+    // Temporal business rule checked at the creation boundary of the entity:
+    const now = new Date().setHours(0, 0, 0, 0);
+    if (parameters.cfpStartDate.getTime() < now) {
+      throw new Error('CfpStartDate must be in the future or today');
+    }
+
     return this.createFromData({
       id: ConferenceId.create(),
       name: ConferenceName.create(parameters.name),

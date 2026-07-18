@@ -51,11 +51,11 @@ Scenario: Name too long
 * No async effects - this is a synchronous validation rule.
 
 ## 4. System Enforcement (How It's Handled)
-*Unlike an invariant (which sits strictly inside an Aggregate Root), a business rule can be enforced via Domain Services, Policy objects, or workflow orchestration (like n8n or Saga patterns).*
+*Enforced as a **Domain Invariant** directly within the Value Object (`ConferenceName`) and the `Conference` Aggregate Root.*
 
 * **Enforcement Layer:** Value Object (`ConferenceName`) and Zod validation schema
 * **Handling Violations/Exceptions:** 
-  * Throws `InvalidConferenceNameError` domain exception
+  * Throws `InvalidConferenceNameError` or native constructor validation errors
   * HTTP/API returns 422 Unprocessable Entity
   * Form displays inline validation error in real-time
   * No state changes occur; transaction is aborted
