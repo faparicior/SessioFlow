@@ -32,7 +32,8 @@ type ConferenceFormProps = {
   ) => Promise<{
     success: boolean;
     data?: unknown;
-    errors?: Array<{message: string}>;
+    errors?: Array<{code?: string; message: string}>;
+    details?: Record<string, string[]>;
   }>;
   readonly onSuccess?: (data: unknown) => void;
 };
@@ -134,7 +135,26 @@ export function ConferenceForm({onSubmit, onSuccess}: ConferenceFormProps) {
           }
         }
       } else if (result.errors) {
-        setErrors({general: result.errors[0]?.message ?? 'An error occurred'});
+        const newErrors: FormErrors = {};
+        if (result.details) {
+          Object.entries(result.details).forEach(([field, messages]) => {
+            if (messages && messages.length > 0) {
+              newErrors[field as keyof FormErrors] = messages[0];
+            }
+          });
+        } else {
+          const firstError = result.errors[0];
+          if (firstError) {
+            if (firstError.code === 'NAME_TOO_SHORT') {
+              newErrors.name = firstError.message;
+            } else if (firstError.code === 'CFP_DATES_INVALID') {
+              newErrors.cfpEndDate = firstError.message;
+            } else {
+              newErrors.general = firstError.message;
+            }
+          }
+        }
+        setErrors(newErrors);
       }
     } catch (error) {
       console.error('[Form] Submission error:', error);

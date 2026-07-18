@@ -21,6 +21,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [005-01](005-01-use-supabase-storage-amendment-ddd-abstraction.md) | **Amendment: Storage with DDD Abstraction** | ✅ **Approved** | 2026-06-11 |
 | [006](006-use-restful-api-design.md) | Use RESTful API Design | ✅ Approved | 2026-06-05 |
 | [007](007-use-zod-for-validation.md) | Use Zod for Validation | ✅ Approved | 2026-06-05 |
+| [007-01](007-01-use-zod-validation-amendment-domain-purity.md) | **Amendment: Validation & Domain Purity** | ✅ **Approved** | 2026-07-18 |
 | [008](008-implement-comprehensive-testing-strategy.md) | Implement Comprehensive Testing Strategy | ✅ Approved | 2026-06-05 |
 | [009](009-adopt-domain-driven-design-structure.md) | Adopt Domain-Driven Design Structure | ✅ **Approved** | 2026-06-06 |
 | [010](010-use-tailwind-css-for-styling.md) | Use Tailwind CSS for Styling | ✅ Approved | 2026-06-05 |
@@ -44,6 +45,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 - **002** - Backend/Database: Supabase
 - **002-Amendment** - **Supabase with DDD Abstraction (Updated)**
 - **007** - Validation: Zod
+- **007-Amendment** - **Zod Validation with Domain Purity (Updated)**
 - **009** - **Architecture: Domain-Driven Design**
 - **010** - Styling: Tailwind CSS
 - **013** - Type System: TypeScript Strict Mode
@@ -274,17 +276,17 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 26 (including amendments and analyses) |
-| **Approved** | 19 |
+| **Total ADRs** | 27 (including amendments and analyses) |
+| **Approved** | 20 |
 | **Superseded** | 4 |
 | **Accepted** | 2 |
 | **Completed** | 1 |
 | **Proposed** | 0 |
 | **Optional** | 1 |
-| **Date Range** | 2026-06-05 to 2026-07-10 |
-| **Most Active Category** | Core Technology Stack (6 decisions) |
+| **Date Range** | 2026-06-05 to 2026-07-18 |
+| **Most Active Category** | Core Technology Stack (7 decisions) |
 
 ---
 
-**Last Updated**: 2026-07-10
+**Last Updated**: 2026-07-18
 **Maintained By**: Technical Team

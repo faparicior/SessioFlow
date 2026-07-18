@@ -1,5 +1,3 @@
-import {z} from 'zod';
-
 /**
  * CfpStartDate - The start date of the CfP submission window.
  *
