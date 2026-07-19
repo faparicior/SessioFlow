@@ -24,7 +24,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [007-01](007-01-use-zod-validation-amendment-domain-purity.md) | **Amendment: Validation & Domain Purity** | ✅ **Approved** | 2026-07-18 |
 | [008](008-implement-comprehensive-testing-strategy.md) | Implement Comprehensive Testing Strategy | ✅ Approved | 2026-06-05 |
 | [009](009-adopt-domain-driven-design-structure.md) | Adopt Domain-Driven Design Structure | ✅ **Approved** | 2026-06-06 |
-| [009-01](009-01-monorepo-backend-frontend-separation.md) | Monorepo with Backend/Frontend Separation | ✅ **Approved** | 2026-06-25 |
+| [009-01](009-01-monorepo-backend-frontend-separation.md) | Monorepo with Backend/Frontend Separation | ❌ **Superseded** | 2026-06-25 |
 | [010](010-use-tailwind-css-for-styling.md) | Use Tailwind CSS for Styling | ✅ Approved | 2026-06-05 |
 | [011-00](011-00-use-resend-for-email-communications.md) | Use Resend for Email Communications | ⚠️ Superseded | 2026-06-05 |
 | [011-01](011-01-use-resend-email-amendment-optional-abstraction.md) | **Amendment: Optional Email Abstraction** | ✅ **Approved (Optional)** | 2026-06-11 |
@@ -36,6 +36,10 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [017](017-use-drizzle-orm-with-ddd-transactions.md) | Use Drizzle ORM with Transaction Support at Application Layer | ✅ Approved | 2026-07-01 |
 | [018](018-implement-observability-for-debugging.md) | Implement Observability for AI-Assisted Debugging | ✅ Approved | 2026-07-04 |
 | [019](019-use-ts-archunit-for-architecture-testing.md) | Use ts-archunit for Architecture Testing | ✅ Approved | 2026-07-10 |
+| [020](020-use-api-schema-package-pattern-for-contract-definition.md) | Use API Schema Package Pattern for Contract Definition | ✅ **Proposed** | 2026-07-25 |
+| [021](021-adopt-domain-module-structure-convention.md) | Adopt Domain Module Structure Convention | ✅ **Proposed** | 2026-07-25 |
+| [022](022-accept-frontend-backend-type-decoupling-strategy.md) | Accept Frontend-Backend Type Decoupling Strategy | ✅ **Proposed** | 2026-07-25 |
+| [023](023-superseat-009-01-monorepo-backend-frontend-separation.md) | Superseed 009-01: Comprehensive Monorepo Structure Update | ✅ **Proposed** | 2026-07-25 |
 
 ---
 
@@ -72,16 +76,19 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 ### 🏗️ Infrastructure & Deployment
 - **003** - Containerization: Docker Compose
 - **012** - CI/CD: GitHub Actions
+- **023** - **Monorepo with Backend/Frontend Separation (Superseded)**
 
 ### 🧪 Development Practices
 - **008** - Testing Strategy: Comprehensive Testing
 - **009** - Code Organization: Domain-Driven Design
-- **009-01** - Monorepo with Backend/Frontend Separation
+- **021** - **Domain Module Structure Convention**
+- **022** - **Frontend-Backend Type Decoupling**
 - **014** - UI Components: shadcn-ui
 
 ### 🔄 Application Architecture
 - **015** - **CQRS Pattern for Application Layer**
 - **016** - **Dependency Injection Strategy**
+- **020** - **API Schema Package Pattern**
 
 ### 💾 Data Access & Persistence
 - **017** - **ORM Selection: Drizzle with DDD Transactions**
@@ -278,17 +285,17 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 28 (including amendments and analyses) |
+| **Total ADRs** | 32 (including amendments and analyses) |
 | **Approved** | 21 |
 | **Superseded** | 4 |
 | **Accepted** | 2 |
 | **Completed** | 1 |
-| **Proposed** | 0 |
+| **Proposed** | 4 |
 | **Optional** | 1 |
-| **Date Range** | 2026-06-05 to 2026-07-18 |
+| **Date Range** | 2026-06-05 to 2026-07-25 |
 | **Most Active Category** | Core Technology Stack (7 decisions) |
 
 ---
 
-**Last Updated**: 2026-07-18
+**Last Updated**: 2026-07-25
 **Maintained By**: Technical Team
