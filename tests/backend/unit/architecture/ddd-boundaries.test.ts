@@ -29,12 +29,12 @@ describe('DDD Architecture', () => {
         .check();
     });
 
-    it('domain must not import from src/** external paths', () => {
+    it('domain must not import from external paths', () => {
       modules(p)
         .that()
         .resideInFolder('**/backend/**/modules/**/domain/**')
         .should()
-        .notImportFrom('**/src/**')
+        .notImportFrom('**/frontend/**', '**/../**')
         .check();
     });
 

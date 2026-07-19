@@ -1,8 +1,8 @@
 import {describe, it, expect, vi} from 'vitest';
 import {z} from 'zod';
 import {createNextRequest} from './fixtures';
-import {handleConferenceCreate} from '@backend/modules/conference/interfaces/api/v1/conferences/create';
-import {handleGetConference} from '@backend/modules/conference/interfaces/api/v1/conferences/get';
+import {handleConferenceCreate} from '@backend/modules/conference/interfaces/v1/conferences/create';
+import {handleGetConference} from '@backend/modules/conference/interfaces/v1/conferences/get';
 import type {ConferenceResponseDto} from '@backend/modules/conference/application/dto/conference-response.dto';
 import {CreateConferenceHandler} from '@backend/modules/conference/application/commands/create-conference/create-conference.handler';
 import {GetConferenceHandler} from '@backend/modules/conference/application/queries/get-conference/get-conference.handler';
