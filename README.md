@@ -248,53 +248,45 @@ Key decisions that shape the SessioFlow architecture:
 
 ## 🏗️ Project Structure
 
-SessioFlow follows Domain-Driven Design (DDD) principles with modular architecture and vendor abstraction layers:
+SessioFlow follows Domain-Driven Design (DDD) principles with a **split monorepo** structure that enables independent deployment and backend stack swapping:
 
 ```
-src/
-├── modules/                    # Feature modules (bounded contexts)
-│   ├── conference/             # Conference bounded context
-│   │   ├── domain/             # Domain layer
-│   │   │   ├── conference.ts   # Conference entity
-│   │   │   ├── cfp-config.ts   # CfpConfig child entity
-│   │   │   ├── value-objects/  # ConferenceId, ConferenceName, CfpDates, etc.
-│   │   │   ├── services/       # Domain services
-│   │   │   └── repositories/   # Repository interfaces
-│   │   ├── application/        # Application layer
-│   │   │   └── use-cases/      # CreateConference, PublishCfp, etc.
-│   │   ├── infrastructure/     # Infrastructure layer
-│   │   │   └── database/       # Repository implementations
-│   │   └── interfaces/         # Interface layer
-│   │       └── api/            # API endpoints
-│   ├── submission/             # Submission bounded context
-│   │   ├── domain/
-│   │   ├── application/
-│   │   ├── infrastructure/
-│   │   └── interfaces/
-│   ├── review/                 # Review bounded context
-│   │   ├── domain/
-│   │   ├── application/
-│   │   ├── infrastructure/
-│   │   └── interfaces/
-│   └── scheduling/             # Scheduling bounded context
-│       ├── domain/
-│       ├── application/
-│       ├── infrastructure/
-│       └── interfaces/
+sessioflow/
+├── apps/
+│   ├── backend/                  # Backend service (Node/Go/Kotlin)
+│   │   ├── src/
+│   │   │   ├── modules/
+│   │   │   │   ├── conference/   # Bounded context
+│   │   │   │   │   ├── domain/   # Domain layer (immutable)
+│   │   │   │   │   ├── application/  # Application layer
+│   │   │   │   │   ├── infrastructure/ # Infrastructure layer (swappable)
+│   │   │   │   │   └── interfaces/
+│   │   │   │   │       └── api/    # API contracts (backend-specific)
+│   │   │   └── shared/           # Shared backend utilities
+│   └── frontend/                 # Next.js frontend
+│       └── src/
+│           ├── app/              # Next.js pages
+│           ├── components/       # UI components
+│           └── modules/          # Frontend modules
+│               └── conference/
+│                   └── interfaces/web/  # React components
 │
-└── shared/                     # Cross-cutting concerns
-    ├── domain/                 # Shared domain objects
-    │   ├── user.ts             # User entity
-    │   ├── value-objects/      # UserId, Email, etc.
-    │   └── exceptions/         # Shared exceptions
-    └── infrastructure/         # Shared infrastructure
-        └── database/           # Database client, etc.
+├── packages/                     # Shared packages (utils, etc.)
+│   └── utils/                    # Frontend & backend utilities
+└── docs/                         # Documentation
 ```
+
+**Monorepo Structure Benefits:**
+- ✅ **Backend stack independence** - Swap Node → Go/Kotlin without touching frontend
+- ✅ **Independent deployment** - Backend and frontend can be deployed separately
+- ✅ **DDD purity** - Domain/application layers are encapsulated in backend
+- ✅ **Clear ownership** - Frontend and backend teams work independently
+- ✅ **Reduced migration cost** - 8-14 hours for backend swap (vs 52-336 hours)
 
 **Module-Based Architecture Benefits:**
 - ✅ **High cohesion** - All code for a feature is together
 - ✅ **Independent modules** - Change one feature without affecting others
-- ✅ **Easier navigation** - Find all conference code in `modules/conference/`
+- ✅ **Easier navigation** - Find all conference code in `backend/modules/conference/`
 - ✅ **Better scaling** - Add features without touching existing code
 - ✅ **Clear boundaries** - No accidental dependencies between features
 
