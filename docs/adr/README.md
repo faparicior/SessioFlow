@@ -24,6 +24,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [007-01](007-01-use-zod-validation-amendment-domain-purity.md) | **Amendment: Validation & Domain Purity** | ✅ **Approved** | 2026-07-18 |
 | [008](008-implement-comprehensive-testing-strategy.md) | Implement Comprehensive Testing Strategy | ✅ Approved | 2026-06-05 |
 | [009](009-adopt-domain-driven-design-structure.md) | Adopt Domain-Driven Design Structure | ✅ **Approved** | 2026-06-06 |
+| [009-01](009-01-monorepo-backend-frontend-separation.md) | Monorepo with Backend/Frontend Separation | ✅ **Approved** | 2026-06-25 |
 | [010](010-use-tailwind-css-for-styling.md) | Use Tailwind CSS for Styling | ✅ Approved | 2026-06-05 |
 | [011-00](011-00-use-resend-for-email-communications.md) | Use Resend for Email Communications | ⚠️ Superseded | 2026-06-05 |
 | [011-01](011-01-use-resend-email-amendment-optional-abstraction.md) | **Amendment: Optional Email Abstraction** | ✅ **Approved (Optional)** | 2026-06-11 |
@@ -75,6 +76,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 ### 🧪 Development Practices
 - **008** - Testing Strategy: Comprehensive Testing
 - **009** - Code Organization: Domain-Driven Design
+- **009-01** - Monorepo with Backend/Frontend Separation
 - **014** - UI Components: shadcn-ui
 
 ### 🔄 Application Architecture
@@ -276,8 +278,8 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 27 (including amendments and analyses) |
-| **Approved** | 20 |
+| **Total ADRs** | 28 (including amendments and analyses) |
+| **Approved** | 21 |
 | **Superseded** | 4 |
 | **Accepted** | 2 |
 | **Completed** | 1 |

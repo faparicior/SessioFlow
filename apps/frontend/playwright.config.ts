@@ -6,14 +6,14 @@ import {defineConfig, devices} from '@playwright/test';
  * Tests the complete user journey from form submission to dashboard redirect.
  */
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: './tests/frontend/e2e',
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: 'html',
-  globalSetup: require.resolve('./tests/e2e/setup'),
-  globalTeardown: require.resolve('./tests/e2e/teardown'),
+  globalSetup: require.resolve('./tests/frontend/e2e/setup'),
+  globalTeardown: require.resolve('./tests/frontend/e2e/teardown'),
   use: {
     baseURL: 'http://localhost:3010',
     trace: 'on-first-retry',
