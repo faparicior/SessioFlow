@@ -1,8 +1,8 @@
 import {type NextRequest, NextResponse} from 'next/server';
 import {z} from 'zod';
-import {ConferenceCreateSchema, ConferenceResponseSchema} from './conference-create.schema';
 import {CreateConferenceCommand} from '@backend/modules/conference/application/commands/create-conference/create-conference.command';
 import {type CreateConferenceHandler} from '@backend/modules/conference/application/commands/create-conference/create-conference.handler';
+import {ConferenceCreateSchema, ConferenceResponseSchema} from './conference-create.schema';
 
 /**
  * POST /api/v1/conferences
@@ -26,7 +26,7 @@ export async function handleConferenceCreate(
     }
 
     // 2. Parse and validate request body contract
-    const body = (await request.json()) as unknown;
+    const body = (await request.json());
     const parsed = ConferenceCreateSchema.safeParse(body);
 
     if (!parsed.success) {

@@ -1,5 +1,4 @@
 import {type InferSelectModel, eq} from 'drizzle-orm';
-import {conferencesTable} from './drizzle-schema';
 import {getDb} from '@backend/shared/infrastructure/database/db-client';
 import {type ConferenceRepository} from '@backend/modules/conference/domain/conference-repository';
 import {Conference} from '@backend/modules/conference/domain/conference';
@@ -12,6 +11,7 @@ import {CfpEndDate} from '@backend/modules/conference/domain/value-objects/cfp-e
 import {MaxSubmissions} from '@backend/modules/conference/domain/value-objects/max-submissions';
 import {RequiresApproval} from '@backend/modules/conference/domain/value-objects/requires-approval';
 import {ConferenceName} from '@backend/modules/conference/domain/value-objects/conference-name';
+import {conferencesTable} from './drizzle-schema';
 
 /** Database row type for conferences table (Drizzle $inferSelect). */
 type ConferenceRow = InferSelectModel<typeof conferencesTable>;

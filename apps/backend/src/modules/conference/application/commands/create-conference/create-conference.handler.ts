@@ -1,8 +1,3 @@
-import {type ConferenceResponseDto} from '../../dto/conference-response.dto';
-import {
-  type CreateConferenceCommand,
-  CreateConferenceInput,
-} from './create-conference.command';
 import {Conference} from '@backend/modules/conference/domain/conference';
 import {ConferenceStatus} from '@backend/modules/conference/domain/value-objects/conference-status';
 import {ConferenceCreatedEvent} from '@backend/modules/conference/domain/events/conference-created';
@@ -11,6 +6,11 @@ import {CfpDatesInvalidError} from '@backend/modules/conference/domain/exception
 import {ConferenceNameTooShortError} from '@backend/modules/conference/domain/exceptions/conference-name-too-short-error';
 import {ConferenceFreeTierLimitError} from '@backend/modules/conference/domain/exceptions/conference-free-tier-limit-error';
 import {getLogger, getCorrelationId} from '@backend/shared/infrastructure/logging';
+import {type ConferenceResponseDto} from '../../dto/conference-response.dto';
+import {
+  type CreateConferenceCommand,
+  CreateConferenceInput,
+} from './create-conference.command';
 
 /**
  * Email provider interface (best-effort, no side effects in tests).
