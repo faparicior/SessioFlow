@@ -1,5 +1,5 @@
 import {type ConferenceId} from '../value-objects/conference-id';
-import {type CfpConfig} from '../entities/cfp-config';
+import {type CfpConfig} from '../cfp-config';
 
 /**
  * CfpOpenedEvent - Published when a Conference's CfP is published (DRAFT → CFP_OPEN).

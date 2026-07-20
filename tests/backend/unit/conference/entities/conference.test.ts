@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {Conference} from '@backend/modules/conference/domain/entities/conference';
+import {Conference} from '@backend/modules/conference/domain/conference';
 import {ConferenceStatus} from '@backend/modules/conference/domain/value-objects/conference-status';
 import {CfpStatus} from '@backend/modules/conference/domain/value-objects/cfp-status';
 import {StateTransitionError} from '@backend/modules/conference/domain/exceptions/state-transition-error';

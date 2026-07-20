@@ -1,7 +1,7 @@
 import {beforeEach, describe, it, expect, vi} from 'vitest';
 import {CreateConferenceCommand} from '@backend/modules/conference/application/commands/create-conference/create-conference.command';
 import {CreateConferenceHandler} from '@backend/modules/conference/application/commands/create-conference/create-conference.handler';
-import {Conference} from '@backend/modules/conference/domain/entities/conference';
+import {Conference} from '@backend/modules/conference/domain/conference';
 import {ConferenceStatus} from '@backend/modules/conference/domain/value-objects/conference-status';
 
 // Mock repository

@@ -1,6 +1,6 @@
 import {describe, it, expect} from 'vitest';
-import {Conference} from '@backend/modules/conference/domain/entities/conference';
-import {type ConferenceRepository} from '@backend/modules/conference/domain/repositories/conference-repository';
+import {Conference} from '@backend/modules/conference/domain/conference';
+import {type ConferenceRepository} from '@backend/modules/conference/domain/conference-repository';
 import {ConferenceId} from '@backend/modules/conference/domain/value-objects/conference-id';
 import {ConferenceSlug} from '@backend/modules/conference/domain/value-objects/conference-slug';
 import {ConferenceStatus} from '@backend/modules/conference/domain/value-objects/conference-status';

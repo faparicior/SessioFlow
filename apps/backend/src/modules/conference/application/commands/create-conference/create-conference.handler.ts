@@ -3,7 +3,7 @@ import {
   type CreateConferenceCommand,
   CreateConferenceInput,
 } from './create-conference.command';
-import {Conference} from '@backend/modules/conference/domain/entities/conference';
+import {Conference} from '@backend/modules/conference/domain/conference';
 import {ConferenceStatus} from '@backend/modules/conference/domain/value-objects/conference-status';
 import {ConferenceCreatedEvent} from '@backend/modules/conference/domain/events/conference-created';
 import {CfpOpenedEvent} from '@backend/modules/conference/domain/events/cfp-opened';

@@ -1,6 +1,6 @@
 import {type ConferenceResponseDto} from '../../dto/conference-response.dto';
 import {ConferenceId} from '@backend/modules/conference/domain/value-objects/conference-id';
-import {type ConferenceRepository} from '@backend/modules/conference/domain/repositories/conference-repository';
+import {type ConferenceRepository} from '@backend/modules/conference/domain/conference-repository';
 
 export type GetConferenceResult = {
   success: boolean;

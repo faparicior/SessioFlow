@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {CfpConfig} from '@backend/modules/conference/domain/entities/cfp-config';
+import {CfpConfig} from '@backend/modules/conference/domain/cfp-config';
 import {CfpStartDate} from '@backend/modules/conference/domain/value-objects/cfp-start-date';
 import {CfpEndDate} from '@backend/modules/conference/domain/value-objects/cfp-end-date';
 import {MaxSubmissions} from '@backend/modules/conference/domain/value-objects/max-submissions';

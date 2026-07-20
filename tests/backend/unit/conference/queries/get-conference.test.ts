@@ -1,5 +1,5 @@
 import {beforeEach, describe, it, expect} from 'vitest';
-import {Conference} from '@backend/modules/conference/domain/entities/conference';
+import {Conference} from '@backend/modules/conference/domain/conference';
 import {type ConferenceSlug} from '@backend/modules/conference/domain/value-objects/conference-slug';
 import {type ConferenceStatus} from '@backend/modules/conference/domain/value-objects/conference-status';
 import {type ConferenceId} from '@backend/modules/conference/domain/value-objects/conference-id';
