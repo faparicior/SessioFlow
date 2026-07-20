@@ -2,6 +2,7 @@
   "name": "sessioflow",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@11.6.2",
   "workspaces": [
     "apps/*",
     "packages/*",
@@ -69,6 +70,6 @@
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.9",
-    "xo": "^2.0.2"
+    "xo": "^0.61.1"
   }
 }

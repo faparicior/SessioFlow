@@ -12,7 +12,12 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:architecture": "vitest run tests/unit/architecture/ddd-boundaries.test.ts"
+    "test:architecture": "vitest run tests/unit/architecture/ddd-boundaries.test.ts",
+    "postinstall": "drizzle-kit generate",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@sessioflow/api-definitions": "*",
@@ -38,7 +43,6 @@
     "@vitest/ui": "^4.1.9",
     "dotenv": "^17.4.2",
     "drizzle-kit": "^0.31.10",
-    "eslint-config-xo": "^2.0.2",
     "postgres": "^3.4.9",
     "tsx": "^4.23.0",
     "typescript": "^5",

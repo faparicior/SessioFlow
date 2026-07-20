@@ -7,8 +7,8 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "lint": "xo",
+    "lint:fix": "xo --fix",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
