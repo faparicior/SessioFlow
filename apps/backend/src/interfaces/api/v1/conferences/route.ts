@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
   try {
     // 1. Parse and validate request body
-    const body = await request.json() as unknown;
+    const body = await request.json();
     logger.debug('[API] Request body', {body});
     const parsed = ConferenceCreateSchema.safeParse(body);
 

@@ -5,8 +5,8 @@ import {type ConferenceSlug} from './value-objects/conference-slug';
 /**
  * Repository interface for Conference aggregate root.
  */
-export interface ConferenceRepository {
+export type ConferenceRepository = {
   save(conference: Conference): Promise<void>;
   findById(id: ConferenceId): Promise<Conference | undefined>;
   findBySlug(slug: ConferenceSlug): Promise<Conference | undefined>;
-}
+};

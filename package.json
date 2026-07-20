@@ -14,6 +14,7 @@
     "dev": "npx turbo dev",
     "build": "npx turbo build",
     "lint": "npx turbo lint",
+    "lint:fix": "npx turbo lint:fix",
     "typecheck": "npm run typecheck --workspace=apps/backend && npm run typecheck --workspace=apps/frontend",
     "test": "vitest run",
     "dev:backend": "npm run dev --workspace=apps/backend",
