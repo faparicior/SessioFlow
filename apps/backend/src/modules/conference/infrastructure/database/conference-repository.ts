@@ -1,12 +1,12 @@
 import {type InferSelectModel, eq} from 'drizzle-orm';
 import {conferencesTable} from './drizzle-schema';
 import {getDb} from '@backend/shared/infrastructure/database/db-client';
-import {type ConferenceRepository} from '@backend/modules/conference/domain/repositories/conference-repository';
-import {Conference} from '@backend/modules/conference/domain/entities/conference';
+import {type ConferenceRepository} from '@backend/modules/conference/domain/conference-repository';
+import {Conference} from '@backend/modules/conference/domain/conference';
 import {ConferenceId} from '@backend/modules/conference/domain/value-objects/conference-id';
 import {ConferenceSlug} from '@backend/modules/conference/domain/value-objects/conference-slug';
 import {type ConferenceStatus, ConferenceStatusFromString} from '@backend/modules/conference/domain/value-objects/conference-status';
-import {CfpConfig} from '@backend/modules/conference/domain/entities/cfp-config';
+import {CfpConfig} from '@backend/modules/conference/domain/cfp-config';
 import {CfpStartDate} from '@backend/modules/conference/domain/value-objects/cfp-start-date';
 import {CfpEndDate} from '@backend/modules/conference/domain/value-objects/cfp-end-date';
 import {MaxSubmissions} from '@backend/modules/conference/domain/value-objects/max-submissions';

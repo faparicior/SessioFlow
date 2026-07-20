@@ -90,9 +90,9 @@ packages/modules/conference/
 ### 3. Shared Infrastructure (`packages/shared/`)
 ```typescript
 packages/shared/
-  ├── database/       # Prisma client, connection pooling, migrations
-  ├── logging/        # Logger factory, request context
-  ├── cache/          # Redis client
+  ├── database/       # Drizzle ORM client, connection pooling, migrations schema
+  ├── logging/        # Logger factory (Pino), request context (AsyncLocalStorage)
+  ├── cache/          # Redis client / cache adapters
   └── utils/          # Utility functions (BE only)
 ```
 
@@ -106,11 +106,11 @@ packages/shared/
 - **Key principle**: Contains only DATA SHAPES, NOT business logic
 - **Stores**: `openapi/`, `json-schema/`, `zod/`, `types/`
 
-### 5. API Gateway (`apps/backend/`)
-- Enterprise Layer (Express, Fastify, NestJS)
+### 5. API Gateway (`apps/backend/`) (Next.js API Routes)
+- Next.js API routes (serverless functions)
 - Receives HTTP requests
 - Routes to appropriate modules
-- Validates input using `@sessioflow/api-definitions` schemas
+- Validates input using `@sessioflow/api-definitions` schemas (Zod)
 - Returns JSON responses mapped from domain entities to API schemata
 - Converts domain entities → API data objects (not domain objects)
 
@@ -131,43 +131,85 @@ packages/shared/
 mkdir -p packages/shared/{database,logging,cache}
 mkdir -p packages/frontend/{components,hooks,queries}
 mkdir -p packages/modules/{conference}
+mkdir -p packages/config/{tsconfig,eslint-config}
 ```
 
 **Step 1.2: Configure Turborepo**
-Create `turbo.json`:
+Install `turbo` as a root dev dependency and create `turbo.json`:
 ```json
 {
+  "$schema": "https://turbo.build/schema.json",
   "tasks": {
-    "dev": {
-      "dependsOn": ["^dev"],
-      "cache": false
-    },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": ["^test"]
+      "dependsOn": ["^build"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
     }
   }
 }
 ```
 
-**Step 1.3: Update Workspaces**
-Verify `package.json`:
+Update root `package.json` scripts to delegate build/dev/lint/test commands to Turborepo:
 ```json
 {
-  "workspaces": ["apps/*", "packages/*"]
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test"
+  }
 }
 ```
 
+**Step 1.3: Update Workspaces & Shared Tooling Packages**
+Create shared TypeScript config package (`packages/config/tsconfig/`) to avoid duplicate TS configs:
+```json
+// packages/config/tsconfig/package.json
+{
+  "name": "@sessioflow/tsconfig",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./base.json": "./base.json"
+  }
+}
+```
+
+Verify root `package.json` workspaces:
+```json
+{
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "packages/shared/*",
+    "packages/modules/*",
+    "packages/config/*"
+  ]
+}
+```
+
+**Note on Package TSConfigs**: Packages extend `base.json` via relative paths (e.g. `"extends": "../config/tsconfig/base.json"`) so IDE language servers resolve base configs instantly without relying on un-indexed node_modules caches.
+
 ### Phase 2: Shared Infrastructure (Week 2-3)
 
-**Step 2.1: Extract Database Layer**
-- Move `apps/backend/src/shared/infrastructure/database/` → `packages/shared/database/`
-- Create Drizzle/Prisma client factory
-- Implement connection pooling
-- Add Zod validation for database config
+**Step 2.1: Extract Database Layer (Drizzle ORM)**
+- Move database connection and Drizzle schema definition to `packages/shared/database/`
+- Export Drizzle client factory with PostgreSQL connection pooling (`postgres.js` / Supabase driver)
+- Keep domain entities decoupled from DB persistence schemas (mapping functions in infrastructure layer)
+- Add Zod validation for database connection variables (`DATABASE_URL`, `DIRECT_URL`)
 
 **Step 2.2: Extract Logging Layer**
 - Move `apps/backend/src/shared/infrastructure/logging/` → `packages/shared/logging/`
@@ -183,13 +225,16 @@ Verify `package.json`:
 
 ### Phase 3: Module Refactoring (Week 3-5)
 
-**Step 3.1: Create Module Package**
-```typescript
-packages/modules/conference/
-package.json:
+**Step 3.1: Create Module Package (No Barrel Exports)**
+Avoid `index.ts` barrel exports. Instead, configure package subpath exports in `package.json` so consumers import specific modules explicitly:
+```json
 {
   "name": "@sessioflow/conf-module",
-  "main": "src/index.ts"
+  "exports": {
+    "./domain/*": "./src/domain/*.ts",
+    "./application/*": "./src/application/*.ts",
+    "./infrastructure/*": "./src/infrastructure/*.ts"
+  }
 }
 ```
 
@@ -213,16 +258,19 @@ import { ConferenceName } from './value-objects/conference-name';
 import { CfpDates } from './value-objects/cfp-dates';
 ```
 
-**Step 3.4: Implement Infrastructure**
+**Step 3.4: Implement Infrastructure with Drizzle ORM**
 ```typescript
 // packages/modules/conference/infrastructure/database/conference.repository.ts
-import { ConferenceRepository } from '../domain/repository.interface';
-import { prisma } from '@sessioflow/shared-database';
+import { eq } from 'drizzle-orm';
+import { db } from '@sessioflow/shared-database/client';
+import { conferencesTable } from '@sessioflow/shared-database/schema';
+import { ConferenceRepository } from '../../domain/repository.interface';
+import { Conference } from '../../domain/conference';
 
-export class PrismaConferenceRepository implements ConferenceRepository {
+export class DrizzleConferenceRepository implements ConferenceRepository {
   async findById(id: string): Promise<Conference | null> {
-    const data = await prisma.conference.findUnique({ where: { id } });
-    return data ? Conference.fromPrisma(data) : null;
+    const [row] = await db.select().from(conferencesTable).where(eq(conferencesTable.id, id));
+    return row ? Conference.fromPersistence(row) : null;
   }
 }
 ```
@@ -236,51 +284,59 @@ export class PrismaConferenceRepository implements ConferenceRepository {
 - Export TypeScript interfaces (data-only)
 - Place in `packages/api-definitions/`
 
-**Step 4.2: Implement Request Validation Middleware**
+**Step 4.2: Implement Next.js API Gateway Routes & Auth Context Propagation**
 ```typescript
-// apps/backend/src/middlewares/validate-request.ts
-import { ConferenceSchema } from '@sessioflow/api-definitions/zod/conference.schema';
-
-export const validateRequest = (schema: z.ZodSchema) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.safeParse(req.body);
-    if (!result.success) {
-      return res.status(400).json({ errors: result.error.issues });
-    }
-    next();
-  };
-};
-
-app.post('/api/conferences', validateRequest(ConferenceSchema),...);
-```
-
-**Step 4.3: Create Gateway Layer**
-```typescript
-apps/backend/src/gateway/routes/conferences.ts
+// apps/backend/src/app/api/v1/conferences/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import { GetConferenceHandler } from '@sessioflow/conf-module/application/queries/get-conference';
 import { CreateConferenceHandler } from '@sessioflow/conf-module/application/commands/create-conference';
+import { ConferenceSchema } from '@sessioflow/api-definitions/zod/conference.schema';
+import { getAuthenticatedUser } from '@/infrastructure/auth/get-authenticated-user';
 
-export const conferencesRouter = Router();
+export async function GET(request: NextRequest) {
+  try {
+    const user = await getAuthenticatedUser(request); // Propagate user session context
+    const handler = new GetConferenceHandler();
+    const result = await handler.execute({ userId: user?.id });
+    const responseMap = mapToApiResponse(result.conference);
+    return NextResponse.json(responseMap);
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
+  }
+}
 
-conferencesRouter.get('/', async (req, res) => {
-  const handler = new GetConferenceHandler();
-  const result = await handler.execute();
-  
-  // Map domain entity to API response (data only)
-  const responseMap = mapToApiResponse(result.conference);
-  res.json(responseMap);
-});
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validated = ConferenceSchema.parse(body);  // Step 1: Validate
+    const handler = new CreateConferenceHandler();
+    const conference = await handler.execute(validated);  // Step 2: Execute
+    return NextResponse.json(conference, { status: 201 });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ errors: error.flatten() }, { status: 400 });
+    }
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
 
-conferencesRouter.post('/', 
-  validateRequest(ConferenceSchema),  // Validate input structure
-  async (req, res) => {
-  const handler = new CreateConferenceHandler();
-  const conference = await handler.execute(req.body);
-  res.json(mapAsApiResponse(conference));  // Returns API schema shape
-});
+/**
+ * Map domain entity to API response (data only)
+ */
+function mapToApiResponse(conference: Conference): ConferenceApiResponse {
+  return {
+    id: conference.id.value,
+    name: conference.name.value,
+    cfp: {
+      isOpen: conference.isCfpOpen(),  // Domain method call
+      startDate: conference.cfp.startDate.value,
+      endDate: conference.cfp.endDate.value,
+    },
+  };
+}
 ```
 
-**Step 4.4: Map Domain to API**
+### Phase 5: Frontend Integration (Week 6-7)
 ```typescript
 function mapToApiResponse(conference: Conference): ConferenceApiResponse {
   return {
@@ -366,35 +422,28 @@ domain/
   └── events/                    // Business events
 ```
 
-### Shared Infrastructure Pattern
+### Shared Infrastructure Pattern (No Barrel Exports, Drizzle ORM)
 
 ```typescript
-// packages/shared/database/src/index.ts
-import { PrismaClient } from '@prisma/client';
+// packages/shared/database/src/client.ts
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 
-class DatabaseInstance {
-  private static instance: PrismaClient | null = null;
-
-  static getInstance(): PrismaClient {
-    if (!this.instance) {
-      this.instance = new PrismaClient();
-      console.log('✅ Database instance created');
-    }
-    return this.instance;
-  }
-}
-
-export const db = DatabaseInstance.getInstance();
+const connectionString = process.env.DATABASE_URL!;
+const client = postgres(connectionString, { max: 10 });
+export const db = drizzle(client);
 ```
 
-**Usage in Module**:
+**Usage in Module** (Import direct path or subpath export, NOT barrel `index.ts`):
 ```typescript
 // packages/modules/conference/infrastructure/database/conference.repository.ts
-import { db } from '@sessioflow/shared-database';
+import { db } from '@sessioflow/shared-database/client';
+import { conferencesTable } from '@sessioflow/shared-database/schema';
+import { Conference } from '../../domain/conference';
 
-export class ConferenceRepository implements ConferenceRepository {
+export class DrizzleConferenceRepository implements ConferenceRepository {
   async save(conference: Conference): Promise<void> {
-    await db.conference.create({ data: conference.toPrisma() });
+    await db.insert(conferencesTable).values(conference.toPersistence());
   }
 }
 ```
@@ -429,7 +478,7 @@ class Conference {
 
   isCfpOpen(): boolean { ... }  // ← Method
   closeCfp(): void { ... }      // ← Behavior
-  toPrisma(): Prisma.CreateInput { ... }
+  toPersistence(): ConferenceRow { ... }  // Mapping to Drizzle row structure
 }
 ```
 
@@ -496,6 +545,7 @@ This approach ensures:
 - ✅ Frontend-backend contract is clear
 - ✅ Microservices can produce consistent API
 - ✅ Swagger docs stay up-to-date
+- ✅ **No Barrel Exports**: Prevents circular dependencies, improves tree-shaking, and accelerates Turborepo builds and type checking by using explicit subpath exports (`@sessioflow/pkg/subpath`) instead of `index.ts` re-export files.
 
 ## 📋 Migration Checklist
 
@@ -589,6 +639,11 @@ describe('DDD Boundaries', () => {
   });
 });
 ```
+
+## 🔑 Environment Variables & Configuration Management
+
+- **Centralized Validation**: Each app (`apps/web`, `apps/backend`) defines a `src/env.ts` file using Zod schema validation to parse and validate runtime environment variables (`DATABASE_URL`, `SUPABASE_URL`, `AUTH0_*`, etc.) at startup.
+- **Shared Package Configs**: Shared packages accept configuration via factory initialization options or standard `process.env` references validated by host applications.
 
 ## 🚀 Ready to Start?
 

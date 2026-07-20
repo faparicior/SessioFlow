@@ -1,0 +1,24 @@
+{
+  "name": "@sessioflow/conf-module",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./domain/*": "./src/domain/*.ts",
+    "./application/*": "./src/application/*.ts",
+    "./infrastructure/*": "./src/infrastructure/*.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sessioflow/shared-database": "*",
+    "@sessioflow/shared-logging": "*",
+    "drizzle-orm": "^0.45.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@sessioflow/tsconfig": "*",
+    "typescript": "^5"
+  }
+}

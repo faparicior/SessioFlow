@@ -15,6 +15,10 @@
     "test:architecture": "vitest run tests/unit/architecture/ddd-boundaries.test.ts"
   },
   "dependencies": {
+    "@sessioflow/api-definitions": "*",
+    "@sessioflow/conf-module": "*",
+    "@sessioflow/shared-database": "*",
+    "@sessioflow/shared-logging": "*",
     "@opentelemetry/api": "^1.9.1",
     "@opentelemetry/core": "^2.9.0",
     "@opentelemetry/resources": "^2.9.0",

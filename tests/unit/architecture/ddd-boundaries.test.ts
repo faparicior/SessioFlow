@@ -103,7 +103,7 @@ describe('DDD Architecture', () => {
         .that()
         .resideInFolder('**/backend/**/modules/**/interfaces/**')
         .should()
-        .notImportFrom('**/backend/**/modules/**/domain/repositories/**')
+        .notImportFrom('**/backend/**/modules/**/domain/*repository*')
         .because('interfaces must only interact with application layer handlers, never domain repositories directly')
         .check();
     });
