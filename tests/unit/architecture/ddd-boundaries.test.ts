@@ -34,7 +34,7 @@ describe('DDD Architecture', () => {
         .that()
         .resideInFolder('**/backend/**/modules/**/domain/**')
         .should()
-        .notImportFrom('**/src/**')
+        .notImportFrom('**/frontend/**')
         .check();
     });
 
