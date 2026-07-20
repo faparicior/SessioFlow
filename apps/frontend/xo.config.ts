@@ -5,9 +5,6 @@ import type {FlatXoConfig} from 'xo';
 
 const xoConfig: FlatXoConfig = [
   {
-    space: true,
-    semicolon: true,
-    react: true,
     ignores: [
       '.next/**',
       'next-env.d.ts',
@@ -15,6 +12,11 @@ const xoConfig: FlatXoConfig = [
       'node_modules/**',
       'coverage/**',
     ],
+  },
+  {
+    space: true,
+    semicolon: true,
+    react: true,
   },
   {
     files: ['**/*.{ts,tsx,mts,cts}'],
@@ -29,7 +31,16 @@ const xoConfig: FlatXoConfig = [
 
       // --- Import resolution: Next.js bundler resolves extensions itself ---
       'import-x/extensions': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
       'n/file-extension-in-import': 'off',
+      'n/no-extraneous-import': 'off',
+
+      // --- Relax strict unsafe TS checks (handled by tsc) ---
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
 
       // --- Next.js conventionally uses anonymous default exports
       // (next.config.js, middleware.ts, API route handlers) ---

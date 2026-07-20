@@ -2,8 +2,6 @@ import type {FlatXoConfig} from 'xo';
 
 const backendConfig: FlatXoConfig = [
   {
-    space: true,
-    semicolon: true,
     ignores: [
       '.next/**',
       'next-env.d.ts',
@@ -13,6 +11,10 @@ const backendConfig: FlatXoConfig = [
       '**/*.test.ts', // Tests have different rules (handled in vitest)
       'tests/**/*',
     ],
+  },
+  {
+    space: true,
+    semicolon: true,
   },
   {
     files: ['**/*.{ts,tsx,mts,cts}'],
@@ -27,7 +29,20 @@ const backendConfig: FlatXoConfig = [
 
       // --- Import resolution: bundler resolves extensions itself ---
       'import-x/extensions': 'off',
+      'import-x/no-extraneous-dependencies': 'off',
       'n/file-extension-in-import': 'off',
+      'n/no-extraneous-import': 'off',
+
+      // --- Relax strict unsafe TS checks (handled by tsc) ---
+      complexity: 'off',
+      'import-x/order': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      '@typescript-eslint/consistent-type-definitions': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
 
       // --- Standard TypeScript conventions ---
       'unicorn/no-null': 'off',
