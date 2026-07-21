@@ -11,6 +11,10 @@
         "!.next/cache/**"
       ]
     },
+    "backend#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
     "typecheck": {
       "dependsOn": [
         "^build"
