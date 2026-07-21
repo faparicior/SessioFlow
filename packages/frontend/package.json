@@ -4,11 +4,12 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./components/*": "./src/components/*.ts",
-    "./hooks/*": "./src/hooks/*.ts",
-    "./queries/*": "./src/queries/*.ts"
+    "./components/*": "./dist/components/*.js",
+    "./hooks/*": "./dist/hooks/*.js",
+    "./queries/*": "./dist/queries/*.js"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

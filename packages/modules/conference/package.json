@@ -4,11 +4,12 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./domain/*": "./src/domain/*.ts",
-    "./application/*": "./src/application/*.ts",
-    "./infrastructure/*": "./src/infrastructure/*.ts"
+    "./domain/*": "./dist/domain/*.js",
+    "./application/*": "./dist/application/*.js",
+    "./infrastructure/*": "./dist/infrastructure/*.js"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./logger": "./src/pino-logger.ts",
-    "./context": "./src/request-context.ts"
+    "./logger": "./dist/pino-logger.js",
+    "./context": "./dist/request-context.js"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
