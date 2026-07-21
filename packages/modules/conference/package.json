@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./container": "./dist/container.js",
     "./domain/*": "./dist/domain/*.js",
     "./application/*": "./dist/application/*.js",
     "./infrastructure/*": "./dist/infrastructure/*.js"
