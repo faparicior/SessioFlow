@@ -35,15 +35,6 @@ const xoConfig: FlatXoConfig = [
       'n/file-extension-in-import': 'off',
       'n/no-extraneous-import': 'off',
 
-      // --- Disabled: XO's TS program can't fully resolve workspace package
-      // imports under moduleResolution:bundler, producing spurious 'error'-typed
-      // values. Real unsafe-any coverage is enforced by `npm run typecheck`. ---
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-
       // --- Next.js conventionally uses anonymous default exports
       // (next.config.js, middleware.ts, API route handlers) ---
       'import/no-anonymous-default-export': 'off',
@@ -260,9 +251,13 @@ const xoConfig: FlatXoConfig = [
     // not-found.tsx, template.tsx, default.tsx, route.ts all commonly
     // export async default functions — relax promise-handler misuse
     // checks only where Server Actions get passed as event handlers
-    files: ['app/**/*.{ts,tsx}'],
+    files: ['src/app/**/*.{ts,tsx}', 'src/modules/**/*.{ts,tsx}'],
     rules: {
       '@typescript-eslint/no-misused-promises': 'off',
+      // XO can't resolve @frontend/* local path aliases through projectService
+      // + moduleResolution:bundler — types from those imports appear as 'error'.
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
     },
   },
   {
@@ -309,6 +304,15 @@ const xoConfig: FlatXoConfig = [
       'import-x/no-unassigned-import': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
+  {
+    // Shadcn/ui generated components — React.forwardRef internals contain
+    // any in @types/react; these files are not hand-authored.
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
     },
   },
 ];

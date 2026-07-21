@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./client": "./src/client.ts",
-    "./schema": "./src/schema.ts"
+    "./client": "./dist/client.js",
+    "./schema": "./dist/schema.js"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -33,19 +33,10 @@ const backendConfig: FlatXoConfig = [
       'n/file-extension-in-import': 'off',
       'n/no-extraneous-import': 'off',
 
-      // --- Disabled: XO's TS program can't fully resolve workspace package
-      // imports under moduleResolution:bundler, producing spurious 'error'-typed
-      // values. Real unsafe-any coverage is enforced by `npm run typecheck`. ---
       complexity: 'off',
       'import-x/order': 'off',
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       '@typescript-eslint/consistent-type-definitions': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-
       // --- Standard TypeScript conventions ---
       'unicorn/no-null': 'off',
       'unicorn/prevent-abbreviations': 'off',
@@ -149,6 +140,19 @@ const backendConfig: FlatXoConfig = [
       'import-x/no-unassigned-import': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
+  {
+    // XO can't resolve @backend/* local path aliases through projectService
+    // + moduleResolution:bundler — types from those imports appear as 'error'.
+    // Real unsafe-any coverage is enforced by `npm run typecheck`.
+    files: ['src/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
 ];
