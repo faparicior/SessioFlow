@@ -7,10 +7,10 @@ import type {GetConferenceHandler} from '@backend/modules/conference/application
  * Retrieves a conference by ID.
  * Delegates to GetConference CQRS query handler.
  */
-export async function handleGetConference(
+export async function getConferenceController(
   request: NextRequest,
   conferenceId: string,
-  getConferenceHandler: GetConferenceHandler,
+  queryHandler: GetConferenceHandler,
   getAuthUser: () => Promise<{id: string} | undefined>,
 ): Promise<Response> {
   try {
@@ -24,7 +24,7 @@ export async function handleGetConference(
     }
 
     // 2. Execute CQRS query — handler validates the ID
-    const result = await getConferenceHandler.execute(conferenceId);
+    const result = await queryHandler.execute(conferenceId);
 
     if (!result.success) {
       return NextResponse.json(
