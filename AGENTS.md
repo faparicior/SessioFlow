@@ -62,30 +62,26 @@ npm run start            # Start production server
 ## 📁 Project Structure
 
 ```
-src/
-├── modules/                    # Feature modules (bounded contexts)
-│   ├── conference/             # Conference bounded context
-│   │   ├── domain/             # Domain layer
-│   │   │   ├── conference.ts   # Conference entity
-│   │   │   ├── submission.ts   # Submission entity
-│   │   │   ├── value-objects/  # ConferenceId, ConferenceName, CfpDates
-│   │   │   ├── services/       # Domain services
-│   │   │   └── repositories/   # Repository interfaces
-│   │   ├── application/        # Application layer
-│   │   │   └── use-cases/      # CreateConference, SubmitProposal
-│   │   ├── infrastructure/     # Infrastructure layer
-│   │   │   └── database/       # Repository implementations
-│   │   └── interfaces/         # Interface layer
-│   │       ├── api/            # API endpoints
-│   │       └── web/            # Web UI components
-│   └── [other-modules]/        # Other bounded contexts
+sessioflow/
+├── apps/
+│   ├── frontend/               # Next.js web app (UI + API Controllers)
+│   └── backend/                # Standalone API Gateway / Microservice
 │
-└── shared/                     # Cross-cutting concerns
-    ├── domain/                 # Shared domain objects
-    └── infrastructure/         # Shared infrastructure
-
- docs/                          # Documentation
- tests/                         # Unit, integration, and E2E tests
+├── packages/
+│   ├── api-definitions/        # Data-only API schemas & Zod validation (@sessioflow/api-definitions)
+│   ├── modules/
+│   │   ├── conference/         # DDD Conference Bounded Context (@sessioflow/conf-module)
+│   │   │   ├── domain/         # Pure domain entities, value objects & interfaces
+│   │   │   ├── application/    # Command & query use cases
+│   │   │   ├── infrastructure/ # Drizzle ORM repository implementations
+│   │   │   └── container.ts    # Module Composition Root / Factories
+│   │   └── [other-modules]/
+│   └── shared/
+│       ├── database/           # Drizzle ORM database client (@sessioflow/shared-database)
+│       └── logging/            # Pino logger & AsyncLocalStorage context (@sessioflow/shared-logging)
+│
+├── docs/                       # Documentation & ADRs
+└── tests/                      # Unit, integration, and Playwright E2E tests
 ```
 
 ## 💻 Code Style

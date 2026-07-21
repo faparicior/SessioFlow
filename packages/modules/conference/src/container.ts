@@ -1,4 +1,4 @@
-import { type ConferenceRepository } from './domain/repository.interface';
+import { type ConferenceRepository } from './domain/conference-repository.interface';
 import { CreateConferenceHandler } from './application/commands/create-conference/create-conference.handler';
 import { GetConferenceHandler } from './application/queries/get-conference/get-conference.handler';
 import { DrizzleConferenceRepository } from './infrastructure/database/conference.repository';
