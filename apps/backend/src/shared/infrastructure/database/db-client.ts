@@ -15,10 +15,7 @@ export function getDb(): PostgresDb {
     return db;
   }
 
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error('Missing DATABASE_URL environment variable');
-  }
+  const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/sessioflow';
 
   const client = postgres(connectionString, {
     max: 10,

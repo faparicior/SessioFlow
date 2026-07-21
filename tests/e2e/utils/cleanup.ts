@@ -9,8 +9,7 @@ import postgres from 'postgres';
 export async function deleteConferences(): Promise<void> {
   dotenv.config({path: path.resolve(process.cwd(), '.env.local')});
 
-  const connectionString = process.env.DATABASE_URL;
-  if (connectionString) {
+  const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/sessioflow';
     try {
       const sql = postgres(connectionString);
       await sql`DELETE FROM conferences WHERE organizer_id = 'mock-user-id'`;
@@ -18,5 +17,4 @@ export async function deleteConferences(): Promise<void> {
     } catch (error) {
       console.error('[Cleanup] Failed to delete conferences:', error);
     }
-  }
 }

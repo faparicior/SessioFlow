@@ -4,12 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev -p 3010",
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "xo",
     "lint:fix": "xo --fix",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@sessioflow/api-definitions": "*",

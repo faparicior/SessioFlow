@@ -1,4 +1,7 @@
+import path from 'node:path';
 import {defineConfig, devices} from '@playwright/test';
+
+const rootDir = path.resolve(import.meta.dirname, '../..');
 
 /**
  * Playwright configuration for E2E testing.
@@ -6,14 +9,14 @@ import {defineConfig, devices} from '@playwright/test';
  * Tests the complete user journey from form submission to dashboard redirect.
  */
 export default defineConfig({
-  testDir: './tests/frontend/e2e',
+  testDir: path.resolve(rootDir, 'tests/e2e'),
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
   workers: 1,
-  reporter: 'html',
-  globalSetup: require.resolve('./tests/frontend/e2e/setup'),
-  globalTeardown: require.resolve('./tests/frontend/e2e/teardown'),
+  reporter: 'list',
+  globalSetup: path.resolve(rootDir, 'tests/e2e/setup'),
+  globalTeardown: path.resolve(rootDir, 'tests/e2e/teardown'),
   use: {
     baseURL: 'http://localhost:3010',
     trace: 'on-first-retry',
@@ -25,9 +28,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'PORT=3010 npm run dev',
+    command: 'npm run dev',
     url: 'http://localhost:3010',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    cwd: path.resolve(rootDir, 'apps/frontend'),
   },
 });

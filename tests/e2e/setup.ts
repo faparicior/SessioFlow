@@ -1,24 +1,13 @@
 import * as path from 'node:path';
-import {execSync} from 'node:child_process';
 import * as dotenv from 'dotenv';
 import postgres from 'postgres';
 
 export default async function setup() {
+  const rootDir = path.resolve(__dirname, '../../..');
   // Load environment variables from .env.local
-  dotenv.config({path: path.resolve(process.cwd(), '.env.local')});
+  dotenv.config({path: path.resolve(rootDir, '.env.local')});
 
-  console.log('[E2E Setup] Starting Docker Compose...');
-  try {
-    execSync('docker compose up -d', {stdio: 'inherit'});
-  } catch (error) {
-    console.error('[E2E Setup] Failed to start Docker Compose:', error);
-    throw error;
-  }
-
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error('DATABASE_URL is not set in environment variables');
-  }
+  const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/sessioflow';
 
   // Poll database until connection is ready (up to 30 seconds)
   console.log('[E2E Setup] Waiting for database to be ready...');
@@ -51,6 +40,8 @@ export default async function setup() {
     }
   }
   /* eslint-enable no-await-in-loop */
+
+
 
   // Clean up test conferences to avoid hitting free tier limit
   try {
