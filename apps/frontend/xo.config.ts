@@ -35,7 +35,9 @@ const xoConfig: FlatXoConfig = [
       'n/file-extension-in-import': 'off',
       'n/no-extraneous-import': 'off',
 
-      // --- Relax strict unsafe TS checks (handled by tsc) ---
+      // --- Disabled: XO's TS program can't fully resolve workspace package
+      // imports under moduleResolution:bundler, producing spurious 'error'-typed
+      // values. Real unsafe-any coverage is enforced by `npm run typecheck`. ---
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
