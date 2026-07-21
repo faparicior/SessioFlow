@@ -36,6 +36,27 @@ export class CreateConferenceHandler {
     });
 
     try {
+      // 1. Check free tier limit (max 5 active/draft conferences per organizer)
+      const organizerConferences = await this.repository.findByOrganizerId(
+        command.input.organizerId
+      );
+      const activeCount = organizerConferences.filter(
+        (c) => c.status === 'CFP_OPEN' || c.status === 'DRAFT'
+      ).length;
+
+      if (activeCount >= 5) {
+        return {
+          success: false,
+          errors: [
+            {
+              code: 'FREE_TIER_LIMIT',
+              message: 'upgrade your plan to create more conferences',
+            },
+          ],
+        };
+      }
+
+      // 2. Create conference aggregate
       const conference = Conference.create({
         name: command.input.name,
         description: command.input.description,
@@ -45,6 +66,20 @@ export class CreateConferenceHandler {
         maxSubmissions: command.input.maxSubmissions,
         requiresApproval: command.input.requiresApproval,
       });
+
+      // 3. Check slug uniqueness
+      const existing = await this.repository.findBySlug(conference.slug);
+      if (existing) {
+        return {
+          success: false,
+          errors: [
+            {
+              code: 'SLUG_EXISTS',
+              message: 'conference name already taken',
+            },
+          ],
+        };
+      }
 
       const { events } = conference.publishCfp();
 
@@ -77,14 +112,37 @@ export class CreateConferenceHandler {
         },
       };
     } catch (error) {
-      if (
-        error instanceof CfpDatesInvalidError ||
-        error instanceof ConferenceNameTooShortError ||
-        error instanceof ConferenceFreeTierLimitError
-      ) {
+      if (error instanceof CfpDatesInvalidError) {
         return {
           success: false,
-          errors: [{ code: 'VALIDATION_ERROR', message: error.message }],
+          errors: [{ code: 'CFP_DATES_INVALID', message: 'dates must be in the future' }],
+        };
+      }
+
+      if (error instanceof ConferenceNameTooShortError) {
+        return {
+          success: false,
+          errors: [{ code: 'NAME_TOO_SHORT', message: error.message }],
+        };
+      }
+
+      if (error instanceof ConferenceFreeTierLimitError) {
+        return {
+          success: false,
+          errors: [
+            {
+              code: 'FREE_TIER_LIMIT',
+              message: 'upgrade your plan to create more conferences',
+            },
+          ],
+        };
+      }
+
+      const message = error instanceof Error ? error.message : String(error);
+      if (message.includes('future')) {
+        return {
+          success: false,
+          errors: [{ code: 'CFP_DATES_INVALID', message: 'dates must be in the future' }],
         };
       }
 
@@ -94,7 +152,7 @@ export class CreateConferenceHandler {
 
       return {
         success: false,
-        errors: [{ code: 'INTERNAL_ERROR', message: (error as Error).message }],
+        errors: [{ code: 'INTERNAL_ERROR', message }],
       };
     }
   }

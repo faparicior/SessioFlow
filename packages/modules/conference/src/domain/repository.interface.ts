@@ -10,5 +10,6 @@ export interface ConferenceRepository {
   save(conference: Conference): Promise<void>;
   findById(id: ConferenceId | string): Promise<Conference | null>;
   findBySlug(slug: ConferenceSlug | string): Promise<Conference | null>;
+  findByOrganizerId(organizerId: string): Promise<Conference[]>;
   delete(id: ConferenceId | string): Promise<void>;
 }

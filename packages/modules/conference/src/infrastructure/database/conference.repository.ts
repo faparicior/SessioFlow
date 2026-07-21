@@ -61,6 +61,15 @@ export class DrizzleConferenceRepository implements ConferenceRepository {
     return row ? this.mapToDomain(row) : null;
   }
 
+  async findByOrganizerId(organizerId: string): Promise<Conference[]> {
+    const rows = await db
+      .select()
+      .from(conferencesTable)
+      .where(eq(conferencesTable.organizerId, organizerId));
+
+    return rows.map((row) => this.mapToDomain(row));
+  }
+
   async delete(id: ConferenceId | string): Promise<void> {
     const rawId = typeof id === 'string' ? id : id.value;
     await db.delete(conferencesTable).where(eq(conferencesTable.id, rawId));
