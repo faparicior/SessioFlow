@@ -12,6 +12,8 @@ import { ConferenceFreeTierLimitError } from '../../../domain/exceptions/confere
 import { getLogger } from '@sessioflow/shared-logging/logger';
 import { getCorrelationId } from '@sessioflow/shared-logging/context';
 
+import { type ConferenceRepository } from '../../../domain/repository.interface';
+
 export type CreateConferenceResult = {
   success: boolean;
   data?: ConferenceResponseDto;
@@ -19,6 +21,8 @@ export type CreateConferenceResult = {
 };
 
 export class CreateConferenceHandler {
+  constructor(private readonly repository: ConferenceRepository) {}
+
   async execute(
     command: CreateConferenceCommand
   ): Promise<CreateConferenceResult> {
@@ -43,6 +47,8 @@ export class CreateConferenceHandler {
       });
 
       const { events } = conference.publishCfp();
+
+      await this.repository.save(conference);
 
       logger.info('Conference saved successfully', {
         correlationId,

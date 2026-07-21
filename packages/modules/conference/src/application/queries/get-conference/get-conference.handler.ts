@@ -9,16 +9,9 @@ export type GetConferenceResult = {
 };
 
 export class GetConferenceHandler {
-  constructor(private readonly conferenceRepository?: ConferenceRepository) {}
+  constructor(private readonly conferenceRepository: ConferenceRepository) {}
 
   async execute(params: { id: string }): Promise<GetConferenceResult> {
-    if (!this.conferenceRepository) {
-      return {
-        success: false,
-        errors: [{ code: 'NOT_FOUND', message: 'Conference not found' }],
-      };
-    }
-
     const conferenceId = ConferenceId.fromString(params.id);
     const conference = await this.conferenceRepository.findById(conferenceId);
 
