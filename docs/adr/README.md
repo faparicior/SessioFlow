@@ -36,10 +36,10 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [017](017-use-drizzle-orm-with-ddd-transactions.md) | Use Drizzle ORM with Transaction Support at Application Layer | ✅ Approved | 2026-07-01 |
 | [018](018-implement-observability-for-debugging.md) | Implement Observability for AI-Assisted Debugging | ✅ Approved | 2026-07-04 |
 | [019](019-use-ts-archunit-for-architecture-testing.md) | Use ts-archunit for Architecture Testing | ✅ Approved | 2026-07-10 |
-| [020](020-use-api-schema-package-pattern-for-contract-definition.md) | Use API Schema Package Pattern for Contract Definition | ✅ **Proposed** | 2026-07-25 |
-| [021](021-adopt-domain-module-structure-convention.md) | Adopt Domain Module Structure Convention | ✅ **Proposed** | 2026-07-25 |
-| [022](022-accept-frontend-backend-type-decoupling-strategy.md) | Accept Frontend-Backend Type Decoupling Strategy | ✅ **Proposed** | 2026-07-25 |
-| [023](023-superseat-009-01-monorepo-backend-frontend-separation.md) | Superseed 009-01: Comprehensive Monorepo Structure Update | ✅ **Proposed** | 2026-07-25 |
+| [020](020-use-api-schema-package-pattern-for-contract-definition.md) | Use API Schema Package Pattern for Contract Definition | ✅ **Accepted** | 2026-07-25 |
+| [021](021-adopt-domain-module-structure-convention.md) | Adopt Domain Module Structure Convention | ✅ **Accepted** | 2026-07-25 |
+| [022](022-accept-frontend-backend-type-decoupling-strategy.md) | Accept Frontend-Backend Type Decoupling Strategy | ✅ **Accepted** | 2026-07-25 |
+| [023](023-superseat-009-01-monorepo-backend-frontend-separation.md) | Superseed 009-01: Comprehensive Monorepo Structure Update | ✅ **Accepted** | 2026-07-25 |
 
 ---
 

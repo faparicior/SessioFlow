@@ -1,6 +1,6 @@
 # 023-Superseed 009-01: Comprehensive Monorepo Structure Update
 
-* **Status:** Proposed
+* **Status:** Accepted
 * **Date:** 2026-07-25
 * **Decision Makers:** Fernando (Lead Developer), Technical Team
 * **Supersedes:** [ADR-009-01](./009-01-monorepo-backend-frontend-separation.md)
@@ -185,6 +185,13 @@ sessioflow/
 | `modules/conference/application/` | `packages/modules/conference/application/` |
 | `modules/conference/infrastructure/` | `packages/modules/conference/infrastructure/` |
 | `shared/infrastructure/` | `packages/shared/` (database, logging, cache) |
+
+### Package Compilation & Output Strategy
+
+All workspace packages (`packages/modules/*`, `packages/api-definitions`, `packages/shared/*`) MUST compile TypeScript source into `./dist/` containing compiled `.js` files and `.d.ts` declaration files:
+- Each package configures `"outDir": "dist"` and `"composite": true` in `tsconfig.json`.
+- Package `exports` in `package.json` point to `./dist/*.js` outputs.
+- Turborepo task dependencies (`"dependsOn": ["^build"]`) and output caching (`dist/**`) ensure upstream package declarations are compiled and up-to-date before running downstream `typecheck` or `lint` commands.
 
 ### Frontend-Backend Type Flow
 

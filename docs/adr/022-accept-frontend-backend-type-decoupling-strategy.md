@@ -1,6 +1,6 @@
 # 022-Accept Frontend-Backend Type Decoupling Strategy
 
-* **Status:** Proposed
+* **Status:** Accepted
 * **Date:** 2026-07-25
 * **Decision Makers:** Fernando (Lead Developer), Technical Team
 * **Supersedes:** N/A

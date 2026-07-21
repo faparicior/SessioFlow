@@ -1,6 +1,6 @@
 # 021-Adopt Domain Module Structure Convention
 
-* **Status:** Proposed
+* **Status:** Accepted
 * **Date:** 2026-07-25
 * **Decision Makers:** Fernando (Lead Developer), Technical Team
 * **Supersedes:** N/A

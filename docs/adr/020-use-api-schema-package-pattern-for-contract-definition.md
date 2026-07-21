@@ -1,6 +1,6 @@
 # 020-Use API Schema Package Pattern for Contract Definition
 
-* **Status:** Proposed
+* **Status:** Accepted
 * **Date:** 2026-07-25
 * **Decision Makers:** Fernando (Lead Developer), Technical Team
 * **Supersedes:** N/A
