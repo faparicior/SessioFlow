@@ -87,80 +87,71 @@ This plan follows a **hybrid TDD approach** combining outside-in and inside-out 
 ### Project Layout (Modular Architecture with CQRS)
 
 ```
-src/
+packages/
 ├── modules/
-│   └── conference/
-│       ├── domain/
-│       │   ├── entities/
-│       │   │   ├── conference.ts              # Conference aggregate root
-│       │   │   └── cfp-config.ts              # CfpConfig child entity
-│       │   ├── value-objects/
-│       │   │   ├── conference-id.ts
-│       │   │   ├── conference-name.ts
-│       │   │   ├── conference-slug.ts
-│       │   │   ├── conference-status.ts
-│       │   │   ├── cfp-start-date.ts
-│       │   │   ├── cfp-end-date.ts
-│       │   │   ├── cfp-status.ts
-│       │   │   ├── max-submissions.ts
-│       │   │   └── requires-approval.ts
-│       │   ├── services/
-│       │   │   └── conference-validation-service.ts
-│       │   ├── events/
-│       │   │   ├── conference-created.ts
-│       │   │   ├── cfp-opened.ts
-│       │   │   ├── cfp-closed.ts
-│       │   │   ├── review-started.ts
-│       │   │   ├── selection-completed.ts
-│       │   │   ├── schedule-published.ts
-│       │   │   ├── conference-completed.ts
-│       │   │   └── conference-cancelled.ts
-│       │   ├── exceptions/
-│       │   │   ├── invalid-conference-error.ts
-│       │   │   ├── conference-name-too-short-error.ts
-│       │   │   ├── cfp-dates-invalid-error.ts
-│       │   │   ├── conference-free-tier-limit-error.ts
-│       │   │   ├── state-transition-error.ts
-│       │   │   └── submission-date-in-past-error.ts
-│       │   └── repositories/
-│       │       └── conference-repository.ts   # Interface
-│       ├── application/
-│       │   ├── commands/
-│       │   │   └── create-conference/
-│       │   │       ├── create-conference.command.ts
-│       │   │       ├── create-conference.handler.ts
-│       │   │       └── create-conference.dto.ts
-│       │   ├── queries/
-│       │   │   └── get-conference/
-│       │   │       ├── get-conference.query.ts
-│       │   │       ├── get-conference.handler.ts
-│       │   │       └── get-conference.dto.ts
-│       │   └── dto/
-│       │       └── conference-response.dto.ts
-│       ├── infrastructure/
-│       │   └── database/
-│       │       ├── conference-repository.ts   # Supabase implementation
-│       │       └── drizzle-schema.ts          # Drizzle ORM schema
-│       └── interfaces/
-│           └── api/
-│               └── v1/
-│                   ├── conferences/
-│                   │   ├── create.ts          # POST /api/v1/conferences
-│                   │   └── get.ts             # GET /api/v1/conferences/:id
-│                   └── auth/
-│                       └── me.ts              # GET /api/v1/auth/me
-├── shared/
-│   ├── domain/
-│   │   ├── result.ts
-│   │   └── error.ts
-│   └── infrastructure/
-│       ├── database/
-│       │   └── db-client.ts                   # Supabase client setup
-│       └── auth/
-│           └── auth-provider.ts               # DDD auth abstraction
-└── app/
-    ├── api/v1/conferences/route.ts
-    └── ...
+│   └── conference/                    # @sessioflow/conf-module
+│       └── src/
+│           ├── domain/
+│           │   ├── conference.ts              # Conference aggregate root
+│           │   ├── cfp-config.ts              # CfpConfig child aggregate entity
+│           │   ├── conference-repository.interface.ts # Interface (root level)
+│           │   ├── value-objects/
+│           │   │   ├── conference-id.ts
+│           │   │   ├── conference-name.ts
+│           │   │   ├── conference-slug.ts
+│           │   │   ├── conference-status.ts
+│           │   │   ├── cfp-start-date.ts
+│           │   │   ├── cfp-end-date.ts
+│           │   │   ├── cfp-status.ts
+│           │   │   ├── max-submissions.ts
+│           │   │   └── requires-approval.ts
+│           │   ├── events/
+│           │   │   ├── conference-created.ts
+│           │   │   ├── cfp-opened.ts
+│           │   │   ├── cfp-closed.ts
+│           │   │   ├── review-started.ts
+│           │   │   ├── selection-completed.ts
+│           │   │   ├── schedule-published.ts
+│           │   │   ├── conference-completed.ts
+│           │   │   └── conference-cancelled.ts
+│           │   └── exceptions/
+│           │       ├── invalid-conference-error.ts
+│           │       ├── conference-name-too-short-error.ts
+│           │       ├── cfp-dates-invalid-error.ts
+│           │       ├── conference-free-tier-limit-error.ts
+│           │       ├── state-transition-error.ts
+│           │       └── submission-date-in-past-error.ts
+│           ├── application/
+│           │   ├── commands/
+│           │   │   └── create-conference/
+│           │   │       ├── create-conference.command.ts
+│           │   │       └── create-conference.handler.ts
+│           │   ├── queries/
+│           │   │   └── get-conference/
+│           │   │       └── get-conference.handler.ts
+│           │   └── dto/
+│           │       └── conference-response.dto.ts
+│           ├── infrastructure/
+│           │   └── database/
+│           │       └── conference.repository.ts   # Drizzle ORM implementation
+│           └── container.ts                   # Composition Root / Factories
+├── api-definitions/                   # @sessioflow/api-definitions
+│   └── src/
+│       ├── zod/
+│       │   └── conference.ts                 # Validation schemas
+│       └── types/
+│           └── conference.ts                 # Data-only API response interfaces
+└── shared/
+    ├── database/                      # @sessioflow/shared-database
+    └── logging/                       # @sessioflow/shared-logging
+
+apps/
+└── frontend/                          # Next.js web application
+    └── src/
+        └── app/
+            └── api/v1/conferences/
+                ├── route.ts                  # POST /api/v1/conferences
+                └── [id]/route.ts             # GET /api/v1/conferences/:id
 ```
 
 **CQRS Principles:**

@@ -74,45 +74,41 @@
 ### Files to Create/Modify
 
 **Domain Layer:**
-- [ ] `src/modules/conference/domain/entities/conference.ts` - Conference aggregate root
-- [ ] `src/modules/conference/domain/entities/cfp-config.ts` - CfpConfig child entity
-- [ ] `src/modules/conference/domain/value-objects/conference-id.ts`
-- [ ] `src/modules/conference/domain/value-objects/conference-name.ts`
-- [ ] `src/modules/conference/domain/value-objects/conference-slug.ts`
-- [ ] `src/modules/conference/domain/value-objects/conference-status.ts`
-- [ ] `src/modules/conference/domain/value-objects/cfp-start-date.ts`
-- [ ] `src/modules/conference/domain/value-objects/cfp-end-date.ts`
-- [ ] `src/modules/conference/domain/value-objects/max-submissions.ts`
-- [ ] `src/modules/conference/domain/value-objects/requires-approval.ts`
-- [ ] `src/modules/conference/domain/value-objects/cfp-status.ts`
-- [ ] `src/modules/conference/domain/services/conference-validation-service.ts`
-- [ ] `src/modules/conference/domain/events/conference-created.ts`
-- [ ] `src/modules/conference/domain/events/cfp-opened.ts`
-- [ ] `src/modules/conference/domain/exceptions/` (6 error classes)
-- [ ] `src/modules/conference/domain/repositories/conference-repository.ts` - Interface
+- [x] `packages/modules/conference/src/domain/conference.ts` - Conference aggregate root
+- [x] `packages/modules/conference/src/domain/cfp-config.ts` - CfpConfig child entity
+- [x] `packages/modules/conference/src/domain/value-objects/conference-id.ts`
+- [x] `packages/modules/conference/src/domain/value-objects/conference-name.ts`
+- [x] `packages/modules/conference/src/domain/value-objects/conference-slug.ts`
+- [x] `packages/modules/conference/src/domain/value-objects/conference-status.ts`
+- [x] `packages/modules/conference/src/domain/value-objects/cfp-start-date.ts`
+- [x] `packages/modules/conference/src/domain/value-objects/cfp-end-date.ts`
+- [x] `packages/modules/conference/src/domain/value-objects/max-submissions.ts`
+- [x] `packages/modules/conference/src/domain/value-objects/requires-approval.ts`
+- [x] `packages/modules/conference/src/domain/value-objects/cfp-status.ts`
+- [x] `packages/modules/conference/src/domain/events/conference-created.ts`
+- [x] `packages/modules/conference/src/domain/events/cfp-opened.ts`
+- [x] `packages/modules/conference/src/domain/exceptions/` (6 error classes)
+- [x] `packages/modules/conference/src/domain/conference-repository.interface.ts` - Interface
 
 **Application Layer (CQRS):**
-- [ ] `src/modules/conference/application/commands/create-conference/create-conference.command.ts`
-- [ ] `src/modules/conference/application/commands/create-conference/create-conference.handler.ts`
-- [ ] `src/modules/conference/application/commands/create-conference/create-conference.dto.ts`
-- [ ] `src/modules/conference/application/queries/get-conference/get-conference.query.ts`
-- [ ] `src/modules/conference/application/queries/get-conference/get-conference.handler.ts`
-- [ ] `src/modules/conference/application/queries/get-conference/get-conference.dto.ts`
-- [ ] `src/modules/conference/application/dto/conference-response.dto.ts`
+- [x] `packages/modules/conference/src/application/commands/create-conference/create-conference.command.ts`
+- [x] `packages/modules/conference/src/application/commands/create-conference/create-conference.handler.ts`
+- [x] `packages/modules/conference/src/application/queries/get-conference/get-conference.query.ts`
+- [x] `packages/modules/conference/src/application/queries/get-conference/get-conference.handler.ts`
+- [x] `packages/modules/conference/src/application/dto/conference-response.dto.ts`
+- [x] `packages/modules/conference/src/container.ts` - Module Composition Root / Factories
 
 **Infrastructure Layer:**
-- [ ] `src/modules/conference/infrastructure/database/drizzle-schema.ts` - Database schema
-- [ ] `src/modules/conference/infrastructure/database/conference-repository.ts` - Supabase implementation
-- [ ] `src/shared/infrastructure/database/db-client.ts` - Shared database client
-- [ ] `src/shared/infrastructure/auth/auth-provider.ts` - Shared auth abstraction
-- [ ] `src/shared/infrastructure/email/email-provider.ts` - Shared email abstraction
+- [x] `packages/shared/database/src/schema/conferences.ts` - Drizzle ORM Database schema
+- [x] `packages/modules/conference/src/infrastructure/database/conference.repository.ts` - Drizzle ORM implementation
+- [x] `packages/shared/database/src/client.ts` - Shared database client
+- [x] `packages/shared/logging/src/logger.ts` - Shared Pino logger
 
-**Interface Layer:**
-- [ ] `src/app/api/v1/conferences/route.ts` - POST endpoint
-- [ ] `src/app/api/v1/conferences/[id]/route.ts` - GET endpoint
-- [ ] `src/app/api/v1/auth/me/route.ts` - Auth verification
-- [ ] `src/modules/conference/interfaces/api/v1/conferences/conference-create.schema.ts`
-- [ ] `src/modules/conference/interfaces/api/v1/conferences/conference-response.schema.ts`
+**Interface & Contract Layer:**
+- [x] `apps/frontend/src/app/api/v1/conferences/route.ts` - POST endpoint
+- [x] `apps/frontend/src/app/api/v1/conferences/[id]/route.ts` - GET endpoint
+- [x] `packages/api-definitions/src/zod/conference.ts` - Zod validation schema
+- [x] `packages/api-definitions/src/types/conference.ts` - Data-only API response interface
 
 **Tests:**
 - [ ] `tests/unit/conference/value-objects/*.test.ts` (9 test files)
