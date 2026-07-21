@@ -9,8 +9,8 @@ import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest';
 import {
   PinoLogger,
   getLogger,
-} from '@/shared/infrastructure/logging/pino-logger.js';
-import type {LogContext} from '@/shared/domain/logging/logger.js';
+} from '@backend/shared/infrastructure/logging/pino-logger.js';
+import type {LogContext} from '@backend/shared/domain/logging/logger.js';
 
 describe('PinoLogger', () => {
   let logger: PinoLogger;

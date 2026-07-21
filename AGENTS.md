@@ -135,8 +135,9 @@ try {
 ## 🧪 Testing Guidelines
 
 ### Test Organization
-- **Unit tests**: `tests/unit/[module]/[feature].test.ts`
-- **Integration tests**: `tests/integration/[module]/[feature].test.ts`
+- **Unit tests**: `tests/unit/modules/[module]/[layer]/[feature].test.ts`
+- **Interface/API tests**: `tests/backend/modules/[module]/interfaces/[transport]/[version]/[controller].test.ts`
+- **Integration tests**: `tests/integration/modules/[module]/[feature].test.ts`
 - **E2E tests**: `tests/e2e/[feature].spec.ts`
 
 ### Test Example
