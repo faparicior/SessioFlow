@@ -1,17 +1,16 @@
 /**
  * Architecture Tests — DDD Layer Boundaries
  *
- * Enforces the architectural decisions documented in ADR-009, ADR-019, and ADR-023.
+ * Enforces the architectural decisions documented in ADR-009 and ADR-019.
  * These rules catch structural violations in CI before they reach code review.
  *
  * @see docs/adr/009-adopt-domain-driven-design-structure.md
  * @see docs/adr/019-use-ts-archunit-for-architecture-testing.md
- * @see docs/adr/023-superseat-009-01-monorepo-backend-frontend-separation.md
  */
 import {describe, it} from 'vitest';
 import {project, modules, classes, slices, functions, call, matching} from '@nielspeter/ts-archunit';
 
-// Use backend tsconfig for project scanning
+// For monorepo structure, use backend tsconfig for most tests
 const p = project('apps/backend/tsconfig.json');
 
 describe('DDD Architecture', () => {
@@ -30,12 +29,12 @@ describe('DDD Architecture', () => {
         .check();
     });
 
-    it('domain must not import from frontend paths', () => {
+    it('domain must not import from external paths', () => {
       modules(p)
         .that()
         .resideInFolder('**/{backend,packages}/modules/**/domain/**')
         .should()
-        .notImportFrom('**/frontend/**')
+        .notImportFrom('**/frontend/**', '**/../**')
         .check();
     });
 
@@ -82,11 +81,51 @@ describe('DDD Architecture', () => {
     });
   });
 
+  describe('Interfaces layer dependencies', () => {
+    it('interfaces must only import from interfaces, application, shared, components, and node_modules', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/{backend,packages}/modules/**/interfaces/**')
+        .should()
+        .onlyImportFrom(
+          '**/backend/**/modules/**/interfaces/**',
+          '**/backend/**/modules/**/application/**',
+          '**/backend/**/shared/**',
+          '**/node_modules/**',
+        )
+        .check();
+    });
+  });
+
+  describe('Interfaces layer restrictions', () => {
+    it('interfaces must not import repositories directly', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/backend/**/modules/**/interfaces/**')
+        .should()
+        .notImportFrom('**/backend/**/modules/**/domain/*repository*')
+        .because('interfaces must only interact with application layer handlers, never domain repositories directly')
+        .check();
+    });
+  });
+
+  describe('API route restrictions', () => {
+    it('API routes must not import from domain directly', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/backend/**/interfaces/**/api/**')
+        .should()
+        .notImportFrom('**/backend/**/modules/**/domain/**')
+        .because('API routes must only interact with application CQRS handlers, never domain objects or repositories directly')
+        .check();
+    });
+  });
+
   describe('CQRS Architecture', () => {
     it('command handlers and query handlers must end with Handler', () => {
       classes(p)
         .that()
-        .resideInFolder('**/{backend,packages}/modules/**/application/**/commands/**')
+        .resideInFolder('**/backend/**/modules/**/application/**/commands/**')
         .and()
         .haveNameMatching(/Handler$/)
         .should()
@@ -95,7 +134,7 @@ describe('DDD Architecture', () => {
 
       classes(p)
         .that()
-        .resideInFolder('**/{backend,packages}/modules/**/application/**/queries/**')
+        .resideInFolder('**/backend/**/modules/**/application/**/queries/**')
         .and()
         .haveNameMatching(/Handler$/)
         .should()
@@ -106,7 +145,7 @@ describe('DDD Architecture', () => {
     it('handlers must implement an execute method', () => {
       classes(p)
         .that()
-        .resideInFolder('**/{backend,packages}/modules/**/application/**')
+        .resideInFolder('**/backend/**/modules/**/application/**')
         .and()
         .haveNameMatching(/Handler$/)
         .should()
@@ -118,7 +157,7 @@ describe('DDD Architecture', () => {
     it('commands must be named Command', () => {
       classes(p)
         .that()
-        .resideInFolder('**/{backend,packages}/modules/**/application/**/commands/**')
+        .resideInFolder('**/backend/**/modules/**/application/**/commands/**')
         .and()
         .haveNameMatching(/Command$/)
         .should()
@@ -129,7 +168,7 @@ describe('DDD Architecture', () => {
     it('queries must be named Query', () => {
       classes(p)
         .that()
-        .resideInFolder('**/{backend,packages}/modules/**/application/**/queries/**')
+        .resideInFolder('**/backend/**/modules/**/application/**/queries/**')
         .and()
         .haveNameMatching(/Query$/)
         .should()
@@ -140,7 +179,7 @@ describe('DDD Architecture', () => {
     it('handler execution methods must return Result or DTO types', () => {
       functions(p)
         .that()
-        .resideInFolder('**/{backend,packages}/modules/**/application/**')
+        .resideInFolder('**/backend/**/modules/**/application/**')
         .and()
         .haveNameMatching(/^execute$/)
         .should()
@@ -152,10 +191,20 @@ describe('DDD Architecture', () => {
     it('query handlers must be read-only (no save/delete repository calls)', () => {
       functions(p)
         .that()
-        .resideInFolder('**/{backend,packages}/modules/**/application/**/queries/**')
+        .resideInFolder('**/backend/**/modules/**/application/**/queries/**')
         .should()
         .notContain(call(/\.save$|\.delete$/))
         .because('query handlers must only perform read operations')
+        .check();
+    });
+  });
+
+  describe('Dependency cycles', () => {
+    it('modules must not contain cycles', () => {
+      slices(p)
+        .matching('backend/**/modules/*/')
+        .should()
+        .beFreeOfCycles()
         .check();
     });
   });
