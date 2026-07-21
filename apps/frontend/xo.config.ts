@@ -21,6 +21,18 @@ const xoConfig: FlatXoConfig = [
   {
     files: ['**/*.{ts,tsx,mts,cts}'],
     rules: {
+      'import-x/no-restricted-paths': [
+        'error',
+        {
+          zones: [
+            {
+              target: './apps/frontend',
+              from: './apps/backend',
+              message: 'Frontend must not import from apps/backend. Use @sessioflow/* workspace packages instead.',
+            },
+          ],
+        },
+      ],
       'unicorn/empty-brace-spaces': 'off',
       'react/require-default-props': 'off',
 
