@@ -10,9 +10,9 @@ import {ConferenceCreateSchema, ConferenceResponseSchema} from './conference-cre
  * Creates a new conference with CfP configuration.
  * Delegates to CreateConference CQRS command handler.
  */
-export async function handleConferenceCreate(
+export async function createConferenceController(
   request: NextRequest,
-  createConferenceHandler: CreateConferenceHandler,
+  commandHandler: CreateConferenceHandler,
   getAuthUser: () => Promise<{id: string} | undefined>,
 ): Promise<Response> {
   try {
@@ -48,7 +48,7 @@ export async function handleConferenceCreate(
       organizerId: user.id,
     });
 
-    const result = await createConferenceHandler.execute(command);
+    const result = await commandHandler.execute(command);
 
     if (!result.success) {
       // Map error codes to HTTP status codes

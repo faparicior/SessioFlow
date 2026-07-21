@@ -1,8 +1,8 @@
 import {describe, it, expect, vi} from 'vitest';
 import {z} from 'zod';
 import {createNextRequest} from './fixtures';
-import {handleConferenceCreate} from '@backend/modules/conference/interfaces/api/v1/conferences/create';
-import {handleGetConference} from '@backend/modules/conference/interfaces/api/v1/conferences/get';
+import {createConferenceController} from '@backend/modules/conference/interfaces/api/v1/conferences/create-conference.controller';
+import {getConferenceController} from '@backend/modules/conference/interfaces/api/v1/conferences/get-conference.controller';
 import type {ConferenceResponseDto} from '@backend/modules/conference/application/dto/conference-response.dto';
 import {CreateConferenceHandler} from '@backend/modules/conference/application/commands/create-conference/create-conference.handler';
 import {GetConferenceHandler} from '@backend/modules/conference/application/queries/get-conference/get-conference.handler';
@@ -84,7 +84,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
       cfpEndDate: '2026-09-30',
     });
 
-    const response = await handleConferenceCreate(
+    const response = await createConferenceController(
       request,
       mockCreateConferenceHandler,
       mockGetAuthUser,
@@ -105,7 +105,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
       cfpEndDate: '2026-09-30',
     });
 
-    const response = await handleConferenceCreate(
+    const response = await createConferenceController(
       request,
       mockCreateConferenceHandler,
       mockGetAuthUser,
@@ -137,7 +137,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
       cfpEndDate: '2026-09-30',
     });
 
-    const response = await handleConferenceCreate(
+    const response = await createConferenceController(
       request,
       mockCreateConferenceHandler,
       mockGetAuthUser,
@@ -171,7 +171,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
       cfpEndDate: '2026-09-30',
     });
 
-    const response = await handleConferenceCreate(
+    const response = await createConferenceController(
       request,
       mockCreateConferenceHandler,
       mockGetAuthUser,
@@ -190,7 +190,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
       cfpEndDate: '2026-09-30',
     });
 
-    const response = await handleConferenceCreate(
+    const response = await createConferenceController(
       request,
       mockCreateConferenceHandler,
       unauthenticatedGetAuthUser,
@@ -229,7 +229,7 @@ describe('Conference API - GET /api/v1/conferences/:id', () => {
       `/api/v1/conferences/${validUuid}`,
     );
 
-    const response = await handleGetConference(
+    const response = await getConferenceController(
       request,
       validUuid,
       mockGetConferenceHandler,
@@ -253,7 +253,7 @@ describe('Conference API - GET /api/v1/conferences/:id', () => {
       '/api/v1/conferences/12345678-1234-4123-8123-123456789012',
     );
 
-    const response = await handleGetConference(
+    const response = await getConferenceController(
       request,
       '12345678-1234-4123-8123-123456789012',
       mockGetConferenceHandler,

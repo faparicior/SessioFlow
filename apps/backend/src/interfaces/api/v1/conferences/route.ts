@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import {type NextRequest, NextResponse} from 'next/server';
-import {ConferenceCreateSchema} from '@backend/modules/conference/interfaces/v1/conferences/conference-create.schema';
+import {ConferenceCreateSchema} from '@backend/modules/conference/interfaces/api/v1/conferences/conference-create.schema';
 import {CreateConferenceCommand} from '@backend/modules/conference/application/commands/create-conference/create-conference.command';
 import {CreateConferenceHandler} from '@backend/modules/conference/application/commands/create-conference/create-conference.handler';
 import {SupabaseConferenceRepository} from '@backend/modules/conference/infrastructure/database/conference-repository';
