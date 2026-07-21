@@ -12,7 +12,7 @@ import { ConferenceFreeTierLimitError } from '../../../domain/exceptions/confere
 import { getLogger } from '@sessioflow/shared-logging/logger';
 import { getCorrelationId } from '@sessioflow/shared-logging/context';
 
-import { type ConferenceRepository } from '../../../domain/repository.interface';
+import { type ConferenceRepository } from '../../../domain/conference-repository.interface';
 
 export type CreateConferenceResult = {
   success: boolean;

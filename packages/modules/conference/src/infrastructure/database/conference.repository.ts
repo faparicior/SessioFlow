@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { db } from '@sessioflow/shared-database/client';
 import { conferencesTable } from '@sessioflow/shared-database/schema';
-import { type ConferenceRepository } from '../../domain/repository.interface';
+import { type ConferenceRepository } from '../../domain/conference-repository.interface';
 import { Conference } from '../../domain/conference';
 import { ConferenceId } from '../../domain/value-objects/conference-id';
 import { ConferenceName } from '../../domain/value-objects/conference-name';
