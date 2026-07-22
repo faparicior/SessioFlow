@@ -2,29 +2,34 @@ import {beforeEach, describe, it, expect, vi} from 'vitest';
 import {CreateConferenceCommand} from '@sessioflow/conference/application/commands/create-conference/create-conference.command';
 import {CreateConferenceHandler} from '@sessioflow/conference/application/commands/create-conference/create-conference.handler';
 import {Conference} from '@sessioflow/conference/domain/conference';
+import {type ConferenceRepository} from '@sessioflow/conference/domain/conference-repository.interface';
+import {type ConferenceId} from '@sessioflow/conference/domain/value-objects/conference-id';
+import {type ConferenceSlug} from '@sessioflow/conference/domain/value-objects/conference-slug';
 import {ConferenceStatus} from '@sessioflow/conference/domain/value-objects/conference-status';
 
 // Mock repository
-class MockConferenceRepository {
+class MockConferenceRepository implements ConferenceRepository {
   private conferences: Conference[] = [];
 
-  async findById(id: {value: string}) {
-    return this.conferences.find(c => c.id.value === id.value);
+  async findById(id: ConferenceId | string): Promise<Conference | null> {
+    const targetId = typeof id === 'string' ? id : id.value;
+    return this.conferences.find(c => c.id.value === targetId) ?? null;
   }
 
-  async findBySlug(slug: {value: string}) {
-    return this.conferences.find(c => c.slug.value === slug.value);
+  async findBySlug(slug: ConferenceSlug | string): Promise<Conference | null> {
+    const targetSlug = typeof slug === 'string' ? slug : slug.value;
+    return this.conferences.find(c => c.slug.value === targetSlug) ?? null;
   }
 
-  async findByOrganizerId(organizerId: string) {
+  async findByOrganizerId(organizerId: string): Promise<Conference[]> {
     return this.conferences.filter(c => c.organizerId === organizerId);
   }
 
-  async findByStatus(status: any) {
+  async findByStatus(status: ConferenceStatus): Promise<Conference[]> {
     return this.conferences.filter(c => c.status === status);
   }
 
-  async save(conference: Conference) {
+  async save(conference: Conference): Promise<void> {
     const existingIndex = this.conferences.findIndex(
       c => c.id.value === conference.id.value,
     );
@@ -35,11 +40,12 @@ class MockConferenceRepository {
     }
   }
 
-  async delete(id: {value: string}) {
-    this.conferences = this.conferences.filter(c => c.id.value !== id.value);
+  async delete(id: ConferenceId | string): Promise<void> {
+    const targetId = typeof id === 'string' ? id : id.value;
+    this.conferences = this.conferences.filter(c => c.id.value !== targetId);
   }
 
-  add(conference: Conference) {
+  add(conference: Conference): void {
     this.conferences.push(conference);
   }
 }
@@ -152,8 +158,8 @@ describe('CreateConference Command', () => {
 
     await handler.execute(command);
 
-    const saved = await repo.findBySlug({value: 'tech-conference'});
-    expect(saved).not.toBeUndefined();
+    const saved = await repo.findBySlug('tech-conference');
+    expect(saved).not.toBeNull();
     expect(saved!.status).toBe(ConferenceStatus.CFP_OPEN);
   });
 

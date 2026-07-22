@@ -5,27 +5,31 @@ import {type ConferenceStatus} from '@sessioflow/conference/domain/value-objects
 import {type ConferenceId} from '@sessioflow/conference/domain/value-objects/conference-id';
 import {GetConferenceHandler} from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
 
+import {type ConferenceRepository} from '@sessioflow/conference/domain/conference-repository.interface';
+
 // Mock repository
-class MockConferenceRepository {
+class MockConferenceRepository implements ConferenceRepository {
   private conferences: Conference[] = [];
 
-  async findById(id: ConferenceId): Promise<Conference | undefined> {
-    return this.conferences.find(c => c.id.value === id.value);
+  async findById(id: ConferenceId | string): Promise<Conference | null> {
+    const targetId = typeof id === 'string' ? id : id.value;
+    return this.conferences.find(c => c.id.value === targetId) ?? null;
   }
 
-  async findBySlug(slug: ConferenceSlug) {
-    return this.conferences.find(c => c.slug.value === slug.value);
+  async findBySlug(slug: ConferenceSlug | string): Promise<Conference | null> {
+    const targetSlug = typeof slug === 'string' ? slug : slug.value;
+    return this.conferences.find(c => c.slug.value === targetSlug) ?? null;
   }
 
-  async findByOrganizerId(organizerId: string) {
+  async findByOrganizerId(organizerId: string): Promise<Conference[]> {
     return this.conferences.filter(c => c.organizerId === organizerId);
   }
 
-  async findByStatus(status: ConferenceStatus) {
+  async findByStatus(status: ConferenceStatus): Promise<Conference[]> {
     return this.conferences.filter(c => c.status === status);
   }
 
-  async save(conference: Conference) {
+  async save(conference: Conference): Promise<void> {
     const existingIndex = this.conferences.findIndex(
       c => c.id.value === conference.id.value,
     );
@@ -36,11 +40,12 @@ class MockConferenceRepository {
     }
   }
 
-  async delete(id: ConferenceId) {
-    this.conferences = this.conferences.filter(c => c.id.value !== id.value);
+  async delete(id: ConferenceId | string): Promise<void> {
+    const targetId = typeof id === 'string' ? id : id.value;
+    this.conferences = this.conferences.filter(c => c.id.value !== targetId);
   }
 
-  add(conference: Conference) {
+  add(conference: Conference): void {
     this.conferences.push(conference);
   }
 }
