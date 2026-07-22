@@ -6,6 +6,7 @@ import {getConferenceController} from '@backend/interfaces/api/v1/conferences/ge
 import type {ConferenceResponseDto} from '@sessioflow/conference/application/dto/conference-response.dto';
 import {CreateConferenceHandler} from '@sessioflow/conference/application/commands/create-conference/create-conference.handler';
 import {GetConferenceHandler} from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
+import type {ConferenceRepository} from '@sessioflow/conference/domain/conference-repository.interface';
 
 // Zod schemas for testing responses type-safely without type assertions
 const successResponseSchema = z.object({
@@ -36,8 +37,7 @@ const mockRepository = {
 };
 
 const mockCreateConferenceHandler = new CreateConferenceHandler(
-  mockRepository,
-  vi.fn(),
+  mockRepository as unknown as ConferenceRepository,
 );
 
 const mockGetConferenceRepository = {
