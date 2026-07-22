@@ -4,13 +4,14 @@ import {ConferenceCreateSchema} from '@sessioflow/api-definitions/zod/conference
 import {CreateConferenceCommand} from '@sessioflow/conf-module/application/commands/create-conference/create-conference.command';
 import {makeCreateConferenceHandler} from '@sessioflow/conf-module/container';
 import {getLogger} from '@sessioflow/shared-logging/logger';
+import {withApiCorrelation} from '@sessioflow/shared-logging/middleware';
 
 /**
  * POST /api/v1/conferences
  *
  * Creates a new conference with CfP configuration.
  */
-export async function POST(request: NextRequest) {
+export const POST = withApiCorrelation(async (request: NextRequest) => {
   const logger = getLogger();
   logger.info('[API] Conference creation request received');
 
@@ -120,4 +121,4 @@ export async function POST(request: NextRequest) {
       {status: 500},
     );
   }
-}
+});
