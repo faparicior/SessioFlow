@@ -33,6 +33,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | ✅ Approved | 2026-06-05 |
 | [015](015-adopt-cqrs-pattern.md) | Adopt CQRS Pattern for Application Layer | ✅ **Approved** | 2026-06-29 |
 | [016](016-dependency-injection-strategy-for-nextjs.md) | Dependency Injection Strategy for Next.js | ✅ Approved | 2026-07-01 |
+| [016-01](016-01-controller-factory-di-amendment.md) | **Amendment: Controller Factory DI Pattern** | ✅ **Approved** | 2026-07-22 |
 | [017](017-use-drizzle-orm-with-ddd-transactions.md) | Use Drizzle ORM with Transaction Support at Application Layer | ✅ Approved | 2026-07-01 |
 | [018](018-implement-observability-for-debugging.md) | Implement Observability for AI-Assisted Debugging | ✅ Approved | 2026-07-04 |
 | [019](019-use-ts-archunit-for-architecture-testing.md) | Use ts-archunit for Architecture Testing | ✅ Approved | 2026-07-10 |
