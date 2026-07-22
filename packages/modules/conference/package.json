@@ -1,5 +1,5 @@
 {
-  "name": "@sessioflow/conf-module",
+  "name": "@sessioflow/conference",
   "version": "0.1.0",
   "private": true,
   "type": "module",

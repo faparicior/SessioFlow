@@ -1,7 +1,7 @@
 import {type NextRequest, NextResponse} from 'next/server';
 import {z} from 'zod';
-import {CreateConferenceCommand} from '@backend/modules/conference/application/commands/create-conference/create-conference.command';
-import {type CreateConferenceHandler} from '@backend/modules/conference/application/commands/create-conference/create-conference.handler';
+import {CreateConferenceCommand} from '@sessioflow/conference/application/commands/create-conference/create-conference.command';
+import {type CreateConferenceHandler} from '@sessioflow/conference/application/commands/create-conference/create-conference.handler';
 import {ConferenceCreateSchema, ConferenceResponseSchema} from './conference-create.schema';
 
 /**
@@ -83,4 +83,3 @@ export async function createConferenceController(
     );
   }
 }
-

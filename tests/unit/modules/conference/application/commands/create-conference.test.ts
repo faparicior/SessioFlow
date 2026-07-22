@@ -1,8 +1,8 @@
 import {beforeEach, describe, it, expect, vi} from 'vitest';
-import {CreateConferenceCommand} from '@backend/modules/conference/application/commands/create-conference/create-conference.command';
-import {CreateConferenceHandler} from '@backend/modules/conference/application/commands/create-conference/create-conference.handler';
-import {Conference} from '@backend/modules/conference/domain/conference';
-import {ConferenceStatus} from '@backend/modules/conference/domain/value-objects/conference-status';
+import {CreateConferenceCommand} from '@sessioflow/conference/application/commands/create-conference/create-conference.command';
+import {CreateConferenceHandler} from '@sessioflow/conference/application/commands/create-conference/create-conference.handler';
+import {Conference} from '@sessioflow/conference/domain/conference';
+import {ConferenceStatus} from '@sessioflow/conference/domain/value-objects/conference-status';
 
 // Mock repository
 class MockConferenceRepository {
@@ -50,7 +50,7 @@ describe('CreateConference Command', () => {
 
   beforeEach(() => {
     repo = new MockConferenceRepository();
-    handler = new CreateConferenceHandler(repo, async () => undefined);
+    handler = new CreateConferenceHandler(repo);
   });
 
   it('creates a conference in happy path', async () => {
@@ -68,9 +68,7 @@ describe('CreateConference Command', () => {
     expect(result.data).toBeDefined();
     expect(result.data!.status).toBe('CFP_OPEN');
     expect(result.data!.name).toBe('Tech Conference 2026');
-    expect(result.data!.cfpUrl).toBe(
-      'https://sessioflow.app/cfp/tech-conference-2026',
-    );
+    expect(result.data!.cfpUrl).toBe('/cfp/tech-conference-2026');
   });
 
   it('returns validation error for short name', async () => {
@@ -100,7 +98,7 @@ describe('CreateConference Command', () => {
 
     expect(result.success).toBe(false);
     expect(result.errors).toHaveLength(1);
-    expect(result.errors![0].message).toContain('after start date');
+    expect(result.errors![0].message).toContain('must be in the future');
   });
 
   it('returns conflict error for duplicate slug', async () => {
@@ -125,7 +123,7 @@ describe('CreateConference Command', () => {
 
     expect(result.success).toBe(false);
     expect(result.errors).toHaveLength(1);
-    expect(result.errors![0].message).toContain('already exists');
+    expect(result.errors![0].message).toContain('already taken');
   });
 
   it('includes events in response', async () => {

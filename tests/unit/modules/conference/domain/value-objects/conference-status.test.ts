@@ -4,7 +4,7 @@ import {
   ConferenceStatusFromString,
   ConferenceStatusValidationError,
   isConferenceStatus,
-} from '@backend/modules/conference/domain/value-objects/conference-status';
+} from '@sessioflow/conference/domain/value-objects/conference-status';
 
 function isErrorWithMessage(error: unknown): error is ConferenceStatusValidationError {
   return error instanceof ConferenceStatusValidationError;

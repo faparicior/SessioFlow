@@ -1,10 +1,9 @@
 import {z} from 'zod';
 import {type NextRequest, NextResponse} from 'next/server';
-import {ConferenceCreateSchema} from '@backend/modules/conference/interfaces/api/v1/conferences/conference-create.schema';
-import {CreateConferenceCommand} from '@backend/modules/conference/application/commands/create-conference/create-conference.command';
-import {CreateConferenceHandler} from '@backend/modules/conference/application/commands/create-conference/create-conference.handler';
-import {SupabaseConferenceRepository} from '@backend/modules/conference/infrastructure/database/conference-repository';
-import {getLogger} from '@backend/shared/infrastructure/logging';
+import {ConferenceCreateSchema} from '@sessioflow/api-definitions/zod/conference';
+import {CreateConferenceCommand} from '@sessioflow/conference/application/commands/create-conference/create-conference.command';
+import {makeCreateConferenceHandler} from '@sessioflow/conference/container';
+import {getLogger} from '@sessioflow/shared-logging/logger';
 
 /**
  * POST /api/v1/conferences
@@ -49,14 +48,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 3. Initialize repository and handler
-    const repository = new SupabaseConferenceRepository();
-    const handler = new CreateConferenceHandler(repository, async () => undefined);
+    // 3. Initialize handler via Factory
+    const handler = makeCreateConferenceHandler();
 
     // 4. Execute command
     const command = new CreateConferenceCommand({
-      ...parsed.data,
+      name: parsed.data.name,
+      description: parsed.data.description,
       organizerId: user.id,
+      cfpStartDate: parsed.data.cfpStartDate,
+      cfpEndDate: parsed.data.cfpEndDate,
+      maxSubmissions: parsed.data.maxSubmissions,
+      requiresApproval: parsed.data.requiresApproval,
     });
     logger.debug('[API] Executing create conference command:', {
       name: parsed.data.name,

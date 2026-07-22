@@ -70,7 +70,7 @@ sessioflow/
 ├── packages/
 │   ├── api-definitions/        # Data-only API schemas & Zod validation (@sessioflow/api-definitions)
 │   ├── modules/
-│   │   ├── conference/         # DDD Conference Bounded Context (@sessioflow/conf-module)
+│   │   ├── conference/         # DDD Conference Bounded Context (@sessioflow/conference)
 │   │   │   ├── domain/         # Pure domain entities, value objects & interfaces
 │   │   │   ├── application/    # Command & query use cases
 │   │   │   ├── infrastructure/ # Drizzle ORM repository implementations

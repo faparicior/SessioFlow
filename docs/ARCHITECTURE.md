@@ -20,7 +20,7 @@ sessioflow/
 │   │       └── types/          # Plain TypeScript response/request interfaces
 │   │
 │   ├── modules/                # DDD Bounded Context Modules
-│   │   └── conference/         # Conference bounded context (@sessioflow/conf-module)
+│   │   └── conference/         # Conference bounded context (@sessioflow/conference)
 │   │       ├── domain/         # Pure domain entities, VOs & repository interfaces
 │   │       ├── application/    # CQRS Command & Query use case handlers
 │   │       ├── infrastructure/ # Drizzle ORM database repositories & adapters

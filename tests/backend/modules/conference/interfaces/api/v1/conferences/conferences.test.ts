@@ -1,11 +1,11 @@
 import {describe, it, expect, vi} from 'vitest';
 import {z} from 'zod';
 import {createNextRequest} from './fixtures';
-import {createConferenceController} from '@backend/modules/conference/interfaces/api/v1/conferences/create-conference.controller';
-import {getConferenceController} from '@backend/modules/conference/interfaces/api/v1/conferences/get-conference.controller';
-import type {ConferenceResponseDto} from '@backend/modules/conference/application/dto/conference-response.dto';
-import {CreateConferenceHandler} from '@backend/modules/conference/application/commands/create-conference/create-conference.handler';
-import {GetConferenceHandler} from '@backend/modules/conference/application/queries/get-conference/get-conference.handler';
+import {createConferenceController} from '@backend/interfaces/api/v1/conferences/create-conference.controller';
+import {getConferenceController} from '@backend/interfaces/api/v1/conferences/get-conference.controller';
+import type {ConferenceResponseDto} from '@sessioflow/conference/application/dto/conference-response.dto';
+import {CreateConferenceHandler} from '@sessioflow/conference/application/commands/create-conference/create-conference.handler';
+import {GetConferenceHandler} from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
 
 // Zod schemas for testing responses type-safely without type assertions
 const successResponseSchema = z.object({

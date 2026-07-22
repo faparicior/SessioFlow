@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {MaxSubmissions} from '@backend/modules/conference/domain/value-objects/max-submissions';
+import {MaxSubmissions} from '@sessioflow/conference/domain/value-objects/max-submissions';
 
 describe('MaxSubmissions', () => {
   it('creates unlimited (undefined)', () => {

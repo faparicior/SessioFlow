@@ -13,6 +13,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "paths": {
+      "@sessioflow/conference": ["./packages/modules/conference/src"],
+      "@sessioflow/conference/*": ["./packages/modules/conference/src/*"],
       "@backend/*": ["./apps/backend/src/*"],
       "@frontend/*": ["./apps/frontend/src/*"]
     }

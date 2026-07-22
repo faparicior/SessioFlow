@@ -89,7 +89,7 @@ This plan follows a **hybrid TDD approach** combining outside-in and inside-out 
 ```
 packages/
 ├── modules/
-│   └── conference/                    # @sessioflow/conf-module
+│   └── conference/                    # @sessioflow/conference
 │       └── src/
 │           ├── domain/
 │           │   ├── conference.ts              # Conference aggregate root

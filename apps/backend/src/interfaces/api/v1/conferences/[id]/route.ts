@@ -1,6 +1,5 @@
 import {type NextRequest, NextResponse} from 'next/server';
-import {GetConferenceHandler} from '@backend/modules/conference/application/queries/get-conference/get-conference.handler';
-import {SupabaseConferenceRepository} from '@backend/modules/conference/infrastructure/database/conference-repository';
+import {makeGetConferenceHandler} from '@sessioflow/conference/container';
 
 /**
  * GET /api/v1/conferences/:id
@@ -13,9 +12,8 @@ export async function GET(
 ) {
   try {
     const {id} = await params;
-    const repository = new SupabaseConferenceRepository();
-    const getConferenceHandler = new GetConferenceHandler(repository);
-    const result = await getConferenceHandler.execute(id);
+    const getConferenceHandler = makeGetConferenceHandler();
+    const result = await getConferenceHandler.execute({id});
 
     if (!result.success) {
       return NextResponse.json(

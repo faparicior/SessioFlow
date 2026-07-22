@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {ConferenceSlug} from '@backend/modules/conference/domain/value-objects/conference-slug';
+import {ConferenceSlug} from '@sessioflow/conference/domain/value-objects/conference-slug';
 
 describe('ConferenceSlug', () => {
   it('generates URL-safe slug from name', () => {

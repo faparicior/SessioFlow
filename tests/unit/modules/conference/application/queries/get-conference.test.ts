@@ -1,9 +1,9 @@
 import {beforeEach, describe, it, expect} from 'vitest';
-import {Conference} from '@backend/modules/conference/domain/conference';
-import {type ConferenceSlug} from '@backend/modules/conference/domain/value-objects/conference-slug';
-import {type ConferenceStatus} from '@backend/modules/conference/domain/value-objects/conference-status';
-import {type ConferenceId} from '@backend/modules/conference/domain/value-objects/conference-id';
-import {GetConferenceHandler} from '@backend/modules/conference/application/queries/get-conference/get-conference.handler';
+import {Conference} from '@sessioflow/conference/domain/conference';
+import {type ConferenceSlug} from '@sessioflow/conference/domain/value-objects/conference-slug';
+import {type ConferenceStatus} from '@sessioflow/conference/domain/value-objects/conference-status';
+import {type ConferenceId} from '@sessioflow/conference/domain/value-objects/conference-id';
+import {GetConferenceHandler} from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
 
 // Mock repository
 class MockConferenceRepository {
@@ -64,25 +64,24 @@ describe('GetConference Query', () => {
     conference.publishCfp();
     repo.add(conference);
 
-    const result = await handler.execute(conference.id.toString());
+    const result = await handler.execute({id: conference.id.toString()});
 
     expect(result.success).toBe(true);
     expect(result.data).toBeDefined();
     expect(result.data!.id).toBe(conference.id.value);
     expect(result.data!.name).toBe('Tech Conference 2026');
     expect(result.data!.status).toBe('CFP_OPEN');
-    expect(result.data!.cfpUrl).toBe(
-      'https://sessioflow.app/cfp/tech-conference-2026',
-    );
+    expect(result.data!.cfpUrl).toBe('/cfp/tech-conference-2026');
   });
 
   it('returns null when conference not found', async () => {
-    const result = await handler.execute(
-      '12345678-1234-4123-8123-123456789012',
-    );
+    const result = await handler.execute({
+      id: '12345678-1234-4123-8123-123456789012',
+    });
 
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
     expect(result.data).toBeUndefined();
+    expect(result.errors![0].code).toBe('NOT_FOUND');
   });
 
   it('returns conference with CfpConfig details', async () => {
@@ -96,7 +95,7 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const result = await handler.execute(conference.id.toString());
+    const result = await handler.execute({id: conference.id.toString()});
 
     expect(result.success).toBe(true);
     expect(result.data!.maxSubmissions).toBe(100);
@@ -118,7 +117,7 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const result = await handler.execute(conference.id.toString());
+    const result = await handler.execute({id: conference.id.toString()});
 
     expect(result.success).toBe(true);
     expect(result.data!.status).toBe('DRAFT');
@@ -133,7 +132,7 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const result = await handler.execute(conference.id.toString());
+    const result = await handler.execute({id: conference.id.toString()});
 
     expect(result.success).toBe(true);
     expect(result.data!.createdAt).toBe(conference.createdAt.toISOString());

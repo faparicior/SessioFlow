@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {ConferenceId} from '@backend/modules/conference/domain/value-objects/conference-id';
+import {ConferenceId} from '@sessioflow/conference/domain/value-objects/conference-id';
 
 describe('ConferenceId', () => {
   it('creates a valid UUIDv4', () => {

@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@sessioflow/api-definitions": "*",
-    "@sessioflow/conf-module": "*",
+    "@sessioflow/conference": "*",
     "@sessioflow/frontend": "*",
     "@sessioflow/shared-logging": "*",
     "@radix-ui/react-slot": "^1.3.0",
