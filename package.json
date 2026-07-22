@@ -11,7 +11,7 @@
     "packages/config/*"
   ],
   "scripts": {
-    "dev": "npx turbo dev",
+    "dev": "docker compose -f apps/backend/docker-compose.yml up -d && (trap 'docker compose -f apps/backend/docker-compose.yml down' EXIT INT TERM; npx turbo dev)",
     "build": "npx turbo build",
     "lint": "npx turbo lint",
     "lint:fix": "npx turbo lint:fix",
