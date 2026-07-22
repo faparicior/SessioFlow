@@ -1,6 +1,8 @@
 import * as path from 'node:path';
 import * as dotenv from 'dotenv';
 import postgres from 'postgres';
+import {migrate} from 'drizzle-orm/postgres-js/migrator';
+import {drizzle} from 'drizzle-orm/postgres-js';
 
 export default async function setup() {
   const rootDir = path.resolve(__dirname, '../../..');
@@ -41,7 +43,16 @@ export default async function setup() {
   }
   /* eslint-enable no-await-in-loop */
 
-
+  // Run database migrations to ensure schema is ready
+  try {
+    const migrationClient = postgres(connectionString, {max: 1});
+    const db = drizzle(migrationClient);
+    await migrate(db, {migrationsFolder: path.resolve(rootDir, 'drizzle')});
+    await migrationClient.end();
+    console.log('[E2E Setup] Database migrations applied successfully');
+  } catch (error) {
+    console.error('[E2E Setup] Failed to run database migrations:', error);
+  }
 
   // Clean up test conferences to avoid hitting free tier limit
   try {
