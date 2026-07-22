@@ -5,7 +5,7 @@ import {migrate} from 'drizzle-orm/postgres-js/migrator';
 import {drizzle} from 'drizzle-orm/postgres-js';
 
 export default async function setup() {
-  const rootDir = path.resolve(__dirname, '../../..');
+  const rootDir = path.resolve(__dirname, '../..');
   // Load environment variables from .env.local
   dotenv.config({path: path.resolve(rootDir, '.env.local')});
 
