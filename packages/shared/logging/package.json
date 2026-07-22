@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "./logger": "./dist/pino-logger.js",
-    "./context": "./dist/request-context.js"
+    "./context": "./dist/request-context.js",
+    "./middleware": "./dist/middleware.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

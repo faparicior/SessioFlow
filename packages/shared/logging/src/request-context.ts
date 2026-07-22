@@ -22,8 +22,37 @@ export function getRequestContext(): RequestContextData | undefined {
   return requestStorage.getStore();
 }
 
+export function extractCorrelationId(
+  headers?: Headers | Record<string, string | string[] | undefined>
+): string | undefined {
+  if (!headers) return undefined;
+
+  if (typeof (headers as Headers).get === 'function') {
+    const webHeaders = headers as Headers;
+    return (
+      webHeaders.get('x-correlation-id') ??
+      webHeaders.get('x-request-id') ??
+      undefined
+    );
+  }
+
+  const recordHeaders = headers as Record<
+    string,
+    string | string[] | undefined
+  >;
+  const rawValue =
+    recordHeaders['x-correlation-id'] ?? recordHeaders['x-request-id'];
+  if (Array.isArray(rawValue)) {
+    return rawValue[0];
+  }
+  return rawValue;
+}
+
 export function generateCorrelationId(headerValue?: string): string {
-  return headerValue ?? `req-${uuidv4()}`.slice(0, 32);
+  if (headerValue && headerValue.trim().length > 0) {
+    return headerValue.trim();
+  }
+  return `req-${uuidv4()}`.slice(0, 32);
 }
 
 export function withRequestContext<T>(
