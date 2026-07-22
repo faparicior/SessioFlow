@@ -47,15 +47,17 @@ The `conference` controllers sit at the HTTP boundary, translating HTTP requests
 
 ### Package Structure Convention
 
-- **Controller files**: `*.controller.ts` in `apps/backend/src/interfaces/api/v1/`
-- **DTO schemas**: `*.schema.ts` in the same directory as controllers
+- **Controller files**: `*.controller.ts` in `packages/modules/conference/src/interfaces/http/`
+- **DTO schemas**: `*.schema.ts` in `packages/modules/conference/src/interfaces/http/`
+- **App Router entrypoints**: `route.ts` in `apps/backend/src/interfaces/api/v1/`
 - **Command/Query handlers**: `application/commands/` and `application/queries/`
 
 Examples:
 
-- `apps/backend/src/interfaces/api/v1/conferences/create-conference.controller.ts`
-- `apps/backend/src/interfaces/api/v1/conferences/get-conference.controller.ts`
-- `apps/backend/src/interfaces/api/v1/conferences/conference-create.schema.ts`
+- `packages/modules/conference/src/interfaces/http/create-conference.controller.ts`
+- `packages/modules/conference/src/interfaces/http/get-conference.controller.ts`
+- `packages/modules/conference/src/interfaces/http/conference-create.schema.ts`
+- `apps/backend/src/interfaces/api/v1/conferences/route.ts`
 
 ---
 
