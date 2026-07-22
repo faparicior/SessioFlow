@@ -47,7 +47,7 @@ export default async function setup() {
   try {
     const migrationClient = postgres(connectionString, {max: 1});
     const db = drizzle(migrationClient);
-    await migrate(db, {migrationsFolder: path.resolve(rootDir, 'drizzle')});
+    await migrate(db, {migrationsFolder: path.resolve(rootDir, 'apps/backend/drizzle')});
     await migrationClient.end();
     console.log('[E2E Setup] Database migrations applied successfully');
   } catch (error) {
