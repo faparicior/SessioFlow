@@ -1,10 +1,10 @@
 import {describe, it, expect} from 'vitest';
-import {Conference} from '@backend/modules/conference/domain/conference';
-import {ConferenceStatus} from '@backend/modules/conference/domain/value-objects/conference-status';
-import {CfpStatus} from '@backend/modules/conference/domain/value-objects/cfp-status';
-import {StateTransitionError} from '@backend/modules/conference/domain/exceptions/state-transition-error';
-import {ConferenceCreatedEvent} from '@backend/modules/conference/domain/events/conference-created';
-import {CfpOpenedEvent} from '@backend/modules/conference/domain/events/cfp-opened';
+import {Conference} from '@sessioflow/conference/domain/conference';
+import {ConferenceStatus} from '@sessioflow/conference/domain/value-objects/conference-status';
+import {CfpStatus} from '@sessioflow/conference/domain/value-objects/cfp-status';
+import {StateTransitionError} from '@sessioflow/conference/domain/exceptions/state-transition-error';
+import {ConferenceCreatedEvent} from '@sessioflow/conference/domain/events/conference-created';
+import {CfpOpenedEvent} from '@sessioflow/conference/domain/events/cfp-opened';
 
 describe('Conference', () => {
   const createConference = () =>

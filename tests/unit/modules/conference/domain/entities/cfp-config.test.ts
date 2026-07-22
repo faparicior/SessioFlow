@@ -1,11 +1,11 @@
 import {describe, it, expect} from 'vitest';
-import {CfpConfig} from '@backend/modules/conference/domain/cfp-config';
-import {CfpStartDate} from '@backend/modules/conference/domain/value-objects/cfp-start-date';
-import {CfpEndDate} from '@backend/modules/conference/domain/value-objects/cfp-end-date';
-import {MaxSubmissions} from '@backend/modules/conference/domain/value-objects/max-submissions';
-import {RequiresApproval} from '@backend/modules/conference/domain/value-objects/requires-approval';
-import {CfpStatus} from '@backend/modules/conference/domain/value-objects/cfp-status';
-import {CfpDatesInvalidError} from '@backend/modules/conference/domain/exceptions/cfp-dates-invalid-error';
+import {CfpConfig} from '@sessioflow/conference/domain/cfp-config';
+import {CfpStartDate} from '@sessioflow/conference/domain/value-objects/cfp-start-date';
+import {CfpEndDate} from '@sessioflow/conference/domain/value-objects/cfp-end-date';
+import {MaxSubmissions} from '@sessioflow/conference/domain/value-objects/max-submissions';
+import {RequiresApproval} from '@sessioflow/conference/domain/value-objects/requires-approval';
+import {CfpStatus} from '@sessioflow/conference/domain/value-objects/cfp-status';
+import {CfpDatesInvalidError} from '@sessioflow/conference/domain/exceptions/cfp-dates-invalid-error';
 
 describe('CfpConfig', () => {
   const createCfpConfig = () =>

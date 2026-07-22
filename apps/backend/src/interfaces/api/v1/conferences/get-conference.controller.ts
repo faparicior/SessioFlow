@@ -1,5 +1,5 @@
 import {NextResponse, type NextRequest} from 'next/server';
-import type {GetConferenceHandler} from '@backend/modules/conference/application/queries/get-conference/get-conference.handler';
+import type {GetConferenceHandler} from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
 
 /**
  * GET /api/v1/conferences/:id
@@ -24,7 +24,7 @@ export async function getConferenceController(
     }
 
     // 2. Execute CQRS query — handler validates the ID
-    const result = await queryHandler.execute(conferenceId);
+    const result = await queryHandler.execute({id: conferenceId});
 
     if (!result.success) {
       return NextResponse.json(

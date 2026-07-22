@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {CfpStatus} from '@backend/modules/conference/domain/value-objects/cfp-status';
+import {CfpStatus} from '@sessioflow/conference/domain/value-objects/cfp-status';
 
 describe('CfpStatus', () => {
   it('has correct enum values', () => {

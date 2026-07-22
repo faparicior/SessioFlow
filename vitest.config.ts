@@ -7,6 +7,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@sessioflow/conference': path.resolve(__dirname, './packages/modules/conference/src'),
+      '@sessioflow/conference/*': path.resolve(__dirname, './packages/modules/conference/src/*'),
       // Use backend app for tests that need @backend imports
       '@backend': path.resolve(__dirname, './apps/backend/src'),
       '@backend/*': path.resolve(__dirname, './apps/backend/src/*'),

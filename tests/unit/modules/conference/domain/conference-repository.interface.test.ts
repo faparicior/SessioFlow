@@ -1,9 +1,9 @@
 import {describe, it, expect} from 'vitest';
-import {Conference} from '@backend/modules/conference/domain/conference';
-import {type ConferenceRepository} from '@backend/modules/conference/domain/conference-repository';
-import {ConferenceId} from '@backend/modules/conference/domain/value-objects/conference-id';
-import {ConferenceSlug} from '@backend/modules/conference/domain/value-objects/conference-slug';
-import {ConferenceStatus} from '@backend/modules/conference/domain/value-objects/conference-status';
+import {Conference} from '@sessioflow/conference/domain/conference';
+import {type ConferenceRepository} from '@sessioflow/conference/domain/conference-repository.interface';
+import {ConferenceId} from '@sessioflow/conference/domain/value-objects/conference-id';
+import {ConferenceSlug} from '@sessioflow/conference/domain/value-objects/conference-slug';
+import {ConferenceStatus} from '@sessioflow/conference/domain/value-objects/conference-status';
 
 /**
  * ConferenceRepository Interface - Tests using a mock implementation.

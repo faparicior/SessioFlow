@@ -1,8 +1,8 @@
 import {z} from 'zod';
 import {type NextRequest, NextResponse} from 'next/server';
 import {ConferenceCreateSchema} from '@sessioflow/api-definitions/zod/conference';
-import {CreateConferenceCommand} from '@sessioflow/conf-module/application/commands/create-conference/create-conference.command';
-import {makeCreateConferenceHandler} from '@sessioflow/conf-module/container';
+import {CreateConferenceCommand} from '@sessioflow/conference/application/commands/create-conference/create-conference.command';
+import {makeCreateConferenceHandler} from '@sessioflow/conference/container';
 import {getLogger} from '@sessioflow/shared-logging/logger';
 import {withApiCorrelation} from '@sessioflow/shared-logging/middleware';
 

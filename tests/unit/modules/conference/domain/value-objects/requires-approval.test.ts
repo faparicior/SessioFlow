@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {RequiresApproval} from '@backend/modules/conference/domain/value-objects/requires-approval';
+import {RequiresApproval} from '@sessioflow/conference/domain/value-objects/requires-approval';
 
 describe('RequiresApproval', () => {
   it('defaults to true', () => {

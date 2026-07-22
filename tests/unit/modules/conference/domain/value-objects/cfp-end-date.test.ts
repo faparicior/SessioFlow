@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {CfpEndDate} from '@backend/modules/conference/domain/value-objects/cfp-end-date';
+import {CfpEndDate} from '@sessioflow/conference/domain/value-objects/cfp-end-date';
 
 describe('CfpEndDate', () => {
   it('creates a valid future date', () => {

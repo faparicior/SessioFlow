@@ -1,10 +1,10 @@
 import {describe, it, expect} from 'vitest';
-import {InvalidConferenceError} from '@backend/modules/conference/domain/exceptions/invalid-conference-error';
-import {ConferenceNameTooShortError} from '@backend/modules/conference/domain/exceptions/conference-name-too-short-error';
-import {CfpDatesInvalidError} from '@backend/modules/conference/domain/exceptions/cfp-dates-invalid-error';
-import {ConferenceFreeTierLimitError} from '@backend/modules/conference/domain/exceptions/conference-free-tier-limit-error';
-import {StateTransitionError} from '@backend/modules/conference/domain/exceptions/state-transition-error';
-import {SubmissionDateInPastError} from '@backend/modules/conference/domain/exceptions/submission-date-in-past-error';
+import {InvalidConferenceError} from '@sessioflow/conference/domain/exceptions/invalid-conference-error';
+import {ConferenceNameTooShortError} from '@sessioflow/conference/domain/exceptions/conference-name-too-short-error';
+import {CfpDatesInvalidError} from '@sessioflow/conference/domain/exceptions/cfp-dates-invalid-error';
+import {ConferenceFreeTierLimitError} from '@sessioflow/conference/domain/exceptions/conference-free-tier-limit-error';
+import {StateTransitionError} from '@sessioflow/conference/domain/exceptions/state-transition-error';
+import {SubmissionDateInPastError} from '@sessioflow/conference/domain/exceptions/submission-date-in-past-error';
 
 describe('Domain Exceptions', () => {
   it('InvalidConferenceError has correct name and message', () => {

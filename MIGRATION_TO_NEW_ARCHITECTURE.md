@@ -229,7 +229,7 @@ Verify root `package.json` workspaces:
 Avoid `index.ts` barrel exports. Instead, configure package subpath exports in `package.json` so consumers import specific modules explicitly:
 ```json
 {
-  "name": "@sessioflow/conf-module",
+  "name": "@sessioflow/conference",
   "exports": {
     "./domain/*": "./src/domain/*.ts",
     "./application/*": "./src/application/*.ts",
@@ -288,8 +288,8 @@ export class DrizzleConferenceRepository implements ConferenceRepository {
 ```typescript
 // apps/backend/src/app/api/v1/conferences/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { GetConferenceHandler } from '@sessioflow/conf-module/application/queries/get-conference';
-import { CreateConferenceHandler } from '@sessioflow/conf-module/application/commands/create-conference';
+import { GetConferenceHandler } from '@sessioflow/conference/application/queries/get-conference';
+import { CreateConferenceHandler } from '@sessioflow/conference/application/commands/create-conference';
 import { ConferenceSchema } from '@sessioflow/api-definitions/zod/conference.schema';
 import { getAuthenticatedUser } from '@/infrastructure/auth/get-authenticated-user';
 

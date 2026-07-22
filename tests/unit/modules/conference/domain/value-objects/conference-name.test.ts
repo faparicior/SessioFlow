@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {ConferenceName} from '@backend/modules/conference/domain/value-objects/conference-name';
+import {ConferenceName} from '@sessioflow/conference/domain/value-objects/conference-name';
 
 describe('ConferenceName', () => {
   it('creates a valid conference name', () => {

@@ -1,5 +1,5 @@
 import {type NextRequest, NextResponse} from 'next/server';
-import {makeGetConferenceHandler} from '@sessioflow/conf-module/container';
+import {makeGetConferenceHandler} from '@sessioflow/conference/container';
 
 /**
  * GET /api/v1/conferences/:id
