@@ -1,5 +1,4 @@
 import {type NextRequest} from 'next/server';
-import {getConferenceController} from '@sessioflow/conference/interfaces/http/get-conference.controller';
 import {conferenceContainer} from '@sessioflow/conference/container';
 
 /**
@@ -13,8 +12,7 @@ export async function GET(
   {params}: {params: Promise<{id: string}>},
 ) {
   const {id} = await params;
-  const handler = conferenceContainer.getConferenceHandler();
-  const getAuthUser = async () => ({id: 'mock-user-id'});
-
-  return getConferenceController(request, id, handler, getAuthUser);
+  const controller = conferenceContainer.getConferenceController();
+  return controller(request, id);
 }
+

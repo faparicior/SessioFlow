@@ -74,7 +74,7 @@ sessioflow/
 │   │   │   ├── domain/         # Pure domain entities, value objects & interfaces
 │   │   │   ├── application/    # Command & query use cases
 │   │   │   ├── infrastructure/ # Drizzle ORM repository implementations
-│   │   │   └── container.ts    # Module Composition Root / Factories
+│   │   │   └── container.ts    # Module Composition Root (Application & HTTP Controller factories)
 │   │   └── [other-modules]/
 │   └── shared/
 │       ├── database/           # Drizzle ORM database client (@sessioflow/shared-database)
