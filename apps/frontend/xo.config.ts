@@ -48,7 +48,7 @@ const xoConfig: FlatXoConfig = [
       'n/no-extraneous-import': 'off',
 
       // --- Next.js conventionally uses anonymous default exports
-      // (next.config.js, middleware.ts, API route handlers) ---
+      // (next.config.js, proxy.ts, API route handlers) ---
       'import/no-anonymous-default-export': 'off',
 
       // --- React idioms that unicorn/no-null and prevent-abbreviations

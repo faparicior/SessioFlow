@@ -1,13 +1,13 @@
 import {type NextRequest, NextResponse} from 'next/server';
 
 /**
- * SessioFlow Next.js Global Middleware
+ * SessioFlow Next.js Global Proxy
  *
  * Intercepts incoming requests to ensure every request has an 'x-correlation-id'
  * header. If missing, generates a new correlation ID and propagates it to downstream
  * handlers and in the outgoing HTTP response header.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const existingCorrelationId =
     request.headers.get('x-correlation-id') ??
     request.headers.get('x-request-id');
