@@ -1,8 +1,9 @@
 # 009-01-Accept-Monorepo-With-Backend-Frontend-Separation-For-Stack-Independence
 
-* **Status:** ✅ **APPROVED**
+* **Status:** ❌ **Superseded by [ADR-023](023-comprehensive-monorepo-structure-update.md)**
 * **Date:** 2026-06-25
 * **Decision Makers:** Technical Lead, Product Team
+* **Superseded By:** [ADR-023](023-comprehensive-monorepo-structure-update.md)
 * **Supersedes:** None
 * **Amends:** ADR-009 (Domain-Driven Design Structure)
 * **Related:** ADR-002-01 (Supabase DDD Abstraction), ADR-001 (Next.js Frontend), ADR-015 (CQRS Pattern)

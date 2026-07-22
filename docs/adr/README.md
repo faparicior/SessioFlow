@@ -39,7 +39,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [020](020-use-api-schema-package-pattern-for-contract-definition.md) | Use API Schema Package Pattern for Contract Definition | ✅ **Accepted** | 2026-07-25 |
 | [021](021-adopt-domain-module-structure-convention.md) | Adopt Domain Module Structure Convention | ✅ **Accepted** | 2026-07-25 |
 | [022](022-accept-frontend-backend-type-decoupling-strategy.md) | Accept Frontend-Backend Type Decoupling Strategy | ✅ **Accepted** | 2026-07-25 |
-| [023](023-superseat-009-01-monorepo-backend-frontend-separation.md) | Superseed 009-01: Comprehensive Monorepo Structure Update | ✅ **Accepted** | 2026-07-25 |
+| [023](023-comprehensive-monorepo-structure-update.md) | Comprehensive Monorepo Structure Update | ✅ **Accepted** | 2026-07-25 |
 
 ---
 

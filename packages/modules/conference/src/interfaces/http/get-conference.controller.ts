@@ -1,5 +1,5 @@
-import {NextResponse, type NextRequest} from 'next/server';
-import type {GetConferenceHandler} from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
+import {NextResponse} from 'next/server';
+import type {GetConferenceHandler} from '../../application/queries/get-conference/get-conference.handler.js';
 
 /**
  * GET /api/v1/conferences/:id
@@ -8,7 +8,7 @@ import type {GetConferenceHandler} from '@sessioflow/conference/application/quer
  * Delegates to GetConference CQRS query handler.
  */
 export async function getConferenceController(
-  request: NextRequest,
+  request: Request,
   conferenceId: string,
   queryHandler: GetConferenceHandler,
   getAuthUser: () => Promise<{id: string} | undefined>,

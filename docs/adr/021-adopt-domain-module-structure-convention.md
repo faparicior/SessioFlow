@@ -66,9 +66,14 @@ packages/modules/conference/
   │   ├── commands/
   │   └── queries/
   │
-  └── infrastructure/
-      ├── database/
-      └── adapters/
+  ├── infrastructure/
+  │   ├── database/
+  │   └── adapters/
+  │
+  └── interfaces/
+      └── http/
+          ├── create-conference.controller.ts
+          └── get-conference.controller.ts
 ```
 
 ### Folder Organization Rationale
@@ -79,6 +84,7 @@ packages/modules/conference/
 | `domain/value-objects/` | Value objects: IDs, dates, names, statuses | Supporting layer; grouped by type; less frequently accessed |
 | `domain/exceptions/` | Domain error classes | Supporting layer; grouped by category; rare during routine coding |
 | `domain/events/` | Domain event classes | Supporting layer; grouped; event-driven code |
+| `interfaces/http/` | Primary HTTP Controllers | Presentation controller functions; handles HTTP contracts & status codes; `route.ts` delegates to it |
 
 ### Module Examples
 
@@ -184,7 +190,7 @@ packages/modules/review/domain/
 
 *   [ADR-009: Domain-Driven Design Structure](./009-adopt-domain-driven-design-structure.md)
 *   [ADR-020: API Schema Package Pattern](./020-use-api-schema-package-pattern-for-contract-definition.md)
-*   [ADR-023: Comprehensive Monorepo Structure Update](./023-superseat-009-01-comprehensive-monorepo-structure-update.md)
+*   [ADR-023: Comprehensive Monorepo Structure Update](./023-comprehensive-monorepo-structure-update.md)
 
 ---
 

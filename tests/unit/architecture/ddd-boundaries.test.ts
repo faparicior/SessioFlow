@@ -88,9 +88,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/{backend,packages}/modules/**/interfaces/**')
         .should()
         .onlyImportFrom(
-          '**/backend/**/modules/**/interfaces/**',
-          '**/backend/**/modules/**/application/**',
-          '**/backend/**/shared/**',
+          '**/{backend,packages}/modules/**/interfaces/**',
+          '**/{backend,packages}/modules/**/application/**',
+          '**/{backend,packages}/shared/**',
           '**/node_modules/**',
         )
         .check();

@@ -24,6 +24,7 @@ sessioflow/
 │   │       ├── domain/         # Pure domain entities, VOs & repository interfaces
 │   │       ├── application/    # CQRS Command & Query use case handlers
 │   │       ├── infrastructure/ # Drizzle ORM database repositories & adapters
+│   │       ├── interfaces/     # Primary HTTP presentation controllers
 │   │       └── container.ts    # Module Composition Root & factories
 │   │
 │   └── shared/                 # Shared infrastructure services

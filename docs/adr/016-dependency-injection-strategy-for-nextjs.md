@@ -147,17 +147,19 @@ export class CreateConferenceService {
   }
 }
 
-// interfaces/api/conference-router.ts
-// Composition Root - Wire dependencies
-const supabase = createSupabaseClient();
-const conferenceRepo = new SupabaseConferenceRepository(supabase);
-const emailService = createEmailService(); // Optional
-const createConference = new CreateConferenceService(conferenceRepo, emailService);
+```typescript
+// container.ts - Module Composition Root (Factory Container Object)
+export const conferenceContainer = {
+  createConferenceHandler: (repo: IConferenceRepository = new SupabaseConferenceRepository()) =>
+    new CreateConferenceService(repo),
+  getConferenceHandler: (repo: IConferenceRepository = new SupabaseConferenceRepository()) =>
+    new GetConferenceService(repo),
+};
 
-// Now use in API route
+// interfaces/api/v1/conferences/route.ts - Next.js Route Entrypoint
 export async function POST(request: Request) {
-  const result = await createConference.execute(await request.json());
-  return Response.json(result);
+  const handler = conferenceContainer.createConferenceHandler();
+  return createConferenceController(request, handler, getAuthUser);
 }
 ```
 

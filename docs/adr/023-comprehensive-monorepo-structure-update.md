@@ -1,4 +1,4 @@
-# 023-Superseed 009-01: Comprehensive Monorepo Structure Update
+# 023-Comprehensive Monorepo Structure Update
 
 * **Status:** Accepted
 * **Date:** 2026-07-25
@@ -94,19 +94,23 @@ sessioflow/
 │   │   │   │       ├── conference-created.ts
 │   │   │   │       └── cfp-opened.ts
 │   │   │   ├── application/
-│   │   │   │   ├── commands/
-│   │   │   │   │   ├── create-conference/
-│   │   │   │   │   └── ...
-│   │   │   │   └── queries/
-│   │   │   │       ├── get-conference/
+│   │   │   ├── commands/
+│   │   │   │   ├── create-conference/
+│   │   │   │   └── ...
+│   │   │   └── queries/
+│   │   │       ├── get-conference/
+│   │   │       └── ...
+│   │   │   ├── infrastructure/
+│   │   │   │   ├── database/
+│   │   │   │   │   ├── conference-repository.ts      # Implementation
+│   │   │   │   │   └── drizzle-schema.ts
+│   │   │   │   └── adapters/
+│   │   │   │       ├── notification-adapter.ts
 │   │   │   │       └── ...
-│   │   │   └── infrastructure/
-│   │   │       ├── database/
-│   │   │       │   ├── conference-repository.ts      # Implementation
-│   │   │       │   └── drizzle-schema.ts
-│   │   │       └── adapters/
-│   │   │           ├── notification-adapter.ts
-│   │   │           └── ...
+│   │   │   └── interfaces/                           # Primary Adapters
+│   │   │       └── http/
+│   │   │           ├── create-conference.controller.ts
+│   │   │           └── get-conference.controller.ts
 │   │   ├── submission/
 │   │   └── [other-modules]/
 │   │
