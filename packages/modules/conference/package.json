@@ -7,7 +7,8 @@
     "./container": "./dist/container.js",
     "./domain/*": "./dist/domain/*.js",
     "./application/*": "./dist/application/*.js",
-    "./infrastructure/*": "./dist/infrastructure/*.js"
+    "./infrastructure/*": "./dist/infrastructure/*.js",
+    "./interfaces/*": "./dist/interfaces/*.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

@@ -201,7 +201,7 @@ app.post('/api/conferences', validateRequest(ConferenceSchema), handler);
 *   [ADR-020: API Schema Package Pattern](./020-use-api-schema-package-pattern-for-contract-definition.md)
 *   [ADR-009-01: Monorepo with Backend/Frontend Separation](./009-01-monorepo-backend-frontend-separation.md)
 *   [ADR-015: CQRS Pattern](./015-adopt-cqrs-pattern.md)
-*   [ADR-023: Comprehensive Monorepo Structure Update](./023-superseat-009-01-comprehensive-monorepo-structure-update.md)
+*   [ADR-023: Comprehensive Monorepo Structure Update](./023-comprehensive-monorepo-structure-update.md)
 
 ---
 

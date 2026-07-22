@@ -1,50 +1,20 @@
-import {type NextRequest, NextResponse} from 'next/server';
-import {makeGetConferenceHandler} from '@sessioflow/conference/container';
+import {type NextRequest} from 'next/server';
+import {getConferenceController} from '@sessioflow/conference/interfaces/http/get-conference.controller';
+import {conferenceContainer} from '@sessioflow/conference/container';
 
 /**
  * GET /api/v1/conferences/:id
  *
  * Retrieves a conference by ID.
+ * Delegates to getConferenceController in @sessioflow/conference.
  */
 export async function GET(
   request: NextRequest,
   {params}: {params: Promise<{id: string}>},
 ) {
-  try {
-    const {id} = await params;
-    const getConferenceHandler = makeGetConferenceHandler();
-    const result = await getConferenceHandler.execute({id});
+  const {id} = await params;
+  const handler = conferenceContainer.getConferenceHandler();
+  const getAuthUser = async () => ({id: 'mock-user-id'});
 
-    if (!result.success) {
-      return NextResponse.json(
-        {
-          error: {
-            code: result.errors![0].code,
-            message: result.errors![0].message,
-          },
-        },
-        {status: 400},
-      );
-    }
-
-    if (!result.data) {
-      return NextResponse.json(
-        {error: {code: 'NOT_FOUND', message: 'Conference not found'}},
-        {status: 404},
-      );
-    }
-
-    return NextResponse.json({data: result.data});
-  } catch (error) {
-    console.error('Conference retrieval error:', error);
-    return NextResponse.json(
-      {
-        error: {
-          code: 'INTERNAL_ERROR',
-          message: 'An unexpected error occurred',
-        },
-      },
-      {status: 500},
-    );
-  }
+  return getConferenceController(request, id, handler, getAuthUser);
 }

@@ -1,8 +1,8 @@
-import {type NextRequest, NextResponse} from 'next/server';
+import {NextResponse} from 'next/server';
 import {z} from 'zod';
-import {CreateConferenceCommand} from '@sessioflow/conference/application/commands/create-conference/create-conference.command';
-import {type CreateConferenceHandler} from '@sessioflow/conference/application/commands/create-conference/create-conference.handler';
-import {ConferenceCreateSchema, ConferenceResponseSchema} from './conference-create.schema';
+import {CreateConferenceCommand} from '../../application/commands/create-conference/create-conference.command.js';
+import {type CreateConferenceHandler} from '../../application/commands/create-conference/create-conference.handler.js';
+import {ConferenceCreateSchema, ConferenceResponseSchema} from './conference-create.schema.js';
 
 /**
  * POST /api/v1/conferences
@@ -11,7 +11,7 @@ import {ConferenceCreateSchema, ConferenceResponseSchema} from './conference-cre
  * Delegates to CreateConference CQRS command handler.
  */
 export async function createConferenceController(
-  request: NextRequest,
+  request: Request,
   commandHandler: CreateConferenceHandler,
   getAuthUser: () => Promise<{id: string} | undefined>,
 ): Promise<Response> {

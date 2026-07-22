@@ -1,8 +1,8 @@
 import {describe, it, expect, vi} from 'vitest';
 import {z} from 'zod';
 import {createNextRequest} from './fixtures';
-import {createConferenceController} from '@backend/interfaces/api/v1/conferences/create-conference.controller';
-import {getConferenceController} from '@backend/interfaces/api/v1/conferences/get-conference.controller';
+import {createConferenceController} from '@sessioflow/conference/interfaces/http/create-conference.controller';
+import {getConferenceController} from '@sessioflow/conference/interfaces/http/get-conference.controller';
 import type {ConferenceResponseDto} from '@sessioflow/conference/application/dto/conference-response.dto';
 import {CreateConferenceHandler} from '@sessioflow/conference/application/commands/create-conference/create-conference.handler';
 import {GetConferenceHandler} from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
