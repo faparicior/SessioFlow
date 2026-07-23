@@ -29,9 +29,9 @@ describe('ConferenceName', () => {
 ```
 
 ### Integration Tests
-- **Location**: `tests/integration/[feature].test.ts`
-- **Scope**: Repository implementations, use cases with mocked dependencies
-- **Framework**: Vitest + Testcontainers
+- **Location**: `tests/integration/modules/[module]/[feature].integration.test.ts`
+- **Scope**: Repository implementations, database operations, and HTTP Controllers paired with real CQRS handlers (unmocked handler logic to prevent DTO schema drift)
+- **Framework**: Vitest (+ Testcontainers or in-memory repositories)
 
 ```typescript
 // tests/integration/conference-repository.test.ts
@@ -130,7 +130,7 @@ A task is complete when ALL of the following pass:
 - ✅ Repository implementations
 - ✅ Database queries and migrations
 - ✅ External service integrations (with mocks)
-- ✅ API endpoint handlers
+- ✅ API endpoint controllers paired with real handlers (DTO schema drift validation)
 
 **E2E Tests:**
 - ✅ Critical user journeys
