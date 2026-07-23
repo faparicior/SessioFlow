@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 
 /**
  * Zod validation schema for conference creation requests.
@@ -8,8 +8,8 @@ import {z} from 'zod';
 export const ConferenceCreateSchema = z.object({
   name: z.string(),
   description: z.string().optional().default(''),
-  cfpStartDate: z.iso.date({message: 'Start date must be a valid date'}),
-  cfpEndDate: z.iso.date({message: 'End date must be a valid date'}),
+  cfpStartDate: z.iso.date({ message: 'Start date must be a valid date' }),
+  cfpEndDate: z.iso.date({ message: 'End date must be a valid date' }),
   maxSubmissions: z.number().int().positive().optional(),
   requiresApproval: z.boolean().optional().default(true),
 });
@@ -36,7 +36,7 @@ export const ConferenceResponseSchema = z.object({
   cfpStatus: z.enum(['ACTIVE', 'CLOSED', 'ARCHIVED']),
   maxSubmissions: z.number().int().positive().optional(),
   requiresApproval: z.boolean(),
-  cfpUrl: z.url(),
+  cfpUrl: z.string(),
   events: z.array(z.unknown()),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
