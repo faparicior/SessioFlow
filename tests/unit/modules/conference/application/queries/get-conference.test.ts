@@ -1,11 +1,12 @@
-import {beforeEach, describe, it, expect} from 'vitest';
-import {Conference} from '@sessioflow/conference/domain/conference';
-import {type ConferenceSlug} from '@sessioflow/conference/domain/value-objects/conference-slug';
-import {type ConferenceStatus} from '@sessioflow/conference/domain/value-objects/conference-status';
-import {type ConferenceId} from '@sessioflow/conference/domain/value-objects/conference-id';
-import {GetConferenceHandler} from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
+import { beforeEach, describe, it, expect } from 'vitest';
+import { Conference } from '@sessioflow/conference/domain/conference';
+import { type ConferenceSlug } from '@sessioflow/conference/domain/value-objects/conference-slug';
+import { type ConferenceStatus } from '@sessioflow/conference/domain/value-objects/conference-status';
+import { type ConferenceId } from '@sessioflow/conference/domain/value-objects/conference-id';
+import { GetConferenceHandler } from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
+import { ConferenceNotFoundError } from '@sessioflow/conference/domain/exceptions/conference-not-found-error';
 
-import {type ConferenceRepository} from '@sessioflow/conference/domain/conference-repository.interface';
+import { type ConferenceRepository } from '@sessioflow/conference/domain/conference-repository.interface';
 
 // Mock repository
 class MockConferenceRepository implements ConferenceRepository {
@@ -13,25 +14,25 @@ class MockConferenceRepository implements ConferenceRepository {
 
   async findById(id: ConferenceId | string): Promise<Conference | null> {
     const targetId = typeof id === 'string' ? id : id.value;
-    return this.conferences.find(c => c.id.value === targetId) ?? null;
+    return this.conferences.find((c) => c.id.value === targetId) ?? null;
   }
 
   async findBySlug(slug: ConferenceSlug | string): Promise<Conference | null> {
     const targetSlug = typeof slug === 'string' ? slug : slug.value;
-    return this.conferences.find(c => c.slug.value === targetSlug) ?? null;
+    return this.conferences.find((c) => c.slug.value === targetSlug) ?? null;
   }
 
   async findByOrganizerId(organizerId: string): Promise<Conference[]> {
-    return this.conferences.filter(c => c.organizerId === organizerId);
+    return this.conferences.filter((c) => c.organizerId === organizerId);
   }
 
   async findByStatus(status: ConferenceStatus): Promise<Conference[]> {
-    return this.conferences.filter(c => c.status === status);
+    return this.conferences.filter((c) => c.status === status);
   }
 
   async save(conference: Conference): Promise<void> {
     const existingIndex = this.conferences.findIndex(
-      c => c.id.value === conference.id.value,
+      (c) => c.id.value === conference.id.value
     );
     if (existingIndex === -1) {
       this.conferences.push(conference);
@@ -42,7 +43,7 @@ class MockConferenceRepository implements ConferenceRepository {
 
   async delete(id: ConferenceId | string): Promise<void> {
     const targetId = typeof id === 'string' ? id : id.value;
-    this.conferences = this.conferences.filter(c => c.id.value !== targetId);
+    this.conferences = this.conferences.filter((c) => c.id.value !== targetId);
   }
 
   add(conference: Conference): void {
@@ -69,24 +70,18 @@ describe('GetConference Query', () => {
     conference.publishCfp();
     repo.add(conference);
 
-    const result = await handler.execute({id: conference.id.toString()});
+    const result = await handler.execute({ id: conference.id.toString() });
 
-    expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
-    expect(result.data!.id).toBe(conference.id.value);
-    expect(result.data!.name).toBe('Tech Conference 2026');
-    expect(result.data!.status).toBe('CFP_OPEN');
-    expect(result.data!.cfpUrl).toBe('/cfp/tech-conference-2026');
+    expect(result.id.value).toBe(conference.id.value);
+    expect(result.name.value).toBe('Tech Conference 2026');
+    expect(result.status).toBe('CFP_OPEN');
+    expect(result.slug.value).toBe('tech-conference-2026');
   });
 
-  it('returns null when conference not found', async () => {
-    const result = await handler.execute({
-      id: '12345678-1234-4123-8123-123456789012',
-    });
-
-    expect(result.success).toBe(false);
-    expect(result.data).toBeUndefined();
-    expect(result.errors![0].code).toBe('NOT_FOUND');
+  it('throws error when conference not found', async () => {
+    await expect(
+      handler.execute({ id: '12345678-1234-4123-8123-123456789012' })
+    ).rejects.toThrow(ConferenceNotFoundError);
   });
 
   it('returns conference with CfpConfig details', async () => {
@@ -100,16 +95,15 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const result = await handler.execute({id: conference.id.toString()});
+    const result = await handler.execute({ id: conference.id.toString() });
 
-    expect(result.success).toBe(true);
-    expect(result.data!.maxSubmissions).toBe(100);
-    expect(result.data!.requiresApproval).toBe(false);
-    expect(result.data!.cfpStartDate).toBe(
-      conference.cfpConfig.startDate.toISOString(),
+    expect(result.cfpConfig.maxSubmissions.value).toBe(100);
+    expect(result.cfpConfig.requiresApproval.value).toBe(false);
+    expect(result.cfpConfig.startDate.value.toISOString()).toBe(
+      conference.cfpConfig.startDate.value.toISOString()
     );
-    expect(result.data!.cfpEndDate).toBe(
-      conference.cfpConfig.endDate.toISOString(),
+    expect(result.cfpConfig.endDate.value.toISOString()).toBe(
+      conference.cfpConfig.endDate.value.toISOString()
     );
   });
 
@@ -122,10 +116,9 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const result = await handler.execute({id: conference.id.toString()});
+    const result = await handler.execute({ id: conference.id.toString() });
 
-    expect(result.success).toBe(true);
-    expect(result.data!.status).toBe('DRAFT');
+    expect(result.status).toBe('DRAFT');
   });
 
   it('returns conference with correct createdAt and updatedAt', async () => {
@@ -137,10 +130,9 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const result = await handler.execute({id: conference.id.toString()});
+    const result = await handler.execute({ id: conference.id.toString() });
 
-    expect(result.success).toBe(true);
-    expect(result.data!.createdAt).toBe(conference.createdAt.toISOString());
-    expect(result.data!.updatedAt).toBe(conference.updatedAt.toISOString());
+    expect(result.createdAt.toISOString()).toBe(conference.createdAt.toISOString());
+    expect(result.updatedAt.toISOString()).toBe(conference.updatedAt.toISOString());
   });
 });
