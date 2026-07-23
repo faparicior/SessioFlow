@@ -7,8 +7,6 @@
   },
   "include": ["src/**/*"],
   "references": [
-    { "path": "../../shared/database" },
-    { "path": "../../shared/domain" },
-    { "path": "../../shared/logging" }
+    { "path": "../domain" }
   ]
 }

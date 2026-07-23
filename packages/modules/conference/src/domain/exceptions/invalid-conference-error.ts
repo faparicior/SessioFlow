@@ -1,9 +1,11 @@
+import { DomainInvariantError } from '@sessioflow/shared-domain/exceptions';
+
 /**
  * InvalidConferenceError - Base error for invalid conference operations.
  */
-export class InvalidConferenceError extends Error {
+export class InvalidConferenceError extends DomainInvariantError {
   constructor(message: string) {
-    super(message);
+    super('INVALID_CONFERENCE', message);
     this.name = 'InvalidConferenceError';
   }
 }
