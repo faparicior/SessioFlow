@@ -118,17 +118,23 @@ const createEvent = (input) => {
 
 ### Error Handling
 ```typescript
-// ✅ Good - Zod validation + standardized errors
-try {
-  const validated = conferenceCreateSchema.parse(input);
-  const conference = await conferenceRepository.save(validated);
-  return { success: true, data: conference };
-} catch (error) {
-  if (error instanceof ZodError) {
-    return { success: false, errors: error.flatten() };
+// Domain objects throw DomainError on invariant violation
+// Handlers are pure — no try/catch, exceptions propagate
+// Controllers translate DomainError → HTTP response via error mapper
+// Route handlers provide safety net for truly unexpected errors only
+
+// ✅ Good - DomainError + single try/catch in controller
+export async function createConferenceController(request, commandHandler) {
+  try {
+    const command = CreateConferenceCommand.from(request.body);
+    const conference = await commandHandler.execute(command);
+    return NextResponse.json({ data: conference }, { status: 201 });
+  } catch (error) {
+    if (error instanceof DomainError) {
+      return mapDomainErrorToResponse(error);
+    }
+    throw error; // Route safety net catches this
   }
-  console.error('DB error:', error);
-  return { success: false, message: 'Database error occurred' };
 }
 ```
 
