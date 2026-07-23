@@ -1,12 +1,15 @@
-import {describe, it, expect, vi} from 'vitest';
-import {z} from 'zod';
-import {createNextRequest} from './fixtures';
-import {createConferenceController} from '@sessioflow/conference/interfaces/http/create-conference.controller';
-import {getConferenceController} from '@sessioflow/conference/interfaces/http/get-conference.controller';
-import type {ConferenceResponseDto} from '@sessioflow/conference/application/dto/conference-response.dto';
-import {CreateConferenceHandler} from '@sessioflow/conference/application/commands/create-conference/create-conference.handler';
-import {GetConferenceHandler} from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
-import type {ConferenceRepository} from '@sessioflow/conference/domain/conference-repository.interface';
+import { describe, it, expect, vi } from 'vitest';
+import { z } from 'zod';
+import { createNextRequest } from './fixtures';
+import { createConferenceController } from '@sessioflow/conference/interfaces/http/create-conference.controller';
+import { getConferenceController } from '@sessioflow/conference/interfaces/http/get-conference.controller';
+import { CreateConferenceHandler } from '@sessioflow/conference/application/commands/create-conference/create-conference.handler';
+import { GetConferenceHandler } from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
+import { Conference } from '@sessioflow/conference/domain/conference';
+import type { ConferenceRepository } from '@sessioflow/conference/domain/conference-repository.interface';
+import { ConferenceNameTooShortError } from '@sessioflow/conference/domain/exceptions/conference-name-too-short-error';
+import { SlugExistsError } from '@sessioflow/conference/domain/exceptions/slug-exists-error';
+import { ConferenceNotFoundError } from '@sessioflow/conference/domain/exceptions/conference-not-found-error';
 
 // Zod schemas for testing responses type-safely without type assertions
 const successResponseSchema = z.object({
@@ -34,12 +37,9 @@ const mockRepository = {
   save: vi.fn().mockResolvedValue(undefined),
   findByStatus: vi.fn().mockResolvedValue([]),
   findByOrganizerId: vi.fn().mockResolvedValue([]),
-};
+} as unknown as ConferenceRepository;
 
-const mockCreateConferenceHandler = new CreateConferenceHandler(
-  mockRepository as unknown as ConferenceRepository,
-);
-
+const mockCreateConferenceHandler = new CreateConferenceHandler(mockRepository);
 const mockGetConferenceRepository = {
   findById: vi.fn().mockResolvedValue(undefined),
   findBySlug: vi.fn().mockResolvedValue(undefined),
@@ -47,35 +47,24 @@ const mockGetConferenceRepository = {
   findByOrganizerId: vi.fn().mockResolvedValue([]),
   save: vi.fn().mockResolvedValue(undefined),
   delete: vi.fn().mockResolvedValue(undefined),
-};
+} as unknown as ConferenceRepository;
 
 const mockGetConferenceHandler = new GetConferenceHandler(mockGetConferenceRepository);
 
 // Mock auth provider - returns authenticated user by default
-const mockGetAuthUser = vi.fn().mockResolvedValue({id: 'test-user-id'});
+const mockGetAuthUser = vi.fn().mockResolvedValue({ id: 'test-user-id' });
 
 describe('Conference API - POST /api/v1/conferences', () => {
   it('creates a conference and returns 201', async () => {
-    const mockData: ConferenceResponseDto = {
-      id: '12345678-1234-4123-8123-123456789012',
+    const conference = Conference.create({
       name: 'Tech Conference',
-      slug: 'tech-conference',
-      status: 'CFP_OPEN',
-      cfpStartDate: '2026-08-01T00:00:00.000Z',
-      cfpEndDate: '2026-09-30T00:00:00.000Z',
-      cfpStatus: 'ACTIVE',
-      maxSubmissions: undefined,
-      requiresApproval: true,
-      cfpUrl: 'https://sessioflow.app/cfp/tech-conference',
-      events: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    vi.spyOn(mockCreateConferenceHandler, 'execute').mockResolvedValue({
-      success: true,
-      data: mockData,
+      organizerId: '12345678-1234-4123-8123-123456789012',
+      cfpStartDate: new Date('2026-08-01'),
+      cfpEndDate: new Date('2026-09-30'),
     });
+    conference.publishCfp();
+
+    vi.spyOn(mockCreateConferenceHandler, 'execute').mockResolvedValue(conference);
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Tech Conference',
@@ -119,16 +108,10 @@ describe('Conference API - POST /api/v1/conferences', () => {
     expect(parsed.error.details.properties.cfpStartDate.errors[0]).toContain('valid date');
   });
 
-  it('returns 400 for validation errors (domain)', async () => {
-    vi.spyOn(mockCreateConferenceHandler, 'execute').mockResolvedValue({
-      success: false,
-      errors: [
-        {
-          code: 'NAME_TOO_SHORT',
-          message: 'ConferenceName must be at least 3 characters',
-        },
-      ],
-    });
+  it('returns 400 for domain error (name too short)', async () => {
+    vi.spyOn(mockCreateConferenceHandler, 'execute').mockRejectedValueOnce(
+      new ConferenceNameTooShortError('ConferenceName must be at least 3 characters')
+    );
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Ab', // Too short - will fail domain validation
@@ -154,15 +137,9 @@ describe('Conference API - POST /api/v1/conferences', () => {
   });
 
   it('returns 409 for duplicate slug', async () => {
-    vi.spyOn(mockCreateConferenceHandler, 'execute').mockResolvedValue({
-      success: false,
-      errors: [
-        {
-          code: 'SLUG_EXISTS',
-          message: 'A conference with this name already exists',
-        },
-      ],
-    });
+    vi.spyOn(mockCreateConferenceHandler, 'execute').mockRejectedValueOnce(
+      new SlugExistsError('A conference with this name already exists')
+    );
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Existing Conference',
@@ -202,26 +179,15 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
 describe('Conference API - GET /api/v1/conferences/:id', () => {
   it('returns conference data', async () => {
-    const mockData: ConferenceResponseDto = {
-      id: '12345678-1234-4123-8123-123456789012',
+    const conference = Conference.create({
       name: 'Tech Conference',
-      slug: 'tech-conference',
-      status: 'CFP_OPEN',
-      cfpStartDate: '2026-08-01T00:00:00.000Z',
-      cfpEndDate: '2026-09-30T00:00:00.000Z',
-      cfpStatus: 'ACTIVE',
-      maxSubmissions: undefined,
-      requiresApproval: true,
-      cfpUrl: 'https://sessioflow.app/cfp/tech-conference',
-      events: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    vi.spyOn(mockGetConferenceHandler, 'execute').mockResolvedValue({
-      success: true,
-      data: mockData,
+      organizerId: '12345678-1234-4123-8123-123456789012',
+      cfpStartDate: new Date('2026-08-01'),
+      cfpEndDate: new Date('2026-09-30'),
     });
+    conference.publishCfp();
+
+    vi.spyOn(mockGetConferenceHandler, 'execute').mockResolvedValue(conference);
 
     const validUuid = '12345678-1234-4123-8123-123456789012';
     const request = createNextRequest(
@@ -243,10 +209,9 @@ describe('Conference API - GET /api/v1/conferences/:id', () => {
   });
 
   it('returns 404 when conference not found', async () => {
-    vi.spyOn(mockGetConferenceHandler, 'execute').mockResolvedValue({
-      success: true,
-      data: undefined,
-    });
+    vi.spyOn(mockGetConferenceHandler, 'execute').mockRejectedValueOnce(
+      new ConferenceNotFoundError()
+    );
 
     const request = createNextRequest(
       'GET',

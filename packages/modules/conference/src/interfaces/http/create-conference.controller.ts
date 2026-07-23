@@ -1,8 +1,10 @@
-import {NextResponse} from 'next/server';
-import {z} from 'zod';
-import {CreateConferenceCommand} from '../../application/commands/create-conference/create-conference.command.js';
-import {type CreateConferenceHandler} from '../../application/commands/create-conference/create-conference.handler.js';
-import {ConferenceCreateSchema, ConferenceResponseSchema} from './conference-create.schema.js';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { CreateConferenceCommand } from '../../application/commands/create-conference/create-conference.command.js';
+import { type CreateConferenceHandler } from '../../application/commands/create-conference/create-conference.handler.js';
+import { ConferenceCreateSchema, ConferenceResponseSchema } from './conference-create.schema.js';
+import { mapDomainErrorToResponse } from '@sessioflow/shared-http/error-mapper';
+import { DomainError } from '@sessioflow/shared-domain/exceptions';
 
 /**
  * POST /api/v1/conferences
@@ -13,22 +15,21 @@ import {ConferenceCreateSchema, ConferenceResponseSchema} from './conference-cre
 export async function createConferenceController(
   request: Request,
   commandHandler: CreateConferenceHandler,
-  getAuthUser: () => Promise<{id: string} | undefined>,
+  getAuthUser: () => Promise<{ id: string } | undefined>,
 ): Promise<Response> {
   try {
     // 1. Authenticate user
     const user = await getAuthUser();
     if (!user) {
       return NextResponse.json(
-        {error: {code: 'UNAUTHORIZED', message: 'Authentication required'}},
-        {status: 401},
+        { error: { code: 'UNAUTHORIZED', message: 'Authentication required' } },
+        { status: 401 }
       );
     }
 
     // 2. Parse and validate request body contract
-    const body = (await request.json());
+    const body = (await request.json()) as unknown;
     const parsed = ConferenceCreateSchema.safeParse(body);
-
     if (!parsed.success) {
       return NextResponse.json(
         {
@@ -38,7 +39,7 @@ export async function createConferenceController(
             details: z.treeifyError(parsed.error),
           },
         },
-        {status: 400},
+        { status: 400 }
       );
     }
 
@@ -47,39 +48,35 @@ export async function createConferenceController(
       ...parsed.data,
       organizerId: user.id,
     });
+    const conference = await commandHandler.execute(command);
 
-    const result = await commandHandler.execute(command);
-
-    if (!result.success) {
-      // Map error codes to HTTP status codes
-      const error = result.errors![0];
-      let status = 400;
-
-      if (error.code === 'SLUG_EXISTS') {
-        status = 409;
-      } else if (error.code === 'FREE_TIER_LIMIT') {
-        status = 403;
-      }
-
-      return NextResponse.json(
-        {error: {code: error.code, message: error.message}},
-        {status},
-      );
-    }
-
-    // 4. Return success response sanitized by the response schema
-    const responseDto = ConferenceResponseSchema.parse(result.data);
-    return NextResponse.json({data: responseDto}, {status: 201});
-  } catch (error) {
-    console.error('Conference creation error:', error);
+    // 4. Return success response
     return NextResponse.json(
       {
-        error: {
-          code: 'INTERNAL_ERROR',
-          message: 'An unexpected error occurred',
+        data: {
+          id: conference.id.value,
+          name: conference.name.value,
+          slug: conference.slug.value,
+          status: conference.status,
+          cfpStartDate: conference.cfpConfig.startDate.value.toISOString(),
+          cfpEndDate: conference.cfpConfig.endDate.value.toISOString(),
+          cfpStatus: conference.cfpConfig.status,
+          maxSubmissions: conference.cfpConfig.maxSubmissions.value,
+          requiresApproval: conference.cfpConfig.requiresApproval.value,
+          cfpUrl: `/cfp/${conference.slug.value}`,
+          events: (conference as any).events?.map((e: any) => ({ type: e.type })) || [],
+          createdAt: conference.createdAt.toISOString(),
+          updatedAt: conference.updatedAt.toISOString(),
         },
       },
-      {status: 500},
+      { status: 201 }
     );
+  } catch (error) {
+    // Translate domain errors to HTTP response
+    if (error instanceof DomainError) {
+      return mapDomainErrorToResponse(error);
+    }
+    // Unknown error — rethrow for route safety net
+    throw error;
   }
 }

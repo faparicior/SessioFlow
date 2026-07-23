@@ -1,4 +1,4 @@
-import {type NextRequest} from 'next/server';
+import {type NextRequest, NextResponse} from 'next/server';
 import {conferenceContainer} from '@sessioflow/conference/container';
 
 /**
@@ -6,6 +6,7 @@ import {conferenceContainer} from '@sessioflow/conference/container';
  *
  * Retrieves a conference by ID.
  * Delegates to getConferenceController in @sessioflow/conference.
+ * Route safety net for truly unexpected errors only.
  */
 export async function GET(
   request: NextRequest,
@@ -13,6 +14,14 @@ export async function GET(
 ) {
   const {id} = await params;
   const controller = conferenceContainer.getConferenceController();
-  return controller(request, id);
-}
 
+  try {
+    return await controller(request, id);
+  } catch (error) {
+    console.error('Route-level unhandled error:', error);
+    return NextResponse.json(
+      {error: {code: 'INTERNAL_ERROR', message: 'An unexpected error occurred'}},
+      {status: 500},
+    );
+  }
+}
