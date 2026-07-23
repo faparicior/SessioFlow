@@ -1,17 +1,20 @@
-import {describe, it, expect} from 'vitest';
-import {InvalidConferenceError} from '@sessioflow/conference/domain/exceptions/invalid-conference-error';
-import {ConferenceNameTooShortError} from '@sessioflow/conference/domain/exceptions/conference-name-too-short-error';
-import {CfpDatesInvalidError} from '@sessioflow/conference/domain/exceptions/cfp-dates-invalid-error';
-import {ConferenceFreeTierLimitError} from '@sessioflow/conference/domain/exceptions/conference-free-tier-limit-error';
-import {StateTransitionError} from '@sessioflow/conference/domain/exceptions/state-transition-error';
-import {SubmissionDateInPastError} from '@sessioflow/conference/domain/exceptions/submission-date-in-past-error';
+import { describe, it, expect } from 'vitest';
+import { InvalidConferenceError } from '@sessioflow/conference/domain/exceptions/invalid-conference-error';
+import { ConferenceNameTooShortError } from '@sessioflow/conference/domain/exceptions/conference-name-too-short-error';
+import { CfpDatesInvalidError } from '@sessioflow/conference/domain/exceptions/cfp-dates-invalid-error';
+import { ConferenceFreeTierLimitError } from '@sessioflow/conference/domain/exceptions/conference-free-tier-limit-error';
+import { StateTransitionError } from '@sessioflow/conference/domain/exceptions/state-transition-error';
+import { SubmissionDateInPastError } from '@sessioflow/conference/domain/exceptions/submission-date-in-past-error';
 
 describe('Domain Exceptions', () => {
   it('InvalidConferenceError has correct name and message', () => {
-    const error = new InvalidConferenceError('test');
-    expect(error.name).toBe('InvalidConferenceError');
-    expect(error.message).toBe('test');
-    expect(error).toBeInstanceOf(Error);
+    const errorWithCustom = new InvalidConferenceError('test');
+    expect(errorWithCustom.name).toBe('InvalidConferenceError');
+    expect(errorWithCustom.message).toBe('test');
+    expect(errorWithCustom).toBeInstanceOf(Error);
+
+    const defaultError = new InvalidConferenceError();
+    expect(defaultError.message).toBe('Invalid conference operation');
   });
 
   it('ConferenceNameTooShortError has correct message', () => {
@@ -21,11 +24,14 @@ describe('Domain Exceptions', () => {
     expect(error).toBeInstanceOf(Error);
   });
 
-  it('CfpDatesInvalidError has correct message', () => {
-    const error = new CfpDatesInvalidError('dates are invalid');
-    expect(error.name).toBe('CfpDatesInvalidError');
-    expect(error.message).toBe('dates are invalid');
-    expect(error).toBeInstanceOf(Error);
+  it('CfpDatesInvalidError has default and custom messages', () => {
+    const defaultError = new CfpDatesInvalidError();
+    expect(defaultError.name).toBe('CfpDatesInvalidError');
+    expect(defaultError.message).toBe('CfP end date must be after start date');
+    expect(defaultError).toBeInstanceOf(Error);
+
+    const customError = new CfpDatesInvalidError('dates are invalid');
+    expect(customError.message).toBe('dates are invalid');
   });
 
   it('ConferenceFreeTierLimitError has correct message', () => {
@@ -36,11 +42,14 @@ describe('Domain Exceptions', () => {
     expect(error).toBeInstanceOf(Error);
   });
 
-  it('StateTransitionError has correct message', () => {
-    const error = new StateTransitionError('invalid transition');
-    expect(error.name).toBe('StateTransitionError');
-    expect(error.message).toBe('invalid transition');
-    expect(error).toBeInstanceOf(Error);
+  it('StateTransitionError has default and custom messages', () => {
+    const defaultError = new StateTransitionError();
+    expect(defaultError.name).toBe('StateTransitionError');
+    expect(defaultError.message).toBe('Invalid state transition attempted');
+    expect(defaultError).toBeInstanceOf(Error);
+
+    const customError = new StateTransitionError('invalid transition');
+    expect(customError.message).toBe('invalid transition');
   });
 
   it('SubmissionDateInPastError has correct message', () => {

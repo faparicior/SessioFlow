@@ -34,9 +34,11 @@ export const ConferenceStatusValues: readonly ConferenceStatus[] = [
   ConferenceStatus.DELETED,
 ];
 
-export class ConferenceStatusValidationError extends Error {
-  constructor(message: string) {
-    super(message);
+import { DomainInvariantError } from '@sessioflow/shared-domain/exceptions';
+
+export class ConferenceStatusValidationError extends DomainInvariantError {
+  constructor(message = 'Invalid conference status') {
+    super('INVALID_CONFERENCE_STATUS', message);
     this.name = 'ConferenceStatusValidationError';
   }
 }
