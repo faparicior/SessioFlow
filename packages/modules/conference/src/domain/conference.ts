@@ -9,6 +9,7 @@ import { RequiresApproval } from './value-objects/requires-approval';
 import { ConferenceCreatedEvent } from './events/conference-created';
 import { CfpOpenedEvent } from './events/cfp-opened';
 import { CfpDatesInvalidError } from './exceptions/cfp-dates-invalid-error';
+import { CfpStartDateNotInFutureError } from './exceptions/cfp-start-date-not-in-future-error';
 import { StateTransitionError } from './exceptions/state-transition-error';
 import { CfpConfig } from './cfp-config';
 
@@ -61,7 +62,7 @@ export class Conference {
   }): Conference {
     const now = new Date().setHours(0, 0, 0, 0);
     if (parameters.cfpStartDate.getTime() < now) {
-      throw new Error('CfpStartDate must be in the future or today');
+      throw new CfpStartDateNotInFutureError();
     }
 
     return this.createFromData({

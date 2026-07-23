@@ -1,5 +1,6 @@
 import {describe, it, expect} from 'vitest';
 import {ConferenceSlug} from '@sessioflow/conference/domain/value-objects/conference-slug';
+import {EmptySlugError} from '@sessioflow/conference/domain/exceptions/empty-slug-error';
 
 describe('ConferenceSlug', () => {
   it('generates URL-safe slug from name', () => {
@@ -23,6 +24,7 @@ describe('ConferenceSlug', () => {
   });
 
   it('rejects empty result after processing', () => {
+    expect(() => ConferenceSlug.create('!!!')).toThrow(EmptySlugError);
     expect(() => ConferenceSlug.create('!!!')).toThrow('cannot be empty');
   });
 });

@@ -7,10 +7,12 @@
  *   - Can be undefined (unlimited)
  */
 
+import { MaxSubmissionsInvalidError } from '../exceptions/max-submissions-invalid-error';
+
 export class MaxSubmissions implements MaxSubmissions {
   static create(max?: number): MaxSubmissions {
     if (max !== undefined && (!Number.isInteger(max) || max <= 0)) {
-      throw new Error('MaxSubmissions must be a positive integer');
+      throw new MaxSubmissionsInvalidError();
     }
 
     return new MaxSubmissions(max);

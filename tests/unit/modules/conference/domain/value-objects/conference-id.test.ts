@@ -1,5 +1,6 @@
 import {describe, it, expect} from 'vitest';
 import {ConferenceId} from '@sessioflow/conference/domain/value-objects/conference-id';
+import {InvalidConferenceIdError} from '@sessioflow/conference/domain/exceptions/invalid-conference-id-error';
 
 describe('ConferenceId', () => {
   it('creates a valid UUIDv4', () => {
@@ -23,9 +24,8 @@ describe('ConferenceId', () => {
   });
 
   it('rejects an invalid UUID string', () => {
-    expect(() => ConferenceId.fromString('not-a-uuid')).toThrow(
-      'Invalid ConferenceId',
-    );
+    expect(() => ConferenceId.fromString('not-a-uuid')).toThrow(InvalidConferenceIdError);
+    expect(() => ConferenceId.fromString('not-a-uuid')).toThrow('Invalid UUID format for ConferenceId');
   });
 
   it('converts to string', () => {

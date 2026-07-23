@@ -36,9 +36,17 @@ export function mapErrorCodeToHttpStatus(errorCodeOrError: string | DomainError)
     case 'INVALID_INVARIANT':
     case 'CFP_DATES_INVALID':
     case 'NAME_TOO_SHORT':
+    case 'NAME_TOO_LONG':
     case 'INVALID_CONFERENCE':
     case 'STATE_TRANSITION_INVALID':
     case 'SUBMISSION_DATE_IN_PAST':
+    case 'CFP_START_DATE_NOT_IN_FUTURE':
+    case 'INVALID_CONFERENCE_ID':
+    case 'EMPTY_SLUG':
+    case 'INVALID_CFP_START_DATE':
+    case 'INVALID_CFP_END_DATE':
+    case 'MAX_SUBMISSIONS_INVALID':
+    case 'INVALID_CONFERENCE_STATUS':
       return 400;
     default:
       return 500;

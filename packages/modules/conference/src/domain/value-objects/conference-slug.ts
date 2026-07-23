@@ -7,6 +7,8 @@
  *   - Must be unique across all conferences (enforced at application layer)
  */
 
+import { EmptySlugError } from '../exceptions/empty-slug-error';
+
 export class ConferenceSlug implements ConferenceSlug {
   static create(name: string): ConferenceSlug {
     const slug = name
@@ -18,7 +20,7 @@ export class ConferenceSlug implements ConferenceSlug {
       .replaceAll(/^-|-$/g, ''); // Remove leading/trailing hyphens
 
     if (slug.length === 0) {
-      throw new Error('ConferenceSlug cannot be empty');
+      throw new EmptySlugError();
     }
 
     return new ConferenceSlug(slug);

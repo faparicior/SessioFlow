@@ -1,5 +1,7 @@
 import {describe, it, expect} from 'vitest';
 import {ConferenceName} from '@sessioflow/conference/domain/value-objects/conference-name';
+import {ConferenceNameTooShortError} from '@sessioflow/conference/domain/exceptions/conference-name-too-short-error';
+import {ConferenceNameTooLongError} from '@sessioflow/conference/domain/exceptions/conference-name-too-long-error';
 
 describe('ConferenceName', () => {
   it('creates a valid conference name', () => {
@@ -8,14 +10,14 @@ describe('ConferenceName', () => {
   });
 
   it('rejects names shorter than 3 characters', () => {
+    expect(() => ConferenceName.create('Ab')).toThrow(ConferenceNameTooShortError);
     expect(() => ConferenceName.create('Ab')).toThrow('at least 3 characters');
   });
 
   it('rejects names longer than 100 characters', () => {
     const longName = 'A'.repeat(101);
-    expect(() => ConferenceName.create(longName)).toThrow(
-      'at most 100 characters',
-    );
+    expect(() => ConferenceName.create(longName)).toThrow(ConferenceNameTooLongError);
+    expect(() => ConferenceName.create(longName)).toThrow('at most 100 characters');
   });
 
   it('trims whitespace', () => {
@@ -24,6 +26,7 @@ describe('ConferenceName', () => {
   });
 
   it('rejects empty string', () => {
+    expect(() => ConferenceName.create('')).toThrow(ConferenceNameTooShortError);
     expect(() => ConferenceName.create('')).toThrow('at least 3 characters');
   });
 
