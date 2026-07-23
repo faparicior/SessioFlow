@@ -4,6 +4,7 @@ import { type MaxSubmissions } from './value-objects/max-submissions';
 import { type RequiresApproval } from './value-objects/requires-approval';
 import { CfpStatus } from './value-objects/cfp-status';
 import { CfpDatesInvalidError } from './exceptions/cfp-dates-invalid-error';
+import { StateTransitionError } from './exceptions/state-transition-error';
 
 /**
  * CfpConfig - Child entity of the Conference aggregate.
@@ -58,7 +59,9 @@ export class CfpConfig {
 
   close(): void {
     if (this.status !== CfpStatus.ACTIVE) {
-      throw new Error('Cannot close CfP: status is not ACTIVE');
+      throw new StateTransitionError(
+        `Cannot close CfP: status is ${this.status}, must be ACTIVE`
+      );
     }
 
     this._params.status = CfpStatus.CLOSED;

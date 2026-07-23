@@ -7,10 +7,12 @@
  *   - Must be in the future (or today) at creation time
  */
 
+import { InvalidCfpStartDateError } from '../exceptions/invalid-cfp-start-date-error';
+
 export class CfpStartDate implements CfpStartDate {
   static create(date: Date): CfpStartDate {
     if (Number.isNaN(date.getTime())) {
-      throw new TypeError('CfpStartDate must be a valid date');
+      throw new InvalidCfpStartDateError();
     }
 
     return new CfpStartDate(date);
@@ -19,7 +21,7 @@ export class CfpStartDate implements CfpStartDate {
   static fromISOString(isoString: string): CfpStartDate {
     const date = new Date(isoString);
     if (Number.isNaN(date.getTime())) {
-      throw new TypeError('Invalid date format for CfpStartDate');
+      throw new InvalidCfpStartDateError();
     }
 
     return this.create(date);

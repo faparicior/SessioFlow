@@ -7,10 +7,12 @@
  *   - Must be after CfpStartDate (enforced by CfpConfig.validateDates())
  */
 
+import { InvalidCfpEndDateError } from '../exceptions/invalid-cfp-end-date-error';
+
 export class CfpEndDate implements CfpEndDate {
   static create(date: Date): CfpEndDate {
     if (Number.isNaN(date.getTime())) {
-      throw new TypeError('Invalid date format for CfpEndDate');
+      throw new InvalidCfpEndDateError();
     }
 
     return new CfpEndDate(date);
@@ -19,7 +21,7 @@ export class CfpEndDate implements CfpEndDate {
   static fromISOString(isoString: string): CfpEndDate {
     const date = new Date(isoString);
     if (Number.isNaN(date.getTime())) {
-      throw new TypeError('Invalid date format for CfpEndDate');
+      throw new InvalidCfpEndDateError();
     }
 
     return this.create(date);

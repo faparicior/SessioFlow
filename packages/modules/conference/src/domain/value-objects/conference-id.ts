@@ -6,6 +6,9 @@ import {v4 as uuidv4} from 'uuid';
  * Value Object: UUIDv4
  * Invariant: Must be a valid UUIDv4
  */
+
+import { InvalidConferenceIdError } from '../exceptions/invalid-conference-id-error';
+
 export class ConferenceId {
   static create(): ConferenceId {
     return new ConferenceId(uuidv4());
@@ -13,7 +16,7 @@ export class ConferenceId {
 
   static fromString(value: string): ConferenceId {
     if (!this.isValidUuid(value)) {
-      throw new Error(`Invalid ConferenceId: ${value}`);
+      throw new InvalidConferenceIdError();
     }
 
     return new ConferenceId(value);

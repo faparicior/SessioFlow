@@ -1,5 +1,6 @@
 import {describe, it, expect} from 'vitest';
 import {MaxSubmissions} from '@sessioflow/conference/domain/value-objects/max-submissions';
+import {MaxSubmissionsInvalidError} from '@sessioflow/conference/domain/exceptions/max-submissions-invalid-error';
 
 describe('MaxSubmissions', () => {
   it('creates unlimited (undefined)', () => {
@@ -15,14 +16,17 @@ describe('MaxSubmissions', () => {
   });
 
   it('rejects zero', () => {
+    expect(() => MaxSubmissions.create(0)).toThrow(MaxSubmissionsInvalidError);
     expect(() => MaxSubmissions.create(0)).toThrow('positive integer');
   });
 
   it('rejects negative number', () => {
+    expect(() => MaxSubmissions.create(-5)).toThrow(MaxSubmissionsInvalidError);
     expect(() => MaxSubmissions.create(-5)).toThrow('positive integer');
   });
 
   it('rejects non-integer', () => {
+    expect(() => MaxSubmissions.create(10.5)).toThrow(MaxSubmissionsInvalidError);
     expect(() => MaxSubmissions.create(10.5)).toThrow('positive integer');
   });
 
