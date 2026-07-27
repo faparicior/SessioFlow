@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "app_details": [
+    {
+      "path": "./apps/frontend/src",
+      "alias": "frontend-code",
+      "language": "typescript",
+      "mode": "class",
+      "type": "code"
+    },
+    {
+      "path": "./apps/backend/src",
+      "alias": "backend-code",
+      "language": "typescript",
+      "mode": "class",
+      "type": "code"
+    },
+    {
+      "path": "./packages/modules",
+      "alias": "modules-code",
+      "language": "typescript",
+      "mode": "class",
+      "type": "code"
+    },
+    {
+      "path": "./packages/shared",
+      "alias": "shared-code",
+      "language": "typescript",
+      "mode": "class",
+      "type": "code"
+    },
+    {
+      "path": "./packages/api-definitions/src",
+      "alias": "api-code",
+      "language": "typescript",
+      "mode": "class",
+      "type": "code"
+    },
+    {
+      "path": "./tests/unit",
+      "alias": "unit-tests",
+      "language": "typescript",
+      "mode": "class",
+      "type": "test"
+    },
+    {
+      "path": "./tests/integration",
+      "alias": "integration-tests",
+      "language": "typescript",
+      "mode": "class",
+      "type": "test"
+    },
+    {
+      "path": "./tests/e2e",
+      "alias": "e2e-tests",
+      "language": "typescript",
+      "mode": "class",
+      "type": "test"
+    }
+  ],
+  "destination_folder": "./docs/context"
+}
