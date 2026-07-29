@@ -187,10 +187,10 @@ pi skill inception-workshop validate 1
 |---|-----------|----------|--------|
 | 1 | Product Vision & Boundaries | `1-product-vision-and-boundaries.md` | `1-product-vision-and-boundaries.md` |
 | 2 | Tradeoffs | `2-tradeoffs.md` | `2-tradeoffs.md` |
-| 3 | Personas | `3-personas.md` | `3-personas.md` |
+| 3 | Personas | `3-personas.md` | `3-personas/` |
 | 4 | Empathy Map | `4-empathy-map.md` | `4-empathy-map.md` |
 | 5 | Brainstorming | `5-brainstorming.md` | `5-brainstorming.md` |
-| 6 | User Journey | `6-user-journey-mapping.md` | `6-user-journey.md` |
+| 6 | User Journey | `6-user-journey-mapping.md` | `6-user-journeys/` |
 | 7 | Features & Sequencing | `7-features-and-sequencing.md` | `7-features-and-sequencing.md` |
 | 8 | MVP Canvas | `8-mvp-canvas-definition.md` | `8-mvp-canvas.md` |
 
@@ -205,7 +205,7 @@ pi skill inception-workshop validate 1
 After completing Step 6 (User Journey) and Step 7 (Sequencing), you can generate detailed flow specifications by prompting your AI coding agent (or running the Pi CLI subagent):
 
 **AI Agent Prompt:**
-> "Read docs/inception/6-user-journey.md and docs/inception/7-features-and-sequencing.md. For each MVP feature, create a flow specification using docs/templates/product/flows.md. Make sure to:
+> "Read docs/inception/6-user-journeys/ and docs/inception/7-features-and-sequencing.md. For each MVP feature, create a flow specification using docs/templates/product/flows.md. Make sure to:
 > 1. Include 3 diagrams (sequence, flowchart, state).
 > 2. Extract business rules and invariants.
 > 3. Save the outputs to docs/product/bounded-contexts/{context}/flows/"
@@ -213,7 +213,7 @@ After completing Step 6 (User Journey) and Step 7 (Sequencing), you can generate
 **Using Pi CLI Subagent:**
 ```bash
 pi subagent << 'EOF'
-Read docs/inception/6-user-journey.md and docs/inception/7-features-and-sequencing.md
+Read docs/inception/6-user-journeys/ and docs/inception/7-features-and-sequencing.md
 
 For each MVP feature:
 1. Create flow specification using docs/templates/product/flows.md
@@ -320,10 +320,10 @@ When ready for validation, type: ready
 
 Step 1: 1-product-vision-and-boundaries.md... ✓
 Step 2: 2-tradeoffs.md... ✓
-Step 3: 3-personas.md... ✓
+Step 3: 3-personas/... ✓
 Step 4: 4-empathy-map.md... ✓
 Step 5: 5-brainstorming.md... ✓
-Step 6: 6-user-journey.md... ✓
+Step 6: 6-user-journeys/... ✓
 Step 7: 7-features-and-sequencing.md... ✓
 Step 8: 8-mvp-canvas.md... ✓
 

@@ -146,4 +146,4 @@ Jobs:
 * [GitHub Actions Documentation](https://docs.github.com/en/actions)
 * [MVP Canvas - Technical Enablers](../inception/8-mvp-canvas-definition.md#6-technical--ux-enablers)
 * [Trade-offs - Simplicity Constraint](../inception/2-tradeoffs.md#2-final-consensus-trade-off-board)
-* [Persona: Fernando - Volunteer Collaboration](../inception/3-personas.md#persona-name-fernando-the-sql-and-spreadsheet-juggler)
+* [Persona: Fernando - Volunteer Collaboration](../inception/3-personas/01-fernando-organizer.md)

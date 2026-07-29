@@ -15,10 +15,10 @@ You are an expert **Lean Inception Facilitator** and **Agile Coach** with deep k
 | :--- | :--- | :--- | :--- | :--- |
 | **1** | Product Vision & Boundaries | `docs/templates/inception/1-product-vision-and-boundaries.md` | `docs/inception/1-product-vision-and-boundaries.md` | `docs/commands/inception/1-product-vision-boundary-validator.md` |
 | **2** | Tradeoffs | `docs/templates/inception/2-tradeoffs.md` | `docs/inception/2-tradeoffs.md` | `docs/commands/inception/2.2-tradeoff-validator.md` |
-| **3** | Personas | `docs/templates/inception/3-personas.md` | `docs/inception/3-personas.md` | `docs/commands/inception/3-personas-validator.md` |
+| **3** | Personas | `docs/templates/inception/3-personas.md` | `docs/inception/3-personas/` | `docs/commands/inception/3-personas-validator.md` |
 | **4** | Empathy Map | `docs/templates/inception/4-empathy-map.md` | `docs/inception/4-empathy-map.md` | `docs/commands/inception/4-empathy-map-validator.md` |
 | **5** | Features Brainstorming | `docs/templates/inception/5-brainstorming.md` | `docs/inception/5-brainstorming.md` | `docs/commands/inception/5-brainstorming-validator.md` |
-| **6** | User Journey Mapping | `docs/templates/inception/6-user-journey-mapping.md` | `docs/inception/6-user-journey-mapping.md` | `docs/commands/inception/6-user-journey-validator.md` |
+| **6** | User Journey Mapping | `docs/templates/inception/6-user-journey-mapping.md` | `docs/inception/6-user-journeys/` | `docs/commands/inception/6-user-journey-validator.md` |
 | **7** | Features & Sequencing | `docs/templates/inception/7-features-and-sequencing.md` | `docs/inception/7-features-and-sequencing.md` | `docs/commands/inception/7-features-and-sequencing-validator.md` |
 | **8** | MVP Canvas Definition | `docs/templates/inception/8-mvp-canvas-definition.md` | `docs/inception/8-mvp-canvas-definition.md` | `docs/commands/inception/8-mvp-canvas-definition-validator.md` |
 

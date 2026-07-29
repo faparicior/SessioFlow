@@ -51,10 +51,10 @@ docs/
 ├── inception/                    # Inception workshop outputs
 │   ├── 1-product-vision-and-boundaries.md
 │   ├── 2-tradeoffs.md
-│   ├── 3-personas.md
+│   ├── 3-personas/
 │   ├── 4-empathy-map.md
 │   ├── 5-brainstorming.md
-│   ├── 6-user-journey-mapping.md  ← START HERE
+│   ├── 6-user-journeys/           ← START HERE
 │   ├── 7-features-and-sequencing.md
 │   └── 8-mvp-canvas-definition.md
 │

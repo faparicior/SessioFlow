@@ -93,7 +93,7 @@ This skill can be triggered using conversational phrases instead of command-line
 → pi skill inception-workshop --mode batch --context "SessioFlow"
 
 "Validate the user journey mapping"
-→ pi skill inception-workshop --mode validate --step 6 --file docs/inception/6-user-journey.md
+→ pi skill inception-workshop --mode validate --step 6 --file docs/inception/6-user-journeys/
 
 "Create flow specifications from the journey"
 → pi skill inception-workshop --mode generate-flows --from-step 6
@@ -245,10 +245,10 @@ pi skill inception-workshop --mode batch --context "SessioFlow: Call-for-Papers 
 |------|------|----------|--------|-----------|--------------|
 | 1 | Product Vision & Boundaries | `templates/1-product-vision-and-boundaries.md` | `docs/inception/1-product-vision-and-boundaries.md` | `references/1-product-vision-boundary-validator.md` | - |
 | 2 | Tradeoffs | `templates/2-tradeoffs.md` | `docs/inception/2-tradeoffs.md` | `references/2.2-tradeoff-validator.md` | ✅ **Tradeoff Generator** |
-| 3 | Personas | `templates/3-personas.md` | `docs/inception/3-personas.md` | `references/3-personas-validator.md` | - |
+| 3 | Personas | `templates/3-personas.md` | `docs/inception/3-personas/` | `references/3-personas-validator.md` | - |
 | 4 | Empathy Map | `templates/4-empathy-map.md` | `docs/inception/4-empathy-map.md` | `references/4-empathy-map-validator.md` | - |
 | 5 | Brainstorming | `templates/5-brainstorming.md` | `docs/inception/5-brainstorming.md` | `references/5-brainstorming-validator.md` | - |
-| 6 | User Journey | `templates/6-user-journey-mapping.md` | `docs/inception/6-user-journey.md` | `references/6-user-journey-validator.md` | - |
+| 6 | User Journey | `templates/6-user-journey-mapping.md` | `docs/inception/6-user-journeys/` | `references/6-user-journey-validator.md` | - |
 | 7 | Features & Sequencing | `templates/7-features-and-sequencing.md` | `docs/inception/7-features-and-sequencing.md` | `references/7-features-and-sequencing-validator.md` | - |
 | 8 | MVP Canvas | `templates/8-mvp-canvas-definition.md` | `docs/inception/8-mvp-canvas.md` | `references/8-mvp-canvas-definition-validator.md` | - |
 
@@ -324,10 +324,16 @@ pi skill inception-workshop --mode tradeoff-generator
 docs/inception/
 ├── 1-product-vision-and-boundaries.md    # Step 1 output
 ├── 2-tradeoffs.md                        # Step 2 output
-├── 3-personas.md                         # Step 3 output
+├── 3-personas/                           # Step 3 output folder
+│   ├── README.md                         # Overview & Persona validation checklist
+│   ├── 01-[name].md                      # Individual persona file
+│   └── 02-[name].md                      # Individual persona file
 ├── 4-empathy-map.md                      # Step 4 output
 ├── 5-brainstorming.md                    # Step 5 output
-├── 6-user-journey.md                     # Step 6 output
+├── 6-user-journeys/                      # Step 6 output folder
+│   ├── README.md                         # Composite View & Feature Coverage check
+│   ├── journey-01-[name].md              # Individual journey file
+│   └── journey-02-[name].md              # Individual journey file
 ├── 7-features-and-sequencing.md          # Step 7 output
 └── 8-mvp-canvas.md                       # Step 8 output
 ```
@@ -523,7 +529,7 @@ Average Score: 8.7/10
 
 Skill: Generating Flow Specifications
 
-Reading: docs/inception/6-user-journey.md
+Reading: docs/inception/6-user-journeys/
 Reading: docs/inception/7-features-and-sequencing.md
 
 Generating flows for MVP features:
