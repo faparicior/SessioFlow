@@ -1,73 +1,102 @@
-# Step 3: Personas Guidance & Template
+# Step 3: Personas
 
 ## Goal
 Define the primary persona(s) who will use the product. Understanding who we're building for is critical to making informed decisions in later steps.
 
-## Directory Structure Strategy
-Step 3 outputs to a folder: `docs/inception/3-personas/`
-
-Create:
-1. `docs/inception/3-personas/README.md` — Overview persona index table & Persona Validation checklist.
-2. `docs/inception/3-personas/01-[persona-slug].md` — Primary Persona document (do not add `persona-` prefix).
-3. `docs/inception/3-personas/02-[persona-slug].md` — Secondary Persona document (do not add `persona-` prefix).
-
 ---
 
-## 1. Persona File Structure (`01-[persona-slug].md`)
+## Primary Persona
+*The core user we are solving the MVP for.*
 
-```markdown
-# [Primary / Secondary] Persona: [Persona Name / Role]
-
-**Persona Name:** [Name and descriptive title]
+**Persona Name:** [e.g., Alex the Analyst]
 
 | Attribute | Details |
 | :--- | :--- |
 | **Age & Demographics** | [e.g., 28-35 years old, urban professional] |
-| **Role/Job Title** | [e.g., Volunteer Organizer / Speaker] |
-| **Experience Level** | [e.g., 3-5 years experience, intermediate tech skills] |
-| **Work Environment** | [e.g., Full remote, asynchronous work] |
+| **Role/Job Title** | [e.g., Mid-level Data Analyst at a SaaS company] |
+| **Experience Level** | [e.g., 3-5 years in data analysis, intermediate tech skills] |
+| **Work Environment** | [e.g., Hybrid office, uses laptop and desktop, often in meetings] |
 
 ### Goals & Motivations
-- **Primary Goal:** [Primary goal]
-- **Secondary Goal:** [Secondary goal]
-- **What motivates them:** [Key motivator]
+*What does this persona want to achieve?*
+- **Primary Goal:** [e.g., Generate accurate reports quickly without manual data manipulation]
+- **Secondary Goal:** [e.g., Gain credibility with stakeholders through reliable insights]
+- **What motivates them:** [e.g., Recognition for delivering high-quality work efficiently]
 
 ### Pain Points & Frustrations
-- ❌ **Pain 1:** [First pain point]
-- ❌ **Pain 2:** [Second pain point]
-- ❌ **Pain 3:** [Third pain point]
+*What problems do they currently face?*
+- ❌ **Pain 1:** [e.g., Spending hours manually combining data from different sources]
+- ❌ **Pain 2:** [e.g., Data inconsistencies leading to errors in reports]
+- ❌ **Pain 3:** [e.g., Lack of confidence in the tools they currently use]
 
 ### Needs & Expectations
-- ✅ **Need 1:** [First need]
-- ✅ **Need 2:** [Second need]
-- ✅ **Need 3:** [Third need]
+*What does this persona need from our product?*
+- ✅ **Need 1:** [e.g., A single platform that integrates all data sources]
+- ✅ **Need 2:** [e.g., Automated data validation to catch errors early]
+- ✅ **Need 3:** [e.g., Simple, intuitive interface that doesn't require training]
 
 ### Tech Savviness
 - [ ] Beginner (needs hand-holding, prefers simple interfaces)
-- [X] Intermediate (comfortable with standard tools, learns quickly)
+- [ ] Intermediate (comfortable with standard tools, learns quickly)
 - [ ] Advanced (power user, wants customization and shortcuts)
 
 ### Quote
-> *"[A memorable quote capturing their mindset or main frustration]"*
-```
+> "[A memorable quote that captures their mindset or main frustration]"
+> 
+> *Example: "I just need to see the data, not spend half my day fighting with it."*
 
 ---
 
-## 2. Directory Index (`README.md`)
+## Secondary Persona (Optional)
+*If there's another important user type, define them briefly.*
 
-```markdown
-# Step 3: Personas
+**Persona Name:** [e.g., Alex the Analyst]
 
-## Persona Directory
+| Attribute | Details |
+| :--- | :--- |
+| **Age & Demographics** | [e.g., 28-35 years old, urban professional] |
+| **Role/Job Title** | [e.g., Mid-level Data Analyst at a SaaS company] |
+| **Experience Level** | [e.g., 3-5 years in data analysis, intermediate tech skills] |
+| **Work Environment** | [e.g., Hybrid office, uses laptop and desktop, often in meetings] |
 
-| # | Persona | Type | Role | File |
-|---|---------|------|------|------|
-| 1 | **[Name]** | Primary Persona | [Role] | [01-[slug].md](./01-[slug].md) |
-| 2 | **[Name]** | Secondary Persona | [Role] | [02-[slug].md](./02-[slug].md) |
+### Goals & Motivations
+*What does this persona want to achieve?*
+- **Primary Goal:** [e.g., Generate accurate reports quickly without manual data manipulation]
+- **Secondary Goal:** [e.g., Gain credibility with stakeholders through reliable insights]
+- **What motivates them:** [e.g., Recognition for delivering high-quality work efficiently]
+
+### Pain Points & Frustrations
+*What problems do they currently face?*
+- ❌ **Pain 1:** [e.g., Spending hours manually combining data from different sources]
+- ❌ **Pain 2:** [e.g., Data inconsistencies leading to errors in reports]
+- ❌ **Pain 3:** [e.g., Lack of confidence in the tools they currently use]
+
+### Needs & Expectations
+*What does this persona need from our product?*
+- ✅ **Need 1:** [e.g., A single platform that integrates all data sources]
+- ✅ **Need 2:** [e.g., Automated data validation to catch errors early]
+- ✅ **Need 3:** [e.g., Simple, intuitive interface that doesn't require training]
+
+### Tech Savviness
+- [ ] Beginner (needs hand-holding, prefers simple interfaces)
+- [ ] Intermediate (comfortable with standard tools, learns quickly)
+- [ ] Advanced (power user, wants customization and shortcuts)
+
+### Quote
+> "[A memorable quote that captures their mindset or main frustration]"
+> 
+> *Example: "I just need to see the data, not spend half my day fighting with it."*
+
+---
 
 ## Persona Validation
+*Answer these questions to validate your persona definitions:*
+
 - [ ] Is this persona clearly defined enough that the team can visualize them?
 - [ ] Do the pain points align with the product vision from Step 1?
 - [ ] Can we prioritize this persona over others for the MVP?
 - [ ] Do we have enough detail to make design and feature decisions?
-```
+
+---
+
+**Next Step:** In Step 4, we'll create an Empathy Map to deepen our understanding of what this persona thinks, feels, says, and does.
