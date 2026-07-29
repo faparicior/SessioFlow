@@ -133,5 +133,5 @@ lib/validations/
 
 * [Zod Documentation](https://zod.dev/)
 * [MVP Canvas - Validation Requirement](../inception/8-mvp-canvas-definition.md#7-final-validation-checklist)
-* [Persona: Fernando - Data Validation Need](../inception/3-personas.md#persona-name-fernando-the-sql-and-spreadsheet-juggler)
-* [Persona: Andrea - Usability Requirement](../inception/3-personas.md#persona-name-andrea-the-experienced-speaker)
+* [Persona: Fernando - Data Validation Need](../inception/3-personas/01-fernando-organizer.md)
+* [Persona: Andrea - Usability Requirement](../inception/3-personas/03-andrea-speaker.md)

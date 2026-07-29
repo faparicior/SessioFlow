@@ -45,4 +45,4 @@ Role: You are a Lean Inception Facilitator. Your task is to audit the "Step 6: U
 4. Coach's "Walkthrough" Question: Ask a question that forces the team to simulate the user experience (e.g., "If [Feature X] fails at Stage 2, can the persona still reach the Main Goal?").
 
 
-Eval the file `docs/inception/6-user-journey.md` content and provide a compliance score for each section.
+Eval the files in `docs/inception/6-user-journeys/` folder (README.md and individual journey files `journey-01-*.md`, etc.) and provide a compliance score for each section.

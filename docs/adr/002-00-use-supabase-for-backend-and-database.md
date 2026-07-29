@@ -114,4 +114,4 @@ Supabase is the optimal choice because it uniquely satisfies all critical constr
 * [Supabase Documentation](https://supabase.com/docs)
 * [MVP Canvas - Technical Enablers](../inception/8-mvp-canvas-definition.md#6-technical--ux-enablers)
 * [Trade-offs - Cost Constraint](../inception/2-tradeoffs.md#2-final-consensus-trade-off-board)
-* [Persona: Andrea - Profile Photo Need](../inception/3-personas.md)
+* [Persona: Andrea - Profile Photo Need](../inception/3-personas/03-andrea-speaker.md)

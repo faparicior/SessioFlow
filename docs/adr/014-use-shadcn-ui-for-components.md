@@ -217,5 +217,5 @@ import { Input } from '@/components/ui/input'
 * [Radix UI Primitives](https://www.radix-ui.com/)
 * [ADR-010: Tailwind CSS for Styling](./010-use-tailwind-css-for-styling.md)
 * [MVP Canvas - UX Enablers](../inception/8-mvp-canvas-definition.md#6-technical--ux-enablers)
-* [Persona: Andrea - Usability Requirement](../inception/3-personas.md#persona-name-andrea-the-experienced-speaker)
+* [Persona: Andrea - Usability Requirement](../inception/3-personas/03-andrea-speaker.md)
 * [Trade-offs - Usability Priority](../inception/2-tradeoffs.md#2-final-consensus-trade-off-board)

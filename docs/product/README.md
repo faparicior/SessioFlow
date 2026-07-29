@@ -125,7 +125,7 @@ User journeys span multiple bounded contexts. See [flows/README.md](./flows/READ
 | Document | Purpose |
 |----------|---------|
 | [ADR-009: DDD Structure](../adr/009-adopt-domain-driven-design-structure.md) | Architecture decision for DDD |
-| [Inception Step 6: User Journey Mapping](../inception/6-user-journey-mapping.md) | User journeys (Journey 1-5) |
+| [Inception Step 6: User Journey Mapping](../inception/6-user-journeys/) | User journeys (Journey 1-5) |
 | [Inception Step 7: Features & Sequencing](../inception/7-features-and-sequencing.md) | Feature waves (MVP, Wave 2, Wave 3) |
 | [Create Flow Command](../../.pi/skills/create-flow-documentation/SKILL.md) | Prompt for generating flow docs |
 | [Create Entity Lifecycle Command](../../.pi/skills/create-entity-lifecycle/SKILL.md) | Prompt for generating entity docs |
