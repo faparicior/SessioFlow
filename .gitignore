@@ -45,3 +45,4 @@ playwright-report
 .turbo
 .xo-cache
 logs/
+.aiforddd/tmp
