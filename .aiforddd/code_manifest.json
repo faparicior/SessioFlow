@@ -58,5 +58,12 @@
       "type": "test"
     }
   ],
-  "destination_folder": "./docs/context"
+  "destination_folder": "./docs/context",
+  "ignored_paths": [
+    "dist",
+    ".turbo",
+    "node_modules",
+    "build",
+    "out"
+  ]
 }
