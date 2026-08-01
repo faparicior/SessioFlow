@@ -55,3 +55,6 @@ You're right to call this out. I didn't actually say "shadcn not exists" - I cre
 using nextjs for all the layers and stacks are trying to cur the corners and led domain imputiry with a shared schema used vy api and domain with zod. We need to enforce domain clean and the frontend to use his own validation.
 
 frontend and backend are melted. we'll need to separate then.
+
+
+use case does not pass the expects. view commit 2bf30b7fa50c0be6f0a79c5466672550d643463a with ddd wow assessment.
