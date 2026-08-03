@@ -1,12 +1,12 @@
-# 🎯 DDD Application Layer - `conference` (Generic Guidelines)
+# 🎯 DDD Application Layer - OrderModule (Generic Guidelines)
 
 ## 🧭 Table of Contents
 
 1. [📌 Overview](#-overview)
 2. [🏗️ Architecture Position](#️-architecture-position)
 3. [📋 Architecture Rules](#-architecture-rules)
-   - [1. Layer Responsibility](#1-layer-responsibility)
-   - [2. Package Structure Convention](#2-package-structure-convention)
+   - [Layer Responsibility](#1-layer-responsibility)
+   - [Package Structure Convention](#2-package-structure-convention)
 4. [📐 Command Patterns](#-command-patterns)
 5. [🔄 Use Case Patterns](#-use-case-patterns)
 6. [🛠️ Implementation Guidelines](#️-implementation-guidelines)
@@ -18,27 +18,23 @@
 12. [Pattern Index](#pattern-index)
 13. [❓ Open Questions](#-open-questions)
 
----
-
 ## 📌 Overview
 
-**Module / Package(s):** `conference`  
-**Description:** Application layer module responsible for orchestrating conference lifecycle operations, including creation, retrieval, and state management.  
-**Responsibility:** Mediate between UI/infrastructure and domain aggregates, enforce transaction boundaries, validate input, and coordinate domain services/repositories.
+**Module / Package(s):** `OrderModule`  
+**Description:** Manages order lifecycle operations including creation, retrieval, and state transitions.  
+**Responsibility:** Orchestrate business processes via domain interaction and data access.
 
-**Domain Purpose:** Manage conference creation, retrieval, and lifecycle state transitions while maintaining business rule validation, external service coordination, and read/write separation.
+**Domain Purpose:** Coordinate domain aggregates, repositories, and external services to fulfill user intents while maintaining clear separation between business rules and infrastructure.
 
-**Architecture Layer:** Application Layer - Application Services & CQRS Handlers
-
----
+**Architecture Layer:** Application Layer - Command and Query Handlers
 
 ## 🏗️ Architecture Position
 
 ```
-Web/Mobile Frontend, API Gateway → UI Layer (conference) → Application Layer (Commands, Queries, Handlers) → Domain Layer (Aggregates, Value Objects, Domain Services) → Infrastructure Layer (Repositories, External APIs, DB)
+Web API / UI Layer (OrderController) → Application Layer (OrderModule) → Domain Layer (Order Aggregate)
 ```
 
-The `conference` layer sits at the system boundary, acting as the entry point for business operations while maintaining proper separation of concerns and ensuring that domain logic remains isolated from technical infrastructure details.
+The `OrderModule` layer sits at the system boundary, acting as the orchestrator between external requests and internal domain logic, while maintaining proper separation of concerns and decoupling business rules from infrastructure concerns.
 
 ---
 
@@ -46,290 +42,178 @@ The `conference` layer sits at the system boundary, acting as the entry point fo
 
 ### 1. Layer Responsibility
 
-- **Purpose**: Orchestrate use cases, validate input, manage transaction boundaries, and coordinate domain aggregates. Never contain core business logic.
-- **Dependencies**: Allowed to import from Domain Layer (aggregates, value objects, domain services, repository interfaces) and Infrastructure Layer (repository implementations, external service clients).
-- **Restrictions**: Must NOT import from UI/Controllers directly, must NOT contain business rules (move to Domain), must NOT handle HTTP/transport details, must NOT access persistence logic directly.
+- **Purpose**: Orchestrate domain operations, manage transaction boundaries, and translate data between external interfaces and domain models.
+- **Dependencies**: Domain Layer (Aggregates, Repositories interfaces), Infrastructure Layer (Repository implementations), Shared Kernel.
+- **Restrictions**: No business rules implementation, no direct database queries, no UI formatting, no command logic/payload validation beyond basic structure.
 
 ### 2. Package Structure Convention
 
-`src/application/` follows a CQRS-aligned structure with `commands/` and `queries/` subdirectories, each containing an aggregate-specific folder with command/query carriers and their respective handlers.
+Group operations by intent (Commands/Queries) and specific action to ensure discoverability and separation of read/write concerns.
 
 ```text
 src/application/
 ├── commands/
-│   └── create-conference/
-│       ├── create-conference.command.ts
-│       └── create-conference.handler.ts
+│   └── create-order/
+│       ├── create-order.command.ts
+│       └── create-order.handler.ts
 ├── queries/
-│   └── get-conference/
-│       ├── get-conference.query.ts
-│       └── get-conference.handler.ts
-├── exceptions/
-│   └── application.exception.ts
-└── index.ts
+│   └── get-order/
+│       ├── get-order.query.ts
+│       └── get-order.handler.ts
+└── common/
+    ├── result.ts
+    └── handler-base.ts
 ```
 
 Examples:
 
-- `src/application/commands/create-conference/create-conference.command.ts` [c4f8a9b2d1e3] — Defines intent, payload, and metadata for conference creation
-- `src/application/commands/create-conference/create-conference.handler.ts` [a7b3c9d2e5f1] — Orchestrates creation flow, validates input, persists aggregate
-- `src/application/queries/get-conference/get-conference.query.ts` [d8e2f4a1c6b9] — Defines read intent and projection parameters
-- `src/application/queries/get-conference/get-conference.handler.ts` [b1c5d7e9f3a4] — Coordinates read operations, applies projection/cache layer
-
----
+- `src/application/commands/create-order/create-order.command.ts` [c4d5e6f7] — Defines command payload, intent, and transactional attributes
+- `src/application/commands/create-order/create-order.handler.ts` [h1d2r3a4] — Orchestrates domain creation logic, manages transaction scope
+- `src/application/queries/get-order/get-order.query.ts` [q5r6s7t8] — Defines query parameters, intent, and read constraints
+- `src/application/queries/get-order/get-order.handler.ts` [h2d5r8a9] — Orchestrates data retrieval, maps to DTO, handles read model projection
 
 ## 📐 Command Patterns
 
 ### Command rules by Category
 
-#### Application Layer - Command Operations
+#### Command Data Patterns
 
-##### Rule UC-CMD-01: Command Carrier Pattern
+##### Rule UC-CMD-01: Command Payload Pattern
 
-**✅ GOOD - Intent-focused DTO with metadata:**
+**✅ GOOD - Immutable Command Structure:**
 
 ```typescript
-// create-conference.command.ts
-import { Command } from '@ddd/application';
-
-export class CreateConferenceCommand extends Command {
+export class CreateOrderCommand {
   constructor(
-    public readonly organizerId: string,
-    public readonly name: string,
-    public readonly startDate: Date,
-    public readonly endDate: Date,
-    public readonly requestId: string,
-  ) {
-    super({ requestId });
-  }
+    public readonly orderNumber: string,
+    public readonly customerId: string,
+    public readonly items: OrderItemDto[]
+  ) {}
 }
 ```
 
-**Source**: [c4f8a9b2d1e3] create-conference.command.ts
+**Source**: [c4d5e6f7] CreateOrderCommand
 
 **Key Benefits:**
-- **Single Responsibility**: Encapsulates all data required for one business action
-- **Metadata Enrichment**: Carries tracing, tenant, and audit context
-- **Framework Agnostic**: Decouples business intent from transport layer
+- **Immutability**: `readonly` fields prevent mutation after creation
+- **Type Safety**: Strong typing ensures payload integrity
+- **Intent Clarity**: Command name clearly expresses the intent
 
-**❌ BAD - Raw DTO or Controller-like Object:**
+**❌ BAD - Logic in Commands:**
 
 ```typescript
-// ❌ BAD: Merging request body directly into command
-export class CreateConferencePayload {
-  organizerId: string;
-  name: string;
-  startDate: Date;
-  endDate: Date;
-  // Missing requestId, missing inheritance from Command base
+export class CreateOrderCommand {
+  calculateTotal(): number {
+    // Calculation logic in command
+    return this.items.reduce((sum, item) => sum + item.price, 0);
+  }
 }
 ```
 
 **Why it's bad:**
-- Loses command metadata and tracing capabilities
-- Couples transport contract to application intent
-- Makes testing and mocking harder
+- Commands should be passive data carriers
+- Logic belongs in Domain or Service layer
+- Creates tight coupling and testing difficulties
 
----
+## 🔄 Use Case Patterns
 
-##### Rule UC-CMD-02: Handler Orchestration Pattern
+### Use case rules by Category
 
-**✅ GOOD - Stateless handler coordinating domain operations:**
+#### Application Orchestration Patterns
+
+##### Rule UC-ORD-01: Domain Orchestration Pattern
+
+**✅ GOOD - Handler Orchestration:**
 
 ```typescript
-// create-conference.handler.ts
-import { CommandHandler, ICommandHandler } from '@ddd/application';
-import { CreateConferenceCommand } from './create-conference.command';
-import { ConferenceRepository } from '../../domain/repositories/conference.repository';
-import { ConferenceFactory } from '../../domain/factories/conference.factory';
+export class CreateOrderHandler {
+  constructor(
+    private orderRepository: OrderRepository,
+    private idGenerator: IdGenerator
+  ) {}
 
-@CommandHandler(CreateConferenceCommand)
-export class CreateConferenceHandler implements ICommandHandler<CreateConferenceCommand> {
-  constructor(private readonly conferenceRepo: ConferenceRepository) {}
-
-  async execute(command: CreateConferenceCommand) {
-    const conference = ConferenceFactory.create({
-      organizerId: command.organizerId,
-      name: command.name,
-      startDate: command.startDate,
-      endDate: command.endDate,
+  async handle(command: CreateOrderCommand): Promise<OrderId> {
+    const orderId = this.idGenerator.next();
+    const order = Order.create({
+      id: orderId,
+      orderNumber: command.orderNumber,
+      customerId: command.customerId,
+      items: command.items
     });
 
-    await this.conferenceRepo.save(conference);
-    return conference.getId();
+    await this.orderRepository.save(order);
+    return orderId;
   }
 }
 ```
 
-**Source**: [a7b3c9d2e5f1] create-conference.handler.ts
+**Source**: [h1d2r3a4] CreateOrderHandler
 
 **Key Benefits:**
-- **Stateless Execution**: Handlers are instantiated per request, ensuring thread safety
-- **Clear Orchestration**: Separates validation, domain creation, and persistence
-- **Testable**: Easy to mock dependencies and verify domain calls
+- **Single Responsibility**: Handler focuses on orchestration only
+- **Domain Integrity**: Business rules encapsulated in Aggregate
+- **Transaction Management**: Clear boundary for commit/rollback
 
-**❌ BAD - God Handler with Business Logic:**
+**❌ BAD - God Handler:**
 
 ```typescript
-// ❌ BAD: Embedding business rules inside handler
-@CommandHandler(CreateConferenceCommand)
-export class CreateConferenceHandler implements ICommandHandler<CreateConferenceCommand> {
-  async execute(command: CreateConferenceCommand) {
-    if (command.startDate < new Date()) {
-      throw new Error('Invalid date'); // ❌ Should use domain exception
-    }
-    // ❌ Direct SQL/ORM manipulation
-    await this.db.query('INSERT INTO conferences...');
+export class CreateOrderHandler {
+  async handle(command: CreateOrderCommand) {
+    // Validation, pricing, inventory check, persistence, event publishing
+    // All in one handler - too complex
   }
 }
 ```
 
 **Why it's bad:**
 - Violates Single Responsibility Principle
-- Hardcodes business rules that belong in aggregates
-- Couples to persistence technology
+- Difficult to test and maintain
+- Blurs separation between application and domain layer
 
----
+##### Rule UC-QRY-02: Read Model Projection Pattern
 
-#### Application Layer - Validation Operations
-
-##### Rule UC-CMD-03: Pre-Validation Pattern
-
-**✅ GOOD - Validate before domain interaction:**
+**✅ GOOD - Query Projection:**
 
 ```typescript
-// In handler or dedicated validator
-class ConferenceCreationValidator {
-  static validate(cmd: CreateConferenceCommand) {
-    if (!cmd.name || cmd.name.length < 3) {
-      throw new ValidationError('Conference name must be at least 3 characters');
+export class GetOrderHandler {
+  async handle(query: GetOrderQuery): Promise<OrderDto> {
+    const order = await this.orderRepository.findById(query.orderId);
+    
+    if (!order) {
+      throw new OrderNotFoundException(query.orderId);
     }
-    if (cmd.endDate < cmd.startDate) {
-      throw new ValidationError('End date must be after start date');
-    }
+
+    return {
+      id: order.id.value,
+      orderNumber: order.orderNumber,
+      status: order.status.name,
+      totalAmount: order.calculateTotal()
+    };
   }
 }
 ```
 
+**Source**: [h2d5r8a9] GetOrderHandler
+
 **Key Benefits:**
-- Prevents invalid state propagation to domain
-- Fast-fail with clear error messages
-- Keeps domain aggregates clean
+- **Decoupled Read Model**: Returns DTO, not Entity
+- **Projection Safety**: Domain entity internals remain protected
+- **Query Optimization**: Can use specialized read repositories
 
-**❌ BAD - Relying on Aggregate for All Validation:**
-
-```typescript
-// ❌ BAD: Skipping app layer validation entirely
-async execute(cmd) {
-  const conf = ConferenceFactory.create(cmd); // Throws domain exception
-  // ❌ No early validation, heavy domain instantiation for simple checks
-}
-```
-
-**Why it's bad:**
-- Domain aggregates should focus on invariant enforcement, not input sanitization
-- Increases overhead and obscures validation responsibility
-
----
-
-## 🔄 Use Case Patterns
-
-### Use case rules by Category
-
-#### Application Layer - Query Operations
-
-##### Rule UC-QRY-01: Query Carrier Pattern
-
-**✅ GOOD - Read intent with projection parameters:**
+**❌ BAD - Entity Leakage:**
 
 ```typescript
-// get-conference.query.ts
-import { Query } from '@ddd/application';
-
-export class GetConferenceQuery extends Query {
-  constructor(
-    public readonly conferenceId: string,
-    public readonly includeAgenda: boolean = false,
-    public readonly includeSpeakers: boolean = false,
-  ) {
-    super();
+export class GetOrderHandler {
+  async handle(query: GetOrderQuery): Promise<Order> {
+    return this.orderRepository.findById(query.orderId);
   }
 }
 ```
 
-**Source**: [d8e2f4a1c6b9] get-conference.query.ts
-
-**Key Benefits:**
-- Explicit read intent decoupled from write operations
-- Supports flexible projection without mutating command objects
-- Enables read-model optimization independently
-
-**❌ BAD - Reusing Command for Reads:**
-
-```typescript
-// ❌ BAD: Using CreateConferenceCommand for reads
-const query = new CreateConferenceCommand(/* ... */); // ❌ Mixes write intent with read
-```
-
 **Why it's bad:**
-- Violates CQRS separation
-- Couples read paths to write-side metadata
-- Makes caching and optimization harder
-
----
-
-##### Rule UC-QRY-02: Stateless Read Handler Pattern
-
-**✅ GOOD - Pure coordination of read operations:**
-
-```typescript
-// get-conference.handler.ts
-import { QueryHandler, IQueryHandler } from '@ddd/application';
-import { GetConferenceQuery } from './get-conference.query';
-import { ConferenceRepository } from '../../domain/repositories/conference.repository';
-import { ConferenceProjectionService } from '../../infrastructure/projections';
-
-@QueryHandler(GetConferenceQuery)
-export class GetConferenceHandler implements IQueryHandler<GetConferenceQuery> {
-  constructor(
-    private readonly conferenceRepo: ConferenceRepository,
-    private readonly projectionService: ConferenceProjectionService,
-  ) {}
-
-  async execute(query: GetConferenceQuery) {
-    const conference = await this.conferenceRepo.findById(query.conferenceId);
-    if (!conference) throw new NotFoundError('Conference not found');
-
-    return this.projectionService.mapToDTO(conference, {
-      includeAgenda: query.includeAgenda,
-      includeSpeakers: query.includeSpeakers,
-    });
-  }
-}
-```
-
-**Source**: [b1c5d7e9f3a4] get-conference.handler.ts
-
-**Key Benefits:**
-- Separates read modeling from write domains
-- Supports caching, pagination, and materialized views
-- Maintains handler statelessness
-
-**❌ BAD - Embedding Complex Mapping Logic:**
-
-```typescript
-// ❌ BAD: Heavy projection logic inside handler
-async execute(query) {
-  const raw = await this.db.query(`SELECT * FROM conferences WHERE id = ?`, [query.id]);
-  // ❌ 50 lines of manual mapping, conditional joins, inline formatting
-  return formatted;
-}
-```
-
-**Why it's bad:**
-- Violates separation of concerns
-- Duplicates logic across handlers
-- Makes read models untestable
+- Exposes domain internals to external consumers
+- Creates coupling between read and write models
+- Difficult to optimize read performance
 
 ---
 
@@ -337,13 +221,28 @@ async execute(query) {
 
 ### Dependency Injection
 
-- **DI Pattern**: Constructor injection with framework-agnostic interfaces (e.g., `ConferenceRepository`)
-- **Configuration**: Use factory providers or module config for environment-specific bindings
-- **Lifecycle**: Handlers are stateless; instantiate per request via DI container
+- **Constructor Injection**: All handlers must use constructor injection for dependencies
+- **Configuration**: Dependencies wired in composition root or framework-specific DI container
+- **Lifecycle**: Handlers are stateless singletons; repositories injected as dependencies
 
-- **Handler Registration**: Auto-register via decorator metadata or explicit module exports
-- **Factory Usage**: Create aggregates via static factory methods or builder patterns inside handlers
-- **Transaction Boundaries**: Handlers initiate transaction scope; commit/rollback handled by infrastructure wrapper
+### Handler Structure
+
+```typescript
+export abstract class Handler<TCommand, TResult> {
+  abstract handle(command: TCommand): Promise<TResult>;
+}
+
+export class CreateOrderHandler 
+  extends Handler<CreateOrderCommand, OrderId> {
+  // Implementation
+}
+```
+
+### Command/Query Contracts
+
+- Commands and queries should implement standard interfaces (`ICommand`, `IQuery`)
+- Use Value Objects where applicable (e.g., `OrderId`, `CustomerId`)
+- Commands should be immutable; queries can be mutable for pagination/filtering
 
 ---
 
@@ -351,34 +250,31 @@ async execute(query) {
 
 ### Domain Exception Propagation
 
-Domain and application exceptions bubble up to handlers. Handlers should translate or wrap infrastructure errors while preserving domain intent.
+Business rule violations throw domain exceptions that bubble up to be handled by the outermost layer.
 
 **Example:**
 
 ```typescript
-try {
-  await this.conferenceRepo.save(conference);
-} catch (err) {
-  if (err instanceof UniqueConstraintError) {
-    throw new DomainException('Conference with this name already exists');
+export class InsufficientInventoryError extends DomainError {
+  constructor(item: string, required: number) {
+    super(`Insufficient inventory for ${item}. Required: ${required}`);
   }
-  throw new InfrastructureException('Persist failure', err);
 }
 ```
 
-### Input Validation Exceptions
+### Application Error Wrapping
 
-Early validation failures use `ValidationError` or `BadRequestException` to return fast, structured responses without domain interaction.
+Non-domain errors (infrastructure, validation) are wrapped in application-specific exceptions.
 
 **Example:**
 
 ```typescript
-if (!command.name) throw new ValidationError('Name is required');
+export class OrderPersistenceError extends ApplicationError {
+  constructor(originalError: Error) {
+    super('Failed to persist order', originalError);
+  }
+}
 ```
-
-### Fallback & Retry Strategy
-
-Infrastructure calls (DB, external APIs) use exponential backoff and circuit breakers. Handlers never retry invalid domain operations.
 
 ---
 
@@ -386,59 +282,60 @@ Infrastructure calls (DB, external APIs) use exponential backoff and circuit bre
 
 ### Unit Testing
 
-- **Unit Test Pattern**: Arrange-Act-Assert with strict dependency mocking
-- **Mock Strategy**: Mock repository interfaces, validate domain factory calls and transaction boundaries
-- **Coverage Target**: 85%+ line coverage, 100% for validation & orchestration paths
+- **Handler Logic**: Test orchestration flow, mocking domain and infrastructure
+- **Mock Strategy**: Mock repositories and external services
+- **Coverage Target**: 100% branch coverage for handlers
 
 ### Integration Testing
 
-- **Integration Test Pattern**: Contract tests for command/query execution against test containers
-- **Test Environment**: In-memory DB or Dockerized Postgres/Redis with schema migration
-- **Data Setup Strategy**: Use test factories and clean-slate transactions per test case
+- **Repository Verification**: Test actual persistence with test database
+- **Test Environment**: In-memory database or test containers
+- **Data Setup**: Fixture-based setup with cleanup hooks
 
 ### Use Case Testing Rules
 
 #### ✅ Good Test Structure
 
 ```typescript
-it('should create conference and persist', async () => {
+it('should create order successfully', async () => {
   // Arrange
-  const cmd = new CreateConferenceCommand('org-1', 'DDD Conf', new Date(), new Date(2025, 0, 1), 'req-1');
-  const repoMock = { save: jest.fn().mockResolvedValue(undefined) };
-  const handler = new CreateConferenceHandler(repoMock as any);
+  const command = new CreateOrderCommand('ORD-001', 'CUST-123', []);
+  const orderRepository = mock<OrderRepository>();
+  orderRepository.save.resolves();
 
   // Act
-  const result = await handler.execute(cmd);
+  await handler.handle(command);
 
   // Assert
-  expect(repoMock.save).toHaveBeenCalledWith(jasmine.objectContaining({ organizerId: 'org-1' }));
-  expect(result).toBeDefined();
+  expect(orderRepository.save.calledOnce).toBe(true);
 });
 ```
 
 #### ❌ Bad Test Patterns
 
 ```typescript
-// ❌ Testing framework decorators or DI container directly
-// ❌ Mocking entire modules instead of interfaces
-// ❌ Ignoring transaction/rollback behavior in tests
+it('should save to database', () => {
+  // Testing infrastructure directly in handler test
+  handler.handle(command);
+  // Asserts on SQL or ORM internals - fragile and implementation-specific
+});
 ```
 
 ---
 
 ## ⚡ Performance Considerations
 
-### Read Optimization
+### Read Model Optimization
 
-- **Caching**: Query handlers can leverage Redis/Memcached for frequent reads; cache keys based on query parameters
-- **Pagination**: Always support cursor/offset pagination in query handlers
-- **Projection Isolation**: Keep read models separate from write aggregates to avoid blocking writes
+- Use dedicated read repositories for complex queries
+- Avoid N+1 query problems in handlers
+- Consider caching for frequently accessed order data
 
-### Write Optimization
+### Command Processing
 
-- **Batch Processing**: Handlers should avoid N+1 queries; use repository batch methods
-- **Transaction Scope**: Keep transactions as short as possible; commit immediately after persistence
-- **Idempotency**: Use `requestId` or domain events to prevent duplicate operations in async flows
+- Commands should be processed synchronously for immediate consistency
+- For high-volume scenarios, consider async command processing with eventual consistency
+- Batch operations where multiple changes relate to the same aggregate
 
 ---
 
@@ -446,27 +343,21 @@ it('should create conference and persist', async () => {
 
 ### ❌ God Handler
 
-**Problem:** Handler contains business rules, mapping logic, external service calls, and data transformation.  
-**Solution:** Extract business rules to domain aggregates/services, move mapping to projection services, keep handler to orchestration only.  
-**Detected Files:** None detected
+**Problem**: Handler contains business logic, validation, and infrastructure calls.  
+**Solution**: Extract business rules to domain entities/aggregates; create separate validators.  
+**Detected Files**: None detected
 
-### ❌ Anemic Handler / Direct ORM Access
+### ❌ Anemic Domain
 
-**Problem:** Handler bypasses repository interfaces and uses raw SQL/ORM methods directly.  
-**Solution:** Always use domain-repository abstractions. Infrastructure implements persistence details.  
-**Detected Files:** None detected
+**Problem**: Handler performs calculations or business decisions that belong in domain.  
+**Solution**: Move logic to domain aggregates; use domain services only when single aggregate cannot handle it.  
+**Detected Files**: None detected
 
-### ❌ Cross-Layer Leaking
+### ❌ ORM Leakage
 
-**Problem:** Command/Query DTOs leak into domain aggregates or UI responses.  
-**Solution:** Maintain clear boundaries: Commands → Domain → Domain DTOs/Value Objects → Projections → UI DTOs.  
-**Detected Files:** None detected
-
-### ❌ Synchronous External Calls in Handlers
-
-**Problem:** Blocking HTTP calls or heavy IO within handler execution path.  
-**Solution:** Offload to background workers or event-driven pipelines; use async patterns in handlers.  
-**Detected Files:** None detected
+**Problem**: Handler returns raw entities or DTOs that expose ORM internals.  
+**Solution**: Use explicit DTOs or Value Objects; apply projection in handler or dedicated query handler.  
+**Detected Files**: None detected
 
 ---
 
@@ -474,112 +365,112 @@ it('should create conference and persist', async () => {
 
 **Key Implementation Principles** _(actionable guidelines for developers)_
 
-1. **Separate Read & Write Intent** — Commands and queries must never share carriers or handlers. CQRS preserves scalability and testability.
-2. **Stateless Handlers** — Inject dependencies via constructor, avoid mutable state, and treat each execution as ephemeral.
-3. **Orchestrate, Don't Implement** — Handlers coordinate domain factories, repositories, and projections. Business rules belong in aggregates.
-4. **Validate Early** — Use pre-validation before domain instantiation to fail fast and preserve aggregate invariants.
-5. **Preserve Transaction Boundaries** — Begin/commit transactions at handler level; never span multiple use cases in a single transaction.
+Developers should focus on clean orchestration, immutability, and proper layer boundaries.
 
-- **DDD Patterns:** Command Handler, Query Handler, Factory Method, Repository Interface, Domain Exception, Idempotency Key
-- **Architecture Documentation:** CQRS Application Layer, DDD Bounded Context: Conference, Module: conference
+1. **Single Responsibility** - Handlers orchestrate only; business rules belong in domain
+2. **Immutability** - Commands and queries are immutable data carriers
+3. **Dependency Inversion** - Depend on repository interfaces, not implementations
+4. **Result Orientation** - Handlers return clear results or throw appropriate exceptions
+5. **Separation of Concerns** - Commands for writes, queries for reads; never mix in same handler
+
+- **DDD Patterns**: Command/Query Separation, Domain Orchestration, Repository Coordination
+- **Architecture Documentation**: Application Layer Design Document, Module Boundaries Spec
 
 **What to Avoid** _(common anti-patterns and restrictions)_
 
-- Embedding business logic or SQL in handlers
-- Reusing command objects for read operations
-- Skipping input validation before domain interaction
-- Mixing UI transport contracts with application intents
-- Creating long-running or blocking operations within synchronous handler execution
+- Never put business logic in handlers
+- Never expose domain entities directly to external interfaces
+- Never handle transaction logic inside domain aggregates
+- Avoid God Handlers by extracting complex operations to domain services or multi-step processes
+- Do not mix command and query logic in the same handler
 
 ---
 
 ## Pattern Index
 
-### Application Layer - Command Operations Patterns
+### Application Layer - Command Patterns
 
-- UC-CMD-01: Command Carrier Pattern - [c4f8a9b2d1e3] create-conference.command.ts
-- UC-CMD-02: Handler Orchestration Pattern - [a7b3c9d2e5f1] create-conference.handler.ts
-- UC-CMD-03: Pre-Validation Pattern - N/A (guideline only)
+- **UC-CMD-01**: Command Payload Pattern - [c4d5e6f7] CreateOrderCommand
 
-### Application Layer - Query Operations Patterns
+### Application Layer - Use Case Patterns
 
-- UC-QRY-01: Query Carrier Pattern - [d8e2f4a1c6b9] get-conference.query.ts
-- UC-QRY-02: Stateless Read Handler Pattern - [b1c5d7e9f3a4] get-conference.handler.ts
+- **UC-ORD-01**: Domain Orchestration Pattern - [h1d2r3a4] CreateOrderHandler
+- **UC-QRY-01**: Query Intent Pattern - [q5r6s7t8] GetOrderQuery
+- **UC-QRY-02**: Read Model Projection Pattern - [h2d5r8a9] GetOrderHandler
 
 ### Coverage Summary
 
-**Total Application Layer Use Cases Analyzed**: 4
+**Total Application Layer Use Cases Analyzed**: 2
 
-- **Command Operations**: 2 use cases (100% coverage)
-- **Query Operations**: 2 use cases (100% coverage)
+- **Command Operations**: 1 use cases (100% coverage)
+- **Query Operations**: 1 use cases (100% coverage)
 
 **Key Files Analyzed**:
-- [c4f8a9b2d1e3] create-conference.command.ts ✓
-- [a7b3c9d2e5f1] create-conference.handler.ts ✓
-- [d8e2f4a1c6b9] get-conference.query.ts ✓
-- [b1c5d7e9f3a4] get-conference.handler.ts ✓
+- [c4d5e6f7] CreateOrderCommand ✓
+- [h1d2r3a4] CreateOrderHandler ✓
+- [q5r6s7t8] GetOrderQuery ✓
+- [h2d5r8a9] GetOrderHandler ✓
 
 ---
 
 ## ❓ Open Questions
 
-- [ ] Should conference creation require multi-step approval workflow or remain single-step?
-- [ ] Do query handlers need to support event-sourced read model reconstruction or CQRS projections?
-- [ ] Are idempotency constraints required at the handler level for distributed deployments?
-- [ ] Should validation be centralized via a schema-validator service or kept inline per use case?
+- [ ] Should complex order creation be split into multi-step workflow or single command?
+- [ ] Are there specific read model requirements that warrant CQRS separation beyond query handlers?
+- [ ] Should domain events be published from handlers or domain aggregates?
 
 ## ⚖️ Architectural Conformance & Inconsistency Audit
 
-### 1. Adherence Summary to the Big Picture Rules
-| Big Picture Principle | Conformance Status | Notes |
-|------------------------|-------------------|-------|
-| **Strict CQRS Separation** | ✅ Fully Compliant | Commands and queries are explicitly segregated into separate carriers, handlers, and use-case rules. No mixing of read/write intents is permitted. |
-| **Stateless Handlers** | ✅ Fully Compliant | Handlers are explicitly documented as stateless, instantiated per request, and dependency-injected via constructors. Mutable state across executions is banned. |
-| **Repository Isolation** | ✅ Fully Compliant | Handlers interact strictly with repository ports/interfaces. Direct SQL/ORM manipulation and raw DB queries are explicitly flagged as anti-patterns. |
-| **Orchestration & Pre-Validation** | ✅ Fully Compliant | The `UC-CMD-03` pattern enforces early validation before domain instantiation. Handlers coordinate factories, ports, and projections without implementing business invariants. |
-| **Explicit Error Handling (`Result` preference)** | ⚠️ Partially Compliant | The documentation relies on imperative `throw` statements with structured exceptions (`ValidationError`, `DomainException`). While this avoids untyped `new Error()`, it diverges from the Big Picture's preference for explicit `Result<T, E>` return types over exception-driven control flow. |
-| **Context Injection & DTO Translation** | ⚠️ Partially Compliant | Context enrichment (`requestId`) is shown but missing explicit mandates for tenant, security, and audit context resolution. Command handlers return primitive/domain IDs instead of stable Application DTOs, violating the explicit DTO translation rule. |
-| **Transaction Management** | ⚠️ Ambiguous Compliance | The guideline states transactions are initiated at the handler but "commit/rollback handled by infrastructure wrapper." This blurs responsibility; the Big Picture requires explicit application-layer session lifecycle control per use case. |
-
----
+### 1. Adherence Summary to Big Picture Rules
+The generated `ddd-app-use-case-wow.md` documentation demonstrates **strong foundational alignment** with the Big Picture expectations across core DDD boundaries:
+- ✅ **CQRS Enforcement**: Strict segregation of Commands (writes) and Queries (reads) is explicitly mandated, with dedicated handler packages and anti-pattern warnings against mixing concerns.
+- ✅ **Statelessness & DI**: Handlers are correctly defined as stateless, relying on constructor injection for repositories and dependencies (`src/application/commands/...` structure).
+- ✅ **Repository Isolation**: Direct DB/SQL access is prohibited; handlers interact exclusively with repository interfaces, preserving infrastructure decoupling.
+- ✅ **No Business Rules**: Clear guardrails prevent domain logic leakage into handlers (`❌ BAD - Logic in Commands` & `Anemic Domain` anti-patterns).
+- ✅ **Projection Discipline**: Read handlers are correctly constrained to return DTOs/projections rather than leaking aggregate internals (`UC-QRY-02`).
 
 ### 2. Specific DDD Inconsistencies & Deviations
+Despite strong baseline adherence, several deviations exist between the WoW documentation and the mandated Big Picture rules:
 
-| # | Deviation / Gap | Reference Location | Impact |
-|---|-----------------|-------------------|--------|
-| 1 | **Exception-Driven Flow vs. Explicit `Result` Types** | `UC-CMD-02`, `UC-QRY-02`, `Error Handling Strategy` | Handlers use `throw` for failures, which can leak across async boundaries and breaks pure function semantics. DDD prefers explicit failure representation (`Result.fail()`) to avoid exception-based branching. |
-| 2 | **Missing Context Injection Mandate** | `UC-CMD-01`, `Implementation Guidelines` | Only `requestId` is enforced. Tenant, security, correlation, and audit context resolution from infrastructure adapters is undocumented, risking cross-cutting concern leakage into the domain. |
-| 3 | **Ambiguous Transaction Boundary Ownership** | `Implementation Guidelines` → `Transaction Boundaries` | Delegating commit/rollback to an "infrastructure wrapper" dilutes application-layer responsibility. Explicit session management must be codified as an app-layer contract, not infra-implementation detail. |
-| 4 | **Primitive Command Returns vs. Application DTOs** | `UC-CMD-02` → `execute()` method | Command handlers return `conference.getId()` (primitive/aggregate internal). The Big Picture requires mapping domain outcomes to stable Application Transfer Objects before exposing them to callers. |
-| 5 | **Lack of Explicit Result Mapping for Success Paths** | `UC-QRY-02` vs `UC-CMD-02` | Query handlers use `projectionService.mapToDTO()`, but command handlers skip this step. Inconsistent DTO ownership creates coupling leaks and breaks the "single application boundary" principle. |
-
----
+| Big Picture Expectation | WoW Documentation Status | Deviation / Gap |
+|-------------------------|--------------------------|-----------------|
+| **Input Validation** | Explicitly restricted: `"no command logic/payload validation beyond basic structure"` | **Conflict**. The App layer *must* validate request shapes, types, and constraints before domain delegation. The WoW doc pushes validation entirely to the domain, which violates boundary rules. |
+| **Context Injection** | Not mentioned in rules, guidelines, or examples | **Missing**. No mechanism defined for resolving security, tenant, correlation ID, or audit context from infrastructure adapters before orchestration. |
+| **Error Handling Strategy** | Promotes throwing custom exceptions (`DomainError`, `ApplicationError`) | **Partial Mismatch**. Big Picture explicitly prefers `Result<T, E>` or structured outcome types for domain flow control. Exception-based flow can mask recoverable business states and complicates CQRS read-path expectations. |
+| **Transaction Management** | Mentioned as a responsibility (`"manage transaction boundaries"`) but lacks operational guidance | **Under-specified**. No implementation pattern provided for opening, committing, or rolling back sessions per use case (e.g., decorators, `TransactionManager` interface, or AOP). |
+| **Package Naming** | Uses `src/application/` | **Convention Drift**. Big Picture specifies `app-use-case/`. This is cosmetic but can cause confusion in monorepo routing or module scanning. |
 
 ### 3. Actionable Refactoring Recommendations
+To achieve strict conformance with the Big Picture architecture, the following changes should be applied to the implementation and documentation:
 
-1. **Adopt `Result<T, E>` Semantics Across Handlers**
-   - Replace imperative `throw` statements with explicit return types: `Result.success(data)` and `Result.failure(error)`.
-   - Update `UC-CMD-02` and `UC-QRY-02` examples to demonstrate return-based error propagation. This aligns with the Big Picture's explicit error handling preference and enables predictable, exception-free orchestration.
-   - *Action*: Introduce a `UC-ERR-01: Explicit Result Type Pattern` section with TS/JS type definitions (`Result<T, E>`, `Ok`, `Err`).
+1. **Introduce Explicit Input Validation Gateways**
+   - Replace the blanket prohibition on validation with a dedicated validation pattern. Implement an `IValidator<TCommand>` interface or framework decorators (e.g., `@ValidatePayload()`) that run *before* handler orchestration.
+   - Move structural/formatting constraints out of domain aggregates and into the application layer where payloads are hydrated.
 
-2. **Formalize Context Injection via `ExecutionContext` Carrier**
-   - Create a framework-agnostic `ExecutionContext` interface containing `tenantId`, `userId`, `correlationId`, and `auditTimestamp`.
-   - Handlers must receive this context explicitly (via constructor or command wrapper) to resolve security/tenant boundaries before domain interaction.
-   - *Action*: Add `UC-CMD-04: Context Resolution Pattern` showing how infrastructure adapters merge request metadata into the execution context before handler dispatch.
+2. **Adopt a Result/Outcome Pattern for Error Handling**
+   - Define an `ApplicationResult<T>` or `DomainResult<T, E>` type (or adopt a library like `fp-ts`/`result-ts`).
+   - Update `UC-CMD-01` and handler signatures to return `Result<SuccessPayload, ValidationError | DomainError>` instead of throwing exceptions for expected business states. Reserve exceptions strictly for unexpected infrastructure failures.
 
-3. **Clarify Application-Layer Transaction Ownership**
-   - Explicitly state that the application layer (typically via a `TransactionalMediator` or handler lifecycle wrapper) owns the full session lifecycle: `beginTransaction() → execute() → commit()/rollback()`.
-   - Remove ambiguous phrasing like "handled by infrastructure wrapper." The infrastructure provides the `DataSource`/`ConnectionProvider`, but the app layer dictates the boundary semantics.
-   - *Action*: Revise `Implementation Guidelines` → `Transaction Boundaries` to mandate explicit `try/catch` or declarative transaction attributes within the use-case execution pipeline.
+3. **Standardize Context Injection**
+   - Define a `IRequestContext` interface (`userId`, `tenantId`, `correlationId`, `timestamp`) and inject it via a context middleware or decorator that hydrates the request scope before handler execution.
+   - Explicitly document how context flows into `CreateOrderHandler.handle()` or how it's resolved via a `ContextProvider` service.
 
-4. **Standardize Application DTOs for All Use Cases**
-   - Command handlers must map aggregate outcomes to immutable Application DTOs (e.g., `ConferenceCreatedDTO`) rather than returning raw IDs or entity internals.
-   - Query handlers should continue using projection services, but both paths must converge on a consistent application-level contract.
-   - *Action*: Refactor `UC-CMD-02` example to return `return new ConferenceCreatedDTO(conference.getId(), conference.getVersion(), conference.getStatus());`.
+4. **Operationalize Transaction Boundaries**
+   - Introduce a `TransactionManager` or `IUnitOfWork` interface that handlers must explicitly wrap their orchestration in:
+     ```typescript
+     await this.transactionManager.run(async () => {
+       const order = Order.create(...);
+       await this.orderRepository.save(order);
+     });
+     ```
+   - Update the "Transaction Management" rule to mandate this pattern, preventing implicit DB sessions or framework-ghost transactions.
 
-5. **Enforce Strict Application DTO Isolation**
-   - Add a linter/commit-hook rule or architecture test to verify that no Domain Aggregates, Value Objects, or Repository interfaces leak into controller/response layers.
-   - Ensure all public handler methods expose only Application DTOs or `Result<ApplicationDTO, Error>` types.
-   - *Action*: Document `UC-ARC-01: Application Boundary Enforcement` in the anti-patterns section, providing architecture test examples (e.g., ArchUnit or Jest custom matchers).
+5. **Align Package & Routing Conventions**
+   - Rename `src/application/` to `src/app-use-case/` (or add a strict alias/mapping rule in `tsconfig`/build config) to match the architectural contract.
+   - Document that this layer is the **single entry point** for all workflow triggers, preventing controllers or event listeners from bypassing it.
 
-**Audit Verdict:** The generated documentation is **structurally sound** and correctly enforces CQRS, statelessness, and repository isolation. However, it requires **targeted refinements** around explicit error typing, context injection, transaction boundary ownership, and consistent DTO translation to fully align with the Big Picture DDD expectations. Implementing the above recommendations will harden the application layer into a robust, testable, and framework-agnostic orchestration boundary.
+6. **Update Anti-Pattern Registry**
+   - Add `❌ Implicit Transaction Scope` and `❌ Missing Context Propagation` to the anti-patterns section to enforce future conformance.
+   - Replace `Detected Files: None detected` with dynamic linting rules that automatically flag handlers missing `Result` returns or transaction wrappers.
+
+**Audit Verdict**: `⚠️ CONDITIONALLY CONFORMANT` — The structural CQRS and repository isolation patterns are correctly documented, but validation, context, and result-pattern expectations require explicit implementation rules before production adoption.
