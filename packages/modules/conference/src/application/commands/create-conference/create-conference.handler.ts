@@ -1,13 +1,11 @@
 import { Conference } from '../../../domain/conference';
-import { ConferenceCreatedEvent } from '../../../domain/events/conference-created';
-import { CfpOpenedEvent } from '../../../domain/events/cfp-opened';
 import { CfpDatesInvalidError } from '../../../domain/exceptions/cfp-dates-invalid-error';
 import { ConferenceNameTooShortError } from '../../../domain/exceptions/conference-name-too-short-error';
 import { ConferenceFreeTierLimitError } from '../../../domain/exceptions/conference-free-tier-limit-error';
 import { SlugExistsError } from '../../../domain/exceptions/slug-exists-error';
 import { getLogger } from '@sessioflow/shared-logging/logger';
 import { getCorrelationId } from '@sessioflow/shared-logging/context';
-import { type ConferenceResponseDto } from '../../dto/conference-response.dto';
+import { CreateConferenceResponse } from './create-conference.response';
 
 import { type ConferenceRepository } from '../../../domain/conference-repository.interface';
 import { type CreateConferenceCommand } from './create-conference.command';
@@ -15,7 +13,7 @@ import { type CreateConferenceCommand } from './create-conference.command';
 export class CreateConferenceHandler {
   constructor(private readonly repository: ConferenceRepository) {}
 
-  async execute(command: CreateConferenceCommand): Promise<ConferenceResponseDto> {
+  async execute(command: CreateConferenceCommand): Promise<CreateConferenceResponse> {
     const logger = getLogger();
     const correlationId = getCorrelationId() ?? 'unknown';
 
@@ -54,7 +52,7 @@ export class CreateConferenceHandler {
       throw new SlugExistsError();
     }
 
-    const { events } = conference.publishCfp();
+    conference.publishCfp();
     await this.repository.save(conference);
 
     logger.info('Conference saved successfully', {
@@ -65,12 +63,7 @@ export class CreateConferenceHandler {
       organizerId: conference.organizerId,
     });
 
-    const dto = conference.toResponseDto();
-    return {
-      ...dto,
-      cfpUrl: `${dto.slug}`,
-      events: events.map((e) => ({ type: e.constructor.name })),
-    };
+    return CreateConferenceResponse.from(conference);
   }
 }
 
