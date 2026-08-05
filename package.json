@@ -21,7 +21,7 @@
     "dev:frontend": "npm run dev --workspace=apps/frontend",
     "test:watch": "vitest",
     "test:e2e": "npm run build && docker compose -f apps/backend/docker-compose.yml up -d && (npx playwright test --config=apps/frontend/playwright.config.ts; status=$?; docker compose -f apps/backend/docker-compose.yml down; exit $status)",
-    "test:architecture": "vitest run tests/backend/unit/architecture/ddd-boundaries.test.ts",
+    "test:architecture": "vitest run tests/unit/architecture/ddd-boundaries.test.ts",
     "db:migrate": "npm run db:migrate --workspace=apps/backend",
     "db:push": "npm run db:push --workspace=apps/backend",
     "db:studio": "npm run db:studio --workspace=apps/backend",

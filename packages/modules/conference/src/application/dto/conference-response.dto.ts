@@ -18,3 +18,5 @@ export type ConferenceResponseDto = {
   createdAt: string;
   updatedAt: string;
 };
+
+
