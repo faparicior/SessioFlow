@@ -10,6 +10,7 @@ import { CfpDatesInvalidError } from '@sessioflow/conference/domain/exceptions/c
 import { ConferenceNameTooShortError } from '@sessioflow/conference/domain/exceptions/conference-name-too-short-error';
 import { ConferenceFreeTierLimitError } from '@sessioflow/conference/domain/exceptions/conference-free-tier-limit-error';
 import { SlugExistsError } from '@sessioflow/conference/domain/exceptions/slug-exists-error';
+import { futureDate, futureDateStr, pastDateStr } from '../../../../../unit/__helpers__/date'
 
 // Mock repository
 class MockConferenceRepository implements ConferenceRepository {
@@ -68,23 +69,23 @@ describe('CreateConference Command', () => {
       name: 'Tech Conference 2026',
       description: 'A conference about technology',
       organizerId: 'org-123',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: futureDateStr(15),
+      cfpEndDate: futureDateStr(45),
     });
 
     const conference = await handler.execute(command);
 
     expect(conference.status).toBe('CFP_OPEN');
-    expect(conference.name.value).toBe('Tech Conference 2026');
-    expect(conference.slug.value).toBe('tech-conference-2026');
+    expect(conference.name).toBe('Tech Conference 2026');
+    expect(conference.slug).toBe('tech-conference-2026');
   });
 
   it('throws error for short name', async () => {
     const command = new CreateConferenceCommand({
       name: 'Ab',
       organizerId: 'org-123',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: futureDateStr(15),
+      cfpEndDate: futureDateStr(45),
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ConferenceNameTooShortError);
@@ -94,8 +95,8 @@ describe('CreateConference Command', () => {
     const command = new CreateConferenceCommand({
       name: 'Tech Conference',
       organizerId: 'org-123',
-      cfpStartDate: '2026-09-30',
-      cfpEndDate: '2026-08-01', // End before start
+      cfpStartDate: futureDateStr(45),
+      cfpEndDate: futureDateStr(15), // End before start
     });
 
     await expect(handler.execute(command)).rejects.toThrow(CfpDatesInvalidError);
@@ -105,8 +106,8 @@ describe('CreateConference Command', () => {
     const existing = Conference.create({
       name: 'Tech Conference',
       organizerId: 'org-1',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(15),
+      cfpEndDate: futureDate(45),
     });
     existing.publishCfp();
     repo.add(existing);
@@ -114,8 +115,8 @@ describe('CreateConference Command', () => {
     const command = new CreateConferenceCommand({
       name: 'Tech Conference',
       organizerId: 'org-2',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: futureDateStr(15),
+      cfpEndDate: futureDateStr(45),
     });
 
     await expect(handler.execute(command)).rejects.toThrow(SlugExistsError);
@@ -125,8 +126,8 @@ describe('CreateConference Command', () => {
     const command = new CreateConferenceCommand({
       name: 'Tech Conference',
       organizerId: 'org-123',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: futureDateStr(15),
+      cfpEndDate: futureDateStr(45),
     });
 
     const conference = await handler.execute(command);
@@ -141,8 +142,8 @@ describe('CreateConference Command', () => {
     const command = new CreateConferenceCommand({
       name: 'Tech Conference',
       organizerId: 'org-123',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: futureDateStr(15),
+      cfpEndDate: futureDateStr(45),
     });
 
     await handler.execute(command);
@@ -156,30 +157,30 @@ describe('CreateConference Command', () => {
     const command = new CreateConferenceCommand({
       name: 'Quick Conference',
       organizerId: 'org-123',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: futureDateStr(15),
+      cfpEndDate: futureDateStr(45),
     });
 
     const conference = await handler.execute(command);
 
-    expect(conference.cfpConfig.requiresApproval.value).toBe(true);
-    expect(conference.cfpConfig.maxSubmissions.value).toBeUndefined();
+    expect(conference.requiresApproval).toBe(true);
+    expect(conference.maxSubmissions).toBeUndefined();
   });
 
   it('creates conference with custom settings', async () => {
     const command = new CreateConferenceCommand({
       name: 'Custom Conference',
       organizerId: 'org-123',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: futureDateStr(15),
+      cfpEndDate: futureDateStr(45),
       maxSubmissions: 100,
       requiresApproval: false,
     });
 
     const conference = await handler.execute(command);
 
-    expect(conference.cfpConfig.maxSubmissions.value).toBe(100);
-    expect(conference.cfpConfig.requiresApproval.value).toBe(false);
+    expect(conference.maxSubmissions).toBe(100);
+    expect(conference.requiresApproval).toBe(false);
   });
 
   it('throws error when free tier limit exceeded', async () => {
@@ -188,8 +189,8 @@ describe('CreateConference Command', () => {
       const conference = Conference.create({
         name: `Conference ${i}`,
         organizerId: 'org-123',
-        cfpStartDate: new Date('2026-08-01'),
-        cfpEndDate: new Date('2026-09-30'),
+        cfpStartDate: futureDate(15),
+        cfpEndDate: futureDate(45),
       });
       conference.publishCfp();
       repo.add(conference);
@@ -198,8 +199,8 @@ describe('CreateConference Command', () => {
     const command = new CreateConferenceCommand({
       name: 'Additional Conference',
       organizerId: 'org-123',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: futureDateStr(15),
+      cfpEndDate: futureDateStr(45),
     });
 
     await expect(handler.execute(command)).rejects.toThrow(ConferenceFreeTierLimitError);

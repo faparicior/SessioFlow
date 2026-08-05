@@ -3,7 +3,6 @@ import { z } from 'zod';
 import { CreateConferenceCommand } from '../../application/commands/create-conference/create-conference.command.js';
 import { type CreateConferenceHandler } from '../../application/commands/create-conference/create-conference.handler.js';
 import { ConferenceCreateSchema, ConferenceResponseSchema } from './conference-create.schema.js';
-import type { HttpCreateConferenceResponse } from './conference-http-response.js';
 import { mapDomainErrorToResponse } from '@sessioflow/shared-http/error-mapper';
 import { DomainError } from '@sessioflow/shared-domain/exceptions';
 
@@ -56,11 +55,6 @@ export async function createConferenceController(
       {
         data: {
           ...plain,
-          cfpUrl: `${plain.slug}`,
-          events: [
-            { type: 'ConferenceCreated' },
-            { type: 'CfpOpened' },
-          ],
         },
       },
       { status: 201 }

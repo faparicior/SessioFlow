@@ -5,6 +5,7 @@ import { type ConferenceStatus } from '@sessioflow/conference/domain/value-objec
 import { type ConferenceId } from '@sessioflow/conference/domain/value-objects/conference-id';
 import { GetConferenceHandler } from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
 import { ConferenceNotFoundError } from '@sessioflow/conference/domain/exceptions/conference-not-found-error';
+import { futureDate } from '../../../../__helpers__/date'
 
 import { type ConferenceRepository } from '@sessioflow/conference/domain/conference-repository.interface';
 
@@ -64,8 +65,8 @@ describe('GetConference Query', () => {
     const conference = Conference.create({
       name: 'Tech Conference 2026',
       organizerId: 'org-123',
-      cfpStartDate: new Date('2026-09-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(25),
+      cfpEndDate: futureDate(55),
     });
     conference.publishCfp();
     repo.add(conference);
@@ -88,8 +89,8 @@ describe('GetConference Query', () => {
     const conference = Conference.create({
       name: 'Custom Conference',
       organizerId: 'org-123',
-      cfpStartDate: new Date('2026-09-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(25),
+      cfpEndDate: futureDate(55),
       maxSubmissions: 100,
       requiresApproval: false,
     });
@@ -111,8 +112,8 @@ describe('GetConference Query', () => {
     const conference = Conference.create({
       name: 'Draft Conference',
       organizerId: 'org-123',
-      cfpStartDate: new Date('2026-09-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(25),
+      cfpEndDate: futureDate(55),
     });
     repo.add(conference);
 
@@ -125,8 +126,8 @@ describe('GetConference Query', () => {
     const conference = Conference.create({
       name: 'Time Test Conference',
       organizerId: 'org-123',
-      cfpStartDate: new Date('2026-09-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(25),
+      cfpEndDate: futureDate(55),
     });
     repo.add(conference);
 
