@@ -110,7 +110,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
   it('returns 400 for domain error (name too short)', async () => {
     vi.spyOn(mockCreateConferenceHandler, 'execute').mockRejectedValueOnce(
-      new ConferenceNameTooShortError('ConferenceName must be at least 3 characters')
+      new ConferenceNameTooShortError()
     );
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
@@ -138,7 +138,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
   it('returns 409 for duplicate slug', async () => {
     vi.spyOn(mockCreateConferenceHandler, 'execute').mockRejectedValueOnce(
-      new SlugExistsError('A conference with this name already exists')
+      new SlugExistsError()
     );
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
