@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { GetConferenceHandler } from '../../application/queries/get-conference/get-conference.handler.js';
-import type { HttpGetConferenceResponse } from './conference-http-response.js';
 import { mapDomainErrorToResponse } from '@sessioflow/shared-http/error-mapper';
 import { DomainError } from '@sessioflow/shared-domain/exceptions';
 
@@ -34,8 +33,6 @@ export async function getConferenceController(
       {
         data: {
           ...plain,
-          cfpUrl: `${plain.slug}`,
-          events: [],
         },
       },
       { status: 200 }

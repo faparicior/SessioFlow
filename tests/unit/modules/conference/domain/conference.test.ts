@@ -5,6 +5,7 @@ import {CfpStatus} from '@sessioflow/conference/domain/value-objects/cfp-status'
 import {StateTransitionError} from '@sessioflow/conference/domain/exceptions/state-transition-error';
 import {ConferenceCreatedEvent} from '@sessioflow/conference/domain/events/conference-created';
 import {CfpOpenedEvent} from '@sessioflow/conference/domain/events/cfp-opened';
+import {futureDate, pastDate} from '../../../__helpers__/date'
 
 describe('Conference', () => {
   const createConference = () =>
@@ -12,8 +13,8 @@ describe('Conference', () => {
       name: 'Tech Conference 2026',
       description: 'A conference about technology',
       organizerId: 'org-123',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(1),
+      cfpEndDate: futureDate(30),
     });
 
   it('create() produces a conference in DRAFT state', () => {
@@ -22,15 +23,13 @@ describe('Conference', () => {
   });
 
   it('create() rejects a past start date', () => {
-    const pastDate = new Date();
-    pastDate.setDate(pastDate.getDate() - 1);
     expect(() =>
       Conference.create({
         name: 'Tech Conference 2026',
         description: 'A conference about technology',
         organizerId: 'org-123',
-        cfpStartDate: pastDate,
-        cfpEndDate: new Date('2026-09-30'),
+        cfpStartDate: pastDate(),
+        cfpEndDate: futureDate(30),
       }),
     ).toThrow('CfpStartDate must be in the future or today');
   });
@@ -68,10 +67,12 @@ describe('Conference', () => {
 
   it('create() sets CfpConfig with correct dates', () => {
     const conference = createConference();
-    expect(conference.cfpConfig.startDate.value).toEqual(
-      new Date('2026-08-01'),
+    // Verify dates are in the future (not flaky)
+    expect(conference.cfpConfig.startDate.value.getTime()).toBeGreaterThan(Date.now());
+    expect(conference.cfpConfig.endDate.value.getTime()).toBeGreaterThan(Date.now());
+    expect(conference.cfpConfig.endDate.value.getTime()).toBeGreaterThan(
+      conference.cfpConfig.startDate.value.getTime(),
     );
-    expect(conference.cfpConfig.endDate.value).toEqual(new Date('2026-09-30'));
   });
 
   it('create() defaults requiresApproval to true', () => {

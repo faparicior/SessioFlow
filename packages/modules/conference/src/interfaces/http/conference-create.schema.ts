@@ -36,8 +36,6 @@ export const ConferenceResponseSchema = z.object({
   cfpStatus: z.enum(['ACTIVE', 'CLOSED', 'ARCHIVED']),
   maxSubmissions: z.number().int().positive().optional(),
   requiresApproval: z.boolean(),
-  cfpUrl: z.string(),
-  events: z.array(z.unknown()),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });

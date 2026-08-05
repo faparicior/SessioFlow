@@ -7,6 +7,7 @@ import {ConferenceId} from '@sessioflow/conference/domain/value-objects/conferen
 import {ConferenceSlug} from '@sessioflow/conference/domain/value-objects/conference-slug';
 import {ConferenceStatus} from '@sessioflow/conference/domain/value-objects/conference-status';
 import {createNextRequest} from '../../../backend/modules/conference/interfaces/api/v1/conferences/fixtures.js';
+import {futureDate, futureDateStr} from '../../../unit/__helpers__/date'
 
 class InMemoryConferenceRepository implements ConferenceRepository {
   private conferences: Conference[] = [];
@@ -54,8 +55,8 @@ describe('Create Conference Integration (Controller + Command Handler)', () => {
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Tech Conference 2026',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: futureDateStr(15),
+      cfpEndDate: futureDateStr(45),
     });
 
     const response = await createConferenceController(
@@ -70,7 +71,6 @@ describe('Create Conference Integration (Controller + Command Handler)', () => {
     expect(body.data).toBeDefined();
     expect(body.data.name).toBe('Tech Conference 2026');
     expect(body.data.slug).toBe('tech-conference-2026');
-    expect(body.data.cfpUrl).toBe('/cfp/tech-conference-2026');
     expect(body.data.status).toBe('CFP_OPEN');
 
     // Verify entity was actually persisted to repository

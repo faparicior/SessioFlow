@@ -5,7 +5,8 @@ import { createConferenceController } from '@sessioflow/conference/interfaces/ht
 import { getConferenceController } from '@sessioflow/conference/interfaces/http/get-conference.controller';
 import { CreateConferenceHandler } from '@sessioflow/conference/application/commands/create-conference/create-conference.handler';
 import { GetConferenceHandler } from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
-import { Conference } from '@sessioflow/conference/domain/conference';
+import { CreateConferenceResponse } from '@sessioflow/conference/application/commands/create-conference/create-conference.response';
+import { GetConferenceResponse } from '@sessioflow/conference/application/queries/get-conference/get-conference.response';
 import type { ConferenceRepository } from '@sessioflow/conference/domain/conference-repository.interface';
 import { ConferenceNameTooShortError } from '@sessioflow/conference/domain/exceptions/conference-name-too-short-error';
 import { SlugExistsError } from '@sessioflow/conference/domain/exceptions/slug-exists-error';
@@ -16,6 +17,7 @@ const successResponseSchema = z.object({
   data: z.object({
     name: z.string(),
     status: z.string(),
+    slug: z.string(),
   }),
 });
 
@@ -56,21 +58,27 @@ const mockGetAuthUser = vi.fn().mockResolvedValue({ id: 'test-user-id' });
 
 describe('Conference API - POST /api/v1/conferences', () => {
   it('creates a conference and returns 201', async () => {
-    const conference = Conference.create({
+    const now = new Date();
+    const mockResponse = new CreateConferenceResponse({
+      id: '12345678-1234-4123-8123-123456789012',
       name: 'Tech Conference',
-      organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      slug: 'tech-conference',
+      status: 'CFP_OPEN',
+      cfpStartDate: now.toISOString(),
+      cfpEndDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      cfpStatus: 'ACTIVE',
+      requiresApproval: true,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
     });
-    conference.publishCfp();
 
-    vi.spyOn(mockCreateConferenceHandler, 'execute').mockResolvedValue(conference);
+    vi.spyOn(mockCreateConferenceHandler, 'execute').mockResolvedValue(mockResponse);
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Tech Conference',
       organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: now.toISOString().split('T')[0]!,
+      cfpEndDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]!,
     });
 
     const response = await createConferenceController(
@@ -91,7 +99,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
       name: 'Tech Conference',
       organizerId: '12345678-1234-4123-8123-123456789012',
       cfpStartDate: 'invalid-date', // Fails Zod validation
-      cfpEndDate: '2026-09-30',
+      cfpEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]!,
     });
 
     const response = await createConferenceController(
@@ -116,8 +124,8 @@ describe('Conference API - POST /api/v1/conferences', () => {
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Ab', // Too short - will fail domain validation
       organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: new Date().toISOString().split('T')[0]!,
+      cfpEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]!,
     });
 
     const response = await createConferenceController(
@@ -144,8 +152,8 @@ describe('Conference API - POST /api/v1/conferences', () => {
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Existing Conference',
       organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: new Date().toISOString().split('T')[0]!,
+      cfpEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]!,
     });
 
     const response = await createConferenceController(
@@ -163,8 +171,8 @@ describe('Conference API - POST /api/v1/conferences', () => {
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Test Conference',
       organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: '2026-08-01',
-      cfpEndDate: '2026-09-30',
+      cfpStartDate: new Date().toISOString().split('T')[0]!,
+      cfpEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]!,
     });
 
     const response = await createConferenceController(
@@ -179,15 +187,21 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
 describe('Conference API - GET /api/v1/conferences/:id', () => {
   it('returns conference data', async () => {
-    const conference = Conference.create({
+    const now = new Date();
+    const mockResponse = new GetConferenceResponse({
+      id: '12345678-1234-4123-8123-123456789012',
       name: 'Tech Conference',
-      organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      slug: 'tech-conference',
+      status: 'CFP_OPEN',
+      cfpStartDate: now.toISOString(),
+      cfpEndDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      cfpStatus: 'ACTIVE',
+      requiresApproval: true,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
     });
-    conference.publishCfp();
 
-    vi.spyOn(mockGetConferenceHandler, 'execute').mockResolvedValue(conference);
+    vi.spyOn(mockGetConferenceHandler, 'execute').mockResolvedValue(mockResponse);
 
     const validUuid = '12345678-1234-4123-8123-123456789012';
     const request = createNextRequest(

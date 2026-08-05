@@ -4,6 +4,7 @@ import {type ConferenceRepository} from '@sessioflow/conference/domain/conferenc
 import {ConferenceId} from '@sessioflow/conference/domain/value-objects/conference-id';
 import {ConferenceSlug} from '@sessioflow/conference/domain/value-objects/conference-slug';
 import {ConferenceStatus} from '@sessioflow/conference/domain/value-objects/conference-status';
+import {futureDate} from '../../../__helpers__/date'
 
 /**
  * ConferenceRepository Interface - Tests using a mock implementation.
@@ -69,8 +70,8 @@ describe('ConferenceRepository', () => {
     const conference = Conference.create({
       name: 'Test Conference',
       organizerId: 'org-1',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(15),
+      cfpEndDate: futureDate(45),
     });
     repo.add(conference);
 
@@ -90,8 +91,8 @@ describe('ConferenceRepository', () => {
     const conference = Conference.create({
       name: 'Tech Conference',
       organizerId: 'org-1',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(15),
+      cfpEndDate: futureDate(45),
     });
     repo.add(conference);
 
@@ -104,14 +105,14 @@ describe('ConferenceRepository', () => {
     const conf1 = Conference.create({
       name: 'Conference 1',
       organizerId: 'org-1',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(15),
+      cfpEndDate: futureDate(45),
     });
     const conf2 = Conference.create({
       name: 'Conference 2',
       organizerId: 'org-2',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(15),
+      cfpEndDate: futureDate(45),
     });
     repo.add(conf1);
     repo.add(conf2);
@@ -126,8 +127,8 @@ describe('ConferenceRepository', () => {
     const conf1 = Conference.create({
       name: 'Draft Conference',
       organizerId: 'org-1',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(15),
+      cfpEndDate: futureDate(45),
     });
     conf1.publishCfp(); // DRAFT → CFP_OPEN
 
@@ -145,8 +146,8 @@ describe('ConferenceRepository', () => {
     const conference = Conference.create({
       name: 'New Conference',
       organizerId: 'org-1',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(15),
+      cfpEndDate: futureDate(45),
     });
 
     await repo.save(conference);
@@ -160,8 +161,8 @@ describe('ConferenceRepository', () => {
     const conference = Conference.create({
       name: 'Original Name',
       organizerId: 'org-1',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(15),
+      cfpEndDate: futureDate(45),
     });
     repo.add(conference);
 
@@ -177,8 +178,8 @@ describe('ConferenceRepository', () => {
     const conference = Conference.create({
       name: 'To Delete',
       organizerId: 'org-1',
-      cfpStartDate: new Date('2026-08-01'),
-      cfpEndDate: new Date('2026-09-30'),
+      cfpStartDate: futureDate(15),
+      cfpEndDate: futureDate(45),
     });
     repo.add(conference);
 

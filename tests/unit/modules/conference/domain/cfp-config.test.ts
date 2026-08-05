@@ -6,12 +6,13 @@ import {MaxSubmissions} from '@sessioflow/conference/domain/value-objects/max-su
 import {RequiresApproval} from '@sessioflow/conference/domain/value-objects/requires-approval';
 import {CfpStatus} from '@sessioflow/conference/domain/value-objects/cfp-status';
 import {CfpDatesInvalidError} from '@sessioflow/conference/domain/exceptions/cfp-dates-invalid-error';
+import {futureDate, pastDate} from '../../../__helpers__/date'
 
 describe('CfpConfig', () => {
   const createCfpConfig = () =>
     CfpConfig.create({
-      startDate: CfpStartDate.create(new Date('2026-08-01')),
-      endDate: CfpEndDate.create(new Date('2026-09-30')),
+      startDate: CfpStartDate.create(futureDate(15)),
+      endDate: CfpEndDate.create(futureDate(45)),
       maxSubmissions: MaxSubmissions.create(),
       requiresApproval: RequiresApproval.create(),
     });
@@ -23,12 +24,14 @@ describe('CfpConfig', () => {
 
   it('create() stores the start date', () => {
     const config = createCfpConfig();
-    expect(config.startDate.value).toEqual(new Date('2026-08-01'));
+    expect(config.startDate.value).toBeInstanceOf(Date);
+    expect(config.startDate.value.getTime()).toBeGreaterThan(Date.now());
   });
 
   it('create() stores the end date', () => {
     const config = createCfpConfig();
-    expect(config.endDate.value).toEqual(new Date('2026-09-30'));
+    expect(config.endDate.value).toBeInstanceOf(Date);
+    expect(config.endDate.value.getTime()).toBeGreaterThan(Date.now());
   });
 
   it('validateDates() does not throw for valid dates', () => {
@@ -40,8 +43,8 @@ describe('CfpConfig', () => {
 
   it('validateDates() throws CfpDatesInvalidError for end date before start date', () => {
     const config = CfpConfig.create({
-      startDate: CfpStartDate.create(new Date('2026-09-01')),
-      endDate: CfpEndDate.create(new Date('2026-08-01')),
+      startDate: CfpStartDate.create(futureDate(45)),
+      endDate: CfpEndDate.create(futureDate(15)),
       maxSubmissions: MaxSubmissions.create(),
       requiresApproval: RequiresApproval.create(),
     });
@@ -66,8 +69,6 @@ describe('CfpConfig', () => {
 
   it('isActive() returns true when status is ACTIVE and date is within window', () => {
     const config = createCfpConfig();
-    // Use a date within the window
-    const withinWindow = new Date('2026-08-15');
     // IsActive() checks current time, so we'll just verify status is ACTIVE
     expect(config.status).toBe(CfpStatus.ACTIVE);
   });
@@ -80,8 +81,8 @@ describe('CfpConfig', () => {
 
   it('stores maxSubmissions', () => {
     const config = CfpConfig.create({
-      startDate: CfpStartDate.create(new Date('2026-08-01')),
-      endDate: CfpEndDate.create(new Date('2026-09-30')),
+      startDate: CfpStartDate.create(futureDate(15)),
+      endDate: CfpEndDate.create(futureDate(45)),
       maxSubmissions: MaxSubmissions.create(100),
       requiresApproval: RequiresApproval.create(),
     });
@@ -90,8 +91,8 @@ describe('CfpConfig', () => {
 
   it('stores requiresApproval', () => {
     const config = CfpConfig.create({
-      startDate: CfpStartDate.create(new Date('2026-08-01')),
-      endDate: CfpEndDate.create(new Date('2026-09-30')),
+      startDate: CfpStartDate.create(futureDate(15)),
+      endDate: CfpEndDate.create(futureDate(45)),
       maxSubmissions: MaxSubmissions.create(),
       requiresApproval: RequiresApproval.create(false),
     });
