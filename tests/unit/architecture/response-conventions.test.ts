@@ -21,8 +21,8 @@ const p = project('tsconfig.json');
  */
 const mustHavePrivateConstructor = defineCondition(
   'mustHavePrivateConstructor',
-  (matchedClasses) => {
-    return matchedClasses.map((cls) => {
+  (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
       const source = cls.getFullText();
       // Match "private constructor" pattern (skip comment lines)
       const hasPrivateCtor = /private\s+constructor/.test(source);
@@ -37,7 +37,7 @@ const mustHavePrivateConstructor = defineCondition(
         };
       }
       return null;
-    }).filter(Boolean);
+    }).filter(Boolean) as any;
   },
 );
 
@@ -49,11 +49,11 @@ const mustHavePrivateConstructor = defineCondition(
  */
 const mustOnlyHaveStaticFromMethod = defineCondition(
   'mustOnlyHaveStaticFromMethod',
-  (matchedClasses) => {
-    return matchedClasses.map((cls) => {
+  (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
       const methods = cls.getMethods();
       const staticFromMethods = methods.filter(
-        (m) =>
+        (m: any) =>
           m.getName() === 'from' && m.isStatic() && !m.isPrivate(),
       );
 
@@ -69,12 +69,12 @@ const mustOnlyHaveStaticFromMethod = defineCondition(
 
       // Exclude constructor and the static 'from' from the count
       const nonConstructorMethods = methods.filter(
-        (m) => !m.isConstructor() && !m.getName().startsWith('get'),
+        (m: any) => !m.isConstructor() && !m.getName().startsWith('get'),
       );
 
       // Allow only the static 'from' method (non-private)
       const disallowedMethods = methods.filter(
-        (m) =>
+        (m: any) =>
           !m.isConstructor() &&
           !m.isStatic() &&
           m.getName() !== 'from' &&
@@ -82,7 +82,7 @@ const mustOnlyHaveStaticFromMethod = defineCondition(
       );
 
       if (disallowedMethods.length > 0) {
-        const names = disallowedMethods.map((m) => m.getName()).join(', ');
+        const names = disallowedMethods.map((m: any) => m.getName()).join(', ');
         return {
           rule: 'class must not have methods beyond static from()',
           element: cls.getName()!,
@@ -93,7 +93,7 @@ const mustOnlyHaveStaticFromMethod = defineCondition(
       }
 
       return null;
-    }).filter(Boolean);
+    }).filter(Boolean) as any;
   },
 );
 
@@ -140,7 +140,7 @@ describe('CQRS Response Conventions', () => {
         .that()
         .resideInFolder('**/packages/modules/**/application/**/**/*.response.ts')
         .should()
-        .notContain(matching(/: [A-Z][a-zA-Z]+;$/))
+        .notContain(matching(/: [A-Z][a-zA-Z]+;$/) as any)
         .because('response classes must only contain primitive types — never domain entities or value objects')
         .check();
     });

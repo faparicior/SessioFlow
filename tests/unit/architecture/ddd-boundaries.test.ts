@@ -22,8 +22,8 @@ const p = project('tsconfig.json');
  * The file is expected alongside the handler in the same folder.
  */
 function coLocatedFile(suffix: string) {
-  return defineCondition('coLocatedFile', (matchedClasses) => {
-    return matchedClasses.map((cls) => {
+  return defineCondition('coLocatedFile', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
       // Extract just the filename, then the stem
       // e.g. ".../create-conference.handler.ts" → fileName = "create-conference.handler.ts"
@@ -44,7 +44,7 @@ function coLocatedFile(suffix: string) {
         };
       }
       return null;
-    }).filter(Boolean);
+    }).filter(Boolean) as any;
   });
 }
 

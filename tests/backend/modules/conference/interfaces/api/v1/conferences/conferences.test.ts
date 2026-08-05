@@ -12,6 +12,8 @@ import { ConferenceNameTooShortError } from '@sessioflow/conference/domain/excep
 import { SlugExistsError } from '@sessioflow/conference/domain/exceptions/slug-exists-error';
 import { ConferenceNotFoundError } from '@sessioflow/conference/domain/exceptions/conference-not-found-error';
 
+import { Conference } from '@sessioflow/conference/domain/conference';
+
 // Zod schemas for testing responses type-safely without type assertions
 const successResponseSchema = z.object({
   data: z.object({
@@ -58,27 +60,23 @@ const mockGetAuthUser = vi.fn().mockResolvedValue({ id: 'test-user-id' });
 
 describe('Conference API - POST /api/v1/conferences', () => {
   it('creates a conference and returns 201', async () => {
-    const now = new Date();
-    const mockResponse = new CreateConferenceResponse({
-      id: '12345678-1234-4123-8123-123456789012',
+    const conference = Conference.create({
       name: 'Tech Conference',
-      slug: 'tech-conference',
-      status: 'CFP_OPEN',
-      cfpStartDate: now.toISOString(),
-      cfpEndDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      cfpStatus: 'ACTIVE',
+      organizerId: '12345678-1234-4123-8123-123456789012',
+      cfpStartDate: new Date('2026-09-01'),
+      cfpEndDate: new Date('2026-10-01'),
       requiresApproval: true,
-      createdAt: now.toISOString(),
-      updatedAt: now.toISOString(),
     });
+    conference.publishCfp();
+    const mockResponse = CreateConferenceResponse.from(conference);
 
     vi.spyOn(mockCreateConferenceHandler, 'execute').mockResolvedValue(mockResponse);
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
       name: 'Tech Conference',
       organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: now.toISOString().split('T')[0]!,
-      cfpEndDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]!,
+      cfpStartDate: '2026-09-01',
+      cfpEndDate: '2026-10-01',
     });
 
     const response = await createConferenceController(
@@ -187,19 +185,15 @@ describe('Conference API - POST /api/v1/conferences', () => {
 
 describe('Conference API - GET /api/v1/conferences/:id', () => {
   it('returns conference data', async () => {
-    const now = new Date();
-    const mockResponse = new GetConferenceResponse({
-      id: '12345678-1234-4123-8123-123456789012',
+    const conference = Conference.create({
       name: 'Tech Conference',
-      slug: 'tech-conference',
-      status: 'CFP_OPEN',
-      cfpStartDate: now.toISOString(),
-      cfpEndDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      cfpStatus: 'ACTIVE',
+      organizerId: '12345678-1234-4123-8123-123456789012',
+      cfpStartDate: new Date('2026-09-01'),
+      cfpEndDate: new Date('2026-10-01'),
       requiresApproval: true,
-      createdAt: now.toISOString(),
-      updatedAt: now.toISOString(),
     });
+    conference.publishCfp();
+    const mockResponse = GetConferenceResponse.from(conference);
 
     vi.spyOn(mockGetConferenceHandler, 'execute').mockResolvedValue(mockResponse);
 
