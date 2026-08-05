@@ -16,13 +16,15 @@ type ConferenceData = {
   id: string;
   name: string;
   status: string;
+  slug: string;
   cfpStartDate: string;
   cfpEndDate: string;
   cfpStatus?: string;
   maxSubmissions?: number;
   requiresApproval?: boolean;
-  cfpUrl?: string;
 };
+
+const BASE_CFP_URL = 'https://sessioflow.app/cfp/';
 
 type ApiResponse<T> = {
   data?: T;
@@ -116,75 +118,87 @@ export default function ConferenceDetailPage({
 
   return (
     <div className="container mx-auto py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>{conference.name}</CardTitle>
-          <CardDescription>Conference ID: {conference.id}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <h3 className="font-semibold">Status</h3>
-            <p className="text-muted-foreground">{conference.status}</p>
-          </div>
+      {(() => {
+        const cfpUrl = conference.slug ? `${BASE_CFP_URL}${conference.slug}` : '';
 
-          <div>
-            <h3 className="font-semibold">CfP Configuration</h3>
-            <ul className="list-disc list-inside text-sm text-muted-foreground">
-              <li>
-                Start Date:{' '}
-                {new Date(conference.cfpStartDate).toLocaleDateString()}
-              </li>
-              <li>
-                End Date: {new Date(conference.cfpEndDate).toLocaleDateString()}
-              </li>
-              <li>Status: {conference.cfpStatus}</li>
-              {conference.maxSubmissions
-                ? (
-                  <li>Max Submissions: {conference.maxSubmissions}</li>
-                )
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>{conference.name}</CardTitle>
+              <CardDescription>Conference ID: {conference.id}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <h3 className="font-semibold">Status</h3>
+                <p className="text-muted-foreground">{conference.status}</p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold">CfP Configuration</h3>
+                <ul className="list-disc list-inside text-sm text-muted-foreground">
+                  <li>
+                    Start Date:{' '}
+                    {new Date(conference.cfpStartDate).toLocaleDateString()}
+                  </li>
+                  <li>
+                    End Date: {new Date(conference.cfpEndDate).toLocaleDateString()}
+                  </li>
+                  <li>Status: {conference.cfpStatus}</li>
+                  {conference.maxSubmissions
+                    ? (
+                      <li>Max Submissions: {conference.maxSubmissions}</li>
+                    )
+                    : null}
+                  <li>
+                    Requires Approval: {conference.requiresApproval ? 'Yes' : 'No'}
+                  </li>
+                </ul>
+              </div>
+
+              {cfpUrl
+                ? <div>
+                  <h3 className="font-semibold">CfP URL</h3>
+                  <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
+                    <code className="text-sm flex-1">{cfpUrl}</code>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        void navigator.clipboard.writeText(cfpUrl);
+                      }}
+                    >
+                      Copy
+                    </Button>
+                  </div>
+                </div>
                 : null}
-              <li>
-                Requires Approval: {conference.requiresApproval ? 'Yes' : 'No'}
-              </li>
-            </ul>
-          </div>
 
-          <div>
-            <h3 className="font-semibold">CfP URL</h3>
-            <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
-              <code className="text-sm flex-1">{conference.cfpUrl}</code>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  void navigator.clipboard.writeText(conference.cfpUrl ?? '');
-                }}
-              >
-                Copy
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex gap-2">
-            <Button
-              onClick={() => {
-                router.push('/dashboard');
-              }}
-            >
-              Back to Dashboard
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                void window.open(conference.cfpUrl, '_blank');
-              }}
-            >
-              Open CfP
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    router.push('/dashboard');
+                  }}
+                >
+                  Back to Dashboard
+                </Button>
+                {cfpUrl
+                  ? (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        void window.open(cfpUrl, '_blank');
+                      }}
+                    >
+                      Open CfP
+                    </Button>
+                  )
+                  : null}
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })()}
     </div>
   );
 }
