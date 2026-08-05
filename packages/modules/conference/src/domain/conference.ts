@@ -195,4 +195,36 @@ export class Conference {
   isDeleted(): boolean {
     return this._data.status === ConferenceStatus.DELETED;
   }
+
+  /**
+   * Convert this Conference to a plain-object DTO for layer boundaries.
+   * Used by application handlers to return DTOs instead of domain entities.
+   */
+  toResponseDto(): {
+    id: string;
+    name: string;
+    slug: string;
+    status: string;
+    cfpStartDate: string;
+    cfpEndDate: string;
+    cfpStatus: string;
+    maxSubmissions: number | undefined;
+    requiresApproval: boolean;
+    createdAt: string;
+    updatedAt: string;
+  } {
+    return {
+      id: this.id.value,
+      name: this.name.value,
+      slug: this.slug.value,
+      status: this._data.status,
+      cfpStartDate: this.cfpConfig.startDate.value.toISOString(),
+      cfpEndDate: this.cfpConfig.endDate.value.toISOString(),
+      cfpStatus: this.cfpConfig.status,
+      maxSubmissions: this.cfpConfig.maxSubmissions.value,
+      requiresApproval: this.cfpConfig.requiresApproval.value,
+      createdAt: this.createdAt.toISOString(),
+      updatedAt: this.updatedAt.toISOString(),
+    };
+  }
 }

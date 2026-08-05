@@ -7,6 +7,7 @@ import { ConferenceFreeTierLimitError } from '../../../domain/exceptions/confere
 import { SlugExistsError } from '../../../domain/exceptions/slug-exists-error';
 import { getLogger } from '@sessioflow/shared-logging/logger';
 import { getCorrelationId } from '@sessioflow/shared-logging/context';
+import { type ConferenceResponseDto } from '../../dto/conference-response.dto';
 
 import { type ConferenceRepository } from '../../../domain/conference-repository.interface';
 import { type CreateConferenceCommand } from './create-conference.command';
@@ -14,7 +15,7 @@ import { type CreateConferenceCommand } from './create-conference.command';
 export class CreateConferenceHandler {
   constructor(private readonly repository: ConferenceRepository) {}
 
-  async execute(command: CreateConferenceCommand): Promise<Conference> {
+  async execute(command: CreateConferenceCommand): Promise<ConferenceResponseDto> {
     const logger = getLogger();
     const correlationId = getCorrelationId() ?? 'unknown';
 
@@ -64,6 +65,13 @@ export class CreateConferenceHandler {
       organizerId: conference.organizerId,
     });
 
-    return conference;
+    const dto = conference.toResponseDto();
+    return {
+      ...dto,
+      cfpUrl: `${dto.slug}`,
+      events: events.map((e) => ({ type: e.constructor.name })),
+    };
   }
 }
+
+

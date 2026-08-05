@@ -48,27 +48,11 @@ export async function createConferenceController(
       ...parsed.data,
       organizerId: user.id,
     });
-    const conference = await commandHandler.execute(command);
+    const dto = await commandHandler.execute(command);
 
     // 4. Return success response
     return NextResponse.json(
-      {
-        data: {
-          id: conference.id.value,
-          name: conference.name.value,
-          slug: conference.slug.value,
-          status: conference.status,
-          cfpStartDate: conference.cfpConfig.startDate.value.toISOString(),
-          cfpEndDate: conference.cfpConfig.endDate.value.toISOString(),
-          cfpStatus: conference.cfpConfig.status,
-          maxSubmissions: conference.cfpConfig.maxSubmissions.value,
-          requiresApproval: conference.cfpConfig.requiresApproval.value,
-          cfpUrl: `/cfp/${conference.slug.value}`,
-          events: (conference as any).events?.map((e: any) => ({ type: e.type })) || [],
-          createdAt: conference.createdAt.toISOString(),
-          updatedAt: conference.updatedAt.toISOString(),
-        },
-      },
+      { data: dto },
       { status: 201 }
     );
   } catch (error) {
