@@ -1,13 +1,13 @@
-import { ConferenceId } from '../../../domain/value-objects/conference-id';
 import { ConferenceNotFoundError } from '../../../domain/exceptions/conference-not-found-error';
-import { type ConferenceResponseDto } from '../../dto/conference-response.dto';
+import { ConferenceId } from '../../../domain/value-objects/conference-id';
+import { GetConferenceResponse } from './get-conference.response';
 
 import { type ConferenceRepository } from '../../../domain/conference-repository.interface';
 
 export class GetConferenceHandler {
   constructor(private readonly conferenceRepository: ConferenceRepository) { }
 
-  async execute(params: { id: string }): Promise<ConferenceResponseDto> {
+  async execute(params: { id: string }): Promise<GetConferenceResponse> {
     const conferenceId = ConferenceId.fromString(params.id);
     const conference = await this.conferenceRepository.findById(conferenceId);
 
@@ -15,11 +15,6 @@ export class GetConferenceHandler {
       throw new ConferenceNotFoundError();
     }
 
-    const dto = conference.toResponseDto();
-    return {
-      ...dto,
-      cfpUrl: `${dto.slug}`,
-      events: [],
-    };
+    return GetConferenceResponse.from(conference);
   }
 }

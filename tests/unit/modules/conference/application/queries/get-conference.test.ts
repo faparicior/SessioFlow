@@ -64,7 +64,7 @@ describe('GetConference Query', () => {
     const conference = Conference.create({
       name: 'Tech Conference 2026',
       organizerId: 'org-123',
-      cfpStartDate: new Date('2026-08-01'),
+      cfpStartDate: new Date('2026-09-01'),
       cfpEndDate: new Date('2026-09-30'),
     });
     conference.publishCfp();
@@ -72,10 +72,10 @@ describe('GetConference Query', () => {
 
     const result = await handler.execute({ id: conference.id.toString() });
 
-    expect(result.id.value).toBe(conference.id.value);
-    expect(result.name.value).toBe('Tech Conference 2026');
+    expect(result.id).toBe(conference.id.value);
+    expect(result.name).toBe('Tech Conference 2026');
     expect(result.status).toBe('CFP_OPEN');
-    expect(result.slug.value).toBe('tech-conference-2026');
+    expect(result.slug).toBe('tech-conference-2026');
   });
 
   it('throws error when conference not found', async () => {
@@ -88,7 +88,7 @@ describe('GetConference Query', () => {
     const conference = Conference.create({
       name: 'Custom Conference',
       organizerId: 'org-123',
-      cfpStartDate: new Date('2026-08-01'),
+      cfpStartDate: new Date('2026-09-01'),
       cfpEndDate: new Date('2026-09-30'),
       maxSubmissions: 100,
       requiresApproval: false,
@@ -97,12 +97,12 @@ describe('GetConference Query', () => {
 
     const result = await handler.execute({ id: conference.id.toString() });
 
-    expect(result.cfpConfig.maxSubmissions.value).toBe(100);
-    expect(result.cfpConfig.requiresApproval.value).toBe(false);
-    expect(result.cfpConfig.startDate.value.toISOString()).toBe(
+    expect(result.maxSubmissions).toBe(100);
+    expect(result.requiresApproval).toBe(false);
+    expect(result.cfpStartDate).toBe(
       conference.cfpConfig.startDate.value.toISOString()
     );
-    expect(result.cfpConfig.endDate.value.toISOString()).toBe(
+    expect(result.cfpEndDate).toBe(
       conference.cfpConfig.endDate.value.toISOString()
     );
   });
@@ -111,7 +111,7 @@ describe('GetConference Query', () => {
     const conference = Conference.create({
       name: 'Draft Conference',
       organizerId: 'org-123',
-      cfpStartDate: new Date('2026-08-01'),
+      cfpStartDate: new Date('2026-09-01'),
       cfpEndDate: new Date('2026-09-30'),
     });
     repo.add(conference);
@@ -125,14 +125,14 @@ describe('GetConference Query', () => {
     const conference = Conference.create({
       name: 'Time Test Conference',
       organizerId: 'org-123',
-      cfpStartDate: new Date('2026-08-01'),
+      cfpStartDate: new Date('2026-09-01'),
       cfpEndDate: new Date('2026-09-30'),
     });
     repo.add(conference);
 
     const result = await handler.execute({ id: conference.id.toString() });
 
-    expect(result.createdAt.toISOString()).toBe(conference.createdAt.toISOString());
-    expect(result.updatedAt.toISOString()).toBe(conference.updatedAt.toISOString());
+    expect(result.createdAt).toBe(conference.createdAt.toISOString());
+    expect(result.updatedAt).toBe(conference.updatedAt.toISOString());
   });
 });

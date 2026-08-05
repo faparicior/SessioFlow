@@ -25,11 +25,14 @@ function coLocatedFile(suffix: string) {
   return defineCondition('coLocatedFile', (matchedClasses) => {
     return matchedClasses.map((cls) => {
       const relPath = getElementFile(cls);
-      // e.g. ".../create-conference.handler.ts" → stem = "create-conference"
-      const stem = relPath.replace(/\.[^.]+$/, '').replace(/\.handler$/, '');
-      const dir  = dirname(relPath);
+      // Extract just the filename, then the stem
+      // e.g. ".../create-conference.handler.ts" → fileName = "create-conference.handler.ts"
+      const fileName = relPath.split('/').at(-1)!;
+      // e.g. "create-conference" from "create-conference.handler.ts" or "create-conference.command.ts"
+      const stem     = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
+      const dir      = dirname(relPath);
 
-      if (!existsSync(join(dir, stem + suffix))) {
+      if (!existsSync(join(dir, stem + suffix + '.ts'))) {
         return {
           rule: `class must have a co-located file "${stem}${suffix}"`,
           element: stem,
@@ -215,7 +218,7 @@ describe('DDD Architecture', () => {
         .and()
         .haveNameMatching(/(^|\.)execute$/)
         .should()
-        .haveReturnTypeMatching(matching(/Result|Dto/))
+        .haveReturnTypeMatching(matching(/Result|Dto|Response/))
         .because('CQRS handlers must return Result objects or DTOs to avoid leaking Domain Entities directly')
         .check();
     });
