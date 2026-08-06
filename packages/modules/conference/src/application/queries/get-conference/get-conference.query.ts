@@ -1,8 +1,14 @@
-import { type ConferenceId } from '../../../domain/value-objects/conference-id';
+/**
+ * Primitive input type for GetConference query.
+ * Contains only primitives — domain type conversion is handled by the handler.
+ */
+export type GetConferenceQueryInput = {
+  id: string;
+};
 
 /**
  * GetConference Query - CQRS Read Operation.
  */
 export class GetConferenceQuery {
-  constructor(readonly conferenceId: ConferenceId) {}
+  constructor(readonly input: GetConferenceQueryInput) {}
 }
