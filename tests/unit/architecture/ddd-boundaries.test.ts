@@ -8,7 +8,7 @@
  * @see docs/adr/019-use-ts-archunit-for-architecture-testing.md
  */
 import {describe, it} from 'vitest';
-import {project, modules, classes, slices, functions, call, matching, defineCondition, getElementFile} from '@nielspeter/ts-archunit';
+import {project, modules, classes, slices, functions, call, matching, defineCondition} from '@nielspeter/ts-archunit';
 import {existsSync} from 'fs';
 import {join, dirname} from 'path';
 
@@ -19,26 +19,25 @@ const p = project('tsconfig.json');
  * Creates a condition that checks each matched handler class has a co-located file
  * with a given suffix (e.g. ".command", ".handler", ".response").
  *
- * The file is expected alongside the handler in the same folder.
+ * Uses ts-archunit's cls.getSourceFile() AST node combined with fs.existsSync
+ * to accurately verify physical co-located file existence on disk.
  */
 function coLocatedFile(suffix: string) {
   return defineCondition('coLocatedFile', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      // Extract just the filename, then the stem
-      // e.g. ".../create-conference.handler.ts" → fileName = "create-conference.handler.ts"
-      const fileName = relPath.split('/').at(-1)!;
-      // e.g. "create-conference" from "create-conference.handler.ts" or "create-conference.command.ts"
+      const filePath = cls.getSourceFile().getFilePath();
+      const fileName = cls.getSourceFile().getBaseName();
       const stem     = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
-      const dir      = dirname(relPath);
+      const dir      = dirname(filePath);
+      const target   = join(dir, stem + suffix + '.ts');
 
-      if (!existsSync(join(dir, stem + suffix + '.ts'))) {
+      if (!existsSync(target)) {
         return {
           rule: `class must have a co-located file "${stem}${suffix}"`,
           element: stem,
-          file: relPath,
+          file: filePath,
           line: 0,
-          message: `Handler "${stem}" is missing "${stem}${suffix}". ` +
+          message: `Handler "${stem}" is missing "${stem}${suffix}.ts". ` +
                    `Convention: each CQRS handler folder is self-contained — ` +
                    `the command/query, handler, and response all live at the folder root.`,
         };
@@ -236,21 +235,6 @@ describe('DDD Architecture', () => {
     // ───────────────────────────────────────────────────────────────────
     // Self-contained handler folder convention
     // ───────────────────────────────────────────────────────────────────
-    //
-    // Each CQRS handler folder must be self-contained:
-    //
-    //   commands/create-conference/
-    //     ├── create-conference.command.ts   ← input DTO (command = DTO)
-    //     ├── create-conference.handler.ts   ← handler
-    //     └── create-conference.response.ts  ← maps domain → primitives
-    //
-    //   queries/get-conference/
-    //     ├── get-conference.query.ts        ← query params
-    //     ├── get-conference.handler.ts      ← handler
-    //     └── get-conference.response.ts     ← maps domain → primitives
-    //
-    // The response file is allowed to import from domain because it
-    // acts as a mapper (domain entity → plain primitives).
 
     it('command handlers must have a co-located command file', () => {
       classes(p)
