@@ -146,6 +146,60 @@ export async function createConferenceController(request, commandHandler) {
 - **Integration tests**: `tests/integration/modules/[module]/[feature].test.ts`
 - **E2E tests**: `tests/e2e/[feature].spec.ts`
 
+### Architecture Tests
+- **Location**: `tests/unit/architecture/` (files: `ddd-boundaries.test.ts`, `response-conventions.test.ts`)
+- **Framework**: ts-archunit — enforces DDD layer boundaries, CQRS conventions, and architectural invariants
+- **Entry points**: `classes(p)` for class declarations, `functions(p)` for function exports, `modules(p)` for module imports, `slices(p)` for dependency cycles
+
+**Critical ts-archunit patterns:**
+
+1. **Function exports need `functions(p)`, not `classes(p)`**
+   - Controllers are `export async function createConferenceController()` — function declarations
+   - `classes(p)` only finds `class` declarations → returns zero matches for controllers
+   - Use `functions(p).that().resideInFolder('**/interfaces/**').and().haveNameMatching(/controller$/i)` for controller rules
+
+2. **Import-restriction rules require `modules(p)`**
+   - `notImportFrom()` only exists on the `modules()` builder
+   - For controller domain-import checks: `modules(p).that().resideInFolder('**/interfaces/**').and().haveNameMatching(/\.controller\.ts$/).should().notImportFrom('**/domain/**')`
+   - For content-based checks on functions/classes, use `satisfy(defineCondition(...))` with file content reading
+
+3. **Fluent builder is strict AND-only — no `.or()` between predicates**
+   - `classes(p).that().predicateA().or().predicateB()` throws `is not a function`
+   - All `.that()` predicates are implicitly ANDed; all `.should()` conditions are ANDed
+   - For OR logic: write separate test blocks or filter inside a condition function
+
+4. **Ghost DTOs require `p._project.addSourceFilesAtPaths(...)`**
+   - ts-archunit follows TypeScript's import resolution — unimported files are invisible
+   - The `.query.ts` file that handlers don't use never gets parsed
+   - Force-load files at project creation: `p._project.addSourceFilesAtPaths('packages/modules/*/src/**/*.ts')`
+   - Without this, domain-import and property-type checks on DTO files return zero results
+
+5. **Use condition functions for file-content checks**
+   ```typescript
+   function controllerInstantiatesDto() {
+     return defineCondition('controllerInstantiatesDto', (matchedFns: any[]) => {
+       return matchedFns.map((fn: any) => {
+         const relPath = getElementFile(fn);
+         const content = readFileSync(relPath, 'utf-8');
+         // Extract DTO name from import: import { CreateConferenceCommand } from ...
+         const importMatch = content.match(/\{\s*(\w+)\s*\}\s*from\s*['"][^'"]*\.(command|query)/);
+         if (!importMatch) return null;
+         const dtoClass = importMatch[1];
+         const hasInstantiate = new RegExp(`new\\s+${dtoClass}\\(`).test(content);
+         if (!hasInstantiate) {
+           return { rule: '...', element: stem, file: relPath, message: '...' };
+         }
+         return null;
+       }).filter(Boolean) as any;
+     });
+   }
+   ```
+
+6. **Module-level rules use `modules(p)`, not `classes()` or `functions()`**
+   - Layer isolation checks: `modules(p).that().resideInFolder('**/domain/**').should().onlyImportFrom(...)`
+   - File-name filtering on modules: `.and().haveNameMatching(/\.controller\.ts$/)`
+   - Import restrictions: `.should().notImportFrom('**/packages/modules/**/domain/**')`
+
 ### Test Example
 ```typescript
 // tests/unit/conference/conference-name.test.ts

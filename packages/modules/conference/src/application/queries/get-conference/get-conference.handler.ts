@@ -1,5 +1,6 @@
 import { ConferenceNotFoundError } from '../../../domain/exceptions/conference-not-found-error';
 import { ConferenceId } from '../../../domain/value-objects/conference-id';
+import { GetConferenceQuery } from './get-conference.query';
 import { GetConferenceResponse } from './get-conference.response';
 
 import { type ConferenceRepository } from '../../../domain/conference-repository.interface';
@@ -7,8 +8,8 @@ import { type ConferenceRepository } from '../../../domain/conference-repository
 export class GetConferenceHandler {
   constructor(private readonly conferenceRepository: ConferenceRepository) { }
 
-  async execute(params: { id: string }): Promise<GetConferenceResponse> {
-    const conferenceId = ConferenceId.fromString(params.id);
+  async execute(query: GetConferenceQuery): Promise<GetConferenceResponse> {
+    const conferenceId = ConferenceId.fromString(query.input.id);
     const conference = await this.conferenceRepository.findById(conferenceId);
 
     if (!conference) {

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { GetConferenceHandler } from '../../application/queries/get-conference/get-conference.handler.js';
+import { GetConferenceQuery } from '../../application/queries/get-conference/get-conference.query.js';
 import { mapDomainErrorToResponse } from '@sessioflow/shared-http/error-mapper';
 import { DomainError } from '@sessioflow/shared-domain/exceptions';
 
@@ -25,8 +26,9 @@ export async function getConferenceController(
       );
     }
 
-    // 2. Execute CQRS query
-    const plain = await queryHandler.execute({ id: conferenceId });
+    // 2. Execute CQRS query with properly typed DTO
+    const query = new GetConferenceQuery({ id: conferenceId });
+    const plain = await queryHandler.execute(query);
 
     // 3. Return response with HTTP-boundary fields
     return NextResponse.json(
