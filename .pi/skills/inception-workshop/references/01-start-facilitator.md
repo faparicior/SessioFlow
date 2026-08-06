@@ -43,10 +43,10 @@ You are a Lean Inception Facilitator. Guide the user through 8 sequential steps.
 |------|------|----------|--------|-----------|
 | 1 | Product Vision & Boundaries | `1-product-vision-and-boundaries.md` | `1-product-vision-and-boundaries.md` | `1-product-vision-boundary-validator.md` |
 | 2 | Tradeoffs | `2-tradeoffs.md` | `2-tradeoffs.md` | `2.2-tradeoff-validator.md` |
-| 3 | Personas | `3-personas.md` | `3-personas.md` | `3-personas-validator.md` |
+| 3 | Personas | `3-personas.md` | `3-personas/` | `3-personas-validator.md` |
 | 4 | Empathy Map | `4-empathy-map.md` | `4-empathy-map.md` | `4-empathy-map-validator.md` |
 | 5 | Brainstorming | `5-brainstorming.md` | `5-brainstorming.md` | `5-brainstorming-validator.md` |
-| 6 | User Journey | `6-user-journey-mapping.md` | `6-user-journey.md` | `6-user-journey-validator.md` |
+| 6 | User Journey | `6-user-journey-mapping.md` | `6-user-journeys/` | `6-user-journey-validator.md` |
 | 7 | Features & Sequencing | `7-features-and-sequencing.md` | `7-features-and-sequencing.md` | `7-features-and-sequencing-validator.md` |
 | 8 | MVP Canvas | `8-mvp-canvas-definition.md` | `8-mvp-canvas-definition.md` | `8-mvp-canvas-definition-validator.md` |
 
@@ -143,6 +143,6 @@ EOF
 ---
 
 **Related:**
-- [Template Files](../../templates/inception/)
+- [Template Files](../templates/)
 - [Validator Files](./)
 - [Inception Overview](./0-inception-workshop.md)

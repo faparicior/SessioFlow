@@ -245,7 +245,7 @@ Before committing README updates:
 
 - [ADR Workflow](0-ADR-WORKFLOW.md) - Overall ADR process
 - [Generate ADRs](1-generate-adrs-from-inception.md) - Creating new ADRs
-- [ADR Structure](../../adr/STRUCTURE.md) - ADR organization guidelines
+- [ADR Structure](../../../../docs/adr/STRUCTURE.md) - ADR organization guidelines
 
 ---
 

@@ -1,0 +1,24 @@
+{
+  "name": "@sessioflow/frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./components/*": "./dist/components/*.js",
+    "./hooks/*": "./dist/hooks/*.js",
+    "./queries/*": "./dist/queries/*.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sessioflow/api-definitions": "*",
+    "react": "19.2.4"
+  },
+  "devDependencies": {
+    "@sessioflow/tsconfig": "*",
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

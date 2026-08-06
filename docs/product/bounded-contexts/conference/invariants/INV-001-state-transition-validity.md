@@ -18,7 +18,7 @@
 * **Monitored Fields:**
   * `Conference.status` (ConferenceStatus value object)
   * `Conference.cfpConfig` (CfpConfig child entity)
-* **Transactional Boundary:** Enforced synchronously during any command that alters event state via domain methods.
+* **Transactional Boundary:** Enforced synchronously during any command that alters conference state via domain methods.
 
 ## 3. Enforcement Logic & Edge Cases
 *Specify the exact condition under which the operation must fail using Gherkin scenarios to illustrate how the aggregate root guards this boundary.*
@@ -36,7 +36,7 @@ Scenario: Attempting invalid state transition
 
 ### Critical Edge Cases Handled:
 * **Direct State Mutation:** The `status` field is private and can only be modified through domain methods that validate transitions.
-* **Concurrent Transitions:** Optimistic concurrency control via `version` field ensures only one transition can succeed per event.
+* **Concurrent Transitions:** Optimistic concurrency control via `version` field ensures only one transition can succeed per conference.
 * **Skipping States:** Attempting to transition from `DRAFT` directly to `REVIEWING` is rejected; must follow `DRAFT` → `CFP_OPEN` → `CFP_CLOSED` → `REVIEWING`.
 
 ## 4. Failure Response (Exception Handling)

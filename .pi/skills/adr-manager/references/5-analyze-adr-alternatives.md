@@ -210,12 +210,18 @@ Create actionable recommendations based on your analysis.
 **1. Main Analysis Document:**
 - **Template:** `_templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`
 - **Save as:** `_reports/ADR_ALTERNATIVES_ANALYSIS.md`
-- **Contents:** Complete analysis of all ADRs with alternatives comparison
+- **IMPORTANT**: **DO NOT OVERWRITE** the entire document. Instead:
+  - **If the file exists**: Read it first, then **append new ADR analysis sections** to the existing content
+  - **If the file doesn't exist**: Create it using the template
+  - **Update the Summary Table** at the top to include any new ADRs
+  - **Preserve all existing ADR analyses** from previous runs
+- **Contents**: Complete analysis of all ADRs with alternatives comparison
 
 **2. Executive Summary:**
 - **Template:** `_templates/TEMPLATE-EXECUTIVE_SUMMARY.md`
 - **Save as:** `_reports/EXECUTIVE_SUMMARY.md`
-- **Contents:** High-level findings and recommendations for stakeholders
+- **Note**: This file is **always regenerated** (not appended)
+- **Contents**: High-level findings and recommendations for stakeholders
 
 **See also:**
 - `_templates/README_TEMPLATES.md` - Template reference guide
@@ -258,6 +264,97 @@ Follow the structure defined in the templates:
 - Includes: Overview, Overall Assessment, Key Findings, Top 5 Recommendations, Risk Assessment, Next Steps
 
 See the templates for complete section details and formatting requirements.
+---
+
+## Append Pattern for ADR_ALTERNATIVES_ANALYSIS.md
+
+**CRITICAL**: When updating `ADR_ALTERNATIVES_ANALYSIS.md`, **NEVER overwrite the entire document**. Instead, follow this append pattern:
+
+### Step-by-Step Append Process
+
+1. **Read the existing file** first to understand its structure and content
+2. **Update the Summary Table** at the top to include any new ADRs
+3. **Add new ADR analysis sections** in the "Detailed Analysis" section
+4. **Update the Recommendations Summary** to include new ADRs
+5. **Preserve all existing content** - do not delete or replace previous analyses
+
+### Example Append Pattern
+
+**Before (existing file has ADR-001 to ADR-016):**
+```markdown
+## Summary Table
+| ADR | Decision | Status | Recommendation |
+|-----|----------|--------|----------------|
+| ADR-001 | Next.js | ✅ Optimal | Keep |
+| ...
+| ADR-016 | Factory DI | ✅ Optimal | Keep |
+
+---
+
+## Detailed Analysis
+
+### ADR-001: Next.js
+[analysis content]
+
+### ADR-016: Factory DI
+[analysis content]
+
+---
+
+## Recommendations Summary
+```
+
+**After (adding ADR-017):**
+```markdown
+## Summary Table
+| ADR | Decision | Status | Recommendation |
+|-----|----------|--------|----------------|
+| ADR-001 | Next.js | ✅ Optimal | Keep |
+| ...
+| ADR-016 | Factory DI | ✅ Optimal | Keep |
+| ADR-017 | Drizzle ORM | ✅ Optimal | Keep |
+
+---
+
+## Detailed Analysis
+
+### ADR-001: Next.js
+[analysis content - PRESERVED]
+
+### ADR-016: Factory DI
+[analysis content - PRESERVED]
+
+### ADR-017: Drizzle ORM
+[NEW analysis section - APPENDED]
+
+---
+
+## Recommendations Summary
+```
+
+### What to Preserve ✅
+- All existing ADR analyses (ADR-001 through ADR-XXX)
+- Executive Summary (unless updating with new overall findings)
+- Cross-Cutting Themes section
+- Vendor Lock-in Analysis
+- Cost Analysis
+- Team Skill Alignment
+- Scalability Considerations
+- Research Methodology
+- Quality Assurance section
+
+### What to Update 🔄
+- Summary Table (add new ADRs)
+- Detailed Analysis (append new ADR sections)
+- Recommendations Summary (add new ADRs to appropriate categories)
+- Emerging Technologies to Watch (if relevant)
+
+### What NOT to Do ❌
+- ❌ Don't overwrite the entire file
+- ❌ Don't delete existing ADR analyses
+- ❌ Don't remove cross-cutting themes or other sections
+- ❌ Don't regenerate the document from scratch
+
 ---
 
 ## Research Best Practices

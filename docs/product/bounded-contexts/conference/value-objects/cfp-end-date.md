@@ -34,8 +34,8 @@
 
 | Entity / Use Case | Usage |
 |-------------------|-------|
-| [[cfp-config.md]] | Part of CfpConfig composite |
-| [[../entities/conference.md]] | Used in Conference's CfpConfig |
+| [cfp-config.md](cfp-config.md) | Part of CfpConfig composite |
+| [conference.md](../entities/conference.md) | Used in Conference's CfpConfig |
 
 ---
 

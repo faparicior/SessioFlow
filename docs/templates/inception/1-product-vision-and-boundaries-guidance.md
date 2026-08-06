@@ -42,10 +42,10 @@ This guide provides "Brew Guidance" and generic examples to help you complete th
 
 | Field | Example |
 | :--- | :--- |
-| **For** | Organizers of small community events |
+| **For** | Organizers of small community conferences |
 | **Who** | Have zero budget and limited technical skills |
 | **The Product** | *OpenMeetup* (Fictional Name) |
-| **Is a** | Simple event publishing website |
+| **Is a** | Simple conference publishing website |
 | **That** | Allows creating a registration page in 3 clicks without servers or costs |
 | **Unlike** | Eventbrite (charges fees) or Meetup (has a monthly subscription) |
 | **Our Product** | Is 100% free, open-source, and does not sell attendee data |

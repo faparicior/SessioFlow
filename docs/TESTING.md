@@ -29,9 +29,9 @@ describe('ConferenceName', () => {
 ```
 
 ### Integration Tests
-- **Location**: `tests/integration/[feature].test.ts`
-- **Scope**: Repository implementations, use cases with mocked dependencies
-- **Framework**: Vitest + Testcontainers
+- **Location**: `tests/integration/modules/[module]/[feature].integration.test.ts`
+- **Scope**: Repository implementations, database operations, and HTTP Controllers paired with real CQRS handlers (unmocked handler logic to prevent DTO schema drift)
+- **Framework**: Vitest (+ Testcontainers or in-memory repositories)
 
 ```typescript
 // tests/integration/conference-repository.test.ts
@@ -130,7 +130,7 @@ A task is complete when ALL of the following pass:
 - ✅ Repository implementations
 - ✅ Database queries and migrations
 - ✅ External service integrations (with mocks)
-- ✅ API endpoint handlers
+- ✅ API endpoint controllers paired with real handlers (DTO schema drift validation)
 
 **E2E Tests:**
 - ✅ Critical user journeys
@@ -151,15 +151,15 @@ A task is complete when ALL of the following pass:
 
 **Entities:**
 ```typescript
-describe('Event entity', () => {
+describe('Conference entity', () => {
   it('validates CFP dates', () => {
-    const event = Event.create({
+    const conference = Conference.create({
       name: 'Test',
       cfpStartDate: new Date('2026-01-01'),
       cfpEndDate: new Date('2025-12-31') // Invalid: before start
     });
     
-    expect(event.isFailure).toBe(true);
+    expect(conference.isFailure).toBe(true);
   });
 });
 ```
@@ -176,13 +176,13 @@ describe('ConferenceId value object', () => {
 
 **Repositories:**
 ```typescript
-describe('EventRepository', () => {
+describe('ConferenceRepository', () => {
   it('enforces unique slugs', async () => {
-    const event1 = createConference({ slug: 'test-conference' });
-    const event2 = createConference({ slug: 'test-conference' });
+    const conference1 = createConference({ slug: 'test-conference' });
+    const conference2 = createConference({ slug: 'test-conference' });
     
-    await repository.save(event1);
-    const result = await repository.save(event2);
+    await repository.save(conference1);
+    const result = await repository.save(conference2);
     
     expect(result.isFailure).toBe(true);
   });

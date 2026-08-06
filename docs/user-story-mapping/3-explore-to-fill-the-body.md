@@ -20,7 +20,7 @@ Before finalizing stories, play the "What-About" game for your major activities.
 | Backbone Task (Step 2) | Wave | User Stories / Sub-Tasks (The specifics) | Notes / Dependencies / Variations |
 | :--- | :---: | :--- | :--- |
 | **1. Initial Setup** | **MVP** | 1. **Clone & Configure:** User downloads repo and sets `.env` vars (DB, Auth).<br>2. **Run Start Script:** User runs `docker-compose up` to launch app. | **Dep:** Needs Docker installed.<br>**Sad:** Port conflict errors? |
-| **2. Event Definition** | **MVP** | 1. **Organizer Login:** User logs in via Magic Link.<br>2. **Create Event:** User entered Name, Slug, Dates.<br>3. **Publish Link:** User flips status to "Open" and gets public URL. | **Dep:** Supabase Auth.<br>**Var:** Admin accidentally deletes event? (Hide button for MVP). |
+| **2. Conference Definition** | **MVP** | 1. **Organizer Login:** User logs in via Magic Link.<br>2. **Create Conference:** User entered Name, Slug, Dates.<br>3. **Publish Link:** User flips status to "Open" and gets public URL. | **Dep:** Supabase Auth.<br>**Var:** Admin accidentally deletes conference? (Hide button for MVP). |
 | **3. Proposal Submission** | **MVP** | 1. **Speaker Login:** User logs in (Magic Link).<br>2. **Create Profile:** User fills Bio, Name, uploads Photo.<br>3. **Submit Talk:** User enters Title, Abstract, Level.<br>4. **View Confirm:** User sees "Submitted" success state. | **Dep:** Supabase Storage (Photo).<br>**Var:** User edits proposal after submitting? (Allow until CfP closes). |
 | (Invite Co-Speaker) | *Wave 2* | 1. Generate Invite Link<br>2. Accept Invite | **MVP Workaround:** Free text field. |
 | **4. Selection Process** | *Wave 2* | 1. Close CfP (Stop submissions)<br>2. View Submission List (Read-only)<br>3. Rate/Score Talks | MVP only needs a basic "List View" to prove data was saved. Scoring is deferred. |
@@ -34,10 +34,10 @@ Before finalizing stories, play the "What-About" game for your major activities.
 **Title:** Create and Publish Conference
 
 **The Narrative (Who/What/Why):**
-As **Fernando (Organizer)**, I want to **configure key event details and generate a public link**, So that **I can start marketing my Call for Papers immediately.**
+As **Fernando (Organizer)**, I want to **configure key conference details and generate a public link**, So that **I can start marketing my Call for Papers immediately.**
 
 **Acceptance Criteria (Confirmation):**
-- [ ] Verify user can enter Event Name, Start/End Dates, and unique URL Slug.
+- [ ] Verify user can enter Conference Name, Start/End Dates, and unique URL Slug.
 - [ ] Verify system generates a unique public URL (e.g., `app.sessioflow.com/java-conf-2025`).
 - [ ] Constraint: Start Date cannot be in the past.
 - [ ] Constraint: Slug must be URL-safe (no spaces/special chars).

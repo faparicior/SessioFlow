@@ -73,7 +73,11 @@ Scenario: Attempted invalid date order
   And user receives error message "End date must be after start date"
 ```
 
+## 5. Related Business Rules
+* **[BR-001: CfP Dates Must Be Valid](../business-rules/BR-001-cfp-dates-validation.md)**
+
 ## 6. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
+* **2026-07-18:** Linked to BR-001 business rule documentation.
 * **2026-06-09:** Invariant defined alongside CfpConfig entity documentation.

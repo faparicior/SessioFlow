@@ -154,7 +154,7 @@ stateDiagram-v2
 ## 📚 Related Documentation
 
 - [Flow Template](../../templates/product/flows.md)
-- [Create Flow Command](../../commands/product/create-flow.md)
+- [Create Flow Command](../../../.pi/skills/create-flow-documentation/SKILL.md)
 - [Business Rules Guide](./business-rules-vs-invariants.md)
 
 ---

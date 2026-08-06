@@ -30,13 +30,13 @@ Organize the brainstormed features into a logical sequence of releases to define
 
 | Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Setup Event (C4P Configuration)** | E | $$$ | ♥ | TTT | @CoreTeam |
+| **Setup Conference (C4P Configuration)** | E | $$$ | ♥ | TTT | @CoreTeam |
 | **Collect Proposals (CfP)** | E | $$$ | ♥♥♥ | TT | @CoreTeam |
 | **User Authentication** | EE | $$$ | ♥♥ | TT | @CoreTeam |
 | **Speaker Profile (Photo Upload)** | EE | $$ | ♥♥♥ | TT | @CoreTeam |
 
 **MVP Rationale:**
-We prioritize the **Start of the Lifecycle**. Without "Event Setup" and "CfP Collection", nothing else matters. This MVP enables Fernando to Create an account -> Create an Event -> Share the link -> Receive Submissions. Reviewing and Scoring can technically wait until submissions arrive (Wave 2), reducing initial scope and risk.
+We prioritize the **Start of the Lifecycle**. Without "Conference Setup" and "CfP Collection", nothing else matters. This MVP enables Fernando to Create an account -> Create a Conference -> Share the link -> Receive Submissions. Reviewing and Scoring can technically wait until submissions arrive (Wave 2), reducing initial scope and risk.
 
 ### 🌊 Wave 2: Selection & Management (The "Closed CfP" Phase)
 *Features needed once the submission deadline passes.*
@@ -51,7 +51,7 @@ We prioritize the **Start of the Lifecycle**. Without "Event Setup" and "CfP Col
 **Rationale:**
 This wave addresses the "Middle" of the lifecycle. Once proposals are in, Fernando needs to review them. Co-speakers are added here to ensure the proposal data is complete before final selection.
 
-### 🌊 Wave 3: Execution & Logistics (The "Event Day" Phase)
+### 🌊 Wave 3: Execution & Logistics (The "Conference Day" Phase)
 *Features required to publish the agenda and manage logistics.*
 
 | Feature | Effort (E, EE, EEE) | Business Value ($, $$, $$$) | UX Value (♥, ♥♥, ♥♥♥) | Tech Comfort (T, TT, TTT) | Owner |
@@ -66,7 +66,7 @@ This wave addresses the "Middle" of the lifecycle. Once proposals are in, Fernan
 *Features that are not critical for the initial validation.*
 
 * [ ] **Collect Attendee Feedback**: Happens *after* the main problem (organizing) is solved.
-* [ ] **Detect Schedule Conflicts**: A "quality of life" feature. Small events can manage this manually.
+* [ ] **Detect Schedule Conflicts**: A "quality of life" feature. Small conferences can manage this manually.
 
 ---
 

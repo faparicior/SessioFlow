@@ -1,0 +1,22 @@
+{
+  "name": "@sessioflow/api-definitions",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./zod/*": "./dist/zod/*.js",
+    "./types/*": "./dist/types/*.js",
+    "./openapi/*": "./dist/openapi/*.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@sessioflow/tsconfig": "*",
+    "typescript": "^5"
+  }
+}

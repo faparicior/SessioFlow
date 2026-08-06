@@ -54,8 +54,8 @@ Each journey's complete documentation is in a **single file** that includes:
 ### Journey 02: Submit Proposal
 
 **As a** Speaker  
-**I want to** Submit a talk proposal to an event's CfP  
-**So that** I can be considered for the event program
+**I want to** Submit a talk proposal to a conference's CfP  
+**So that** I can be considered for the conference program
 
 **📄 Detailed Documentation (when created, will include):**  
 → [Flow Spec Location](../bounded-contexts/submission/flows/journey-02-submit-proposal.md) *(not yet created)*

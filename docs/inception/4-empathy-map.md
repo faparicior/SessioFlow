@@ -1,8 +1,8 @@
 # 🗺️ Empathy Map for Agile Inception
 
-## 👤 Persona: Fernando, senior event volunteer organizer and also used to be a speaker
+## 👤 Persona: Fernando, senior conference volunteer organizer and also used to be a speaker
 * **Focus Goal:** Organize the sessions and Call for paper of a conference
-* **Current Context:** He is a senior event volunteer organizer, with 4 years of experience in organizing conferences. He is comfortable with data tools and has a good understanding of the conference organization process. He is also used to be a speaker in conferences and has a good understanding of the conference organization process.
+* **Current Context:** He is a senior conference volunteer organizer, with 4 years of experience in organizing conferences. He is comfortable with data tools and has a good understanding of the conference organization process. He is also used to be a speaker in conferences and has a good understanding of the conference organization process.
 
 ---
 

@@ -43,4 +43,4 @@ Please structure your feedback exactly as follows:
 ## 5. TEMPLATE REFERENCE (PRD Standard)
 *This structure is used as the yardstick for completeness.*
 
-Please refer to the [PRD Template](../templates/template-prd.md) for the complete structure and requirements.
+Please refer to the [PRD Template](../../templates/template-prd.md) for the complete structure and requirements.

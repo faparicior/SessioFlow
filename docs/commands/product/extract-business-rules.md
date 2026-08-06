@@ -48,7 +48,7 @@ Your task is to analyze the provided source code, entity models, or workflow def
 **Output Path:**
 Write the results in: `docs/product/bounded-contexts/{bounded-context-name}/business-rules/BR-[XXX]-[rule-name].md`
 
-Where `{bounded-context-name}` is the kebab-case name of the bounded context (e.g., `event`, `submission`, `review`, `scheduling`, or any future context)
+Where `{bounded-context-name}` is the kebab-case name of the bounded context (e.g., `conference`, `submission`, `review`, `scheduling`, or any future context)
 
 ---
 Go ahead and extract all the business rules you can find from the input provided using the template above.

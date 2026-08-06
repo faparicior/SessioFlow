@@ -5,40 +5,31 @@ Domain-Driven Design (DDD) architecture for the Call-for-Papers platform.
 ## 🏛️ Layer Structure
 
 ```
-src/
-├── app/                    # Next.js routing only
-│   ├── layout.tsx
-│   └── page.tsx
+sessioflow/
+├── apps/
+│   └── frontend/               # Next.js web application (UI + API Route Handlers)
+│       └── src/
+│           ├── app/            # App Router pages & layouts
+│           ├── app/api/v1/     # RESTful API route handlers (Controllers)
+│           └── components/     # UI components
 │
-├── domain/                 # Business logic (vendor-agnostic)
-│   └── conference/
-│       ├── conference.ts  # Conference entity
-│       ├── submission.ts  # Submission entity
-│       ├── value-objects/ # ConferenceId, ConferenceName, CfpDates, ConferenceStatus
-│       ├── services/      # Domain services (business logic)
-│       └── repositories/  # Repository interfaces (ports)
-│
-├── application/            # Use cases and application services
-│   └── conference/
-│       ├── create-conference.ts
-│       ├── submit-proposal.ts
-│       └── review-submission.ts
-│
-├── infrastructure/         # External service implementations
-│   ├── external/
-│   │   ├── auth0-provider.ts
-│   │   ├── supabase-auth-adapter.ts
-│   │   ├── cloudflare-r2-adapter.ts
-│   │   └── resend-email-adapter.ts
-│   └── database/
-│       └── conference-repository.ts
-│
-└── interfaces/            # UI and API entry points
-    ├── web/
-    │   ├── (dashboard)/   # Dashboard routes
-    │   └── (auth)/        # Authentication routes
-    └── api/
-        └── v1/            # RESTful API endpoints
+├── packages/
+│   ├── api-definitions/        # Data-only schemas & Zod validation (@sessioflow/api-definitions)
+│   │   └── src/
+│   │       ├── zod/            # Runtime Zod validation schemas
+│   │       └── types/          # Plain TypeScript response/request interfaces
+│   │
+│   ├── modules/                # DDD Bounded Context Modules
+│   │   └── conference/         # Conference bounded context (@sessioflow/conference)
+│   │       ├── domain/         # Pure domain entities, VOs & repository interfaces
+│   │       ├── application/    # CQRS Command & Query use case handlers
+│   │       ├── infrastructure/ # Drizzle ORM database repositories & adapters
+│   │       ├── interfaces/     # Primary HTTP presentation controllers
+│   │       └── container.ts    # Module Composition Root & factories
+│   │
+│   └── shared/                 # Shared infrastructure services
+│       ├── database/           # Drizzle ORM PostgreSQL database client
+│       └── logging/            # Pino logger & AsyncLocalStorage context
 ```
 
 ## 🔑 Core Principles

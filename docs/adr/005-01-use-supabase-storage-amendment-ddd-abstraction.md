@@ -4,13 +4,13 @@
 * **Date:** 2026-06-11
 * **Decision Makers:** Product Team, Technical Lead
 * **Amends:** ADR-005 (Use Supabase Storage for Files)
-* **Related:** ADR-002b (Authentication Strategy and Vendor Abstraction), ADR-009 (Domain-Driven Design Structure)
+* **Related:** ADR-002-03 (Authentication Strategy with DDD), ADR-009 (Domain-Driven Design Structure)
 
 ---
 
 ## Purpose of This Amendment
 
-This document amends **ADR-005** to incorporate the DDD abstraction pattern established in ADR-002b. The original ADR-005 assumed tight coupling to Supabase Storage, but with DDD abstraction, the storage layer becomes vendor-agnostic and swappable.
+This document amends **ADR-005** to incorporate the DDD abstraction pattern established in ADR-002-03. The original ADR-005 assumed tight coupling to Supabase Storage, but with DDD abstraction, the storage layer becomes vendor-agnostic and swappable.
 
 ---
 
@@ -26,7 +26,7 @@ The original ADR-005 assumed:
 
 ### New Reality with DDD Abstraction
 
-With ADR-002b's DDD pattern:
+With ADR-002-03's DDD pattern:
 - **All file operations** flow through `StorageProvider` interface
 - **Supabase Storage** becomes one implementation (adapter)
 - **Migration cost** reduced from 52-112 hours to 8-14 hours
@@ -41,7 +41,7 @@ With ADR-002b's DDD pattern:
 **Chosen Option:** "Supabase Storage with DDD Abstraction Layer"
 
 **Updated Justification:**
-With DDD abstraction (ADR-002b), the storage strategy provides optimal flexibility:
+With DDD abstraction (ADR-002-03), the storage strategy provides optimal flexibility:
 
 1. **Cost Compliance**: Start with Supabase free tier (1GB), migrate to cheaper options if needed
 2. **Vendor Independence**: Can swap Supabase ↔ Cloudflare R2 ↔ MinIO with 8-14 hours effort
@@ -535,7 +535,7 @@ export const storageProvider: StorageProvider = new SupabaseStorageAdapter();
 
 ## Links
 
-* [ADR-002b: Authentication Strategy and Vendor Abstraction](./_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md)
+* [ADR-002-03: Authentication Strategy with DDD](./002-03-use-supabase-analysis-auth-strategy.md)
 * [ADR-009: Domain-Driven Design Structure](./009-adopt-domain-driven-design-structure.md)
 * [Supabase Storage Documentation](https://supabase.com/docs/guides/storage)
 * [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)

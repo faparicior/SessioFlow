@@ -7,7 +7,7 @@ Objective: Validate our biggest risks before building the full release. We are n
 Look at the Release Slice (Step 4). What do we believe to be true that, if wrong, would cause this project to fail?
 
 - **Value Risk:** Do organizers actually want a dedicated tool?
-  - *Assumption:* Event organizers prefer a self-hosted web app over a simple, free Google Form + Spreadsheet, which they already know how to use.
+  - *Assumption:* Conference organizers prefer a self-hosted web app over a simple, free Google Form + Spreadsheet, which they already know how to use.
   - *Source:* `docs/inception/8-mvp-canvas-definition.md` (Hypothesis: "By enabling instant CfP creation, we will acquire users...").
 
 - **Usability Risk:** Can they strictly "self-host" it?

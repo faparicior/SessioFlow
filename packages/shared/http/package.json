@@ -1,0 +1,22 @@
+{
+  "name": "@sessioflow/shared-http",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./error-mapper": "./dist/error-mapper.js",
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sessioflow/shared-domain": "*"
+  },
+  "devDependencies": {
+    "@sessioflow/tsconfig": "*",
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
+}

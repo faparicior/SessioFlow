@@ -1,0 +1,12 @@
+# pi-params — per-provider per-model parameter overrides
+# Injected into the provider request payload via before_provider_request hook
+#
+# Wildcards: "*" matches any provider or model.
+# Priority: session override > exact match > provider-star > star-model > "*"
+
+[vllm-local-supervised."Ornith-1.0-35B-Uncensored-DFlash"]
+temperature = 0.6
+top_p = 0.95
+top_k = 20
+max_tokens = 4096
+repetition_penalty = 1.05

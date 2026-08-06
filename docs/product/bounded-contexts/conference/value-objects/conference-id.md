@@ -34,9 +34,9 @@
 
 | Entity / Use Case | Usage |
 |-------------------|-------|
-| [[../entities/conference.md]] | Primary key for Conference aggregate |
-| [[../../application/use-cases/create-event.ts]] | Input parameter for event creation |
-| [[../../infrastructure/repositories/event-repository.ts]] | Query parameter for repository methods |
+| [conference.md](../entities/conference.md) | Primary key for Conference aggregate |
+| [create-conference.ts](../../../../../src/application/conference/use-cases/create-conference.ts) | Input parameter for conference creation |
+| [conference-repository.ts](../../../../../src/infrastructure/database/conference-repository.ts) | Query parameter for repository methods |
 
 ---
 
@@ -56,8 +56,8 @@
 |----------|-------------|
 | **Generation** | `ConferenceId.generate()` creates new UUIDv4 |
 | **Creation** | `ConferenceId.create('123e...')` validates and wraps string |
-| **Comparison** | `eventId.equals(otherId)` checks value equality |
-| **Serialization** | `eventId.toString()` converts to string for storage/transmission |
+| **Comparison** | `conferenceId.equals(otherId)` checks value equality |
+| **Serialization** | `conferenceId.toString()` converts to string for storage/transmission |
 
 ---
 

@@ -1,6 +1,6 @@
 # SessioFlow
 
-A Call-for-Papers (CfP) platform built with Next.js, designed to help organizers manage events, proposals, and speaker scheduling.
+A Call-for-Papers (CfP) platform built with Next.js, designed to help organizers manage conferences, proposals, and speaker scheduling.
 
 ---
 
@@ -28,9 +28,9 @@ Step 4: More Flows (Reference Existing Entities)
    - **Step 7: Features & Sequencing** defines MVP scope
 
 **2. Flow Documentation** (`docs/product/bounded-contexts/{context}/flows/`)
-   - Start with **Journey 1** (e.g., Setup Event)
+   - Start with **Journey 1** (e.g., Setup Conference)
    - Use `create-flow-documentation` skill to generate flow specs
-   - Flow reveals which entities are needed (Event, CfpConfig, etc.)
+   - Flow reveals which entities are needed (Conference, CfpConfig, etc.)
    - Extract Business Rules (BR-XXX) and Invariants (INV-XXX)
 
 **3. Entity Lifecycle Documentation** (`docs/product/bounded-contexts/{context}/entities/`)
@@ -51,20 +51,20 @@ docs/
 ├── inception/                    # Inception workshop outputs
 │   ├── 1-product-vision-and-boundaries.md
 │   ├── 2-tradeoffs.md
-│   ├── 3-personas.md
+│   ├── 3-personas/
 │   ├── 4-empathy-map.md
 │   ├── 5-brainstorming.md
-│   ├── 6-user-journey-mapping.md  ← START HERE
+│   ├── 6-user-journeys/           ← START HERE
 │   ├── 7-features-and-sequencing.md
 │   └── 8-mvp-canvas-definition.md
 │
 └── product/                      # DDD documentation
     ├── bounded-contexts/
-    │   └── event/
+    │   └── conference/
     │       ├── flows/             ← Create flows first (reveals entities)
-    │       │   └── journey-01-setup-event.md
+    │       │   └── journey-01-setup-conference.md
     │       ├── entities/          ← Then create entities
-    │       │   ├── event.md
+    │       │   ├── conference.md
     │       │   └── cfp-config.md
     │       ├── business-rules/    ← Extracted from flows/entities
     │       │   └── BR-001-*.md
@@ -81,7 +81,7 @@ SessioFlow provides two AI skills to help generate documentation:
 | Skill | Purpose | Triggers When You Say |
 |-------|---------|----------------------|
 | **create-flow-documentation** | Generate user journey flows | "Create flow for Journey 2", "Generate flow specification" |
-| **create-entity-lifecycle** | Generate entity specs | "Create entity lifecycle for Event", "Document the Submission entity" |
+| **create-entity-lifecycle** | Generate entity specs | "Create entity lifecycle for Conference", "Document the Submission entity" |
 
 Both skills are self-contained with all templates and guidelines bundled.
 
@@ -95,13 +95,13 @@ flowchart TB
     end
 
     subgraph FlowDocs["Flow Documentation"]
-        D["Create Flow 1<br/>(Journey 01: Setup Event)"] --> E["Extract BRs & INVs<br/>from flow steps"]
-        E --> F["journey-01-setup-event.md"]
+        D["Create Flow 1<br/>(Journey 01: Setup Conference)"] --> E["Extract BRs & INVs<br/>from flow steps"]
+        E --> F["journey-01-setup-conference.md"]
     end
 
     subgraph EntityDocs["Entity Lifecycle Documentation"]
-        G["Create Entity Lifecycle<br/>(Event, CfpConfig)"] --> H["Extract BRs & INVs<br/>from entity constraints"]
-        H --> I["event.md, cfp-config.md"]
+        G["Create Entity Lifecycle<br/>(Conference, CfpConfig)"] --> H["Extract BRs & INVs<br/>from entity constraints"]
+        H --> I["conference.md, cfp-config.md"]
     end
 
     subgraph BRINV["Business Rules & Invariants"]
@@ -147,21 +147,21 @@ Entity lifecycle documentation is created from **multiple input sources**:
 
 | Document | What It Provides | Example |
 |----------|-----------------|---------|
-| **Flow Documentation** (Primary) | Entity behaviors, state transitions, domain methods | Flow shows `Event.publishCfp()` → Entity needs `publishCfp()` method |
-| **Journey Mapping** (Step 6) | Entity requirements from user needs | "Create event" → Need Event entity |
-| **Features & Sequencing** (Step 7) | Feature scope and entity relationships | "CfP Management" → Need Event + CfpConfig entities |
-| **MVP Canvas** (Step 8) | Entity constraints and priorities | MVP scope limits Event to 5 states |
+| **Flow Documentation** (Primary) | Entity behaviors, state transitions, domain methods | Flow shows `Conference.publishCfp()` → Entity needs `publishCfp()` method |
+| **Journey Mapping** (Step 6) | Entity requirements from user needs | "Create conference" → Need Conference entity |
+| **Features & Sequencing** (Step 7) | Feature scope and entity relationships | "CfP Management" → Need Conference + CfpConfig entities |
+| **MVP Canvas** (Step 8) | Entity constraints and priorities | MVP scope limits Conference to 5 states |
 
 **Extraction Process:**
 
 ```
-Flow: Journey 01 - Setup Event
+Flow: Journey 01 - Setup Conference
     ↓
-Identifies: Event entity with states DRAFT → CFP_OPEN
+Identifies: Conference entity with states DRAFT → CFP_OPEN
     ↓
 Reveals: Methods create(), publishCfp(), closeCfp()
     ↓
-Creates: event.md with state machine and domain methods
+Creates: conference.md with state machine and domain methods
     ↓
 Extracts: INV-001 (state machine), BR-001 (date validation)
 ```
@@ -188,7 +188,7 @@ Extracts: INV-001 (state machine), BR-001 (date validation)
 | Source | What It Extracts | Example |
 |--------|------------------|---------|
 | **Flow Creation** | Rules governing flow steps, validations, edge cases | `BR-001: Cfp Dates Must Be Valid` (from flow validation step) |
-| **Entity Lifecycle** | Rules governing state transitions, domain methods, constraints | `INV-001: Event State Must Follow State Machine` (from entity state machine) |
+| **Entity Lifecycle** | Rules governing state transitions, domain methods, constraints | `INV-001: Conference State Must Follow State Machine` (from entity state machine) |
 
 **Process:**
 
@@ -202,17 +202,17 @@ Entity Lifecycle:
 
 **Output Structure:**
 ```
-docs/product/bounded-contexts/event/
+docs/product/bounded-contexts/conference/
 ├── flows/
-│   └── journey-01-setup-event.md  → Links to: BR-001, INV-002
+│   └── journey-01-setup-conference.md  → Links to: BR-001, INV-002
 ├── entities/
-│   ├── event.md                   → Links to: INV-001, BR-004
+│   ├── conference.md                   → Links to: INV-001, BR-004
 │   └── cfp-config.md              → Links to: INV-002, BR-001
 ├── business-rules/
 │   ├── BR-001-cfp-dates-validation.md
-│   └── BR-004-free-tier-event-limit.md
+│   └── BR-004-free-tier-conference-limit.md
 └── invariants/
-    ├── INV-001-event-state-machine.md
+    ├── INV-001-state-transition-validity.md
     └── INV-002-cfp-date-order.md
 ```
 
@@ -226,144 +226,69 @@ Key decisions that shape the SessioFlow architecture:
 
 | ADR | Status | Description |
 |-----|--------|-------------|
-| [ADR-002](./docs/adr/002-use-supabase-for-backend-and-database.md) | Proposed | Use Supabase for Backend and Database |
-| [ADR-002-Amendment](./docs/adr/002-supabase-backend-amendment-ddd-abstraction.md) | **Amendment** | DDD Abstraction Layer for Vendor Independence |
-| [ADR-002a](./docs/adr/_to-discuss/002a-supabase-vendor-lock-in-alternatives.md) | Under Discussion | Supabase Vendor Lock-in and Self-Hosted Alternatives |
-| [ADR-002b](./docs/adr/_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md) | **Under Discussion** | Authentication Strategy and Vendor Abstraction with DDD |
-| [ADR-004-Amendment](./docs/adr/004-magic-link-authentication-amendment.md) | **Amendment** | Magic Link Auth with DDD Abstraction |
-| [ADR-005-Amendment](./docs/adr/005-supabase-storage-amendment.md) | **Amendment** | Storage with DDD Abstraction |
-| [ADR-009](./docs/adr/009-adopt-domain-driven-design-structure.md) | Proposed | Adopt Domain-Driven Design (DDD) Structure |
-| [ADR-011-Amendment](./docs/adr/011-resend-email-amendment.md) | Optional | Email Abstraction (Deferred) |
+| [ADR-002-00](./docs/adr/002-00-use-supabase-for-backend-and-database.md) | Superseded | Use Supabase for Backend and Database |
+| [ADR-002-01](./docs/adr/002-01-use-supabase-amendment-ddd-abstraction.md) | ✅ **Approved** | **Amendment: DDD Abstraction Layer** |
+| [ADR-002-02](./docs/adr/002-02-use-supabase-analysis-vendor-lock-in.md) | ✅ **Accepted** | Vendor Lock-in Alternatives Analysis |
+| [ADR-002-03](./docs/adr/002-03-use-supabase-analysis-auth-strategy.md) | ✅ **Accepted** | Authentication Strategy with DDD |
+| [ADR-004-00](./docs/adr/004-00-implement-magic-link-authentication.md) | Superseded | Implement Magic Link Authentication |
+| [ADR-004-01](./docs/adr/004-01-implement-magic-link-authentication-amendment-ddd-abstraction.md) | ✅ **Approved** | **Amendment: Auth with DDD Abstraction** |
+| [ADR-005-00](./docs/adr/005-00-use-supabase-storage-for-files.md) | Superseded | Use Supabase Storage for Files |
+| [ADR-005-01](./docs/adr/005-01-use-supabase-storage-amendment-ddd-abstraction.md) | ✅ **Approved** | **Amendment: Storage with DDD Abstraction** |
+| [ADR-009](./docs/adr/009-adopt-domain-driven-design-structure.md) | ✅ **Approved** | Adopt Domain-Driven Design (DDD) Structure |
+| [ADR-011-00](./docs/adr/011-00-use-resend-for-email-communications.md) | Superseded | Use Resend for Email Communications |
+| [ADR-011-01](./docs/adr/011-01-use-resend-email-amendment-optional-abstraction.md) | ✅ **Approved (Optional)** | **Amendment: Optional Email Abstraction** |
 
 **Latest Decisions:**
-- **Authentication Strategy (ADR-002b)**: Implement DDD ports & adapters pattern for vendor-agnostic authentication
-- **Storage Strategy (ADR-005 Amendment)**: Supabase Storage with DDD abstraction (swappable to Cloudflare R2)
+- **Authentication Strategy (ADR-004-01)**: Implement DDD ports & adapters pattern for vendor-agnostic authentication
+- **Storage Strategy (ADR-005-01)**: Supabase Storage with DDD abstraction (swappable to Cloudflare R2)
 - **DDD Architecture (ADR-009)**: Adopt Domain-Driven Design structure for long-term maintainability
-- **Hybrid Approach (ADR-002 Amendment)**: Consider Supabase Database + Auth0 + DDD abstraction for MVP
+- **Hybrid Approach (ADR-002-01)**: Consider Supabase Database + Auth0 + DDD abstraction for MVP
 
 ---
 
 ## 🏗️ Project Structure
 
-SessioFlow follows Domain-Driven Design (DDD) principles with vendor abstraction layers:
+SessioFlow follows Domain-Driven Design (DDD) principles with a **split monorepo** structure that enables independent deployment and backend stack swapping:
 
 ```
-src/
-├── domain/                     # Domain layer (business logic)
-│   ├── auth/                   # Authentication bounded context
-│   │   ├── auth.provider.ts    # AuthProvider interface
-│   │   ├── user.ts             # User entity
-│   │   ├── value-objects/      # UserId, Email, Role
-│   │   └── services/           # Auth rules, validation
-│   ├── storage/                # Storage bounded context
-│   │   ├── storage.provider.ts # StorageProvider interface
-│   │   ├── file.ts             # File entity
-│   │   ├── value-objects/      # FileId, ContentType
-│   │   └── services/           # Storage rules
-│   ├── email/                  # Email bounded context (optional)
-│   │   ├── email.provider.ts   # EmailProvider interface
-│   │   └── value-objects/      # EmailAddress, EmailTemplate
-│   ├── conference/             # Conference bounded context
-│   │   ├── conference.ts       # Conference entity
-│   │   ├── conference.repository.ts
-│   │   ├── value-objects/      # ConferenceId, ConferenceName, CfpDates
-│   │   └── services/           # Conference domain rules
-│   ├── submission/             # Submission bounded context
-│   │   ├── submission.ts       # Submission entity
-│   │   ├── speaker.ts          # Speaker entity
-│   │   ├── submission.repository.ts
-│   │   ├── value-objects/      # SubmissionId, Abstract, Title
-│   │   └── services/           # Submission validation rules
-│   ├── review/                 # Review bounded context
-│   │   ├── review.ts           # Review entity
-│   │   ├── reviewer.ts         # Reviewer entity
-│   │   ├── review.repository.ts
-│   │   ├── value-objects/      # ReviewId, Criteria, Rating
-│   │   └── services/           # Review algorithms, bias detection
-│   └── scheduling/             # Scheduling bounded context
-│       ├── schedule.ts         # Schedule entity
-│       ├── time-slot.ts        # TimeSlot entity
-│       ├── schedule.repository.ts
-│       ├── value-objects/      # SlotId, Conflict, Availability
-│       └── services/           # Scheduling algorithms, conflict detection
+sessioflow/
+├── apps/
+│   ├── backend/                  # Backend service (Node/Go/Kotlin)
+│   │   ├── src/
+│   │   │   ├── modules/
+│   │   │   │   ├── conference/   # Bounded context
+│   │   │   │   │   ├── domain/   # Domain layer (immutable)
+│   │   │   │   │   ├── application/  # Application layer
+│   │   │   │   │   ├── infrastructure/ # Infrastructure layer (swappable)
+│   │   │   │   │   └── interfaces/
+│   │   │   │   │       └── api/    # API contracts (backend-specific)
+│   │   │   └── shared/           # Shared backend utilities
+│   └── frontend/                 # Next.js frontend
+│       └── src/
+│           ├── app/              # Next.js pages
+│           ├── components/       # UI components
+│           └── modules/          # Frontend modules
+│               └── conference/
+│                   └── interfaces/web/  # React components
 │
-├── application/                # Application layer (CQRS pattern)
-│   ├── auth/
-│   │   ├── commands/
-│   │   │   ├── login/
-│   │   │   │   ├── login.command.ts
-│   │   │   │   ├── login.handler.ts
-│   │   │   │   └── login.dto.ts
-│   │   │   └── logout/
-│   │   ├── queries/
-│   │   │   └── get-current-user/
-│   │   │       ├── get-current-user.query.ts
-│   │   │       ├── get-current-user.handler.ts
-│   │   │       └── get-current-user.dto.ts
-│   ├── storage/
-│   │   ├── commands/
-│   │   │   └── upload-file/
-│   │   └── queries/
-│   │       └── get-file-url/
-│   ├── email/
-│   │   └── commands/
-│   │       └── send-email/
-│   ├── conference/
-│   │   ├── commands/
-│   │   │   ├── create-conference/
-│   │   │   │   ├── create-conference.command.ts
-│   │   │   │   ├── create-conference.handler.ts
-│   │   │   │   └── create-conference.dto.ts
-│   │   │   ├── update-conference/
-│   │   │   └── publish-cfp/
-│   │   ├── queries/
-│   │   │   ├── get-conference/
-│   │   │   │   ├── get-conference.query.ts
-│   │   │   │   ├── get-conference.handler.ts
-│   │   │   │   └── get-conference.dto.ts
-│   │   │   └── list-conferences/
-│   │   └── conference-dto.ts                     # Shared DTOs
-│   ├── submission/
-│   │   ├── commands/
-│   │   │   ├── submit-proposal/
-│   │   │   │   ├── submit-proposal.command.ts
-│   │   │   │   ├── submit-proposal.handler.ts
-│   │   │   │   └── submit-proposal.dto.ts
-│   │   └── queries/
-│   │       └── get-submission/
-│   ├── review/
-│   │   ├── commands/
-│   │   │   ├── submit-review/
-│   │   │   └── assign-reviewers/
-│   │   └── queries/
-│   │       └── get-reviews/
-│   └── scheduling/
-│       ├── commands/
-│       │   └── generate-schedule/
-│       └── queries/
-│           └── get-schedule/
-│
-├── infrastructure/             # Infrastructure layer (implementations)
-│   ├── database/               # Repository implementations
-│   │   ├── conference-repository.ts
-│   │   ├── submission-repository.ts
-│   │   └── review-repository.ts
-│   └── external/               # External service adapters
-│       ├── auth/
-│       │   ├── auth0-provider.ts
-│       │   ├── nextauth-provider.ts
-│       │   └── supabase-auth-adapter.ts
-│       ├── storage/
-│       │   ├── supabase-storage-adapter.ts
-│       │   ├── cloudflare-r2-adapter.ts
-│       │   └── minio-adapter.ts
-│       └── email/
-│           └── resend-email-adapter.ts
-│
-└── interfaces/                 # Interface layer (entry points)
-    ├── web/                    # Next.js pages and components
-    └── api/                    # API endpoints
+├── packages/                     # Shared packages (utils, etc.)
+│   └── utils/                    # Frontend & backend utilities
+└── docs/                         # Documentation
 ```
+
+**Monorepo Structure Benefits:**
+- ✅ **Backend stack independence** - Swap Node → Go/Kotlin without touching frontend
+- ✅ **Independent deployment** - Backend and frontend can be deployed separately
+- ✅ **DDD purity** - Domain/application layers are encapsulated in backend
+- ✅ **Clear ownership** - Frontend and backend teams work independently
+- ✅ **Reduced migration cost** - 8-14 hours for backend swap (vs 52-336 hours)
+
+**Module-Based Architecture Benefits:**
+- ✅ **High cohesion** - All code for a feature is together
+- ✅ **Independent modules** - Change one feature without affecting others
+- ✅ **Easier navigation** - Find all conference code in `backend/modules/conference/`
+- ✅ **Better scaling** - Add features without touching existing code
+- ✅ **Clear boundaries** - No accidental dependencies between features
 
 ---
 
@@ -530,6 +455,31 @@ R2_BUCKET_NAME=your-bucket
 RESEND_API_KEY=re_your-api-key
 ```
 
+### Database Setup
+
+The project uses Drizzle Kit for database migrations. Local PostgreSQL is managed via Docker Compose.
+
+```bash
+# Start local PostgreSQL (Docker)
+docker compose up -d
+
+# Generate migration from schema (after schema changes)
+npm run db:generate
+
+# Apply migrations to database
+npm run db:migrate
+
+# Push schema directly (no migration file)
+npm run db:push
+
+# Open Drizzle Studio (database GUI)
+npm run db:studio
+```
+
+**Migration files are stored in:** `drizzle/`
+
+**Schema is defined in:** `src/modules/conference/infrastructure/database/drizzle-schema.ts`
+
 ---
 
 ## 📖 Development
@@ -581,7 +531,7 @@ npm run start
 
 ### MVP Features (Wave 1)
 
-- ✅ Event creation and management
+- ✅ Conference creation and management
 - ✅ Call-for-Papers (CFP) configuration
 - ✅ Proposal submission by speakers
 - ✅ Speaker profiles with profile photos
@@ -674,10 +624,9 @@ MIT License - see [LICENSE](LICENSE) file for details
 ### Architecture Documentation
 - [ADR Documentation](./docs/adr/)
 - [DDD Implementation Guide](./docs/adr/009-adopt-domain-driven-design-structure.md)
-- [Authentication Strategy](./docs/adr/_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md)
-- [Auth Implementation (Amendment)](./docs/adr/004-magic-link-authentication-amendment.md)
-- [Storage Strategy (Amendment)](./docs/adr/005-supabase-storage-amendment.md)
-- [Supabase Integration](./docs/adr/002-use-supabase-for-backend-and-database.md)
+- [Authentication Strategy (ADR-004-01)](./docs/adr/004-01-implement-magic-link-authentication-amendment-ddd-abstraction.md)
+- [Storage Strategy (ADR-005-01)](./docs/adr/005-01-use-supabase-storage-amendment-ddd-abstraction.md)
+- [Supabase Integration (ADR-002-00)](./docs/adr/002-00-use-supabase-for-backend-and-database.md)
 
 ### External References
 - [Pretalx (Reference CfP Platform)](https://pretalx.com/)
