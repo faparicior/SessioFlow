@@ -9,7 +9,7 @@
  */
 import {describe, it, expect} from 'vitest';
 import {project, modules, classes, slices, functions, call, matching, defineCondition, getElementFile} from '@nielspeter/ts-archunit';
-import {existsSync} from 'fs';
+import {existsSync, readFileSync} from 'fs';
 import {join, dirname} from 'path';
 
 // For monorepo structure, use root tsconfig to include packages/modules
@@ -165,6 +165,69 @@ function notContainDomainProperties() {
           };
         }
       }
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
+/**
+ * Creates a condition that checks that each controller imports and instantiates its co-located DTO.
+ */
+function controllerInstantiatesDto() {
+  return defineCondition('controllerInstantiatesDto', (matchedFns: any[]) => {
+    return matchedFns.map((fn: any) => {
+      const relPath = getElementFile(fn);
+      const sourceFile = fn.getSourceFile();
+
+      // Get imports referencing .command or .query
+      const imports = sourceFile.getImportDeclarations();
+      const dtoImport = imports.find(imp => {
+        const moduleSpecifier = imp.getModuleSpecifierValue();
+        return moduleSpecifier.includes('.command') || moduleSpecifier.includes('.query');
+      });
+
+      if (!dtoImport) {
+        return null; // Not a DTO-based controller, skip
+      }
+
+      const namedImports = dtoImport.getNamedImports();
+      const dtoClassSpecifier = namedImports.find(spec => {
+        const name = spec.getName();
+        return name.endsWith('Command') || name.endsWith('Query');
+      });
+
+      if (!dtoClassSpecifier) {
+        return {
+          rule: 'controller must import its co-located DTO',
+          element: fn.getName()!,
+          file: relPath,
+          line: 0,
+          message: `Controller "${fn.getName()}" imports a .command or .query file but no named class import ending with Command/Query was found.`,
+        };
+      }
+
+      const dtoClassName = dtoClassSpecifier.getName();
+
+      // Check if the function body contains a NewExpression for this class name
+      const descendants = fn.getNode().getDescendants();
+      const hasInstantiation = descendants.some((node: any) => {
+        if (node.getKindName() === 'NewExpression') {
+          return node.getExpression().getText() === dtoClassName;
+        }
+        return false;
+      });
+
+      if (!hasInstantiation) {
+        return {
+          rule: 'controller must instantiate its co-located DTO',
+          element: fn.getName()!,
+          file: relPath,
+          line: fn.getStartLineNumber() ?? 0,
+          message: `Controller "${fn.getName()}" imports "${dtoClassName}" but never instantiates it with "new ${dtoClassName}(…)". ` +
+                   `Passing plain objects bypasses the DTO boundary contract.`,
+        };
+      }
+
       return null;
     }).filter(Boolean) as any;
   });
@@ -551,6 +614,32 @@ describe('DDD Architecture', () => {
         .should()
         .satisfy(hasInputType())
         .because('queries must separate the primitive Input type from the Query wrapper for clarity')
+        .check();
+    });
+  });
+
+  describe('Controller conventions', () => {
+    it('controllers must import and instantiate their co-located command/query DTO', () => {
+      functions(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/interfaces/**')
+        .and()
+        .haveNameMatching(/controller$/i)
+        .should()
+        .satisfy(controllerInstantiatesDto())
+        .because('controllers must instantiate command/query DTOs to enforce the primitive-only boundary contract')
+        .check();
+    });
+
+    it('controllers must not import from domain directly', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/interfaces/**')
+        .and()
+        .haveNameMatching(/\.controller\.ts$/)
+        .should()
+        .notImportFrom('**/packages/modules/**/domain/**')
+        .because('controllers interact with handlers, never with domain objects directly')
         .check();
     });
   });
