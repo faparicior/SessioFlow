@@ -337,6 +337,48 @@
 
 ---
 
+## Traceability: ADR-015 - Adopt CQRS Pattern for Application Layer
+
+**Inception Sources**:
+- **Product Goals**: 
+  - Goal 1: "Reduce session organization time by 50% compared to manual tools"
+  - Goal 2: "Achieve 4/5 average ease-of-use rating from first 5 conferences"
+- **Constraints**: 
+  - "IS: Simple to use" (Usability ranked #1)
+  - "DOES: Manage the conference lifecycle" (Complex business logic)
+  - "DOES: Facilitate the Call for Papers (CfP) process" (Multi-step workflows)
+  - "DOES: Generate and publish the conference schedule" (Complex coordination)
+- **Personas**: 
+  - Fernando: "Automated data validation to catch errors early with results in a report"
+  - Fernando: "Reduce administrative overhead by 70% so I can focus on strategy"
+  - Andrea: "Have a clear view of the schedule and steps in the process"
+- **Pain Points**: 
+  - Fernando: "Lot of manual work to manage the event with different sources of data"
+  - Fernando: "Too repetitive work to organize the call for papers"
+  - Fernando: "Hard to find good session schedule"
+- **Features**: 
+  - Review & Score Sessions - Must-have (requires complex validation)
+  - Assign Schedule Slots - Must-have (requires conflict detection)
+  - Collect Proposals (CfP) - Must-have (requires validation and state changes)
+  - Expose Public API - Should-have (requires stable API contracts)
+- **User Journey 3**: 
+  - "Fernando reviews submissions: Review & Score Sessions: Command handlers for status changes"
+  - "Fernando assigns schedule slots: Assign Schedule Slots: Conflict detection queries"
+- **User Journey 4**: 
+  - "Fernando publishes results: Publish Schedule: Command with side effects (emails)"
+- **MVP Canvas**: 
+  - Risks: "Users might expect a full admin panel immediately"
+  - Mitigation: "Clear separation of concerns for maintainability"
+  - Technical Enablers: "Database Schema for Conferences, Proposals, and Profiles"
+
+**Decision Alignment**:
+- This decision directly supports: Fernando's need for automated workflows and reduced administrative overhead
+- This decision mitigates: Risk of complex business logic becoming unmanageable as features grow
+- This decision enables: Independent optimization of read paths (dashboard views) and write paths (status changes)
+- This decision supports: API contract stability through dedicated Response DTOs
+
+---
+
 ## Traceability: ADR-014 - Use shadcn/ui for UI Components
 
 **Inception Sources:**
@@ -386,13 +428,14 @@
 | 012 | Implement CI/CD with GitHub Actions | MVP Canvas (Cost Constraint) | Trade-offs, Personas |
 | 013 | Adopt TypeScript with Strict Mode | AGENTS.md (TypeScript Guidelines) | MVP Canvas (Validation) |
 | 014 | Use shadcn/ui for UI Components | Product Goal 2 (4/5 Ease-of-Use) | Trade-offs, Personas, MVP Canvas |
+| 015 | Adopt CQRS Pattern for Application Layer | Product Goals (1, 2), MVP Canvas (Complex Features) | User Journeys (3, 4), Features |
 
 ---
 
 ## Coverage Analysis
 
 ### Product Goals Coverage
-- **Goal 1** (Reduce organization time by 50%): 8 ADRs directly support
+- **Goal 1** (Reduce organization time by 50%): 9 ADRs directly support
 - **Goal 2** (4/5 ease-of-use rating): 6 ADRs directly support
 - **Goal 3** ($0/month infrastructure): 7 ADRs directly support
 
@@ -412,7 +455,7 @@
 - **Data Quality Risk**: 3 ADRs provide mitigation (Zod, TypeScript, Testing)
 - **Usability Risk**: 5 ADRs provide mitigation (Next.js, Tailwind, Magic Link)
 - **Cost Risk**: 7 ADRs provide mitigation (Supabase, Docker, GitHub Actions)
-- **Complexity Risk**: 6 ADRs provide mitigation (Feature Structure, Docker Compose)
+- **Complexity Risk**: 7 ADRs provide mitigation (Feature Structure, Docker Compose, DDD, CQRS)
 
 ---
 
