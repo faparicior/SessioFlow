@@ -4,6 +4,7 @@ import { type ConferenceSlug } from '@sessioflow/conference/domain/value-objects
 import { type ConferenceStatus } from '@sessioflow/conference/domain/value-objects/conference-status';
 import { type ConferenceId } from '@sessioflow/conference/domain/value-objects/conference-id';
 import { GetConferenceHandler } from '@sessioflow/conference/application/queries/get-conference/get-conference.handler';
+import { GetConferenceQuery } from '@sessioflow/conference/application/queries/get-conference/get-conference.query';
 import { ConferenceNotFoundError } from '@sessioflow/conference/domain/exceptions/conference-not-found-error';
 import { futureDate } from '../../../../__helpers__/date'
 
@@ -71,7 +72,9 @@ describe('GetConference Query', () => {
     conference.publishCfp();
     repo.add(conference);
 
-    const result = await handler.execute({ id: conference.id.toString() });
+    const result = await handler.execute(
+      new GetConferenceQuery({ id: conference.id.toString() })
+    );
 
     expect(result.id).toBe(conference.id.value);
     expect(result.name).toBe('Tech Conference 2026');
@@ -81,7 +84,7 @@ describe('GetConference Query', () => {
 
   it('throws error when conference not found', async () => {
     await expect(
-      handler.execute({ id: '12345678-1234-4123-8123-123456789012' })
+      handler.execute(new GetConferenceQuery({ id: '12345678-1234-4123-8123-123456789012' }))
     ).rejects.toThrow(ConferenceNotFoundError);
   });
 
@@ -96,7 +99,9 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const result = await handler.execute({ id: conference.id.toString() });
+    const result = await handler.execute(
+      new GetConferenceQuery({ id: conference.id.toString() })
+    );
 
     expect(result.maxSubmissions).toBe(100);
     expect(result.requiresApproval).toBe(false);
@@ -117,7 +122,9 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const result = await handler.execute({ id: conference.id.toString() });
+    const result = await handler.execute(
+      new GetConferenceQuery({ id: conference.id.toString() })
+    );
 
     expect(result.status).toBe('DRAFT');
   });
@@ -131,7 +138,9 @@ describe('GetConference Query', () => {
     });
     repo.add(conference);
 
-    const result = await handler.execute({ id: conference.id.toString() });
+    const result = await handler.execute(
+      new GetConferenceQuery({ id: conference.id.toString() })
+    );
 
     expect(result.createdAt).toBe(conference.createdAt.toISOString());
     expect(result.updatedAt).toBe(conference.updatedAt.toISOString());

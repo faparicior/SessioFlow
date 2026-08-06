@@ -7,13 +7,15 @@
  * @see docs/adr/009-adopt-domain-driven-design-structure.md
  * @see docs/adr/019-use-ts-archunit-for-architecture-testing.md
  */
-import {describe, it} from 'vitest';
+import {describe, it, expect} from 'vitest';
 import {project, modules, classes, slices, functions, call, matching, defineCondition, getElementFile} from '@nielspeter/ts-archunit';
 import {existsSync} from 'fs';
 import {join, dirname} from 'path';
 
 // For monorepo structure, use root tsconfig to include packages/modules
 const p = project('tsconfig.json');
+// Dynamically add source files under packages/modules/*/src to ensure unimported/ghost DTOs are loaded
+p._project.addSourceFilesAtPaths('packages/modules/*/src/**/*.ts');
 
 /**
  * Creates a condition that checks each matched handler class has a co-located file
@@ -42,6 +44,126 @@ function coLocatedFile(suffix: string) {
                    `Convention: each CQRS handler folder is self-contained — ` +
                    `the command/query, handler, and response all live at the folder root.`,
         };
+      }
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
+/**
+ * Creates a condition that checks the handler actually imports and references
+ * the co-located class (command or query), not just the file existing.
+ *
+ * Catches the pattern where a .query.ts or .command.ts class is defined
+ * but the handler's execute() takes a plain object instead of using it.
+ *
+ * Example bug this catches:
+ *   // get-conference.query.ts  → export class GetConferenceQuery {}
+ *   // get-conference.handler.ts → execute(params: { id: string })  ← never imports GetConferenceQuery
+ */
+function handlerMustReferenceCoLocatedDto(suffix: string) {
+  return defineCondition('handlerMustReferenceCoLocatedDto', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const fileName = relPath.split('/').at(-1)!;
+      const stem     = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
+
+      // Convert kebab-case stem to PascalCase for matching class names.
+      // e.g. "create-conference" → "CreateConference"
+      const pascalStem = stem
+        .split('-')
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join('');
+
+      // Map suffix to PascalCase suffix used in class names.
+      // ".command" → "Command",  ".query" → "Query"
+      const suffixMap: Record<string, string> = { '.command': 'Command', '.query': 'Query' };
+      const suffixClass = suffixMap[suffix] ?? suffix.replace('.', '').replace(/^./, (c) => c.toUpperCase());
+
+      // Match the full exported class name: stem + suffix
+      // e.g. "CreateConferenceCommand" or "GetConferenceQuery"
+      const className = pascalStem + suffixClass;
+
+      const executeMethod = cls.getMethod('execute');
+      if (!executeMethod) {
+        return null;
+      }
+
+      const params = executeMethod.getParameters();
+      const hasMatchingParam = params.some((param: any) => {
+        const typeText = param.getType().getText();
+        return typeText.includes(className);
+      });
+
+      if (!hasMatchingParam) {
+        return {
+          rule: `class must use its co-located ${suffix} DTO in execute()`,
+          element: cls.getName()!,
+          file: relPath,
+          line: executeMethod.getStartLineNumber() ?? 0,
+          message: `Handler "${cls.getName()}" execute() method parameters do not use type "${className}". ` +
+                   `The DTO should be referenced as a parameter type (e.g. execute(command: ${className})).`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
+/**
+ * Creates a condition that checks the Command/Query DTO has a co-located Input type alias.
+ */
+function hasInputType() {
+  return defineCondition('hasInputType', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const stem = relPath.split('/').at(-1)!.replace(/\.ts$/, '').replace(/\.(command|query)$/, '');
+      const fileSource = cls.getSourceFile().getFullText();
+
+      // Check if the file exports an Input type
+      const hasInputType = /export\s+type\s+\w*Input/.test(fileSource);
+
+      if (!hasInputType) {
+        return {
+          rule: `class must have a co-located Input type alias`,
+          element: stem,
+          file: relPath,
+          line: 0,
+          message: `Class "${stem}" is missing a primitive Input type. ` +
+                   `Convention: export an Input type (e.g. "${stem}Input") and have ` +
+                   `the class accept it (e.g. "constructor(readonly input: ${stem}Input)").`,
+        };
+      }
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
+/**
+ * Creates a condition that checks the DTO class properties do not reference domain types.
+ */
+function notContainDomainProperties() {
+  return defineCondition('notContainDomainProperties', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const props = cls.getType().getProperties();
+      const domainPattern = /ConferenceId|ConferenceSlug|ConferenceName|ConferenceStatus|ConferenceCreatedEvent|CfpConfig/;
+
+      for (const prop of props) {
+        const propType = prop.getTypeAtLocation(cls);
+        const typeText = propType.getNonNullableType().getText();
+        
+        if (domainPattern.test(typeText)) {
+          return {
+            rule: 'class must not contain domain type properties',
+            element: cls.getName()!,
+            file: relPath,
+            line: 0,
+            message: `Class "${cls.getName()}" has property "${prop.getName()}" of domain type "${typeText}". ` +
+                     `Query DTOs must only contain primitive types — never domain entities or value objects.`,
+          };
+        }
       }
       return null;
     }).filter(Boolean) as any;
@@ -297,6 +419,138 @@ describe('DDD Architecture', () => {
         .should()
         .satisfy(coLocatedFile('.response'))
         .because('query folders must be self-contained — the response DTO lives alongside the handler')
+        .check();
+    });
+
+    // ───────────────────────────────────────────────────────────────────
+    // Co-located DTO usage — prevents silent code rot
+    // ───────────────────────────────────────────────────────────────────
+    //
+    // It's not enough for a .query.ts or .command.ts file to exist.
+    // The handler must actually import and reference it in execute().
+    // This catches the "ghost DTO" anti-pattern:
+    //
+    //   queries/get-conference/
+    //     ├── get-conference.query.ts       ← defined but never used
+    //     ├── get-conference.handler.ts     ← execute(params: { id: string })
+    //     └── get-conference.response.ts
+    //
+    // The query/command file exists (passes coLocatedFile check)
+    // but the handler never imports or references it.
+
+    it('command handlers must import and use their co-located command DTO', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/application/**/commands/**')
+        .and()
+        .haveNameMatching(/Handler$/)
+        .should()
+        .satisfy(handlerMustReferenceCoLocatedDto('.command'))
+        .because('handlers must use their co-located command DTO as the execute() parameter, not plain objects')
+        .check();
+    });
+
+    it('query handlers must import and use their co-located query DTO', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/application/**/queries/**')
+        .and()
+        .haveNameMatching(/Handler$/)
+        .should()
+        .satisfy(handlerMustReferenceCoLocatedDto('.query'))
+        .because('handlers must use their co-located query DTO as the execute() parameter, not plain objects')
+        .check();
+    });
+
+    // ───────────────────────────────────────────────────────────────────
+    // CQRS DTO conventions — primitives only, no domain leaks
+    // ───────────────────────────────────────────────────────────────────
+    //
+    // Commands and queries are boundary DTOs. They are plain data
+    // transfer objects that carry request data from interfaces through
+    // the application layer to handlers.
+    //
+    // They must NEVER import from the domain layer because doing so
+    // creates unwanted dependencies and makes the boundary fuzzy.
+    // The handler converts primitives to value objects.
+    //
+    // Example violation this catches:
+    //   // get-conference.query.ts
+    //   import { ConferenceId } from '../domain/...';  ← BAD
+    //   class GetConferenceQuery {
+    //     constructor(readonly id: ConferenceId) {}     ← BAD
+    //   }
+    //
+    // Correct:
+    //   // get-conference.query.ts
+    //   export type GetConferenceInput = { id: string; };
+    //   export class GetConferenceQuery {
+    //     constructor(readonly input: GetConferenceInput) {}
+    //   }
+    //   // Handler does: ConferenceId.fromString(query.input.id)
+
+    it('query DTOs must not import from domain', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/application/queries/**')
+        .and()
+        .haveNameMatching(/\.query\.ts$/)
+        .should()
+        .notImportFrom('**/packages/modules/**/domain/**')
+        .check();
+    });
+
+    it('query DTOs must not contain domain type properties', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/application/queries/**')
+        .and()
+        .haveNameMatching(/Query$/)
+        .should()
+        .satisfy(notContainDomainProperties())
+        .because('query DTOs must only contain primitive types — never domain entities or value objects')
+        .check();
+    });
+
+    it('command DTOs must not import from domain', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/application/commands/**')
+        .and()
+        .haveNameMatching(/\.command\.ts$/)
+        .should()
+        .notImportFrom('**/packages/modules/**/domain/**')
+        .because('CQRS command DTOs are boundary data carriers — they must only contain primitives, never domain types')
+        .check();
+    });
+
+    it('command DTOs must have an Input type alias', () => {
+      // The command pattern requires a separate Input type (primitive-only)
+      // that the command class wraps. This keeps the command class as a
+      // simple container and allows the handler to convert primitives to VOs.
+      //
+      // Pattern: CreateConferenceInput + CreateConferenceCommand
+
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/application/commands/**')
+        .and()
+        .haveNameMatching(/Command$/)
+        .should()
+        .satisfy(hasInputType())
+        .because('commands must separate the primitive Input type from the Command wrapper for clarity')
+        .check();
+    });
+
+    it('query DTOs must have an Input type alias', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/application/queries/**')
+        .and()
+        .haveNameMatching(/Query$/)
+        .should()
+        .satisfy(hasInputType())
+        .because('queries must separate the primitive Input type from the Query wrapper for clarity')
         .check();
     });
   });
