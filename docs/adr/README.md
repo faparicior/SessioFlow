@@ -21,8 +21,10 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [005-01](005-01-use-supabase-storage-amendment-ddd-abstraction.md) | **Amendment: Storage with DDD Abstraction** | ✅ **Approved** | 2026-06-11 |
 | [006](006-use-restful-api-design.md) | Use RESTful API Design | ✅ Approved | 2026-06-05 |
 | [007](007-use-zod-for-validation.md) | Use Zod for Validation | ✅ Approved | 2026-06-05 |
+| [007-01](007-01-use-zod-validation-amendment-domain-purity.md) | **Amendment: Validation & Domain Purity** | ✅ **Approved** | 2026-07-18 |
 | [008](008-implement-comprehensive-testing-strategy.md) | Implement Comprehensive Testing Strategy | ✅ Approved | 2026-06-05 |
 | [009](009-adopt-domain-driven-design-structure.md) | Adopt Domain-Driven Design Structure | ✅ **Approved** | 2026-06-06 |
+| [009-01](009-01-monorepo-backend-frontend-separation.md) | Monorepo with Backend/Frontend Separation | ❌ **Superseded** | 2026-06-25 |
 | [010](010-use-tailwind-css-for-styling.md) | Use Tailwind CSS for Styling | ✅ Approved | 2026-06-05 |
 | [011-00](011-00-use-resend-for-email-communications.md) | Use Resend for Email Communications | ⚠️ Superseded | 2026-06-05 |
 | [011-01](011-01-use-resend-email-amendment-optional-abstraction.md) | **Amendment: Optional Email Abstraction** | ✅ **Approved (Optional)** | 2026-06-11 |
@@ -30,6 +32,15 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 | [013](013-adopt-typescript-with-strict-mode.md) | Adopt TypeScript with Strict Mode | ✅ Approved | 2026-06-05 |
 | [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | ✅ Approved | 2026-06-05 |
 | [015](015-adopt-cqrs-pattern.md) | Adopt CQRS Pattern for Application Layer | ✅ **Approved** | 2026-06-29 |
+| [016](016-dependency-injection-strategy-for-nextjs.md) | Dependency Injection Strategy for Next.js | ✅ Approved | 2026-07-01 |
+| [016-01](016-01-controller-factory-di-amendment.md) | **Amendment: Controller Factory DI Pattern** | ✅ **Approved** | 2026-07-22 |
+| [017](017-use-drizzle-orm-with-ddd-transactions.md) | Use Drizzle ORM with Transaction Support at Application Layer | ✅ Approved | 2026-07-01 |
+| [018](018-implement-observability-for-debugging.md) | Implement Observability for AI-Assisted Debugging | ✅ Approved | 2026-07-04 |
+| [019](019-use-ts-archunit-for-architecture-testing.md) | Use ts-archunit for Architecture Testing | ✅ Approved | 2026-07-10 |
+| [020](020-use-api-schema-package-pattern-for-contract-definition.md) | Use API Schema Package Pattern for Contract Definition | ✅ **Accepted** | 2026-07-25 |
+| [021](021-adopt-domain-module-structure-convention.md) | Adopt Domain Module Structure Convention | ✅ **Accepted** | 2026-07-25 |
+| [022](022-accept-frontend-backend-type-decoupling-strategy.md) | Accept Frontend-Backend Type Decoupling Strategy | ✅ **Accepted** | 2026-07-25 |
+| [023](023-comprehensive-monorepo-structure-update.md) | Comprehensive Monorepo Structure Update | ✅ **Accepted** | 2026-07-25 |
 
 ---
 
@@ -40,6 +51,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 - **002** - Backend/Database: Supabase
 - **002-Amendment** - **Supabase with DDD Abstraction (Updated)**
 - **007** - Validation: Zod
+- **007-Amendment** - **Zod Validation with Domain Purity (Updated)**
 - **009** - **Architecture: Domain-Driven Design**
 - **010** - Styling: Tailwind CSS
 - **013** - Type System: TypeScript Strict Mode
@@ -65,14 +77,28 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 ### 🏗️ Infrastructure & Deployment
 - **003** - Containerization: Docker Compose
 - **012** - CI/CD: GitHub Actions
+- **023** - **Monorepo with Backend/Frontend Separation (Superseded)**
 
 ### 🧪 Development Practices
 - **008** - Testing Strategy: Comprehensive Testing
 - **009** - Code Organization: Domain-Driven Design
+- **021** - **Domain Module Structure Convention**
+- **022** - **Frontend-Backend Type Decoupling**
 - **014** - UI Components: shadcn-ui
 
 ### 🔄 Application Architecture
 - **015** - **CQRS Pattern for Application Layer**
+- **016** - **Dependency Injection Strategy**
+- **020** - **API Schema Package Pattern**
+
+### 💾 Data Access & Persistence
+- **017** - **ORM Selection: Drizzle with DDD Transactions**
+
+### 🔍 Observability & Debugging
+- **018** - **Observability for AI-Assisted Debugging**
+
+### 🛡️ Development Practices & Quality
+- **019** - **Architecture Testing: ts-archunit**
 
 ---
 
@@ -260,15 +286,17 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 22 (including amendments and analyses) |
-| **Proposed** | 10 |
-| **Accepted** | 7 |
-| **Amendments** | 4 |
+| **Total ADRs** | 32 (including amendments and analyses) |
+| **Approved** | 21 |
+| **Superseded** | 4 |
+| **Accepted** | 2 |
+| **Completed** | 1 |
+| **Proposed** | 4 |
 | **Optional** | 1 |
-| **Date Range** | 2026-06-05 to 2026-06-29 |
-| **Most Active Category** | Core Technology Stack (6 decisions) |
+| **Date Range** | 2026-06-05 to 2026-07-25 |
+| **Most Active Category** | Core Technology Stack (7 decisions) |
 
 ---
 
-**Last Updated**: 2026-06-29
+**Last Updated**: 2026-07-25
 **Maintained By**: Technical Team

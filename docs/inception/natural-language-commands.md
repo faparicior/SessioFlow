@@ -156,7 +156,7 @@ For reference, here's how natural language maps to CLI commands:
 → pi skill inception-workshop --mode tradeoff-generator
 
 "Validate the user journey"
-→ pi skill inception-workshop --mode validate --step 6 --file docs/inception/6-user-journey.md
+→ pi skill inception-workshop --mode validate --step 6 --file docs/inception/6-user-journeys/
 
 "Generate all steps"
 → pi skill inception-workshop --mode batch --context "Your product description"

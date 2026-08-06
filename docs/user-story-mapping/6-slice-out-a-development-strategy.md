@@ -37,10 +37,10 @@ Focus on the highest technical risk: **The Deployment Pipeline**. We build the "
 
 Fill in the details. Enable the actual "Product" value: reliable data collection and management.
 
-- **Goal:** The application is fully functional for a real Event. Real data, real auth, real images.
+- **Goal:** The application is fully functional for a real Conference. Real data, real auth, real images.
 - **Key Stories:**
   - **Features: Real Auth:** Implement Magic Link emails (Resend/SMTP). *Rationale: Tech Comfort TT/E.*
-  - **Features: Full Event Definition:** Add dates, description, "Publish" status toggle.
+  - **Features: Full Conference Definition:** Add dates, description, "Publish" status toggle.
   - **Features: Full Speaker Profile:** Implement Photo Upload & Storage handling (Local/S3). *Rationale: Tech Comfort TT.*
   - **Features: Full Proposal Form:** Add Abstract, Bio, Requirements fields.
   - **Features: Validation Logic:** Ensure required fields and data constraints are enforced.

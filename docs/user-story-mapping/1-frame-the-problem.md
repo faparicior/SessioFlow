@@ -6,14 +6,14 @@ Objective: Define the Who and the Why to ensure the discovery team is aligned on
 
 | Dimension | Guiding Questions | Team Input |
 | :--- | :--- | :--- |
-| **Core Concept** | What is the big idea? Provide a concise summary.<br>*(Optional format: For [target], who [need], [product] is [category] that [benefit].)* | For **Event Organizers** (Fernando) who need to **start their event journey**, **SessioFlow** is a **Call for Papers (CfP) launch tool** that **enables the setup and collection of session proposals**. Unlike generic form builders, it is a **lightweight, self-hostable alternative focused purely on content**. |
-| **Alignment** | How does this investment align with the current business strategy? | It addresses the **"Urgency of Starting"** strategy defined in the MVP Canvas. By enabling instant CfP creation, we acquire users early in their event lifecycle, buying time to build complex features while proposals are being collected. |
+| **Core Concept** | What is the big idea? Provide a concise summary.<br>*(Optional format: For [target], who [need], [product] is [category] that [benefit].)* | For **Conference Organizers** (Fernando) who need to **start their conference journey**, **SessioFlow** is a **Call for Papers (CfP) launch tool** that **enables the setup and collection of session proposals**. Unlike generic form builders, it is a **lightweight, self-hostable alternative focused purely on content**. |
+| **Alignment** | How does this investment align with the current business strategy? | It addresses the **"Urgency of Starting"** strategy defined in the MVP Canvas. By enabling instant CfP creation, we acquire users early in their conference lifecycle, buying time to build complex features while proposals are being collected. |
 
 ## 2. Target Audience (The Actors)
 
 | Dimension | Guiding Questions | Team Input |
 | :--- | :--- | :--- |
-| **Customers** | Which companies or groups would buy or adopt this product? | **Non-profit organizations** and community tech event organizers who need sophisticated tools but have zero budget. |
+| **Customers** | Which companies or groups would buy or adopt this product? | **Non-profit organizations** and community tech conference organizers who need sophisticated tools but have zero budget. |
 | **User Roles** | List the different types of people who will interact with the system. | 1. **Organizer** (Admin/Setup)<br>2. **Speaker** (Submitter)<br>3. **Reviewer** (Future)<br>4. **Attendee** (Future) |
 | **Primary Actor** | If you could only thrill one specific type of user to ensure success, who would it be? | **Fernando**, the Community Organizer. He feels the pain of "Spreadsheet Juggling" and is the decision-maker for adopting the tool. |
 
@@ -21,9 +21,9 @@ Objective: Define the Who and the Why to ensure the discovery team is aligned on
 
 | Dimension | Guiding Questions | Team Input |
 | :--- | :--- | :--- |
-| **User Problems** | What specific frustrations, "pains", or challenges do users face right now? | 1. **Repetitive Work:** Setting up forms for every event is annoying.<br>2. **Data Fragmentation:** Managing sessions across email, Excel, and forms leads to errors.<br>3. **Complexity:** Existing specialist tools (e.g., Sessionize) are too complex or expensive for small non-profits. |
+| **User Problems** | What specific frustrations, "pains", or challenges do users face right now? | 1. **Repetitive Work:** Setting up forms for every conference is annoying.<br>2. **Data Fragmentation:** Managing sessions across email, Excel, and forms leads to errors.<br>3. **Complexity:** Existing specialist tools (e.g., Sessionize) are too complex or expensive for small non-profits. |
 | **Solutions Today** | How are users currently solving these problems (e.g. manual workarounds or competitors)? | **Manual Workarounds:** Google Forms + Spreadsheets sets (prone to copy-paste errors).<br>**Competitors:** Sessionize (Great but paid/hosted), Pretalx (Good but complex to host). |
-| **The Kicker** | What is the ultimate factual consequence of these pains? | Because existing professional tools are inaccessible (cost/complexity), organizers revert to manual methods, finding themselves "spending half their day fighting with data" instead of managing the event. |
+| **The Kicker** | What is the ultimate factual consequence of these pains? | Because existing professional tools are inaccessible (cost/complexity), organizers revert to manual methods, finding themselves "spending half their day fighting with data" instead of managing the conference. |
 
 ## 4. Desired Outcomes (The Future)
 

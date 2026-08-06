@@ -133,5 +133,5 @@ Resend combined with Supabase Auth provides the optimal balance of features, cos
 
 * [Resend Documentation](https://resend.com/docs)
 * [Feature: Automate Speaker Communications](../inception/5-brainstorming.md#core-features)
-* [User Journey 2: Email Confirmation](../inception/6-user-journey-mapping.md#journey-2-submitting-a-talk-andrea)
-* [User Journey 4: Acceptance Email](../inception/6-user-journey-mapping.md#journey-4-acceptance--logistics)
+* [User Journey 2: Email Confirmation](../inception/6-user-journeys/journey-02-submitting-talk.md)
+* [User Journey 4: Acceptance Email](../inception/6-user-journeys/journey-04-acceptance-and-logistics.md)

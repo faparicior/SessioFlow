@@ -21,6 +21,13 @@ npm run lint             # ESLint
 npm run lint:fix         # Auto-fix linting issues
 npm run format           # Prettier formatting
 
+# Database
+npm run db:generate      # Generate migration from schema
+npm run db:migrate       # Apply migrations to database
+npm run db:push          # Push schema directly (no migration file)
+npm run db:studio        # Open Drizzle Studio (database GUI)
+docker compose up -d     # Start local PostgreSQL (Docker)
+
 # Build
 npm run build            # Build Next.js app
 npm run start            # Start production server
@@ -55,26 +62,26 @@ npm run start            # Start production server
 ## 📁 Project Structure
 
 ```
-src/
-├── app/                    # Next.js routing only
-├── domain/                 # Business logic (vendor-agnostic)
-│   └── conference/
-│       ├── conference.ts  # Conference entity
-│       ├── submission.ts  # Submission entity
-│       ├── value-objects/ # ConferenceId, ConferenceName, CfpDates
-│       ├── services/      # Domain services
-│       └── repositories/  # Repository interfaces
-├── application/            # Use cases
-│   └── conference/             # CreateConference, SubmitProposal
-├── infrastructure/         # External implementations
-│   ├── external/          # Auth0, Resend, Cloudflare R2
-│   └── database/          # Supabase repositories
-└── interfaces/            # Web and API entry points
-    ├── web/               # Next.js pages
-    └── api/               # RESTful endpoints
-
-docs/                       # Documentation (ARCHITECTURE.md, ADRS.md, etc.)
-tests/                      # Unit, integration, and E2E tests
+sessioflow/
+├── apps/
+│   ├── frontend/               # Next.js web app (UI + API Controllers)
+│   └── backend/                # Standalone API Gateway / Microservice
+│
+├── packages/
+│   ├── api-definitions/        # Data-only API schemas & Zod validation (@sessioflow/api-definitions)
+│   ├── modules/
+│   │   ├── conference/         # DDD Conference Bounded Context (@sessioflow/conference)
+│   │   │   ├── domain/         # Pure domain entities, value objects & interfaces
+│   │   │   ├── application/    # Command & query use cases
+│   │   │   ├── infrastructure/ # Drizzle ORM repository implementations
+│   │   │   └── container.ts    # Module Composition Root (Application & HTTP Controller factories)
+│   │   └── [other-modules]/
+│   └── shared/
+│       ├── database/           # Drizzle ORM database client (@sessioflow/shared-database)
+│       └── logging/            # Pino logger & AsyncLocalStorage context (@sessioflow/shared-logging)
+│
+├── docs/                       # Documentation & ADRs
+└── tests/                      # Unit, integration, and Playwright E2E tests
 ```
 
 ## 💻 Code Style
@@ -111,32 +118,93 @@ const createEvent = (input) => {
 
 ### Error Handling
 ```typescript
-// ✅ Good - Zod validation + standardized errors
-try {
-  const validated = conferenceCreateSchema.parse(input);
-  const conference = await conferenceRepository.save(validated);
-  return { success: true, data: conference };
-} catch (error) {
-  if (error instanceof ZodError) {
-    return { success: false, errors: error.flatten() };
+// Domain objects throw DomainError on invariant violation
+// Handlers are pure — no try/catch, exceptions propagate
+// Controllers translate DomainError → HTTP response via error mapper
+// Route handlers provide safety net for truly unexpected errors only
+
+// ✅ Good - DomainError + single try/catch in controller
+export async function createConferenceController(request, commandHandler) {
+  try {
+    const command = CreateConferenceCommand.from(request.body);
+    const conference = await commandHandler.execute(command);
+    return NextResponse.json({ data: conference }, { status: 201 });
+  } catch (error) {
+    if (error instanceof DomainError) {
+      return mapDomainErrorToResponse(error);
+    }
+    throw error; // Route safety net catches this
   }
-  console.error('DB error:', error);
-  return { success: false, message: 'Database error occurred' };
 }
 ```
 
 ## 🧪 Testing Guidelines
 
 ### Test Organization
-- **Unit tests**: `tests/unit/[domain]/[feature].test.ts`
-- **Integration tests**: `tests/integration/[feature].test.ts`
+- **Unit tests**: `tests/unit/modules/[module]/[layer]/[feature].test.ts`
+- **Interface/API tests**: `tests/backend/modules/[module]/interfaces/[transport]/[version]/[controller].test.ts`
+- **Integration tests**: `tests/integration/modules/[module]/[feature].test.ts`
 - **E2E tests**: `tests/e2e/[feature].spec.ts`
+
+### Architecture Tests
+- **Location**: `tests/unit/architecture/` (files: `ddd-boundaries.test.ts`, `response-conventions.test.ts`)
+- **Framework**: ts-archunit — enforces DDD layer boundaries, CQRS conventions, and architectural invariants
+- **Entry points**: `classes(p)` for class declarations, `functions(p)` for function exports, `modules(p)` for module imports, `slices(p)` for dependency cycles
+
+**Critical ts-archunit patterns:**
+
+1. **Function exports need `functions(p)`, not `classes(p)`**
+   - Controllers are `export async function createConferenceController()` — function declarations
+   - `classes(p)` only finds `class` declarations → returns zero matches for controllers
+   - Use `functions(p).that().resideInFolder('**/interfaces/**').and().haveNameMatching(/controller$/i)` for controller rules
+
+2. **Import-restriction rules require `modules(p)`**
+   - `notImportFrom()` only exists on the `modules()` builder
+   - For controller domain-import checks: `modules(p).that().resideInFolder('**/interfaces/**').and().haveNameMatching(/\.controller\.ts$/).should().notImportFrom('**/domain/**')`
+   - For content-based checks on functions/classes, use `satisfy(defineCondition(...))` with file content reading
+
+3. **Fluent builder is strict AND-only — no `.or()` between predicates**
+   - `classes(p).that().predicateA().or().predicateB()` throws `is not a function`
+   - All `.that()` predicates are implicitly ANDed; all `.should()` conditions are ANDed
+   - For OR logic: write separate test blocks or filter inside a condition function
+
+4. **Ghost DTOs require `p._project.addSourceFilesAtPaths(...)`**
+   - ts-archunit follows TypeScript's import resolution — unimported files are invisible
+   - The `.query.ts` file that handlers don't use never gets parsed
+   - Force-load files at project creation: `p._project.addSourceFilesAtPaths('packages/modules/*/src/**/*.ts')`
+   - Without this, domain-import and property-type checks on DTO files return zero results
+
+5. **Use condition functions for file-content checks**
+   ```typescript
+   function controllerInstantiatesDto() {
+     return defineCondition('controllerInstantiatesDto', (matchedFns: any[]) => {
+       return matchedFns.map((fn: any) => {
+         const relPath = getElementFile(fn);
+         const content = readFileSync(relPath, 'utf-8');
+         // Extract DTO name from import: import { CreateConferenceCommand } from ...
+         const importMatch = content.match(/\{\s*(\w+)\s*\}\s*from\s*['"][^'"]*\.(command|query)/);
+         if (!importMatch) return null;
+         const dtoClass = importMatch[1];
+         const hasInstantiate = new RegExp(`new\\s+${dtoClass}\\(`).test(content);
+         if (!hasInstantiate) {
+           return { rule: '...', element: stem, file: relPath, message: '...' };
+         }
+         return null;
+       }).filter(Boolean) as any;
+     });
+   }
+   ```
+
+6. **Module-level rules use `modules(p)`, not `classes()` or `functions()`**
+   - Layer isolation checks: `modules(p).that().resideInFolder('**/domain/**').should().onlyImportFrom(...)`
+   - File-name filtering on modules: `.and().haveNameMatching(/\.controller\.ts$/)`
+   - Import restrictions: `.should().notImportFrom('**/packages/modules/**/domain/**')`
 
 ### Test Example
 ```typescript
 // tests/unit/conference/conference-name.test.ts
 import { describe, it, expect } from 'vitest';
-import { ConferenceName } from '@/domains/conference/value-objects/conference-name';
+import { ConferenceName } from '@/modules/conference/domain/value-objects/conference-name';
 
 describe('ConferenceName', () => {
   it('creates valid conference name', () => {
@@ -170,6 +238,7 @@ A task is complete when ALL of the following pass:
 | Architecture Decisions | `docs/adr/README.md` |
 | Testing Strategy | `docs/TESTING.md` |
 | API Design | `docs/API-DESIGN.md` |
+| Coding Rules & Linting | `DEV-RULES.md` |
 
 ## 🏛️ Architecture Principles
 
@@ -221,8 +290,8 @@ All AI agents working on this project must follow these 6 core principles:
 
 **Before creating new code:**
 - Use `rg` (ripgrep) to search for similar functionality
-- Check `src/domains/` for existing value objects or entities
-- Look in `src/application/` for similar use cases
+- Check `src/modules/[context]/domain/` for existing value objects or entities
+- Look in `src/modules/[context]/application/` for similar use cases
 - Review existing tests for patterns
 - **Only create new code if nothing suitable exists**
 

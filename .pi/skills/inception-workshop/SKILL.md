@@ -18,6 +18,51 @@ Facilitate Lean Inception workshops through 8 structured steps: Product Vision -
 - **Product Name Consistency**: Use the exact product name consistently throughout all documents. Include it in titles, introductions, and key sections. After establishing context, use pronouns or "the system" naturally. Focus on clarity, not forced repetition.
 - **Boundary Definitions**: MUST include at least 4 items in EACH of the 4 boundary columns (IS, IS NOT, DOES, DOES NOT) - this is non-negotiable.
 - **Tradeoff Golden Rule**: Exactly ONE check (X) per priority column. If you have 7 priorities, you must have exactly 7 X marks total.
+- **Template Instruction Filtering**: **STRICT RULE** - When generating output documents from templates, ALL instructional text must be removed. Instructions are for the AI agent only, not for the final document. See "Template Usage Guidelines" below for detailed filtering rules.
+
+## Template Usage Guidelines
+
+**CRITICAL: Template instructions must NEVER appear in output documents.**
+
+Templates serve two purposes:
+1. **Structure** - Define the document format (tables, sections, diagrams)
+2. **Guidance** - Tell AI agents how to fill the template
+
+**Only the structure should appear in output documents. Guidance must be stripped.**
+
+### What to Remove (All Modes)
+
+| Instruction Type | Examples | Action |
+|------------------|----------|--------|
+| "Instructions" sections | "Instructions:", "How to use", "Usage:" | **REMOVE ENTIRE SECTION** |
+| "Format" guidelines | "Format:", "Column definitions", "Field explanations" | **REMOVE ENTIRE SECTION** |
+| Validation checklists | "Verify that...", "Ensure...", "Check..." | **REMOVE** |
+| Meta-commentary | "This template contains...", "Fill this field with..." | **REMOVE** |
+| Technical syntax notes | "Use shields.io badges like...", "Mermaid syntax: ..." | **REMOVE** |
+
+### What to Keep
+
+| Content Type | Examples | Action |
+|-------------|----------|--------|
+| Content structure | Table headers, section titles | **KEEP** |
+| Placeholders | `[Feature Name]`, `[Persona Name]` | **KEEP** (as-is or filled) |
+| Actual data | Filled content, real examples | **KEEP** |
+| Diagrams | Mermaid charts, tables | **KEEP** (with actual data) |
+| Next steps | "Next Step: ..." | **KEEP** |
+| Notes sections | "Notes & Observations" | **KEEP** (for actual notes) |
+
+### Validation Checklist
+
+Before finalizing any output document, verify:
+- [ ] No "Instructions" sections remain
+- [ ] No "How to use" guidance remains
+- [ ] No column/field definition lists remain
+- [ ] No validation checklists for the AI remain
+- [ ] Document contains only actual content, not meta-instructions
+
+**Failure to follow this rule results in documents that mix instructions with content, making them unusable as actual deliverables.**
+
+---
 
 ## Natural Language Activation
 
@@ -48,7 +93,7 @@ This skill can be triggered using conversational phrases instead of command-line
 → pi skill inception-workshop --mode batch --context "SessioFlow"
 
 "Validate the user journey mapping"
-→ pi skill inception-workshop --mode validate --step 6 --file docs/inception/6-user-journey.md
+→ pi skill inception-workshop --mode validate --step 6 --file docs/inception/6-user-journeys/
 
 "Create flow specifications from the journey"
 → pi skill inception-workshop --mode generate-flows --from-step 6
@@ -110,13 +155,33 @@ pi skill inception-workshop --mode validate --step 1 --file docs/inception/1-pro
 
 ### Facilitate Mode (Template -> Fill -> Validate)
 
-The agent should:
+**CRITICAL RULE: Template Instructions Must NOT Leak to Output**
+
+Templates contain instructional guidelines for AI agents. When generating output documents:
+
+**MUST REMOVE:**
+- "Instructions" sections (entire section)
+- "Format" guidelines and field definitions
+- "How to use" instructions
+- Column explanations and usage notes
+- Validation checklists meant for the AI
+- Meta-commentary about the template itself
+
+**MUST KEEP:**
+- Content structure (tables, sections, placeholders)
+- Actual data entries (filled content)
+- Diagrams and visual elements
+- "Next Step" references
+- Notes & Observations sections (for actual observations, not instructions)
+
+**Implementation:**
 1. Read the template file from `templates/`
 2. Create the output file in `docs/inception/`
-3. Prompt the user to fill the document
-4. When ready, validate against the validator criteria
-5. Provide feedback and scoring
-6. Proceed to next step if score ≥ 8
+3. **Strip all instructional text** before writing output
+4. Prompt the user to fill the document
+5. When ready, validate against the validator criteria
+6. Provide feedback and scoring
+7. Proceed to next step if score ≥ 8
 
 **Implementation:** Use read/write/edit tools to manage files, provide interactive guidance to the user.
 
@@ -137,17 +202,37 @@ The agent should:
 
 ### Batch Mode
 
+**CRITICAL RULE: Template Instructions Must NOT Leak to Output**
+
+All templates contain instructional guidelines for AI agents. When generating output documents in batch mode:
+
+**MUST REMOVE:**
+- "Instructions" sections (entire section)
+- "Format" guidelines and field definitions  
+- "How to use" instructions
+- Column explanations and usage notes
+- Validation checklists meant for the AI
+- Meta-commentary about the template itself
+
+**MUST KEEP:**
+- Content structure (tables, sections, placeholders)
+- Actual data entries (filled content)
+- Diagrams and visual elements
+- "Next Step" references
+- Notes & Observations sections (for actual observations, not instructions)
+
 **Agent Implementation:**
 1. Parse the context/product description - EXTRACT the exact product name
 2. Sequentially generate all 8 steps using templates
-3. **Product Name Guidelines:**
+3. **Strip all instructional text** before writing each output file
+4. **Product Name Guidelines:**
    - Include the product name in titles and document headers
    - Use the product name in introductions and key sections
    - After establishing context, use "the system", "the platform", or pronouns naturally
    - Maintain consistency - don't switch between different names
    - Prioritize natural readability over forced repetition
-4. Create output files in `docs/inception/`
-5. Validate each step and report scores
+5. Create output files in `docs/inception/`
+6. Validate each step and report scores
 
 ```bash
 # All 8 steps generated automatically
@@ -160,10 +245,10 @@ pi skill inception-workshop --mode batch --context "SessioFlow: Call-for-Papers 
 |------|------|----------|--------|-----------|--------------|
 | 1 | Product Vision & Boundaries | `templates/1-product-vision-and-boundaries.md` | `docs/inception/1-product-vision-and-boundaries.md` | `references/1-product-vision-boundary-validator.md` | - |
 | 2 | Tradeoffs | `templates/2-tradeoffs.md` | `docs/inception/2-tradeoffs.md` | `references/2.2-tradeoff-validator.md` | ✅ **Tradeoff Generator** |
-| 3 | Personas | `templates/3-personas.md` | `docs/inception/3-personas.md` | `references/3-personas-validator.md` | - |
+| 3 | Personas | `templates/3-personas.md` | `docs/inception/3-personas/` | `references/3-personas-validator.md` | - |
 | 4 | Empathy Map | `templates/4-empathy-map.md` | `docs/inception/4-empathy-map.md` | `references/4-empathy-map-validator.md` | - |
 | 5 | Brainstorming | `templates/5-brainstorming.md` | `docs/inception/5-brainstorming.md` | `references/5-brainstorming-validator.md` | - |
-| 6 | User Journey | `templates/6-user-journey-mapping.md` | `docs/inception/6-user-journey.md` | `references/6-user-journey-validator.md` | - |
+| 6 | User Journey | `templates/6-user-journey-mapping.md` | `docs/inception/6-user-journeys/` | `references/6-user-journey-validator.md` | - |
 | 7 | Features & Sequencing | `templates/7-features-and-sequencing.md` | `docs/inception/7-features-and-sequencing.md` | `references/7-features-and-sequencing-validator.md` | - |
 | 8 | MVP Canvas | `templates/8-mvp-canvas-definition.md` | `docs/inception/8-mvp-canvas.md` | `references/8-mvp-canvas-definition-validator.md` | - |
 
@@ -239,10 +324,16 @@ pi skill inception-workshop --mode tradeoff-generator
 docs/inception/
 ├── 1-product-vision-and-boundaries.md    # Step 1 output
 ├── 2-tradeoffs.md                        # Step 2 output
-├── 3-personas.md                         # Step 3 output
+├── 3-personas/                           # Step 3 output folder
+│   ├── README.md                         # Overview & Persona validation checklist
+│   ├── 01-[name].md                      # Individual persona file
+│   └── 02-[name].md                      # Individual persona file
 ├── 4-empathy-map.md                      # Step 4 output
 ├── 5-brainstorming.md                    # Step 5 output
-├── 6-user-journey.md                     # Step 6 output
+├── 6-user-journeys/                      # Step 6 output folder
+│   ├── README.md                         # Composite View & Feature Coverage check
+│   ├── journey-01-[name].md              # Individual journey file
+│   └── journey-02-[name].md              # Individual journey file
 ├── 7-features-and-sequencing.md          # Step 7 output
 └── 8-mvp-canvas.md                       # Step 8 output
 ```
@@ -438,7 +529,7 @@ Average Score: 8.7/10
 
 Skill: Generating Flow Specifications
 
-Reading: docs/inception/6-user-journey.md
+Reading: docs/inception/6-user-journeys/
 Reading: docs/inception/7-features-and-sequencing.md
 
 Generating flows for MVP features:
@@ -469,10 +560,12 @@ All flows include:
 
 ---
 
-**Version:** 3.0.0  
-**Last Updated:** 2026-06-14  
-**Changes from v2.0:**
-- Refined product name guidance: consistency and clarity over forced repetition
-- Removed arbitrary "10+ mentions per document" requirement
-- Added guidance for natural language usage after establishing context
-- Maintained critical quality rules for boundaries and tradeoff golden rule
+**Version:** 3.4.0  
+**Last Updated:** 2026-07-13  
+**Changes from v3.3:**
+- Step 5: no tech features rule — features must describe user-facing outcomes, not implementation mechanics (Kafka events, crons, webhooks are excluded). Borderline tech features must be reframed as user outcomes before inclusion
+**Changes from v3.2:**
+- Step 5 template quadrant charts now use `classDef` + `:::className` for per-dot colors and HTML `<span>` swatches in legend tables so colors match the chart exactly
+- Color scheme: Core=`#2ecc71`, Supporting=`#3498db`, Differentiating=`#e67e22`, Nice-to-Have=`#95a5a6`
+- Quadrant placement rule: fixed 6-point grid (0.08 / 0.20 / 0.35 / 0.62 / 0.75 / 0.88) on both axes; overlaps are intentional; offset by ±0.04 only when two features share the exact same slot
+- Legend format: shields.io color-only badge (no text) — `![](https://img.shields.io/badge/_%20_-hexcolor)` — renders a plain color swatch on GitHub and VS Code preview. Use the same hex as the `classDef`

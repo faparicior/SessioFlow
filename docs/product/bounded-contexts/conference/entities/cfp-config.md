@@ -16,9 +16,9 @@ After generating the entity lifecycle document, review the project's Architectur
 - [x] Validation rules are comprehensive
 
 ## 📋 Definition & Context
-* **Description:** Configuration settings for a Call for Papers (CfP) submission window. Defines the submission period, rules, and settings for how speakers can submit proposals to an event.
+* **Description:** Configuration settings for a Call for Papers (CfP) submission window. Defines the submission period, rules, and settings for how speakers can submit proposals to a conference.
 * **Aggregate Relationship:** Child Entity of `Conference` Aggregate (not a root entity)
-* **Database Table / Collection:** `cfp_configs` (embedded or separate table with eventId foreign key)
+* **Database Table / Collection:** `cfp_configs` (embedded or separate table with conferenceId foreign key)
 * **Primary Key / Identifier:** Inherited from parent `Conference.id` (no separate identity)
 * **Owner Team:** Core Conference Team
 * **Domain Context:** Conference Bounded Context (see ADR-009)
@@ -40,10 +40,10 @@ ConferenceAggregate (Root)
 ### Value Objects Used
 | Value Object | Purpose | Referenced Doc |
 |--------------|---------|----------------|
-| `CfpStartDate` | CfP window start date | [[../value-objects/cfp-start-date]] |
-| `CfpEndDate` | CfP window end date | [[../value-objects/cfp-end-date]] |
-| `MaxSubmissions` | Maximum submission limit (optional) | [[../value-objects/max-submissions]] |
-| `CfpStatus` | Active/Inactive status | [[../value-objects/cfp-status]] |
+| `CfpStartDate` | CfP window start date | [cfp-start-date.md](../value-objects/cfp-start-date.md) |
+| `CfpEndDate` | CfP window end date | [cfp-end-date.md](../value-objects/cfp-end-date.md) |
+| `MaxSubmissions` | Maximum submission limit (optional) | [max-submissions.md](../value-objects/max-submissions.md) |
+| `CfpStatus` | Active/Inactive status | [cfp-status.md](../value-objects/cfp-status.md) |
 
 ---
 
@@ -118,7 +118,7 @@ This entity lifecycle document follows the consistency guidelines:
 |-------|-------------|---------------|
 | `ACTIVE` | CfP is open and accepting submissions. Speakers can create accounts, fill out the submission form, and submit proposals. The submission deadline is in the future. | `Conference.publishCfp()` |
 | `CLOSED` | CfP has been closed (manually or by deadline). No new submissions accepted. Existing submissions are locked and can only be viewed/reviewed by organizers. | `Conference.closeCfp()`, `CfpDeadlineReached` |
-| `ARCHIVED` | CfP configuration archived with event. All data preserved in read-only mode for historical reference and reporting. | `Conference.complete()` |
+| `ARCHIVED` | CfP configuration archived with conference. All data preserved in read-only mode for historical reference and reporting. | `Conference.complete()` |
 
 ---
 
@@ -154,10 +154,10 @@ export interface ConferenceRepository {
 ## 🔗 Linked User Stories & Flows
 *Relative links to the User Stories/Flows that interact with or trigger mutations on this entity.*
 
-* [[../../flows/journey-01-setup-event.md]]: Creates `CfpConfig` with `ACTIVE` state
-* [[../../flows/journey-02-submit-proposal.md]]: Submissions only accepted when `ACTIVE`
-* [[../../flows/journey-03-review-sessions.md]]: Review only possible when `CLOSED`
-* [[../../flows/journey-04-acceptance-logistics.md]]: Archives when event completes
+* [journey-01-setup-conference.md](../flows/journey-01-setup-conference.md): Creates `CfpConfig` with `ACTIVE` state
+* [journey-02-submit-proposal.md](../../submission/flows/journey-02-submit-proposal.md): Submissions only accepted when `ACTIVE`
+* [journey-03-review-sessions.md](../../review/flows/journey-03-review-sessions.md): Review only possible when `CLOSED`
+* [journey-04-acceptance-logistics.md](../../scheduling/flows/journey-04-acceptance-logistics.md): Archives when conference completes
 
 ---
 
@@ -175,9 +175,9 @@ export interface ConferenceRepository {
 
 | Document | Purpose |
 |----------|---------|
-| [[../value-objects/cfp-start-date]] | CfP start date value object |
-| [[../value-objects/cfp-end-date]] | CfP end date value object |
-| [[../value-objects/cfp-status]] | CfP status enum value object |
-| [[../value-objects/max-submissions]] | Maximum submission limit value object |
-| [[event.md]] | Parent Conference aggregate documentation |
-| [[../../adr/009-adopt-domain-driven-design-structure.md]] | DDD architecture decision |
+| [cfp-start-date.md](../value-objects/cfp-start-date.md) | CfP start date value object |
+| [cfp-end-date.md](../value-objects/cfp-end-date.md) | CfP end date value object |
+| [cfp-status.md](../value-objects/cfp-status.md) | CfP status enum value object |
+| [max-submissions.md](../value-objects/max-submissions.md) | Maximum submission limit value object |
+| [conference.md](conference.md) | Parent Conference aggregate documentation |
+| [009-adopt-domain-driven-design-structure.md](../../../../adr/009-adopt-domain-driven-design-structure.md) | DDD architecture decision |

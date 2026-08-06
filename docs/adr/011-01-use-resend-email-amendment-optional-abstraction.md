@@ -4,13 +4,13 @@
 * **Date:** 2026-06-11
 * **Decision Makers:** Product Team, Technical Lead
 * **Amends:** ADR-011 (Use Resend for Email Communications)
-* **Related:** ADR-002b (Authentication Strategy and Vendor Abstraction), ADR-009 (Domain-Driven Design Structure)
+* **Related:** ADR-002-03 (Authentication Strategy and Vendor Abstraction Analysis), ADR-009 (Domain-Driven Design Structure)
 
 ---
 
 ## Purpose of This Amendment
 
-This document proposes an **optional amendment** to ADR-011 to incorporate the DDD abstraction pattern established in ADR-002b. Unlike authentication and storage, email abstraction is **optional** for MVP but recommended for long-term flexibility.
+This document proposes an **optional amendment** to ADR-011 to incorporate the DDD abstraction pattern established in ADR-002-03. Unlike authentication and storage, email abstraction is **optional** for MVP but recommended for long-term flexibility.
 
 ---
 
@@ -469,7 +469,7 @@ export const emailProvider: EmailProvider = new ResendEmailAdapter();
 
 ## Links
 
-* [ADR-002b: Authentication Strategy and Vendor Abstraction](./_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md)
+* [ADR-002-03: Authentication Strategy with DDD](./002-03-use-supabase-analysis-auth-strategy.md)
 * [ADR-009: Domain-Driven Design Structure](./009-adopt-domain-driven-design-structure.md)
 * [Resend Documentation](https://resend.com/docs)
 * [SendGrid Documentation](https://docs.sendgrid.com/)

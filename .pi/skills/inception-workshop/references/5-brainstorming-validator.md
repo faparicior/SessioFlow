@@ -34,9 +34,11 @@ Analyze the brainstormed features against the following criteria derived from th
 
     The sources require a quick assessment of each feature to understand its impact and feasibility.
 
-    - Verification: Check the assessment grid for Business Value, Technical Effort, and UX Impact.
+    - Verification: Check the assessment grid for Business Value, Technical Effort, UX Impact, and **Confidence**.
 
-    - Semaphore Check: Look for signs of uncertainty. In Lean Inception, features should be reviewed for Confidence (Green/Yellow/Red).
+    - Column Presence Check: Every feature table MUST include a **Confidence** column with a semaphore value: 🟢 (well-understood), 🟡 (some uncertainty — unknown scope or dependency), or 🔴 (high risk — needs a design spike before sequencing). A table missing this column fails this criterion entirely.
+
+    - Semaphore Interpretation: 🟡 features should have a note explaining the uncertainty; 🔴 features must not be scheduled for sequencing until clarified.
 
     - Audit Rule: Flag any "Must-have" features that are marked with High Effort and Low Business Value, as these are high-risk "X" features that should often be discarded or simplified.
 
@@ -53,7 +55,7 @@ Analyze the brainstormed features against the following criteria derived from th
 
 2. Strategic Misalignment: Identify features that seem "Nice-to-have" but are marked as "Must-have."
 
-3. The "Red Flag" List: List features with low technical certainty (Red/Yellow) that need further clarification before the sequencing step.
+3. The "Red Flag" List: List features with Confidence 🔴 or 🟡 that need further clarification before the sequencing step. Include the reason for the uncertainty.
 
 4. Coach's Question: Ask one question to challenge the MVP scope (e.g., "If you could only build three features from the 'Core' list to validate your primary hypothesis, which would they be?").
 

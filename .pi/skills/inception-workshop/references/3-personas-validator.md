@@ -41,4 +41,4 @@ Output Format:
 
 - Coach's Question: One deep question to help the team empathise further (e.g., "What is [Persona Name]’s biggest fear if they fail to reach their goal?").
 
-Eval the file `docs/inception/3-personas.md` content and provide a compliance score for each section.
+Eval the files in `docs/inception/3-personas/` folder (README.md and individual persona files `01-*.md`, `02-*.md`, etc.) and provide a compliance score for each section.

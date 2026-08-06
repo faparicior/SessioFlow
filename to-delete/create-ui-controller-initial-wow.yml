@@ -1,0 +1,229 @@
+name: create-ui-controller-initial-wow
+description: >
+  Generate the first Controller WoW document from an initial chunk of source files
+  pre-selected by the CLI. The CLI provides the file list as files_json so this
+  prompt never queries the manifest for primary Controller classes.
+  Adjacent collaborators and cross-cutting classes are still discovered reactively.
+arguments:
+  - name: manifest_path
+    required: true
+  - name: output_file
+    required: true
+  - name: total_files
+    required: true
+  - name: chunk_total
+    required: true
+  - name: files_json
+    required: true
+messages: |
+  You are to analyze the first batch of REST Controller source files and produce a
+  DDD UI Layer - REST Controllers Way of Working (WoW) document.
+
+  This is chunk 1 of {{chunk_total}} total chunks. If {{chunk_total}} > 1, subsequent
+  chunks will enrich this document with additional patterns — do NOT wait for them.
+  Write a complete, useful document now using only the files in this chunk plus any
+  adjacent collaborators you discover while reading them.
+
+  Total Controller files across all chunks: {{total_files}}
+  Document path: {{manifest_path}}/wow/{{output_file}}
+
+  Note: For other UI layer concerns use the dedicated prompts:
+  - Event consumers → create-event-consumer-wow
+  - Schedulers & batch processors → create-scheduler-wow
+
+  Follow these steps precisely.
+
+  # Step 0: Load the template
+
+  Call `get_template_content` with templatePath "wow/template-ddd-ui-controller-wow.md".
+  Keep it in context — it provides the schema, pattern ID conventions, and variable
+  definitions. You will fill every variable in it during Step 4.
+
+  # Step 1: Review this chunk's Controller classes
+
+  The following Controller classes have been pre-selected for this chunk (JSON array):
+  {{files_json}}
+
+  Parse this JSON array. Each object contains:
+  - File: source file path relative to the repository root
+  - Identifier: unique class identifier from the manifest
+  - Category: the class category
+  - Layer: the architectural layer
+  - Possible outsider: "✓" if flagged as a candidate anti-pattern, empty otherwise
+
+  If the array is empty, write the output file with a note that no Controller classes
+  were found, and stop.
+
+  Record all entries — you will need File and Identifier for each.
+  Note any entries where "Possible outsider" is "✓".
+
+  # Step 2: Read source files
+
+  Construct absolute file paths as: {{manifest_path}}/../<File value>
+  (manifest_path points to .aiforddd; source files are relative to the repo root above it)
+
+  ## Proactive global advice discovery
+  Before reading any controller file, query the manifest for cross-cutting classes that are
+  globally wired to controllers but are not controllers themselves — such as global exception
+  handlers, global validators, request interceptors, or cross-cutting advice classes.
+
+  Call `get_multiple_rows_by_multiple_columns` with
+    filters = { "Layer": "User Interface Layer" },
+    excludeFilters = { "Category": "Controller", "Processed": "✓" },
+    selectColumns = ["Identifier", "Class", "File", "Category", "Description"]
+
+  For each class returned:
+  1. Construct the absolute path as: {{manifest_path}}/../<File value>
+  2. Add it to the reading batch alongside the controller files.
+  3. Record its Identifier and file path in the AdjacentCollaborators list of the Coverage Summary,
+     using the format: `- [Identifier] FileName.kt _(adjacent collaborator)_`.
+  Do NOT mark these classes as processed — they will be covered by their own WoW document.
+
+  If the call returns nothing, continue — the absence of such classes is itself informative
+  (document it as "no centralized exception handler found" in the Error Handling section).
+
+  Process all files (controllers from Step 1 + globally-wired classes) in batches of 6–8 per
+  `read_multiple_files_compressed` call.
+  Complete pattern analysis for each batch before reading the next.
+  Read the ENTIRE file — no line limits, no shortcuts.
+
+  ## Adjacent collaborator discovery
+  While reading each controller file, note any directly referenced classes that are NOT in
+  the batch but are relevant to understanding the controller's behaviour — for example:
+  - A global exception handler wired to the controllers
+  - A shared validator or advice class applied to the controllers
+  - A base class or interface the controller implements
+
+  For each such class found:
+  1. Call `get_first_row_by_column` on {{manifest_path}}/code-manifest.md with
+     `columnName = "Class"` and the class name as `value` to retrieve its manifest row,
+     including its `File` path and `Identifier`.
+  2. If not found in the manifest, skip — do not search the filesystem directly.
+  3. Construct the absolute path as: {{manifest_path}}/../<File value from manifest row>
+  4. Call `read_multiple_files_compressed` on that path to read the file.
+  5. Include its patterns in the analysis as if it were part of the batch.
+  6. Record its Identifier and file path in the AdjacentCollaborators list of the Coverage Summary,
+     using the format: `- [Identifier] FileName.kt _(adjacent collaborator)_`.
+  Do NOT mark these classes as processed — they will be covered by their own WoW document.
+
+  # Step 3: Identify patterns
+
+  Analyze each controller class and extract reusable patterns. Focus on:
+
+  ## Request Handling Patterns
+  Focus on: endpoint route definitions, HTTP method mapping, path and query parameter
+  extraction, request body deserialization, typed parameter binding (framework-assisted
+  conversion), optional vs required parameters, and default value handling.
+  Extract a separate pattern for each distinct binding technique observed — for example,
+  typed date binding, enum list binding, UUID/identifier conversion at the boundary, and
+  optional parameter fallback are each separate patterns if present in the codebase.
+
+  ## Response Mapping Patterns
+  Focus on the *call patterns* the controller uses to transform domain results into HTTP
+  responses — not the DTO internals. Document each distinct mapping variant as its own
+  pattern:
+  - Simple 1-to-1 collection mapping (e.g. `.map(factory reference)`)
+  - 1-to-many / expansion mapping (e.g. `.flatMap(factory reference)`)
+  - Explicit HTTP status wrapping for mutation/admin endpoints vs. implicit status for
+    read endpoints
+  - Null/empty result handling at the controller level (e.g. empty list, no-content response)
+  Do NOT document DTO field definitions, factory method bodies, or serialization annotations
+  — those belong in the Response WoW document. If encountered, add a brief cross-reference
+  note only.
+
+  ## Input Validation Patterns
+  Focus on: cross-cutting pre-handler validation mechanisms (global validator, advice class,
+  filter, or middleware) and reusable domain-level validator objects or functions that
+  encapsulate validation rules and throw typed exceptions. Document each as a separate
+  pattern:
+  - The cross-cutting advice/middleware mechanism (how it is scoped, when it runs)
+  - The reusable validator object/function (how validation rules are encapsulated and reused
+    independently of the HTTP layer)
+
+  ## Error Handling Patterns
+  Focus on: the centralized exception handler mechanism — how exceptions thrown anywhere in
+  the request cycle (from parameter binding, validation, application service, or domain) are
+  caught and translated into HTTP status codes. Document:
+  - The wiring mechanism (global handler, middleware, filter, or decorator) and how it is
+    registered without coupling individual controllers to it
+  - The exception→status mapping table: which exception types map to which HTTP status codes
+  - The "no try/catch in controllers" rule — controllers must not handle exceptions locally
+  Do NOT document the error response body structure or factory logic — those belong in the
+  Response WoW document. Add a brief cross-reference note only.
+  If no centralized handler is found, document it explicitly as a gap in the Error Handling
+  section and raise it as an open question.
+
+  IMPORTANT — controller scope boundary:
+  The controller WoW covers only HTTP mechanics: routing, parameter binding, delegation to
+  application services, HTTP status decisions, and exception-handling mechanisms.
+  Response DTO internals (field definitions, factory methods, serialization annotations,
+  error body shapes) are out of scope — add a cross-reference note when encountered.
+
+  ## Security Patterns
+  Focus on: authentication/authorization integration, input sanitization at the boundary,
+  protection mechanisms against unauthorized access.
+
+  For each pattern found:
+  - Assign a unique pattern ID:
+    - `CTL-REQ-XX` for request handling and parameter binding patterns
+    - `CTL-RSP-XX` for response mapping and HTTP status patterns
+    - `CTL-VAL-XX` for input validation patterns (both the advice/middleware mechanism
+      and any reusable validator objects/functions it delegates to)
+    - `CTL-ERR-XX` for error handling and exception translation patterns
+    - `CTL-SEC-XX` for security patterns
+  - Granularity rule: each distinct technique or concern deserves its own pattern entry.
+    Do not collapse multiple distinct patterns into one — for example, UUID conversion,
+    date binding, and enum list binding are three separate CTL-REQ patterns.
+  - Write a descriptive pattern name capturing the architectural intent.
+  - Extract a GOOD code example — copy the structure and logic exactly, but IMMEDIATELY replace
+    every domain-specific class name, method name, field name, enum value, and identifier with a
+    generic equivalent (Order, User, Product, Payment, Item, Customer).
+    NO real names from the codebase may appear in the example.
+  - Derive an anti-pattern (BAD) counterexample that illustrates the violation of the pattern.
+  - Record the source file name and Identifier from the manifest.
+  - For "Possible outsider" (✓) entries, document why the class may not belong in its current layer
+    and include it as an anti-pattern entry.
+
+  # Step 4: Write the document
+
+  Replace every `{{Variable}}` in the loaded template with content derived from the analysis.
+  Follow the template's own "Usage Instructions" and "Template Variables Reference" sections
+  exactly — they are authoritative for what each section expects.
+
+  Key sections that MUST be completed from the real code:
+  - **HTTP Status Code table** (`## 🔢 HTTP Status Code Strategy`): populate from actual
+    domain exception → HTTP status mappings found in the source files. Do not use placeholders.
+  - **Request/Response Mapping** (`## 🗺️ Request / Response Mapping`): describe the real
+    deserialization, serialization, and null-handling strategies used.
+  - **Error Handling Strategy** (`## ⚠️ Error Handling Strategy`): document the centralized
+    exception handler mechanism and exception→status mappings only. Response body structures
+    are out of scope — add a cross-reference to the Response WoW document instead.
+  - **Testing Approach** (`## 🧪 Testing Approach`): describe the controller slice test
+    approach used or recommended, with good/bad test structure examples.
+  - **Performance Considerations** (`## ⚡ Performance Considerations`): note any performance
+    patterns observed (e.g., pagination, async, caching at the boundary).
+  - **Security Guidelines** (`## 🔒 Security Guidelines`): describe actual auth/validation
+    mechanisms observed in the controllers.
+  - **Anti-Patterns** (`## 🚫 Anti-Patterns to Avoid`): include any "Possible outsider" (✓)
+    entries and other violations found in the real code.
+  - **Pattern Index** and **Coverage Summary**: must reference real file identifiers from the
+    manifest and accurate counts.
+
+  For the Coverage Summary: use {{total_files}} as the total class count.
+  For classes analyzed in this chunk: show the actual count from the parsed JSON array.
+
+  If {{chunk_total}} > 1, add this note at the very end of the document (before any appendix):
+
+  > **Note**: This document was generated from chunk 1/{{chunk_total}} of the codebase.
+  > It will be enriched with additional patterns from the remaining chunks.
+
+  Write the completed document to {{manifest_path}}/wow/{{output_file}}.
+  Strip everything from "Template Variables Reference" onward — the final file must contain
+  no template instructions.
+
+  # Step 5: Verify
+
+  Read {{manifest_path}}/wow/{{output_file}} and confirm:
+  - The document is complete and valid.
+  - All patterns are in the correct sections.
+  - No template instructions remain in the file.

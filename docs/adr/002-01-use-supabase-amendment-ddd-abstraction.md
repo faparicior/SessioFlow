@@ -4,7 +4,7 @@
 * **Date:** 2026-06-11
 * **Decision Makers:** Product Team, Technical Lead
 * **Amends:** ADR-002 (Use Supabase for Backend and Database)
-* **Related:** ADR-002a (Supabase Vendor Lock-in Alternatives), ADR-002b (Authentication Strategy and Vendor Abstraction), ADR-009 (Domain-Driven Design Structure)
+* **Related:** ADR-002-02 (Vendor Lock-in Alternatives Analysis), ADR-002-03 (Authentication Strategy with DDD), ADR-009 (Domain-Driven Design Structure)
 
 ---
 
@@ -213,8 +213,8 @@ With corrected pricing and DDD abstraction, a **hybrid approach** is now fully v
 * [Supabase Documentation](https://supabase.com/docs)
 * [Auth0 Pricing (2026)](https://auth0.com/pricing) - **Updated: 25K MAU free tier**
 * [Cloudflare R2 Pricing](https://www.cloudflare.com/products/r2/)
-* [ADR-002a: Supabase Vendor Lock-in Alternatives](./_to-discuss/002a-supabase-vendor-lock-in-alternatives.md)
-* [ADR-002b: Authentication Strategy and DDD Abstraction](./_to-discuss/002b-supabase-auth-strategy-ddd-abstraction.md)
+* [ADR-002-02: Vendor Lock-in Alternatives Analysis](./002-02-use-supabase-analysis-vendor-lock-in.md)
+* [ADR-002-03: Authentication Strategy with DDD](./002-03-use-supabase-analysis-auth-strategy.md)
 * [ADR-009: Domain-Driven Design Structure](./009-adopt-domain-driven-design-structure.md)
 * [DDD Ports & Adapters Pattern](https://medium.com/@salimian/third-party-trap-designing-code-that-nothing-sticks-to-sdks-6c57d80fa20e)
 

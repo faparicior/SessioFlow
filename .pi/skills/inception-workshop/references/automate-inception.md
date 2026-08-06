@@ -102,10 +102,10 @@ pi subagent --chain inception-workshop --task "$(cat /tmp/inception-task.md)"
 docs/inception/
 ├── 1-product-vision-and-boundaries.md  ✅ Generated
 ├── 2-tradeoffs.md                      ✅ Generated
-├── 3-personas.md                       ✅ Generated
-├── 4-empathy-map.md                    ✅ Generated
-├── 5-brainstorming.md                  ✅ Generated
-├── 6-user-journey.md                   ✅ Generated
+├── 3-personas/                         ✅ Generated
+├── 4-empathy-map.md                      ✅ Generated
+├── 5-brainstorming.md                    ✅ Generated
+├── 6-user-journeys/                      ✅ Generated
 ├── 7-features-and-sequencing.md        ✅ Generated
 └── 8-mvp-canvas.md                     ✅ Generated
 ```
@@ -159,7 +159,7 @@ After any mode, validate the outputs:
 ```bash
 # Validate Step 6 (User Journey)
 pi subagent << 'EOF'
-Read docs/inception/6-user-journey.md
+Read docs/inception/6-user-journeys/
 Read docs/commands/inception/6-user-journey-validator.md
 
 Evaluate the journey against the validator criteria and provide:

@@ -6,7 +6,7 @@ The output should be a strategic definition of the **"Learning Slice" (MVPe)**, 
 
 **Crucial:** This step is NOT about building the "Cupcake" Release (that's Step 6). This step is about **breaking** the Cupcake to see if it's poison.
 
-- **Identify Value, Usability, Feasibility, and Business risks.** Explicitly link each risk to a specific Persona (from `docs/inception/3-personas.md`) or System Component.
+- **Identify Value, Usability, Feasibility, and Business risks.** Explicitly link each risk to a specific Persona (from `docs/inception/3-personas/`) or System Component.
 - **Define experiments (Fake Doors, Paper Prototypes, Spikes)** that are CHEAPER than building the actual feature.
   - **Constraint:** Prioritize "No-Code" or "Low-Code" methods over writing actual software.
   - **Constraint:** Each experiment must have a **Timebox** (e.g., 2 hours, 1 day, max 1 week).

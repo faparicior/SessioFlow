@@ -19,7 +19,7 @@ Who is taking this journey and what is the trigger?
 | Sequence | User Activity <br>*(The Big Things)*<br>Aggregates tasks directed at a common goal | User Tasks <br>*(The Steps)*<br>The sequential actions users take to complete the activity | User Role <br>Who performs this? |
 | :--- | :--- | :--- | :--- |
 | 1 | **Initial Setup (Deployment)**<br>(Getting the system ready) | 1. **Download source/repo**<br>2. **Configure environment variables** (DB, Auth codes)<br>3. **Run deployment script** (e.g. Docker up) | Fernando (Organizer) |
-| 2 | **Event Definition**<br>(Creating the specific C4P) | 1. **Log in as Admin**<br>2. **Create new event**<br>3. **Define submission dates**<br>4. **Publish C4P link** | Fernando (Organizer) |
+| 2 | **Conference Definition**<br>(Creating the specific C4P) | 1. **Log in as Admin**<br>2. **Create new conference**<br>3. **Define submission dates**<br>4. **Publish C4P link** | Fernando (Organizer) |
 | 3 | **Proposal Submission**<br>(Speakers submit their talks) | 1. **Access public C4P page**<br>2. **Create speaker account**<br>3. **Fill profile details** (Bio, Photo)<br>4. **Submit talk proposal**<br>5. **Invite co-speaker** (Optional) | Andrea (Speaker) |
 | 4 | **Selection Process**<br>(Reviewing and choosing talks) | 1. **Close Call for Papers**<br>2. **Review submitted proposals**<br>3. **Rate/Score talks**<br>4. **Select final lineup** | Fernando (Organizer) |
 | 5 | **Program Scheduling**<br>(Building the agenda) | 1. **Define rooms and slots**<br>2. **Assign talks to slots**<br>3. **Publish draft schedule** | Fernando (Organizer) |

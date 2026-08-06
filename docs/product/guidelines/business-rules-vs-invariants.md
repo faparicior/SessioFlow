@@ -20,7 +20,7 @@ Understanding the difference between **Business Rules** and **Invariants** is cr
 ### Business Rule Examples
 
 **BR-004: Free Tier Conference Creation Limit**
-- **Rule:** When a free tier organizer attempts to create an event, check if they have 5 active events
+- **Rule:** When a free tier organizer attempts to create a conference, check if they have 5 active conferences
 - **Violation Handling:** Show upgrade prompt, don't block the user entirely
 - **Enforcement:** Application Service (`CreateConferenceService`)
 - **Fallback:** Can log telemetry error and allow purchase flow

@@ -53,38 +53,64 @@
 ### Files to Create/Modify
 
 **Domain Layer:**
-- [ ] `domains/[context]/entities/[entity].ts`
-- [ ] `domains/[context]/value-objects/[vo].ts`
-- [ ] `domains/[context]/services/[service].ts`
+- [ ] `modules/[context]/entities/[entity].[ext]`
+- [ ] `modules/[context]/value-objects/[vo].[ext]`
+- [ ] `modules/[context]/services/[service].[ext]`
 
 **Application Layer:**
-- [ ] `application/[context]/use-cases/[use-case].ts`
-- [ ] `application/[context]/dto/[dto].ts`
+- [ ] `modules/[context]/application/use-cases/[use-case].[ext]`
+- [ ] `modules/[context]/application/dto/[dto].[ext]`
 
 **Infrastructure Layer:**
-- [ ] `infrastructure/database/[entity]-repository.ts`
+- [ ] `modules/[context]/infrastructure/database/[entity]-repository.[ext]`
 - [ ] Database migrations
 
 **Interface Layer:**
-- [ ] `interfaces/api/v1/[resource]/route.ts`
-- [ ] `interfaces/web/[resource]/page.tsx`
+- [ ] `modules/[context]/interfaces/api/v1/[resource]/[handler].[ext]`
+- [ ] `modules/[context]/interfaces/web/[resource]/[view-component].[ext]`
 
 ---
 
-## 🧪 Testing Strategy
+## 🧪 Hybrid TDD Implementation
 
-### Unit Tests
-- [ ] Entity tests: [specific tests]
-- [ ] Value object tests: [specific tests]
-- [ ] Use case tests: [specific tests]
+### Phase 0: Define E2E Contract (Outside-In)
 
-### Integration Tests
-- [ ] Repository tests
-- [ ] Use case integration tests
+**Step 1: Write E2E Test**
+- [ ] Write E2E test for complete flow: [Flow step]
+- [ ] Document acceptance criteria
+- [ ] **Expected to FAIL initially** - defines the goal
 
-### E2E Tests
-- [ ] Flow step: [which step in the parent flow]
-- [ ] Related to: [journey-XX-[name].md]
+### Phase 1-3: Build Inside-Out
+
+**Step 2: Write Tests First**
+
+**Unit Tests:**
+- [ ] Test `[Entity]` creates with valid data
+- [ ] Test `[Entity]` rejects invalid data
+- [ ] Test `[ValueObject]` validation rules
+- [ ] Test edge cases and boundary conditions
+
+**Integration Tests:**
+- [ ] Test `[UseCase]` with mocked dependencies
+- [ ] Test repository integration
+
+**Step 3: Implement to Pass Tests**
+- [ ] Implement domain objects
+- [ ] Implement use cases
+- [ ] Implement infrastructure
+- [ ] Make all tests pass
+
+**Step 4: Refactor**
+- [ ] Clean up code
+- [ ] Maintain test coverage
+- [ ] Document behavior
+
+### Phase 4: Validate E2E (Outside-In)
+
+**Step 5: Run E2E Test**
+- [ ] Run E2E test from Phase 0
+- [ ] **Expected to PASS** - goal achieved!
+- [ ] Fix any remaining issues
 
 ---
 
@@ -130,13 +156,12 @@
 
 | Phase | Status | Notes |
 |-------|--------|-------|
-| Domain | 📋 | |
-| Infrastructure | 📋 | |
-| Application | 📋 | |
-| API | 📋 | |
-| Frontend | 📋 | |
-| Testing | 📋 | |
+| E2E Contract | 📋 | Write failing E2E test (Phase 0) |
+| Tests Written | 📋 | Write unit/integration tests |
+| Implementation | 📋 | Implement to pass tests |
+| Refactoring | 📋 | Clean up while tests pass |
+| E2E Validation | 📋 | Run E2E - should PASS |
 
 ---
 
-*This feature spec is part of the [Flow Name] development plan.*
+*This feature spec is part of the [Flow Name] development plan and follows Hybrid TDD (Outside-In + Inside-Out).*

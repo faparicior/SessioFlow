@@ -14,6 +14,17 @@ This skill guides feature implementation through flow-driven analysis, planning,
 
 **Important**: Follow AGENTS.md for all code conventions, testing standards, and quality requirements.
 
+### Step 0: Read ADR Index First
+- **Always start** by reading `docs/adr/README.md` to understand the complete ADR landscape
+- Use the ADR index to identify which ADRs are relevant to your task
+- Read specific ADRs in detail based on what the index reveals
+- **Do not assume** specific ADR numbers - let the index guide your discovery
+- Pay special attention to:
+  - Core Technology Stack ADRs
+  - Architecture Decisions (DDD, CQRS, etc.)
+  - Authentication & Storage strategies
+  - Data Access patterns
+
 ### Step 1: Understand the Flow
 - Read flow documentation in `docs/product/bounded-contexts/[context]/flows/`
 - Identify which DDD layer(s) are affected
@@ -21,18 +32,78 @@ This skill guides feature implementation through flow-driven analysis, planning,
 
 ### Step 2: Review Existing Patterns
 - Search `src/` for similar implementations (`rg` command)
-- Review relevant ADRs in `docs/adr/`
+- Review relevant ADRs identified from the index
 - Follow conventions in AGENTS.md
 
-### Step 3: Implement Incrementally
+### Step 3: Implement Incrementally (Hybrid TDD)
 
-**Recommended Progression**:
-1. **Domain Layer** - Value objects, entities, domain services
-2. **Domain Interfaces** - Repository interfaces, domain events, exceptions
-3. **Infrastructure** - Repository implementations, external adapters
-4. **Application** - Use cases with validation
-5. **Interfaces** - API endpoints, frontend components
-6. **Testing** - Unit, integration, and E2E tests
+**Hybrid Approach** (Outside-In + Inside-Out):
+
+1. **Define E2E Contract** (Outside)
+   - Write E2E test that describes complete user journey
+   - Document acceptance criteria from flow documentation
+   - This test will FAIL initially (defines the goal)
+
+2. **Build Domain Core** (Inside-Out)
+   - Write tests for value objects → Implement → Verify
+   - Write tests for entities → Implement → Verify
+   - Write tests for domain services → Implement → Verify
+
+3. **Build Application Layer** (Inside-Out)
+   - Write application logic tests (with mocked repository) → Implement → Verify
+   - Write repository interface tests (mocked) → Implement → Verify
+   - Follow architectural patterns identified from ADR index review
+   - Create appropriate response DTOs for API contracts
+
+4. **Build Infrastructure** (Inside-Out)
+   - Write integration tests for repository → Implement → Verify
+   - Implement database schema and migrations
+
+5. **Build Interface Layer** (Outside-In)
+   - Write API tests → Implement → Verify
+   - Write UI component tests → Implement → Verify
+
+6. **Validate E2E** (Outside)
+   - Run the E2E test from Step 1
+   - Fix any failing tests
+   - Verify complete user journey works
+
+**Hybrid TDD Workflow:**
+```
+1. Write E2E test (fails) - defines the goal
+2. Write domain tests (fails) - defines the core
+3. Implement domain → E2E still fails (missing layers)
+4. Write use case tests (fails)
+5. Implement use cases → E2E still fails (missing infrastructure)
+6. Write integration tests (fails)
+7. Implement infrastructure → E2E still fails (missing API/UI)
+8. Write API/UI tests (fails)
+9. Implement API/UI → E2E PASSES!
+```
+
+**Module-Based Organization:**
+```
+src/
+├── modules/                    # Feature modules (bounded contexts)
+│   ├── [module-name]/          # e.g., conference, event, submission
+│   │   ├── domain/             # Domain layer for this module
+│   │   │   ├── entities/
+│   │   │   ├── value-objects/
+│   │   │   ├── services/
+│   │   │   └── repositories/   # Interface
+│   │   ├── application/        # Application layer
+│   │   │   └── [pattern-based structure from ADRs]
+│   │   ├── infrastructure/     # Implementations for this module
+│   │   │   └── database/
+│   │   └── interfaces/         # API/UI for this module
+│   │       └── api/
+│   └── [module-name]/
+└── shared/                     # Cross-cutting concerns
+    ├── domain/                 # Shared VOs, exceptions
+    └── infrastructure/         # Shared database client, etc.
+```
+
+*Note: Application layer structure should follow patterns identified from ADR index review (e.g., CQRS, use cases, services, etc.)*
 
 *Note: Adjust based on feature requirements and existing patterns.*
 
@@ -98,8 +169,10 @@ This skill guides feature implementation through flow-driven analysis, planning,
 
 ## ✅ Success Criteria
 
+- **ADR Compliance**: All relevant ADRs identified from `docs/adr/README.md` index and followed
 - Follows AGENTS.md definition of done
 - Development plan updated with completed tasks
+- Application layer follows architectural patterns from ADR index review
 - All tests pass (`npm test`)
 - Linting passes (`npm run lint`)
 - Type checking passes (`npm run typecheck`)

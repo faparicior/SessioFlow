@@ -49,7 +49,7 @@ Modify the **original ADR** file (`docs/adr/0XX-original-filename.md`) to establ
 
 ### Phase 4: Index & Update Statistics
 
-Update the project-specific ADR catalog index in [docs/adr/README.md](../../adr/README.md):
+Update the project-specific ADR catalog index in [docs/adr/README.md](../../../../docs/adr/README.md):
 1.  **Quick Reference Table**: Add the amendment line directly below the original ADR:
     ```markdown
     | [0XX-Amendment](0XX-amendment-filename.md) | **Amendment: [Description]** | Proposed | [Date] |

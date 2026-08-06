@@ -10,7 +10,7 @@
 ## 1. Summary
 *A clear, single-sentence definition of the business policy written in plain language using the Ubiquitous Language.*
 
-> **Rule:** When a free tier organizer attempts to create an event, then the system must check if they already have 5 active events, and if so, block creation and prompt for upgrade.
+> **Rule:** When a free tier organizer attempts to create a conference, then the system must check if they already have 5 active conferences, and if so, block creation and prompt for upgrade.
 
 ## 2. Business Context & Rationale
 *Why does this rule exist? What business metric, legal requirement, or operational workflow drives this policy?*
@@ -29,24 +29,24 @@
 ### Gherkin Scenarios
 ```gherkin
 Scenario: Free tier under limit
-  Given organizer has 3 active events
+  Given organizer has 3 active conferences
   And organizer tier is FREE
-  When they attempt to create a new event
-  Then the system allows event creation
-  And active event count becomes 4
+  When they attempt to create a new conference
+  Then the system allows conference creation
+  And active conference count becomes 4
 
 Scenario: Free tier at limit
-  Given organizer has 5 active events
+  Given organizer has 5 active conferences
   And organizer tier is FREE
-  When they attempt to create a new event
+  When they attempt to create a new conference
   Then the system blocks creation
   And displays upgrade prompt with pricing information
 
 Scenario: Pro tier user
-  Given organizer has 10 active events
+  Given organizer has 10 active conferences
   And organizer tier is PRO
-  When they attempt to create a new event
-  Then the system allows event creation
+  When they attempt to create a new conference
+  Then the system allows conference creation
   And no limit check is applied
 ```
 
@@ -57,7 +57,7 @@ Scenario: Pro tier user
 ## 4. System Enforcement (How It's Handled)
 *Unlike an invariant (which sits strictly inside an Aggregate Root), a business rule can be enforced via Domain Services, Policy objects, or workflow orchestration (like n8n or Saga patterns).*
 
-* **Enforcement Layer:** Application Service (`CreateConferenceService`) checks subscription tier before event creation
+* **Enforcement Layer:** Application Service (`CreateConferenceService`) checks subscription tier before conference creation
 * **Handling Violations/Exceptions:** 
   * Does NOT throw domain exception
   * Returns business rule violation response with upgrade information
