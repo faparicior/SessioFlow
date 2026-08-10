@@ -120,7 +120,7 @@ describe('Conference API - POST /api/v1/conferences', () => {
     );
 
     const request = createNextRequest('POST', '/api/v1/conferences', {
-      name: 'Ab', // Too short - will fail domain validation
+      name: 'Valid Name', // Passes Zod contract validation to trigger domain exception in handler
       organizerId: '12345678-1234-4123-8123-123456789012',
       cfpStartDate: new Date().toISOString().split('T')[0]!,
       cfpEndDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]!,
