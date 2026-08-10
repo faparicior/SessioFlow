@@ -180,7 +180,7 @@ function controllerInstantiatesDto() {
 
       // Get imports referencing .command or .query
       const imports = sourceFile.getImportDeclarations();
-      const dtoImport = imports.find(imp => {
+      const dtoImport = imports.find((imp: any) => {
         const moduleSpecifier = imp.getModuleSpecifierValue();
         return moduleSpecifier.includes('.command') || moduleSpecifier.includes('.query');
       });
@@ -190,7 +190,7 @@ function controllerInstantiatesDto() {
       }
 
       const namedImports = dtoImport.getNamedImports();
-      const dtoClassSpecifier = namedImports.find(spec => {
+      const dtoClassSpecifier = namedImports.find((spec: any) => {
         const name = spec.getName();
         return name.endsWith('Command') || name.endsWith('Query');
       });
