@@ -9,10 +9,10 @@ export const ConferenceCfpSchema = z.object({
 });
 
 export const ConferenceCreateSchema = z.object({
-  name: z.string().min(3).max(100),
-  description: z.string().max(1000).optional().default(''),
-  cfpStartDate: z.string().min(1),
-  cfpEndDate: z.string().min(1),
+  name: z.string(),
+  description: z.string().optional().default(''),
+  cfpStartDate: z.iso.date({ message: 'Start date must be a valid date' }),
+  cfpEndDate: z.iso.date({ message: 'End date must be a valid date' }),
   maxSubmissions: z.number().int().positive().optional(),
   requiresApproval: z.boolean().optional().default(true),
 });

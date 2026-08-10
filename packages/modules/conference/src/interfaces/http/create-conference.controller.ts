@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { CreateConferenceCommand } from '../../application/commands/create-conference/create-conference.command.js';
 import { type CreateConferenceHandler } from '../../application/commands/create-conference/create-conference.handler.js';
-import { ConferenceCreateSchema, ConferenceResponseSchema } from './conference-create.schema.js';
+import { ConferenceCreateSchema } from '@sessioflow/api-definitions/zod/conference';
 import { mapDomainErrorToResponse } from '@sessioflow/shared-http/error-mapper';
 import { DomainError } from '@sessioflow/shared-domain/exceptions';
 
