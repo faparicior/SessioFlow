@@ -7,6 +7,7 @@
   },
   "include": ["src/**/*"],
   "references": [
+    { "path": "../../shared/bus" },
     { "path": "../../shared/database" },
     { "path": "../../shared/domain" },
     { "path": "../../shared/logging" }

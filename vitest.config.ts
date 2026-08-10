@@ -11,6 +11,8 @@ export default defineConfig({
       '@sessioflow/shared-domain/*': path.resolve(__dirname, './packages/shared/domain/src/*'),
       '@sessioflow/shared-http': path.resolve(__dirname, './packages/shared/http/src'),
       '@sessioflow/shared-http/*': path.resolve(__dirname, './packages/shared/http/src/*'),
+      '@sessioflow/bus': path.resolve(__dirname, './packages/shared/bus/src'),
+      '@sessioflow/bus/*': path.resolve(__dirname, './packages/shared/bus/src/*'),
       '@sessioflow/conference': path.resolve(__dirname, './packages/modules/conference/src'),
       '@sessioflow/conference/*': path.resolve(__dirname, './packages/modules/conference/src/*'),
       // Use backend app for tests that need @backend imports
