@@ -338,7 +338,44 @@ describe('DDD Architecture', () => {
         .because('API routes must only interact with application CQRS handlers, never domain objects or repositories directly')
         .check();
     });
+
+    it('API routes must not contain Zod schemas directly', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/apps/**/api/**')
+        .and()
+        .haveNameMatching(/route\.ts$/)
+        .should()
+        .notImportFrom('zod')
+        .because('request payload validation belongs in module HTTP controllers, not thin API route wrappers')
+        .check();
+    });
+
+    it('API routes must not import infrastructure directly', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/apps/**/api/**')
+        .and()
+        .haveNameMatching(/route\.ts$/)
+        .should()
+        .notImportFrom('**/infrastructure/**', '**/database/**')
+        .because('API routes must resolve controllers via the module composition root, never import infrastructure')
+        .check();
+    });
+
+    it('API route handlers must be exported standard HTTP verbs', () => {
+      functions(p)
+        .that()
+        .resideInFolder('**/apps/**/api/**')
+        .and()
+        .haveNameMatching(/route\.ts$/)
+        .should()
+        .haveNameMatching(/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)$/)
+        .because('Next.js App Router route files must export standard uppercase HTTP verb functions')
+        .check();
+    });
   });
+
 
   describe('CQRS Architecture', () => {
     it('command handlers and query handlers must end with Handler', () => {
@@ -624,6 +661,42 @@ describe('DDD Architecture', () => {
         .should()
         .notImportFrom('**/packages/modules/**/domain/**')
         .because('controllers interact with handlers, never with domain objects directly')
+        .check();
+    });
+
+    it('controller functions must be named ending with Controller', () => {
+      functions(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/interfaces/**')
+        .and()
+        .haveNameMatching(/\.controller\.ts$/)
+        .should()
+        .haveNameMatching(/Controller$/)
+        .because('HTTP controllers must follow uniform naming conventions')
+        .check();
+    });
+
+    it('controllers must not import infrastructure directly', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/interfaces/**')
+        .and()
+        .haveNameMatching(/\.controller\.ts$/)
+        .should()
+        .notImportFrom('**/packages/modules/**/infrastructure/**', '**/database/**')
+        .because('controllers must communicate through CQRS handlers, never infrastructure details')
+        .check();
+    });
+
+    it('controllers must return Response or Promise<Response>', () => {
+      functions(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/interfaces/**')
+        .and()
+        .haveNameMatching(/controller$/i)
+        .should()
+        .haveReturnTypeMatching(matching(/Response/))
+        .because('HTTP controllers must return Web Standard Response objects')
         .check();
     });
   });
