@@ -25,6 +25,7 @@ Please review the target DDD element/use case: `<TARGET_FILE_OR_FEATURE>` agains
    - [ ] Commands/Queries end with `Command`/`Query` and carry **primitives only** (zero domain VO imports).
    - [ ] Primitive `Input` type alias exported (e.g. `CreateConferenceInput`).
    - [ ] Handlers end with `Handler`, implement `execute()`, and receive the co-located DTO class in `execute()`.
+   - [ ] Command Handlers invoke structured logger (`logger.info` / `logger.error`) in `execute()`, using zero direct `console.log` statements.
    - [ ] CQRS Responses have a `private constructor`, a static `from(entity)` factory method, and `readonly` primitive fields only.
 
 3. **Interfaces / Controller Layer (`packages/modules/*/src/interfaces/http/`)**

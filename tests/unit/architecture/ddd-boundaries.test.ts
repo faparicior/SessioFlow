@@ -427,6 +427,28 @@ describe('DDD Architecture', () => {
         .check();
     });
 
+    it('handlers must not use console statements directly', () => {
+      functions(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/application/**')
+        .should()
+        .notContain(call(/console\.log|console\.error|console\.warn/))
+        .because('application handlers must use structured logging via @sessioflow/shared-logging, never direct console statements')
+        .check();
+    });
+
+    it('command handlers must call structured logger in execute()', () => {
+      functions(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/application/**/commands/**')
+        .and()
+        .haveNameMatching(/(^|\.)execute$/)
+        .should()
+        .contain(call(/logger\.info|logger\.error/))
+        .because('command handlers perform state-changing use cases and must include structured logging for auditability')
+        .check();
+    });
+
     it('commands must be named Command', () => {
       classes(p)
         .that()
