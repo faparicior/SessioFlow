@@ -248,12 +248,13 @@ describe('DDD Architecture', () => {
         .check();
     });
 
-    it('domain must not import from external paths', () => {
+    it('domain must not import from external paths or api-definitions', () => {
       modules(p)
         .that()
         .resideInFolder('**/packages/modules/**/domain/**')
         .should()
-        .notImportFrom('**/frontend/**', '**/../**')
+        .notImportFrom('**/frontend/**', '**/api-definitions/**', '**/../**')
+        .because('domain layer is the core business model and must not depend on external API contract schemas')
         .check();
     });
 
@@ -264,6 +265,21 @@ describe('DDD Architecture', () => {
         .should()
         .beExported()
         .because('domain entities are used by other layers')
+        .check();
+    });
+  });
+
+  describe('API Definitions package boundaries', () => {
+    it('api-definitions must only import from api-definitions and node_modules', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/packages/api-definitions/**')
+        .should()
+        .onlyImportFrom(
+          '**/packages/api-definitions/**',
+          '**/node_modules/**',
+        )
+        .because('api-definitions is a pure contract package — it must contain zero backend domain or module dependencies')
         .check();
     });
   });
@@ -301,7 +317,7 @@ describe('DDD Architecture', () => {
   });
 
   describe('Interfaces layer dependencies', () => {
-    it('interfaces must only import from interfaces, application, shared, components, and node_modules', () => {
+    it('interfaces must only import from interfaces, application, api-definitions, shared, components, and node_modules', () => {
       modules(p)
         .that()
         .resideInFolder('**/packages/modules/**/interfaces/**')
@@ -309,6 +325,7 @@ describe('DDD Architecture', () => {
         .onlyImportFrom(
           '**/packages/modules/**/interfaces/**',
           '**/packages/modules/**/application/**',
+          '**/packages/api-definitions/**',
           '**/packages/shared/**',
           '**/node_modules/**',
         )
@@ -697,6 +714,18 @@ describe('DDD Architecture', () => {
         .should()
         .haveReturnTypeMatching(matching(/Response/))
         .because('HTTP controllers must return Web Standard Response objects')
+        .check();
+    });
+
+    it('controllers must not import local interface schema files', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/interfaces/**')
+        .and()
+        .haveNameMatching(/\.controller\.ts$/)
+        .should()
+        .notImportFrom('**/interfaces/http/*.schema*')
+        .because('controllers must source shared API contract schemas from @sessioflow/api-definitions per ADR-020, not local duplicate schema files')
         .check();
     });
   });
