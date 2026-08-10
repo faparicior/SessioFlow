@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import type { CreateConferenceCommandHandler } from '../../application/commands/create-conference/create-conference.handler.js';
 import { CreateConferenceCommand } from '../../application/commands/create-conference/create-conference.command.js';
-import { type CreateConferenceHandler } from '../../application/commands/create-conference/create-conference.handler.js';
+import { CreateConferenceResponse } from '../../application/commands/create-conference/create-conference.response.js';
 import { ConferenceCreateSchema } from '@sessioflow/api-definitions/zod/conference';
 import { mapDomainErrorToResponse } from '@sessioflow/shared-http/error-mapper';
 import { DomainError } from '@sessioflow/shared-domain/exceptions';
@@ -14,7 +15,7 @@ import { DomainError } from '@sessioflow/shared-domain/exceptions';
  */
 export async function createConferenceController(
   request: Request,
-  commandHandler: CreateConferenceHandler,
+  commandHandler: CreateConferenceCommandHandler,
   getAuthUser: () => Promise<{ id: string } | undefined>,
 ): Promise<Response> {
   try {

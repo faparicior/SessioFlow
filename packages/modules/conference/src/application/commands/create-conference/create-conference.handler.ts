@@ -10,7 +10,11 @@ import { CreateConferenceResponse } from './create-conference.response';
 import { type ConferenceRepository } from '../../../domain/conference-repository.interface';
 import { type CreateConferenceCommand } from './create-conference.command';
 
-export class CreateConferenceHandler {
+export interface CreateConferenceCommandHandler {
+  execute(command: CreateConferenceCommand): Promise<CreateConferenceResponse>;
+}
+
+export class CreateConferenceHandler implements CreateConferenceCommandHandler {
   constructor(private readonly repository: ConferenceRepository) {}
 
   async execute(command: CreateConferenceCommand): Promise<CreateConferenceResponse> {

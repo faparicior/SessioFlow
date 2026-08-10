@@ -13,6 +13,9 @@ import {DrizzleConferenceRepository} from './infrastructure/database/conference.
 import {createConferenceController as createConferenceHttpController} from './interfaces/http/create-conference.controller.js';
 import {getConferenceController as getConferenceHttpController} from './interfaces/http/get-conference.controller.js';
 
+import { CreateConferenceResponse } from './application/commands/create-conference/create-conference.response.js';
+import { GetConferenceResponse } from './application/queries/get-conference/get-conference.response.js';
+
 /**
  * Conference Module Container (Composition Root).
  *
@@ -51,18 +54,26 @@ export const conferenceContainer = {
     repository?: ConferenceRepository,
     getAuthUser: () => Promise<{id: string} | undefined> = async () => ({id: 'mock-user-id'}),
   ) {
-    const handler = this.createConferenceHandler(repository);
+    const mediator = this.createMediator(repository);
+    const busHandler = {
+      execute: (command: CreateConferenceCommand) =>
+        mediator.send<CreateConferenceCommand, CreateConferenceResponse>(command),
+    };
     return (request: Request) =>
-      createConferenceHttpController(request, handler, getAuthUser);
+      createConferenceHttpController(request, busHandler, getAuthUser);
   },
 
   getConferenceController(
     repository?: ConferenceRepository,
     getAuthUser: () => Promise<{id: string} | undefined> = async () => ({id: 'mock-user-id'}),
   ) {
-    const handler = this.getConferenceHandler(repository);
+    const mediator = this.createMediator(repository);
+    const busHandler = {
+      execute: (query: GetConferenceQuery) =>
+        mediator.ask<GetConferenceQuery, GetConferenceResponse>(query),
+    };
     return (request: Request, id: string) =>
-      getConferenceHttpController(request, id, handler, getAuthUser);
+      getConferenceHttpController(request, id, busHandler, getAuthUser);
   },
 };
 

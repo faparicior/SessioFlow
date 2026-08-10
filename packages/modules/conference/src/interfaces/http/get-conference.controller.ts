@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import type { GetConferenceHandler } from '../../application/queries/get-conference/get-conference.handler.js';
+import type { GetConferenceQueryHandler } from '../../application/queries/get-conference/get-conference.handler.js';
 import { GetConferenceQuery } from '../../application/queries/get-conference/get-conference.query.js';
+import { GetConferenceResponse } from '../../application/queries/get-conference/get-conference.response.js';
 import { mapDomainErrorToResponse } from '@sessioflow/shared-http/error-mapper';
 import { DomainError } from '@sessioflow/shared-domain/exceptions';
 
@@ -13,7 +14,7 @@ import { DomainError } from '@sessioflow/shared-domain/exceptions';
 export async function getConferenceController(
   request: Request,
   conferenceId: string,
-  queryHandler: GetConferenceHandler,
+  queryHandler: GetConferenceQueryHandler,
   getAuthUser: () => Promise<{ id: string } | undefined>,
 ): Promise<Response> {
   try {
