@@ -5,7 +5,11 @@ import { GetConferenceResponse } from './get-conference.response';
 
 import { type ConferenceRepository } from '../../../domain/conference-repository.interface';
 
-export class GetConferenceHandler {
+export interface GetConferenceQueryHandler {
+  execute(query: GetConferenceQuery): Promise<GetConferenceResponse>;
+}
+
+export class GetConferenceHandler implements GetConferenceQueryHandler {
   constructor(private readonly conferenceRepository: ConferenceRepository) { }
 
   async execute(query: GetConferenceQuery): Promise<GetConferenceResponse> {

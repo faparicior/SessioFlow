@@ -232,6 +232,49 @@ function controllerInstantiatesDto() {
   });
 }
 
+/**
+ * Creates a condition that checks HTTP controllers explicitly use type-only imports for their co-located handler.
+ */
+function controllerImportsHandlerType() {
+  return defineCondition('controllerImportsHandlerType', (matchedFns: any[]) => {
+    return matchedFns.map((fn: any) => {
+      const relPath = getElementFile(fn);
+      const sourceFile = fn.getSourceFile();
+      const imports = sourceFile.getImportDeclarations();
+
+      const handlerImport = imports.find((imp: any) => {
+        const specifier = imp.getModuleSpecifierValue();
+        return specifier.includes('.handler');
+      });
+
+      if (!handlerImport) {
+        return {
+          rule: 'controllers must explicitly import their co-located Handler type',
+          element: fn.getName()!,
+          file: relPath,
+          line: 0,
+          message: `Controller "${fn.getName()}" does not import a Handler type. ` +
+                   `Controllers must explicitly include "import type { [UseCase]Handler }" ` +
+                   `for 100% LLM traceability and compile-time type safety.`,
+        };
+      }
+
+      if (!handlerImport.isTypeOnly()) {
+        return {
+          rule: 'controllers must use type-only imports for handlers',
+          element: fn.getName()!,
+          file: relPath,
+          line: 0,
+          message: `Controller "${fn.getName()}" imports handler as a runtime value instead of type-only. ` +
+                   `Use "import type { ... }" to prevent runtime coupling while preserving explicit IDE/LLM linkage.`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
 describe('DDD Architecture', () => {
   describe('Domain layer isolation', () => {
     it('domain must only import from domain, shared, and node_modules', () => {
@@ -280,6 +323,20 @@ describe('DDD Architecture', () => {
           '**/node_modules/**',
         )
         .because('api-definitions is a pure contract package — it must contain zero backend domain or module dependencies')
+        .check();
+    });
+
+    it('bus package must only import from bus, shared-logging, and node_modules', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/packages/shared/bus/**')
+        .should()
+        .onlyImportFrom(
+          '**/packages/shared/bus/**',
+          '**/packages/shared/logging/**',
+          '**/node_modules/**',
+        )
+        .because('bus package is pure CQRS infrastructure — it must not depend on feature modules or database schemas')
         .check();
     });
   });
@@ -748,6 +805,36 @@ describe('DDD Architecture', () => {
         .should()
         .notImportFrom('**/interfaces/http/*.schema*')
         .because('controllers must source shared API contract schemas from @sessioflow/api-definitions per ADR-020, not local duplicate schema files')
+        .check();
+    });
+
+    it('controllers must explicitly import their co-located Handler type using import type', () => {
+      functions(p)
+        .that()
+        .resideInFolder('**/packages/modules/*/src/interfaces/**')
+        .and()
+        .haveNameMatching(/controller$/i)
+        .should()
+        .satisfy(controllerImportsHandlerType())
+        .because('HTTP controllers must explicitly import their co-located Handler type via "import type" for 100% LLM/IDE traceability and zero runtime coupling')
+        .check();
+    });
+  });
+
+  describe('Module Composition Root conventions', () => {
+    it('container files must import and instantiate Mediator from @sessioflow/bus', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/packages/modules/*')
+        .and()
+        .haveNameMatching(/container\.ts$/)
+        .should()
+        .onlyImportFrom(
+          '**/packages/modules/**',
+          '**/packages/shared/**',
+          '**/node_modules/**',
+        )
+        .because('module containers act as composition roots and wire handlers into the Mediator / Bus')
         .check();
     });
   });
