@@ -5,13 +5,16 @@
   "type": "module",
   "exports": {
     "./client": "./dist/client.js",
-    "./schema": "./dist/schema.js"
+    "./schema": "./dist/schema.js",
+    "./outbox": "./dist/outbox-processor.js",
+    "./outbox-repository": "./dist/outbox-repository.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@sessioflow/shared-logging": "*",
     "drizzle-orm": "^0.45.2",
     "postgres": "^3.4.9",
     "zod": "^4.4.3"
