@@ -22,6 +22,19 @@ describe('CfpConfig', () => {
     expect(config.status).toBe(CfpStatus.ACTIVE);
   });
 
+  it('fromData() reconstitutes CfpConfig with preserved status and properties', () => {
+    const config = CfpConfig.fromData({
+      startDate: CfpStartDate.create(futureDate(15)),
+      endDate: CfpEndDate.create(futureDate(45)),
+      maxSubmissions: MaxSubmissions.create(50),
+      requiresApproval: RequiresApproval.create(false),
+      status: CfpStatus.CLOSED,
+    });
+    expect(config.status).toBe(CfpStatus.CLOSED);
+    expect(config.maxSubmissions.value).toBe(50);
+    expect(config.requiresApproval.value).toBe(false);
+  });
+
   it('create() stores the start date', () => {
     const config = createCfpConfig();
     expect(config.startDate.value).toBeInstanceOf(Date);

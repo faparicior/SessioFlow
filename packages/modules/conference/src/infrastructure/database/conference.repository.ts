@@ -8,6 +8,7 @@ import { ConferenceName } from '../../domain/value-objects/conference-name';
 import { ConferenceSlug } from '../../domain/value-objects/conference-slug';
 import { ConferenceStatusFromString } from '../../domain/value-objects/conference-status';
 import { CfpConfig } from '../../domain/cfp-config';
+import { CfpStatus } from '../../domain/value-objects/cfp-status';
 import { CfpStartDate } from '../../domain/value-objects/cfp-start-date';
 import { CfpEndDate } from '../../domain/value-objects/cfp-end-date';
 import { MaxSubmissions } from '../../domain/value-objects/max-submissions';
@@ -91,11 +92,12 @@ export class DrizzleConferenceRepository implements ConferenceRepository {
       slug: ConferenceSlug.create(row.slug),
       status: ConferenceStatusFromString(row.status),
       organizerId: row.organizerId,
-      cfpConfig: CfpConfig.create({
+      cfpConfig: CfpConfig.fromData({
         startDate: CfpStartDate.create(new Date(cfpData.startDate)),
         endDate: CfpEndDate.create(new Date(cfpData.endDate)),
         maxSubmissions: MaxSubmissions.create(cfpData.maxSubmissions),
         requiresApproval: RequiresApproval.create(cfpData.requiresApproval),
+        status: (cfpData.status as CfpStatus) ?? CfpStatus.ACTIVE,
       }),
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
