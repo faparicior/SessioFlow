@@ -5,7 +5,7 @@
  * Default: true
  */
 
-export class RequiresApproval implements RequiresApproval {
+export class RequiresApproval {
   static create(approval = true): RequiresApproval {
     return new RequiresApproval(approval);
   }
@@ -14,5 +14,9 @@ export class RequiresApproval implements RequiresApproval {
 
   get value(): boolean {
     return this._value;
+  }
+
+  equals(other: RequiresApproval): boolean {
+    return this._value === other._value;
   }
 }

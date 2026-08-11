@@ -11,7 +11,7 @@
 import { ConferenceNameTooShortError } from '../exceptions/conference-name-too-short-error';
 import { ConferenceNameTooLongError } from '../exceptions/conference-name-too-long-error';
 
-export class ConferenceName implements ConferenceName {
+export class ConferenceName {
   static create(name: string): ConferenceName {
     const trimmed = name.trim();
 

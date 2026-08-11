@@ -9,7 +9,7 @@
 
 import { InvalidCfpStartDateError } from '../exceptions/invalid-cfp-start-date-error';
 
-export class CfpStartDate implements CfpStartDate {
+export class CfpStartDate {
   static create(date: Date): CfpStartDate {
     if (Number.isNaN(date.getTime())) {
       throw new InvalidCfpStartDateError();

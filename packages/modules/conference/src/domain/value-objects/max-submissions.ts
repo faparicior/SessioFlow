@@ -9,7 +9,7 @@
 
 import { MaxSubmissionsInvalidError } from '../exceptions/max-submissions-invalid-error';
 
-export class MaxSubmissions implements MaxSubmissions {
+export class MaxSubmissions {
   static create(max?: number): MaxSubmissions {
     if (max !== undefined && (!Number.isInteger(max) || max <= 0)) {
       throw new MaxSubmissionsInvalidError();
@@ -22,6 +22,10 @@ export class MaxSubmissions implements MaxSubmissions {
 
   get value(): number | undefined {
     return this._value;
+  }
+
+  equals(other: MaxSubmissions): boolean {
+    return this._value === other._value;
   }
 
   isUnlimited(): boolean {

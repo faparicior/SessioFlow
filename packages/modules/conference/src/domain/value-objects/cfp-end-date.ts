@@ -9,7 +9,7 @@
 
 import { InvalidCfpEndDateError } from '../exceptions/invalid-cfp-end-date-error';
 
-export class CfpEndDate implements CfpEndDate {
+export class CfpEndDate {
   static create(date: Date): CfpEndDate {
     if (Number.isNaN(date.getTime())) {
       throw new InvalidCfpEndDateError();

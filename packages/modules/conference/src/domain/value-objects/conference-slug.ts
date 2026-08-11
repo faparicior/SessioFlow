@@ -9,7 +9,7 @@
 
 import { EmptySlugError } from '../exceptions/empty-slug-error';
 
-export class ConferenceSlug implements ConferenceSlug {
+export class ConferenceSlug {
   static create(name: string): ConferenceSlug {
     const slug = name
       .toLowerCase()
