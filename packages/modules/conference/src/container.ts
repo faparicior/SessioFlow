@@ -13,6 +13,7 @@ import {DrizzleConferenceRepository} from './infrastructure/database/conference.
 import {createConferenceController as createConferenceHttpController} from './interfaces/http/create-conference.controller.js';
 import {getConferenceController as getConferenceHttpController} from './interfaces/http/get-conference.controller.js';
 
+import { DrizzleOutboxRepository, type OutboxRepository } from '@sessioflow/shared-database/outbox-repository';
 import { CreateConferenceResponse } from './application/commands/create-conference/create-conference.response.js';
 import { GetConferenceResponse } from './application/queries/get-conference/get-conference.response.js';
 
@@ -24,8 +25,9 @@ import { GetConferenceResponse } from './application/queries/get-conference/get-
 export const conferenceContainer = {
   createConferenceHandler(
     repository: ConferenceRepository = new DrizzleConferenceRepository(),
+    outboxRepository: OutboxRepository = new DrizzleOutboxRepository(),
   ): CreateConferenceHandler {
-    return new CreateConferenceHandler(repository);
+    return new CreateConferenceHandler(repository, outboxRepository);
   },
 
   getConferenceHandler(

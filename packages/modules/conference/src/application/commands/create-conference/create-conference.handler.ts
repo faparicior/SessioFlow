@@ -8,6 +8,7 @@ import { getCorrelationId } from '@sessioflow/shared-logging/context';
 import { CreateConferenceResponse } from './create-conference.response';
 
 import { type ConferenceRepository } from '../../../domain/conference-repository.interface';
+import { type OutboxRepository } from '@sessioflow/shared-database/outbox-repository';
 import { type CreateConferenceCommand } from './create-conference.command';
 
 export interface CreateConferenceCommandHandler {
@@ -15,7 +16,10 @@ export interface CreateConferenceCommandHandler {
 }
 
 export class CreateConferenceHandler implements CreateConferenceCommandHandler {
-  constructor(private readonly repository: ConferenceRepository) {}
+  constructor(
+    private readonly repository: ConferenceRepository,
+    private readonly outboxRepository?: OutboxRepository
+  ) {}
 
   async execute(command: CreateConferenceCommand): Promise<CreateConferenceResponse> {
     const logger = getLogger();
@@ -58,6 +62,12 @@ export class CreateConferenceHandler implements CreateConferenceCommandHandler {
 
     conference.publishCfp();
     await this.repository.save(conference);
+
+    // 4. Explicitly pull pending events at the latest moment and persist to outbox
+    if (this.outboxRepository) {
+      const events = conference.pullDomainEvents();
+      await this.outboxRepository.saveAll(events, 'Conference', conference.id.value);
+    }
 
     logger.info('Conference saved successfully', {
       correlationId,
