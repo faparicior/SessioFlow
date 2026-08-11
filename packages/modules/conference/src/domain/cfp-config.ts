@@ -40,6 +40,13 @@ export class CfpConfig {
     });
   }
 
+  /**
+   * Factory method to reconstitute a CfpConfig child entity from stored data.
+   */
+  static fromData(data: CfpConfigData): CfpConfig {
+    return new CfpConfig(data);
+  }
+
   private constructor(private readonly _params: CfpConfigData) {}
 
   validateDates(): void {

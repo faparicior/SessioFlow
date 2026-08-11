@@ -275,6 +275,75 @@ function controllerImportsHandlerType() {
   });
 }
 
+/**
+ * Condition to check that domain entities and child entities follow factory & constructor conventions:
+ * 1. Private constructor to prevent raw unvalidated instantiation.
+ * 2. Static create() factory method for domain creation with business rules.
+ * 3. Static fromData() (or createFromData) factory method for persistence reconstitution.
+ */
+function domainEntityFactoryConventions() {
+  return defineCondition('domainEntityFactoryConventions', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      // Target domain entity files under packages/modules/*/src/domain/ (excluding value-objects, exceptions, events)
+      if (
+        relPath.includes('/value-objects/') ||
+        relPath.includes('/exceptions/') ||
+        relPath.includes('/events/')
+      ) {
+        return null;
+      }
+
+      // 1. Private constructor check
+      const hasPrivateConstructor = /private\s+constructor\s*\(/.test(fileSource);
+      if (!hasPrivateConstructor) {
+        return {
+          rule: 'domain entity must have a private constructor',
+          element: name,
+          file: relPath,
+          line: 0,
+          message:
+            `Domain entity "${name}" in "${relPath}" must have a private constructor. ` +
+            `Convention: private constructor enforces static factory methods create() and fromData().`,
+        };
+      }
+
+      // 2. Static create() method check
+      const hasStaticCreate = /static\s+create\s*\(/.test(fileSource);
+      if (!hasStaticCreate) {
+        return {
+          rule: 'domain entity must have static create() factory method',
+          element: name,
+          file: relPath,
+          line: 0,
+          message:
+            `Domain entity "${name}" in "${relPath}" must have a static create() factory method. ` +
+            `Convention: static create(...) encapsulates domain creation rules & initial state.`,
+        };
+      }
+
+      // 3. Static fromData() method check
+      const hasStaticFromData = /static\s+(fromData|createFromData)\s*\(/.test(fileSource);
+      if (!hasStaticFromData) {
+        return {
+          rule: 'domain entity must have static fromData() factory method',
+          element: name,
+          file: relPath,
+          line: 0,
+          message:
+            `Domain entity "${name}" in "${relPath}" must have a static fromData() factory method. ` +
+            `Convention: static fromData(...) reconstitutes state from persistence without raising side effects or domain events.`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
 describe('DDD Architecture', () => {
   describe('Domain layer isolation', () => {
     it('domain must only import from domain, shared, and node_modules', () => {
@@ -308,6 +377,16 @@ describe('DDD Architecture', () => {
         .should()
         .beExported()
         .because('domain entities are used by other layers')
+        .check();
+    });
+
+    it('domain entities must have private constructor and static create/fromData factory methods', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/**')
+        .should()
+        .satisfy(domainEntityFactoryConventions())
+        .because('domain entities require private constructors and named factory methods for creation vs reconstitution')
         .check();
     });
   });
