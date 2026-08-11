@@ -23,7 +23,7 @@ class InMemoryConferenceRepository implements ConferenceRepository {
   }
 
   async findByOrganizerId(organizerId: string): Promise<Conference[]> {
-    return this.conferences.filter(c => c.organizerId === organizerId);
+    return this.conferences.filter(c => c.organizerId.value === organizerId);
   }
 
   async findByStatus(status: ConferenceStatus): Promise<Conference[]> {

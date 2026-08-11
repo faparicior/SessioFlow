@@ -2,6 +2,8 @@ import { ConferenceId } from './value-objects/conference-id';
 import { ConferenceName } from './value-objects/conference-name';
 import { ConferenceSlug } from './value-objects/conference-slug';
 import { ConferenceStatus } from './value-objects/conference-status';
+import { ConferenceDescription } from './value-objects/conference-description';
+import { OrganizerId } from './value-objects/organizer-id';
 import { CfpStartDate } from './value-objects/cfp-start-date';
 import { CfpEndDate } from './value-objects/cfp-end-date';
 import { MaxSubmissions } from './value-objects/max-submissions';
@@ -31,10 +33,10 @@ import { CfpConfig } from './cfp-config';
 export type ConferenceData = {
   id: ConferenceId;
   name: ConferenceName;
-  description: string;
+  description: ConferenceDescription;
   slug: ConferenceSlug;
   status: ConferenceStatus;
-  organizerId: string;
+  organizerId: OrganizerId;
   cfpConfig: CfpConfig;
   createdAt: Date;
   updatedAt: Date;
@@ -52,31 +54,31 @@ export class Conference {
    * Factory method to create a new Conference in DRAFT state.
    */
   static create(parameters: {
-    name: string;
-    description?: string;
-    organizerId: string;
-    cfpStartDate: Date;
-    cfpEndDate: Date;
-    maxSubmissions?: number;
-    requiresApproval?: boolean;
+    name: ConferenceName;
+    description: ConferenceDescription;
+    organizerId: OrganizerId;
+    cfpStartDate: CfpStartDate;
+    cfpEndDate: CfpEndDate;
+    maxSubmissions: MaxSubmissions;
+    requiresApproval: RequiresApproval;
   }): Conference {
     const now = new Date().setHours(0, 0, 0, 0);
-    if (parameters.cfpStartDate.getTime() < now) {
+    if (parameters.cfpStartDate.value.getTime() < now) {
       throw new CfpStartDateNotInFutureError();
     }
 
     return this.createFromData({
       id: ConferenceId.create(),
-      name: ConferenceName.create(parameters.name),
-      description: parameters.description ?? '',
-      slug: ConferenceSlug.create(parameters.name),
+      name: parameters.name,
+      description: parameters.description,
+      slug: ConferenceSlug.create(parameters.name.value),
       status: ConferenceStatus.DRAFT,
       organizerId: parameters.organizerId,
       cfpConfig: CfpConfig.create({
-        startDate: CfpStartDate.create(parameters.cfpStartDate),
-        endDate: CfpEndDate.create(parameters.cfpEndDate),
-        maxSubmissions: MaxSubmissions.create(parameters.maxSubmissions),
-        requiresApproval: RequiresApproval.create(parameters.requiresApproval),
+        startDate: parameters.cfpStartDate,
+        endDate: parameters.cfpEndDate,
+        maxSubmissions: parameters.maxSubmissions,
+        requiresApproval: parameters.requiresApproval,
       }),
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -169,7 +171,7 @@ export class Conference {
     return this._data.name;
   }
 
-  get description(): string {
+  get description(): ConferenceDescription {
     return this._data.description;
   }
 
@@ -181,7 +183,7 @@ export class Conference {
     return this._data.status;
   }
 
-  get organizerId(): string {
+  get organizerId(): OrganizerId {
     return this._data.organizerId;
   }
 

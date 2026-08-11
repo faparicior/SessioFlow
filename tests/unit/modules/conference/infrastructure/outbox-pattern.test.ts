@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Conference } from '@sessioflow/conference/domain/conference';
+import { ConferenceName } from '@sessioflow/conference/domain/value-objects/conference-name';
+import { ConferenceDescription } from '@sessioflow/conference/domain/value-objects/conference-description';
+import { OrganizerId } from '@sessioflow/conference/domain/value-objects/organizer-id';
 import { CfpStartDate } from '@sessioflow/conference/domain/value-objects/cfp-start-date';
 import { CfpEndDate } from '@sessioflow/conference/domain/value-objects/cfp-end-date';
 import { MaxSubmissions } from '@sessioflow/conference/domain/value-objects/max-submissions';
@@ -58,10 +61,13 @@ describe('Transactional Outbox Pattern', () => {
     const outboxRepository = new DrizzleOutboxRepository();
 
     const conference = Conference.create({
-      name: 'Outbox Test Conference',
-      organizerId: 'org-outbox-1',
-      cfpStartDate: futureDate(10),
-      cfpEndDate: futureDate(30),
+      name: ConferenceName.create('Outbox Test Conference'),
+      description: ConferenceDescription.create(),
+      organizerId: OrganizerId.create('org-outbox-1'),
+      cfpStartDate: CfpStartDate.create(futureDate(10)),
+      cfpEndDate: CfpEndDate.create(futureDate(30)),
+      maxSubmissions: MaxSubmissions.create(),
+      requiresApproval: RequiresApproval.create(),
     });
 
     // Action that generates domain events: ConferenceCreatedEvent & CfpOpenedEvent

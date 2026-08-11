@@ -2,19 +2,34 @@ import {describe, it, expect} from 'vitest';
 import {Conference} from '@sessioflow/conference/domain/conference';
 import {ConferenceStatus} from '@sessioflow/conference/domain/value-objects/conference-status';
 import {CfpStatus} from '@sessioflow/conference/domain/value-objects/cfp-status';
+import {ConferenceName} from '@sessioflow/conference/domain/value-objects/conference-name';
+import {ConferenceDescription} from '@sessioflow/conference/domain/value-objects/conference-description';
+import {OrganizerId} from '@sessioflow/conference/domain/value-objects/organizer-id';
+import {CfpStartDate} from '@sessioflow/conference/domain/value-objects/cfp-start-date';
+import {CfpEndDate} from '@sessioflow/conference/domain/value-objects/cfp-end-date';
+import {MaxSubmissions} from '@sessioflow/conference/domain/value-objects/max-submissions';
+import {RequiresApproval} from '@sessioflow/conference/domain/value-objects/requires-approval';
 import {StateTransitionError} from '@sessioflow/conference/domain/exceptions/state-transition-error';
 import {ConferenceCreatedEvent} from '@sessioflow/conference/domain/events/conference-created';
 import {CfpOpenedEvent} from '@sessioflow/conference/domain/events/cfp-opened';
 import {futureDate, pastDate} from '../../../__helpers__/date'
 
 describe('Conference', () => {
-  const createConference = () =>
+  const createConference = (overrideParams?: Partial<{
+    name: string;
+    description: string;
+    organizerId: string;
+    cfpStartDate: Date;
+    cfpEndDate: Date;
+  }>) =>
     Conference.create({
-      name: 'Tech Conference 2026',
-      description: 'A conference about technology',
-      organizerId: 'org-123',
-      cfpStartDate: futureDate(1),
-      cfpEndDate: futureDate(30),
+      name: ConferenceName.create(overrideParams?.name ?? 'Tech Conference 2026'),
+      description: ConferenceDescription.create(overrideParams?.description ?? 'A conference about technology'),
+      organizerId: OrganizerId.create(overrideParams?.organizerId ?? 'org-123'),
+      cfpStartDate: CfpStartDate.create(overrideParams?.cfpStartDate ?? futureDate(1)),
+      cfpEndDate: CfpEndDate.create(overrideParams?.cfpEndDate ?? futureDate(30)),
+      maxSubmissions: MaxSubmissions.create(),
+      requiresApproval: RequiresApproval.create(),
     });
 
   it('create() produces a conference in DRAFT state', () => {
@@ -24,13 +39,7 @@ describe('Conference', () => {
 
   it('create() rejects a past start date', () => {
     expect(() =>
-      Conference.create({
-        name: 'Tech Conference 2026',
-        description: 'A conference about technology',
-        organizerId: 'org-123',
-        cfpStartDate: pastDate(),
-        cfpEndDate: futureDate(30),
-      }),
+      createConference({ cfpStartDate: pastDate() })
     ).toThrow('CfpStartDate must be in the future or today');
   });
 
@@ -52,12 +61,12 @@ describe('Conference', () => {
 
   it('create() stores the description', () => {
     const conference = createConference();
-    expect(conference.description).toBe('A conference about technology');
+    expect(conference.description.value).toBe('A conference about technology');
   });
 
   it('create() stores the organizerId', () => {
     const conference = createConference();
-    expect(conference.organizerId).toBe('org-123');
+    expect(conference.organizerId.value).toBe('org-123');
   });
 
   it('create() creates a CfpConfig child in ACTIVE state', () => {
