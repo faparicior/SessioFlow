@@ -10,7 +10,25 @@ import { CfpDatesInvalidError } from '@sessioflow/conference/domain/exceptions/c
 import { ConferenceNameTooShortError } from '@sessioflow/conference/domain/exceptions/conference-name-too-short-error';
 import { ConferenceFreeTierLimitError } from '@sessioflow/conference/domain/exceptions/conference-free-tier-limit-error';
 import { SlugExistsError } from '@sessioflow/conference/domain/exceptions/slug-exists-error';
-import { futureDate, futureDateStr, pastDateStr } from '../../../../../unit/__helpers__/date'
+import { futureDate, futureDateStr, pastDateStr } from '../../../../../unit/__helpers__/date';
+import { ConferenceName } from '@sessioflow/conference/domain/value-objects/conference-name';
+import { ConferenceDescription } from '@sessioflow/conference/domain/value-objects/conference-description';
+import { OrganizerId } from '@sessioflow/conference/domain/value-objects/organizer-id';
+import { CfpStartDate } from '@sessioflow/conference/domain/value-objects/cfp-start-date';
+import { CfpEndDate } from '@sessioflow/conference/domain/value-objects/cfp-end-date';
+import { MaxSubmissions } from '@sessioflow/conference/domain/value-objects/max-submissions';
+import { RequiresApproval } from '@sessioflow/conference/domain/value-objects/requires-approval';
+
+const createTestConference = (name: string, organizerId: string, startDate = futureDate(15), endDate = futureDate(45)) =>
+  Conference.create({
+    name: ConferenceName.create(name),
+    description: ConferenceDescription.create(),
+    organizerId: OrganizerId.create(organizerId),
+    cfpStartDate: CfpStartDate.create(startDate),
+    cfpEndDate: CfpEndDate.create(endDate),
+    maxSubmissions: MaxSubmissions.create(),
+    requiresApproval: RequiresApproval.create(),
+  });
 
 // Mock repository
 class MockConferenceRepository implements ConferenceRepository {
@@ -27,7 +45,7 @@ class MockConferenceRepository implements ConferenceRepository {
   }
 
   async findByOrganizerId(organizerId: string): Promise<Conference[]> {
-    return this.conferences.filter((c) => c.organizerId === organizerId);
+    return this.conferences.filter((c) => c.organizerId.value === organizerId);
   }
 
   async findByStatus(status: ConferenceStatus): Promise<Conference[]> {
@@ -103,12 +121,7 @@ describe('CreateConference Command', () => {
   });
 
   it('throws error for duplicate slug', async () => {
-    const existing = Conference.create({
-      name: 'Tech Conference',
-      organizerId: 'org-1',
-      cfpStartDate: futureDate(15),
-      cfpEndDate: futureDate(45),
-    });
+    const existing = createTestConference('Tech Conference', 'org-1');
     existing.publishCfp();
     repo.add(existing);
 
@@ -186,12 +199,7 @@ describe('CreateConference Command', () => {
   it('throws error when free tier limit exceeded', async () => {
     // Create 5 active conferences
     for (let i = 0; i < 5; i++) {
-      const conference = Conference.create({
-        name: `Conference ${i}`,
-        organizerId: 'org-123',
-        cfpStartDate: futureDate(15),
-        cfpEndDate: futureDate(45),
-      });
+      const conference = createTestConference(`Conference ${i}`, 'org-123');
       conference.publishCfp();
       repo.add(conference);
     }

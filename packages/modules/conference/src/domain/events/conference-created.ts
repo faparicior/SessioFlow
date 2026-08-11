@@ -1,6 +1,7 @@
 import {type ConferenceId} from '../value-objects/conference-id';
 import {type ConferenceName} from '../value-objects/conference-name';
 import {type ConferenceSlug} from '../value-objects/conference-slug';
+import {type OrganizerId} from '../value-objects/organizer-id';
 
 /**
  * ConferenceCreatedEvent - Published when a new Conference is created.
@@ -13,7 +14,7 @@ export type ConferenceCreatedEventData = {
   conferenceId: ConferenceId;
   conferenceName: ConferenceName;
   conferenceSlug: ConferenceSlug;
-  organizerId: string;
+  organizerId: OrganizerId;
   timestamp?: Date;
 };
 
@@ -25,7 +26,7 @@ export class ConferenceCreatedEvent {
       conferenceId: ConferenceId;
       conferenceName: ConferenceName;
       conferenceSlug: ConferenceSlug;
-      organizerId: string;
+      organizerId: OrganizerId;
       timestamp?: Date;
     },
   ) {

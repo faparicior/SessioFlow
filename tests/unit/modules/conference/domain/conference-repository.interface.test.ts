@@ -4,7 +4,25 @@ import {type ConferenceRepository} from '@sessioflow/conference/domain/conferenc
 import {ConferenceId} from '@sessioflow/conference/domain/value-objects/conference-id';
 import {ConferenceSlug} from '@sessioflow/conference/domain/value-objects/conference-slug';
 import {ConferenceStatus} from '@sessioflow/conference/domain/value-objects/conference-status';
-import {futureDate} from '../../../__helpers__/date'
+import {ConferenceName} from '@sessioflow/conference/domain/value-objects/conference-name';
+import {ConferenceDescription} from '@sessioflow/conference/domain/value-objects/conference-description';
+import {OrganizerId} from '@sessioflow/conference/domain/value-objects/organizer-id';
+import {CfpStartDate} from '@sessioflow/conference/domain/value-objects/cfp-start-date';
+import {CfpEndDate} from '@sessioflow/conference/domain/value-objects/cfp-end-date';
+import {MaxSubmissions} from '@sessioflow/conference/domain/value-objects/max-submissions';
+import {RequiresApproval} from '@sessioflow/conference/domain/value-objects/requires-approval';
+import {futureDate} from '../../../__helpers__/date';
+
+const createTestConference = (name: string, organizerId: string, startDate = futureDate(15), endDate = futureDate(45)) =>
+  Conference.create({
+    name: ConferenceName.create(name),
+    description: ConferenceDescription.create(),
+    organizerId: OrganizerId.create(organizerId),
+    cfpStartDate: CfpStartDate.create(startDate),
+    cfpEndDate: CfpEndDate.create(endDate),
+    maxSubmissions: MaxSubmissions.create(),
+    requiresApproval: RequiresApproval.create(),
+  });
 
 /**
  * ConferenceRepository Interface - Tests using a mock implementation.
@@ -28,7 +46,7 @@ describe('ConferenceRepository', () => {
     }
 
     async findByOrganizerId(organizerId: string): Promise<Conference[]> {
-      return this.conferences.filter(c => c.organizerId === organizerId);
+      return this.conferences.filter(c => c.organizerId.value === organizerId);
     }
 
     async findByStatus(status: ConferenceStatus): Promise<Conference[]> {
@@ -36,13 +54,11 @@ describe('ConferenceRepository', () => {
     }
 
     async save(conference: Conference): Promise<void> {
-      const existingIndex = this.conferences.findIndex(
-        c => c.id.value === conference.id.value,
-      );
-      if (existingIndex === -1) {
-        this.conferences.push(conference);
+      const index = this.conferences.findIndex(c => c.id.value === conference.id.value);
+      if (index >= 0) {
+        this.conferences[index] = conference;
       } else {
-        this.conferences[existingIndex] = conference;
+        this.conferences.push(conference);
       }
     }
 
@@ -55,24 +71,23 @@ describe('ConferenceRepository', () => {
     add(conference: Conference): void {
       this.conferences.push(conference);
     }
+
+    get count(): number {
+      return this.conferences.length;
+    }
   }
 
   let repo: MockConferenceRepository;
 
   it('findById returns null for non-existent ID', async () => {
     repo = new MockConferenceRepository();
-    const result = await repo.findById(ConferenceId.fromString('12345678-1234-4123-8123-123456789012'));
+    const result = await repo.findById('non-existent-id');
     expect(result).toBeNull();
   });
 
   it('findById returns conference for existing ID', async () => {
     repo = new MockConferenceRepository();
-    const conference = Conference.create({
-      name: 'Test Conference',
-      organizerId: 'org-1',
-      cfpStartDate: futureDate(15),
-      cfpEndDate: futureDate(45),
-    });
+    const conference = createTestConference('Test Conference', 'org-1');
     repo.add(conference);
 
     const result = await repo.findById(conference.id);
@@ -88,12 +103,7 @@ describe('ConferenceRepository', () => {
 
   it('findBySlug returns conference for existing slug', async () => {
     repo = new MockConferenceRepository();
-    const conference = Conference.create({
-      name: 'Tech Conference',
-      organizerId: 'org-1',
-      cfpStartDate: futureDate(15),
-      cfpEndDate: futureDate(45),
-    });
+    const conference = createTestConference('Tech Conference', 'org-1');
     repo.add(conference);
 
     const result = await repo.findBySlug(conference.slug);
@@ -102,34 +112,22 @@ describe('ConferenceRepository', () => {
 
   it('findByOrganizerId returns only conferences for that organizer', async () => {
     repo = new MockConferenceRepository();
-    const conf1 = Conference.create({
-      name: 'Conference 1',
-      organizerId: 'org-1',
-      cfpStartDate: futureDate(15),
-      cfpEndDate: futureDate(45),
-    });
-    const conf2 = Conference.create({
-      name: 'Conference 2',
-      organizerId: 'org-2',
-      cfpStartDate: futureDate(15),
-      cfpEndDate: futureDate(45),
-    });
+    const conf1 = createTestConference('Conference 1', 'org-1');
+    const conf2 = createTestConference('Conference 2', 'org-1');
+    const conf3 = createTestConference('Conference 3', 'org-2');
     repo.add(conf1);
     repo.add(conf2);
+    repo.add(conf3);
 
     const result = await repo.findByOrganizerId('org-1');
-    expect(result).toHaveLength(1);
-    expect(result[0].name.value).toBe('Conference 1');
+    expect(result).toHaveLength(2);
+    expect(result.map(c => c.name.value)).toContain('Conference 1');
+    expect(result.map(c => c.name.value)).toContain('Conference 2');
   });
 
   it('findByStatus returns conferences with matching status', async () => {
     repo = new MockConferenceRepository();
-    const conf1 = Conference.create({
-      name: 'Draft Conference',
-      organizerId: 'org-1',
-      cfpStartDate: futureDate(15),
-      cfpEndDate: futureDate(45),
-    });
+    const conf1 = createTestConference('Draft Conference', 'org-1');
     conf1.publishCfp(); // DRAFT → CFP_OPEN
 
     repo.add(conf1);
@@ -143,12 +141,7 @@ describe('ConferenceRepository', () => {
 
   it('save() adds a new conference', async () => {
     repo = new MockConferenceRepository();
-    const conference = Conference.create({
-      name: 'New Conference',
-      organizerId: 'org-1',
-      cfpStartDate: futureDate(15),
-      cfpEndDate: futureDate(45),
-    });
+    const conference = createTestConference('New Conference', 'org-1');
 
     await repo.save(conference);
     const result = await repo.findById(conference.id);
@@ -158,12 +151,7 @@ describe('ConferenceRepository', () => {
 
   it('save() updates an existing conference', async () => {
     repo = new MockConferenceRepository();
-    const conference = Conference.create({
-      name: 'Original Name',
-      organizerId: 'org-1',
-      cfpStartDate: futureDate(15),
-      cfpEndDate: futureDate(45),
-    });
+    const conference = createTestConference('Original Name', 'org-1');
     repo.add(conference);
 
     conference.publishCfp();
@@ -175,12 +163,7 @@ describe('ConferenceRepository', () => {
 
   it('delete() removes a conference by ID', async () => {
     repo = new MockConferenceRepository();
-    const conference = Conference.create({
-      name: 'To Delete',
-      organizerId: 'org-1',
-      cfpStartDate: futureDate(15),
-      cfpEndDate: futureDate(45),
-    });
+    const conference = createTestConference('To Delete', 'org-1');
     repo.add(conference);
 
     await repo.delete(conference.id);

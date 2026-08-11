@@ -11,6 +11,8 @@ import { CfpConfig } from '../../domain/cfp-config';
 import { CfpStatus } from '../../domain/value-objects/cfp-status';
 import { CfpStartDate } from '../../domain/value-objects/cfp-start-date';
 import { CfpEndDate } from '../../domain/value-objects/cfp-end-date';
+import { ConferenceDescription } from '../../domain/value-objects/conference-description';
+import { OrganizerId } from '../../domain/value-objects/organizer-id';
 import { MaxSubmissions } from '../../domain/value-objects/max-submissions';
 import { RequiresApproval } from '../../domain/value-objects/requires-approval';
 
@@ -19,10 +21,10 @@ export class DrizzleConferenceRepository implements ConferenceRepository {
     const data = {
       id: conference.id.value,
       name: conference.name.value,
-      description: conference.description,
+      description: conference.description.value,
       slug: conference.slug.value,
       status: conference.status,
-      organizerId: conference.organizerId,
+      organizerId: conference.organizerId.value,
       cfpConfig: {
         startDate: conference.cfpConfig.startDate.value.toISOString(),
         endDate: conference.cfpConfig.endDate.value.toISOString(),
@@ -88,10 +90,10 @@ export class DrizzleConferenceRepository implements ConferenceRepository {
     return Conference.fromData({
       id: ConferenceId.fromString(row.id),
       name: ConferenceName.create(row.name),
-      description: row.description ?? '',
+      description: ConferenceDescription.create(row.description ?? ''),
       slug: ConferenceSlug.create(row.slug),
       status: ConferenceStatusFromString(row.status),
-      organizerId: row.organizerId,
+      organizerId: OrganizerId.create(row.organizerId),
       cfpConfig: CfpConfig.fromData({
         startDate: CfpStartDate.create(new Date(cfpData.startDate)),
         endDate: CfpEndDate.create(new Date(cfpData.endDate)),

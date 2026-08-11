@@ -5,6 +5,13 @@ import { ConferenceFreeTierLimitError } from '../../../domain/exceptions/confere
 import { SlugExistsError } from '../../../domain/exceptions/slug-exists-error';
 import { getLogger } from '@sessioflow/shared-logging/logger';
 import { getCorrelationId } from '@sessioflow/shared-logging/context';
+import { ConferenceName } from '../../../domain/value-objects/conference-name';
+import { ConferenceDescription } from '../../../domain/value-objects/conference-description';
+import { OrganizerId } from '../../../domain/value-objects/organizer-id';
+import { CfpStartDate } from '../../../domain/value-objects/cfp-start-date';
+import { CfpEndDate } from '../../../domain/value-objects/cfp-end-date';
+import { MaxSubmissions } from '../../../domain/value-objects/max-submissions';
+import { RequiresApproval } from '../../../domain/value-objects/requires-approval';
 import { CreateConferenceResponse } from './create-conference.response';
 
 import { type ConferenceRepository } from '../../../domain/conference-repository.interface';
@@ -45,15 +52,15 @@ export class CreateConferenceHandler implements CreateConferenceCommandHandler {
       throw new ConferenceFreeTierLimitError();
     }
 
-    // 2. Create conference aggregate
+    // 2. Create conference aggregate using Value Objects
     const conference = Conference.create({
-      name: command.input.name,
-      description: command.input.description,
-      organizerId: command.input.organizerId,
-      cfpStartDate: new Date(command.input.cfpStartDate),
-      cfpEndDate: new Date(command.input.cfpEndDate),
-      maxSubmissions: command.input.maxSubmissions,
-      requiresApproval: command.input.requiresApproval,
+      name: ConferenceName.create(command.input.name),
+      description: ConferenceDescription.create(command.input.description),
+      organizerId: OrganizerId.create(command.input.organizerId),
+      cfpStartDate: CfpStartDate.create(new Date(command.input.cfpStartDate)),
+      cfpEndDate: CfpEndDate.create(new Date(command.input.cfpEndDate)),
+      maxSubmissions: MaxSubmissions.create(command.input.maxSubmissions),
+      requiresApproval: RequiresApproval.create(command.input.requiresApproval),
     });
 
     // 3. Check slug uniqueness
@@ -85,7 +92,7 @@ export class CreateConferenceHandler implements CreateConferenceCommandHandler {
       conferenceId: conference.id.value,
       conferenceName: conference.name.value,
       slug: conference.slug.value,
-      organizerId: conference.organizerId,
+      organizerId: conference.organizerId.value,
     });
 
     return CreateConferenceResponse.from(conference);

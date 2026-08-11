@@ -13,6 +13,13 @@ import { SlugExistsError } from '@sessioflow/conference/domain/exceptions/slug-e
 import { ConferenceNotFoundError } from '@sessioflow/conference/domain/exceptions/conference-not-found-error';
 
 import { Conference } from '@sessioflow/conference/domain/conference';
+import { ConferenceName } from '@sessioflow/conference/domain/value-objects/conference-name';
+import { ConferenceDescription } from '@sessioflow/conference/domain/value-objects/conference-description';
+import { OrganizerId } from '@sessioflow/conference/domain/value-objects/organizer-id';
+import { CfpStartDate } from '@sessioflow/conference/domain/value-objects/cfp-start-date';
+import { CfpEndDate } from '@sessioflow/conference/domain/value-objects/cfp-end-date';
+import { MaxSubmissions } from '@sessioflow/conference/domain/value-objects/max-submissions';
+import { RequiresApproval } from '@sessioflow/conference/domain/value-objects/requires-approval';
 
 // Zod schemas for testing responses type-safely without type assertions
 const successResponseSchema = z.object({
@@ -61,11 +68,13 @@ const mockGetAuthUser = vi.fn().mockResolvedValue({ id: 'test-user-id' });
 describe('Conference API - POST /api/v1/conferences', () => {
   it('creates a conference and returns 201', async () => {
     const conference = Conference.create({
-      name: 'Tech Conference',
-      organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: new Date('2026-09-01'),
-      cfpEndDate: new Date('2026-10-01'),
-      requiresApproval: true,
+      name: ConferenceName.create('Tech Conference'),
+      description: ConferenceDescription.create(),
+      organizerId: OrganizerId.create('12345678-1234-4123-8123-123456789012'),
+      cfpStartDate: CfpStartDate.create(new Date('2026-09-01')),
+      cfpEndDate: CfpEndDate.create(new Date('2026-10-01')),
+      maxSubmissions: MaxSubmissions.create(),
+      requiresApproval: RequiresApproval.create(true),
     });
     conference.publishCfp();
     const mockResponse = CreateConferenceResponse.from(conference);
@@ -186,11 +195,13 @@ describe('Conference API - POST /api/v1/conferences', () => {
 describe('Conference API - GET /api/v1/conferences/:id', () => {
   it('returns conference data', async () => {
     const conference = Conference.create({
-      name: 'Tech Conference',
-      organizerId: '12345678-1234-4123-8123-123456789012',
-      cfpStartDate: new Date('2026-09-01'),
-      cfpEndDate: new Date('2026-10-01'),
-      requiresApproval: true,
+      name: ConferenceName.create('Tech Conference'),
+      description: ConferenceDescription.create(),
+      organizerId: OrganizerId.create('12345678-1234-4123-8123-123456789012'),
+      cfpStartDate: CfpStartDate.create(new Date('2026-09-01')),
+      cfpEndDate: CfpEndDate.create(new Date('2026-10-01')),
+      maxSubmissions: MaxSubmissions.create(),
+      requiresApproval: RequiresApproval.create(true),
     });
     conference.publishCfp();
     const mockResponse = GetConferenceResponse.from(conference);

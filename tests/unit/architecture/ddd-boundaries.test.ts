@@ -413,6 +413,94 @@ function commandHandlerOutboxConventions() {
   });
 }
 
+/**
+ * Condition to check that Domain Entity Data properties use Value Objects, Child Entities, or Date,
+ * and do not use raw primitives (string, number, boolean).
+ */
+function domainEntityNoPrimitivesConventions() {
+  return defineCondition('domainEntityNoPrimitivesConventions', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      // Target domain entity files under packages/modules/*/src/domain/ (excluding value-objects, exceptions, events)
+      if (
+        relPath.includes('/value-objects/') ||
+        relPath.includes('/exceptions/') ||
+        relPath.includes('/events/')
+      ) {
+        return null;
+      }
+
+      // Extract Entity Data type definition block e.g. type ConferenceData = { ... }
+      const dataTypeMatch = fileSource.match(/type\s+\w+Data\s*=\s*\{([^}]+)\}/);
+      if (!dataTypeMatch) return null;
+
+      const dataBlock = dataTypeMatch[1];
+      // Check for raw primitives (string, number, boolean) in Data properties (excluding Date)
+      const primitiveMatches = dataBlock.match(/(\w+)\s*:\s*(string|number|boolean)\b/g);
+
+      if (primitiveMatches && primitiveMatches.length > 0) {
+        return {
+          rule: 'domain entity properties must use Value Objects instead of raw primitives',
+          element: name,
+          file: relPath,
+          line: 0,
+          message:
+            `Domain Entity Data type in "${relPath}" contains raw primitive property types: [${primitiveMatches.join(', ')}]. ` +
+            `DDD Convention: domain entities must wrap properties in Value Objects (e.g. OrganizerId, ConferenceDescription) instead of using raw primitives (string, number, boolean).`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
+/**
+ * Condition to check that static factory methods on domain entities (e.g. create) accept Value Objects
+ * instead of raw primitives (string, number, boolean).
+ */
+function domainFactoryNoPrimitivesConventions() {
+  return defineCondition('domainFactoryNoPrimitivesConventions', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      if (
+        relPath.includes('/value-objects/') ||
+        relPath.includes('/exceptions/') ||
+        relPath.includes('/events/')
+      ) {
+        return null;
+      }
+
+      // Check parameter types of static create(...) methods for raw primitives (string, number, boolean)
+      const createMethodMatch = fileSource.match(/static\s+create\s*\(\s*parameters\s*:\s*\{([^}]+)\}/);
+      if (!createMethodMatch) return null;
+
+      const paramsBlock = createMethodMatch[1];
+      const primitiveParamMatches = paramsBlock.match(/(\w+)\s*\??:\s*(string|number|boolean)\b/g);
+
+      if (primitiveParamMatches && primitiveParamMatches.length > 0) {
+        return {
+          rule: 'domain factory methods must accept Value Objects instead of raw primitives',
+          element: name,
+          file: relPath,
+          line: 0,
+          message:
+            `Domain entity factory method in "${relPath}" accepts raw primitive parameters: [${primitiveParamMatches.join(', ')}]. ` +
+            `DDD Convention: domain entity create(...) factory methods must accept Value Objects instead of raw primitives.`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
 describe('DDD Architecture', () => {
   describe('Domain layer isolation', () => {
     it('domain must only import from domain, shared, and node_modules', () => {
@@ -466,6 +554,26 @@ describe('DDD Architecture', () => {
         .should()
         .satisfy(aggregateRootDomainEventsConventions())
         .because('aggregate roots record domain events internally and expose pullDomainEvents() for event dispatching')
+        .check();
+    });
+
+    it('domain entity properties must use Value Objects instead of raw primitives', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/**')
+        .should()
+        .satisfy(domainEntityNoPrimitivesConventions())
+        .because('domain entities must encapsulate domain concepts in Value Objects instead of using raw primitives')
+        .check();
+    });
+
+    it('domain factory methods must accept Value Objects instead of raw primitives', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/**')
+        .should()
+        .satisfy(domainFactoryNoPrimitivesConventions())
+        .because('domain entity create(...) factory methods must receive Value Objects for type safety and invariant validation')
         .check();
     });
   });

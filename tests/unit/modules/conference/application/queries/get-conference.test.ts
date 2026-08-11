@@ -25,7 +25,7 @@ class MockConferenceRepository implements ConferenceRepository {
   }
 
   async findByOrganizerId(organizerId: string): Promise<Conference[]> {
-    return this.conferences.filter((c) => c.organizerId === organizerId);
+    return this.conferences.filter((c) => c.organizerId.value === organizerId);
   }
 
   async findByStatus(status: ConferenceStatus): Promise<Conference[]> {
@@ -53,6 +53,14 @@ class MockConferenceRepository implements ConferenceRepository {
   }
 }
 
+import { ConferenceName } from '@sessioflow/conference/domain/value-objects/conference-name';
+import { ConferenceDescription } from '@sessioflow/conference/domain/value-objects/conference-description';
+import { OrganizerId } from '@sessioflow/conference/domain/value-objects/organizer-id';
+import { CfpStartDate } from '@sessioflow/conference/domain/value-objects/cfp-start-date';
+import { CfpEndDate } from '@sessioflow/conference/domain/value-objects/cfp-end-date';
+import { MaxSubmissions } from '@sessioflow/conference/domain/value-objects/max-submissions';
+import { RequiresApproval } from '@sessioflow/conference/domain/value-objects/requires-approval';
+
 describe('GetConference Query', () => {
   let handler: GetConferenceHandler;
   let repo: MockConferenceRepository;
@@ -64,10 +72,13 @@ describe('GetConference Query', () => {
 
   it('returns conference by ID when it exists', async () => {
     const conference = Conference.create({
-      name: 'Tech Conference 2026',
-      organizerId: 'org-123',
-      cfpStartDate: futureDate(25),
-      cfpEndDate: futureDate(55),
+      name: ConferenceName.create('Tech Conference 2026'),
+      description: ConferenceDescription.create(),
+      organizerId: OrganizerId.create('org-123'),
+      cfpStartDate: CfpStartDate.create(futureDate(25)),
+      cfpEndDate: CfpEndDate.create(futureDate(55)),
+      maxSubmissions: MaxSubmissions.create(),
+      requiresApproval: RequiresApproval.create(),
     });
     conference.publishCfp();
     repo.add(conference);
@@ -90,12 +101,13 @@ describe('GetConference Query', () => {
 
   it('returns conference with CfpConfig details', async () => {
     const conference = Conference.create({
-      name: 'Custom Conference',
-      organizerId: 'org-123',
-      cfpStartDate: futureDate(25),
-      cfpEndDate: futureDate(55),
-      maxSubmissions: 100,
-      requiresApproval: false,
+      name: ConferenceName.create('Custom Conference'),
+      description: ConferenceDescription.create(),
+      organizerId: OrganizerId.create('org-123'),
+      cfpStartDate: CfpStartDate.create(futureDate(25)),
+      cfpEndDate: CfpEndDate.create(futureDate(55)),
+      maxSubmissions: MaxSubmissions.create(100),
+      requiresApproval: RequiresApproval.create(false),
     });
     repo.add(conference);
 
@@ -115,10 +127,13 @@ describe('GetConference Query', () => {
 
   it('returns conference in DRAFT state', async () => {
     const conference = Conference.create({
-      name: 'Draft Conference',
-      organizerId: 'org-123',
-      cfpStartDate: futureDate(25),
-      cfpEndDate: futureDate(55),
+      name: ConferenceName.create('Draft Conference'),
+      description: ConferenceDescription.create(),
+      organizerId: OrganizerId.create('org-123'),
+      cfpStartDate: CfpStartDate.create(futureDate(25)),
+      cfpEndDate: CfpEndDate.create(futureDate(55)),
+      maxSubmissions: MaxSubmissions.create(),
+      requiresApproval: RequiresApproval.create(),
     });
     repo.add(conference);
 
@@ -131,10 +146,13 @@ describe('GetConference Query', () => {
 
   it('returns conference with correct createdAt and updatedAt', async () => {
     const conference = Conference.create({
-      name: 'Time Test Conference',
-      organizerId: 'org-123',
-      cfpStartDate: futureDate(25),
-      cfpEndDate: futureDate(55),
+      name: ConferenceName.create('Time Test Conference'),
+      description: ConferenceDescription.create(),
+      organizerId: OrganizerId.create('org-123'),
+      cfpStartDate: CfpStartDate.create(futureDate(25)),
+      cfpEndDate: CfpEndDate.create(futureDate(55)),
+      maxSubmissions: MaxSubmissions.create(),
+      requiresApproval: RequiresApproval.create(),
     });
     repo.add(conference);
 
