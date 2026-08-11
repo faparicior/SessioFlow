@@ -87,11 +87,26 @@ export class Conference {
     return new Conference(data);
   }
 
+  private _domainEvents: Array<ConferenceCreatedEvent | CfpOpenedEvent | unknown> = [];
+
   private constructor(
     private readonly _data: ConferenceData
   ) {}
 
-  publishCfp(): { events: Array<ConferenceCreatedEvent | CfpOpenedEvent> } {
+  protected recordDomainEvent(event: ConferenceCreatedEvent | CfpOpenedEvent | unknown): void {
+    this._domainEvents.push(event);
+  }
+
+  /**
+   * Retrieves and flushes all pending domain events recorded by this aggregate.
+   */
+  pullDomainEvents(): Array<ConferenceCreatedEvent | CfpOpenedEvent | unknown> {
+    const events = [...this._domainEvents];
+    this._domainEvents = [];
+    return events;
+  }
+
+  publishCfp(): void {
     if (this._data.status !== ConferenceStatus.DRAFT) {
       throw new StateTransitionError(
         `Cannot publish CfP: conference is in ${this._data.status} state, must be DRAFT`
@@ -105,17 +120,15 @@ export class Conference {
     this._data.status = ConferenceStatus.CFP_OPEN;
     this._data.updatedAt = new Date();
 
-    const events: Array<ConferenceCreatedEvent | CfpOpenedEvent> = [
+    this.recordDomainEvent(
       new ConferenceCreatedEvent({
         conferenceId: this.id,
         conferenceName: this.name,
         conferenceSlug: this.slug,
         organizerId: this.organizerId,
-      }),
-      new CfpOpenedEvent(this.id, this.cfpConfig),
-    ];
-
-    return { events };
+      })
+    );
+    this.recordDomainEvent(new CfpOpenedEvent(this.id, this.cfpConfig));
   }
 
   closeCfp(): { events: unknown[] } {

@@ -82,21 +82,26 @@ describe('Conference', () => {
 
   it('publishCfp() transitions DRAFT → CFP_OPEN', () => {
     const conference = createConference();
-    const {events} = conference.publishCfp();
+    conference.publishCfp();
     expect(conference.status).toBe(ConferenceStatus.CFP_OPEN);
   });
 
-  it('publishCfp() publishes ConferenceCreated event', () => {
+  it('publishCfp() records ConferenceCreated event and flushes via pullDomainEvents()', () => {
     const conference = createConference();
-    const {events} = conference.publishCfp();
+    conference.publishCfp();
+    const events = conference.pullDomainEvents();
     const createdEvent = events.find(e => e instanceof ConferenceCreatedEvent);
     expect(createdEvent).toBeDefined();
-    expect(createdEvent!.conferenceId).toBe(conference.id);
+    expect((createdEvent as ConferenceCreatedEvent).conferenceId).toBe(conference.id);
+
+    // Verify events are flushed after pulling
+    expect(conference.pullDomainEvents()).toHaveLength(0);
   });
 
-  it('publishCfp() publishes CfpOpened event', () => {
+  it('publishCfp() records CfpOpened event', () => {
     const conference = createConference();
-    const {events} = conference.publishCfp();
+    conference.publishCfp();
+    const events = conference.pullDomainEvents();
     const openedEvent = events.find(e => e instanceof CfpOpenedEvent);
     expect(openedEvent).toBeDefined();
   });

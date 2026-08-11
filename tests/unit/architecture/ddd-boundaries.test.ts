@@ -344,6 +344,46 @@ function domainEntityFactoryConventions() {
   });
 }
 
+/**
+ * Condition to check that Domain Aggregate Roots implement pullDomainEvents() method
+ * for internal event accumulation and retrieval.
+ */
+function aggregateRootDomainEventsConventions() {
+  return defineCondition('aggregateRootDomainEventsConventions', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      // Target Aggregate Roots under packages/modules/*/src/domain/ (excluding value-objects, exceptions, events, child entities)
+      if (
+        relPath.includes('/value-objects/') ||
+        relPath.includes('/exceptions/') ||
+        relPath.includes('/events/') ||
+        relPath.endsWith('cfp-config.ts')
+      ) {
+        return null;
+      }
+
+      // Check for pullDomainEvents() method
+      const hasPullDomainEvents = /pullDomainEvents\s*\(/.test(fileSource);
+      if (!hasPullDomainEvents) {
+        return {
+          rule: 'aggregate root must implement pullDomainEvents() method',
+          element: name,
+          file: relPath,
+          line: 0,
+          message:
+            `Aggregate Root "${name}" in "${relPath}" must implement pullDomainEvents(). ` +
+            `Convention: aggregate roots record domain events internally and expose pullDomainEvents() to flush pending events.`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
 describe('DDD Architecture', () => {
   describe('Domain layer isolation', () => {
     it('domain must only import from domain, shared, and node_modules', () => {
@@ -387,6 +427,16 @@ describe('DDD Architecture', () => {
         .should()
         .satisfy(domainEntityFactoryConventions())
         .because('domain entities require private constructors and named factory methods for creation vs reconstitution')
+        .check();
+    });
+
+    it('domain aggregate roots must implement pullDomainEvents method for event management', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/**')
+        .should()
+        .satisfy(aggregateRootDomainEventsConventions())
+        .because('aggregate roots record domain events internally and expose pullDomainEvents() for event dispatching')
         .check();
     });
   });
