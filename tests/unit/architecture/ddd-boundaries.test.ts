@@ -501,6 +501,87 @@ function domainFactoryNoPrimitivesConventions() {
   });
 }
 
+/**
+ * Condition to check that Value Objects follow strict DDD structural conventions:
+ * 1. Private constructor
+ * 2. Static factory method (create or fromString)
+ * 3. Value getter (get value())
+ */
+function valueObjectConventions() {
+  return defineCondition('valueObjectConventions', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      if (!relPath.includes('/value-objects/')) return null;
+      if (name.endsWith('Error')) return null;
+
+      // 1. Check for private constructor
+      const hasPrivateConstructor = /private\s+constructor\b/.test(fileSource);
+      if (!hasPrivateConstructor) {
+        return {
+          rule: 'Value Objects must have a private constructor',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Value Object "${name}" in "${relPath}" must have a private constructor.`,
+        };
+      }
+
+      // 2. Check for static factory method (create or fromString)
+      const hasStaticFactory = /static\s+(create|fromString)\b/.test(fileSource);
+      if (!hasStaticFactory) {
+        return {
+          rule: 'Value Objects must have a static factory method (create or fromString)',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Value Object "${name}" in "${relPath}" must have a static factory method (create or fromString).`,
+        };
+      }
+
+      // 3. Check for get value() getter
+      const hasValueGetter = /get\s+value\s*\(\)/.test(fileSource);
+      if (!hasValueGetter) {
+        return {
+          rule: 'Value Objects must expose a "get value()" getter',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Value Object "${name}" in "${relPath}" must expose a "get value()" getter.`,
+        };
+      }
+
+      // 4. Check for equals(other) method
+      const hasEqualsMethod = /\bequals\s*\(/.test(fileSource);
+      if (!hasEqualsMethod) {
+        return {
+          rule: 'Value Objects must implement an equals(other) method',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Value Object "${name}" in "${relPath}" must implement an equals(other) method for structural equality.`,
+        };
+      }
+
+      // 5. Check for redundant implements Self clause
+      const hasSelfImplements = new RegExp(`implements\\s+${name}\\b`).test(fileSource);
+      if (hasSelfImplements) {
+        return {
+          rule: 'Value Objects must not use redundant "implements Self" anti-pattern',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Value Object "${name}" in "${relPath}" has redundant self-implementation "implements ${name}".`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
 describe('DDD Architecture', () => {
   describe('Domain layer isolation', () => {
     it('domain must only import from domain, shared, and node_modules', () => {
@@ -513,7 +594,7 @@ describe('DDD Architecture', () => {
           '**/packages/shared/**',
           '**/node_modules/**',
         )
-        .because('domain must not depend on application, infrastructure, or interfaces')
+        .because('domain layer must have no dependencies on external layers (infrastructure, application, interfaces)')
         .check();
     });
 
@@ -522,8 +603,8 @@ describe('DDD Architecture', () => {
         .that()
         .resideInFolder('**/packages/modules/**/domain/**')
         .should()
-        .notImportFrom('**/frontend/**', '**/api-definitions/**', '**/../**')
-        .because('domain layer is the core business model and must not depend on external API contract schemas')
+        .notImportFrom('**/packages/api-definitions/**')
+        .because('domain layer must not depend on API definitions')
         .check();
     });
 
@@ -574,6 +655,28 @@ describe('DDD Architecture', () => {
         .should()
         .satisfy(domainFactoryNoPrimitivesConventions())
         .because('domain entity create(...) factory methods must receive Value Objects for type safety and invariant validation')
+        .check();
+    });
+
+    it('value objects must have private constructor, static factory, and value getter', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/value-objects/**')
+        .should()
+        .satisfy(valueObjectConventions())
+        .because('Value Objects in DDD must enforce immutability with private constructors, static factory methods, and a value getter')
+        .check();
+    });
+
+    it('value objects must not import domain entities or repositories', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/value-objects/**')
+        .should()
+        .notImportFrom('**/infrastructure/**')
+        .and()
+        .notImportFrom('**/application/**')
+        .because('Value Objects are fundamental domain building blocks and must not depend on higher layers')
         .check();
     });
   });

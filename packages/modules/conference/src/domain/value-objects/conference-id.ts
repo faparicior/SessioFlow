@@ -37,4 +37,8 @@ export class ConferenceId {
   toString(): string {
     return this._value;
   }
+
+  equals(other: ConferenceId): boolean {
+    return this._value === other._value;
+  }
 }
