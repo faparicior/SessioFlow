@@ -9,6 +9,7 @@ import { CreateConferenceResponse } from './create-conference.response';
 
 import { type ConferenceRepository } from '../../../domain/conference-repository.interface';
 import { type OutboxRepository } from '@sessioflow/shared-database/outbox-repository';
+import { OutboxProcessor, type EventPublisher } from '@sessioflow/shared-database/outbox';
 import { type CreateConferenceCommand } from './create-conference.command';
 
 export interface CreateConferenceCommandHandler {
@@ -18,7 +19,8 @@ export interface CreateConferenceCommandHandler {
 export class CreateConferenceHandler implements CreateConferenceCommandHandler {
   constructor(
     private readonly repository: ConferenceRepository,
-    private readonly outboxRepository?: OutboxRepository
+    private readonly outboxRepository?: OutboxRepository,
+    private readonly eventPublisher?: EventPublisher
   ) {}
 
   async execute(command: CreateConferenceCommand): Promise<CreateConferenceResponse> {
@@ -67,6 +69,15 @@ export class CreateConferenceHandler implements CreateConferenceCommandHandler {
     if (this.outboxRepository) {
       const events = conference.pullDomainEvents();
       await this.outboxRepository.saveAll(events, 'Conference', conference.id.value);
+
+      // Immediate non-blocking post-commit outbox trigger
+      if (events.length > 0 && this.eventPublisher) {
+        setImmediate(() => {
+          OutboxProcessor.processPending(this.eventPublisher!).catch((err) => {
+            logger.error('Immediate outbox processing failed', err);
+          });
+        });
+      }
     }
 
     logger.info('Conference saved successfully', {

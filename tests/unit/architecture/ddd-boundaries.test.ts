@@ -384,6 +384,35 @@ function aggregateRootDomainEventsConventions() {
   });
 }
 
+/**
+ * Condition to check that CQRS Command Handlers use OutboxRepository to persist domain events.
+ */
+function commandHandlerOutboxConventions() {
+  return defineCondition('commandHandlerOutboxConventions', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      // Check for OutboxRepository usage or import
+      const usesOutbox = /OutboxRepository|outboxRepository/.test(fileSource);
+      if (!usesOutbox) {
+        return {
+          rule: 'command handlers must accept and use OutboxRepository',
+          element: name,
+          file: relPath,
+          line: 0,
+          message:
+            `Command Handler "${name}" in "${relPath}" must accept and use OutboxRepository ` +
+            `to persist domain events using the Transactional Outbox pattern.`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
 describe('DDD Architecture', () => {
   describe('Domain layer isolation', () => {
     it('domain must only import from domain, shared, and node_modules', () => {
@@ -632,6 +661,18 @@ describe('DDD Architecture', () => {
         .should()
         .contain(call(/logger\.info|logger\.error/))
         .because('command handlers perform state-changing use cases and must include structured logging for auditability')
+        .check();
+    });
+
+    it('command handlers must accept and use OutboxRepository for event persistence', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/application/**/commands/**')
+        .and()
+        .haveNameMatching(/Handler$/)
+        .should()
+        .satisfy(commandHandlerOutboxConventions())
+        .because('command handlers handle write operations and must persist domain events using OutboxRepository')
         .check();
     });
 

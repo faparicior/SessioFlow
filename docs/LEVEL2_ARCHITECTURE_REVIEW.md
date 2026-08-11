@@ -27,6 +27,7 @@ Please review the target DDD element/use case: `<TARGET_FILE_OR_FEATURE>` agains
    - [ ] Primitive `Input` type alias exported (e.g. `CreateConferenceInput`).
    - [ ] Handlers end with `Handler`, implement `execute()`, and receive the co-located DTO class in `execute()`.
    - [ ] Command Handlers invoke structured logger (`logger.info` / `logger.error`) in `execute()`, using zero direct `console.log` statements.
+   - [ ] Command Handlers accept and use `OutboxRepository` to persist domain events at the latest moment using the Transactional Outbox pattern.
    - [ ] CQRS Responses have a `private constructor`, a static `from(entity)` factory method, and `readonly` primitive fields only.
 
 3. **Interfaces / Controller Layer (`packages/modules/*/src/interfaces/http/`)**
