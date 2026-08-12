@@ -11,39 +11,11 @@ import {describe, it, expect} from 'vitest';
 import {project, modules, classes, slices, functions, call, matching, defineCondition, getElementFile} from '@nielspeter/ts-archunit';
 import {existsSync, readFileSync} from 'fs';
 import {join, dirname} from 'path';
-import {execSync} from 'child_process';
 
 // For monorepo structure, use root tsconfig to include packages/modules
 const p = project('tsconfig.json');
 // Dynamically add source files under packages/modules/*/src to ensure unimported/ghost DTOs are loaded
 p._project.addSourceFilesAtPaths('packages/modules/*/src/**/*.ts');
-
-/**
- * Returns a Set of modified/staged/untracked git file paths when ONLY_CHANGED=true.
- * If ONLY_CHANGED is not set, returns null (checks all files).
- */
-function getGitChangedFiles(): Set<string> | null {
-  if (!process.env.ONLY_CHANGED) return null;
-  try {
-    const output = execSync('git status --porcelain', { encoding: 'utf-8' });
-    const files = output
-      .split('\n')
-      .map((line) => {
-        const parts = line.trim().split(/\s+/);
-        return parts.length >= 2 ? parts[parts.length - 1] : null;
-      })
-      .filter(Boolean) as string[];
-    return new Set(files);
-  } catch {
-    return null;
-  }
-}
-
-function isChangedFile(filePath: string): boolean {
-  const changedSet = getGitChangedFiles();
-  if (!changedSet) return true;
-  return Array.from(changedSet).some((changedPath) => filePath.endsWith(changedPath));
-}
 
 /**
  * Creates a condition that checks each matched handler class has a co-located file
@@ -449,7 +421,6 @@ function domainEntityNoPrimitivesConventions() {
   return defineCondition('domainEntityNoPrimitivesConventions', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
-      if (!isChangedFile(relPath)) return null;
       const name = cls.getName();
       const fileSource = cls.getSourceFile().getFullText();
 
@@ -495,7 +466,6 @@ function domainFactoryNoPrimitivesConventions() {
   return defineCondition('domainFactoryNoPrimitivesConventions', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
-      if (!isChangedFile(relPath)) return null;
       const name = cls.getName();
       const fileSource = cls.getSourceFile().getFullText();
 
@@ -541,7 +511,6 @@ function valueObjectConventions() {
   return defineCondition('valueObjectConventions', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
-      if (!isChangedFile(relPath)) return null;
       const name = cls.getName();
       const fileSource = cls.getSourceFile().getFullText();
 
@@ -620,7 +589,6 @@ function repositoryReconstitutionConventions() {
   return defineCondition('repositoryReconstitutionConventions', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
-      if (!isChangedFile(relPath)) return null;
       const name = cls.getName();
       const fileSource = cls.getSourceFile().getFullText();
 
@@ -664,7 +632,6 @@ function domainEventConventions() {
   return defineCondition('domainEventConventions', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
-      if (!isChangedFile(relPath)) return null;
       const name = cls.getName();
       const fileSource = cls.getSourceFile().getFullText();
 
@@ -730,7 +697,6 @@ function domainExceptionConventions() {
   return defineCondition('domainExceptionConventions', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
-      if (!isChangedFile(relPath)) return null;
       const name = cls.getName();
       const fileSource = cls.getSourceFile().getFullText();
 
