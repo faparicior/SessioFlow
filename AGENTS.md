@@ -15,7 +15,11 @@ npx vitest run tests/unit/conference/*.test.ts  # Single test file
 npm run test:e2e         # Run Playwright E2E tests
 npx playwright test tests/e2e/create-conference.spec.ts  # Single E2E test
 
-# Quality
+# Quality & Architecture
+npm run check:arch       # Fast standalone architecture check (< 2s) for AI agents
+npm run check:arch packages/modules/conference # Scoped architecture check on target module/file
+npm run test:architecture # Run Vitest architecture test suite
+npm run test:changed     # Run Vitest tests for Git modified files
 npm run typecheck        # TypeScript type checking (tsgo)
 npm run lint             # ESLint
 npm run lint:fix         # Auto-fix linting issues
@@ -223,12 +227,13 @@ describe('ConferenceName', () => {
 
 A task is complete when ALL of the following pass:
 
-1. ✅ `npx vitest run` exits 0 (all unit tests pass)
-2. ✅ `npm run test:e2e` exits 0 (E2E tests pass)
-3. ✅ `npm run lint` exits 0 (no linting errors)
-4. ✅ `npm run typecheck` exits 0 (no type errors)
-5. ✅ Code coverage ≥ 80% for new code
-6. ✅ Changes committed with conventional commit format
+1. ✅ `npm run check:arch` exits 0 (architecture rules pass)
+2. ✅ `npx vitest run` exits 0 (all unit tests pass)
+3. ✅ `npm run test:e2e` exits 0 (E2E tests pass)
+4. ✅ `npm run lint` exits 0 (no linting errors)
+5. ✅ `npm run typecheck` exits 0 (no type errors)
+6. ✅ Code coverage ≥ 80% for new code
+7. ✅ Changes committed with conventional commit format
 
 ## 📚 Documentation
 
@@ -248,6 +253,26 @@ A task is complete when ALL of the following pass:
 - **Entities**: Domain objects with identity (EventId, SubmissionId)
 - **Validation**: Zod schemas for all input validation
 - **Type Safety**: TypeScript strict mode, no `any` types
+
+### ⚡ Fast Architecture Verification for AI Coding Agents
+
+When creating or modifying domain code, AI agents **must verify DDD architecture rules** before declaring completion:
+
+```bash
+# Fast architecture check (< 2s) across monorepo:
+npm run check:arch
+
+# Scoped architecture check on created/edited module or file:
+npm run check:arch packages/modules/conference
+node scripts/check-architecture.mjs packages/modules/conference/src/domain/value-objects/conference-name.ts
+```
+
+**Architectural Invariants Automatically Enforced:**
+1. **Domain Layer Isolation**: Domain modules must only import from domain, shared packages (`@sessioflow/shared-*`), or `node_modules`.
+2. **Value Objects**: Must have `private constructor`, static factory (`create`/`fromString`), `get value()` getter, and `equals(other)` method. Domain entity properties & `create()` parameters must use Value Objects instead of raw primitives (`string`, `number`, `boolean`).
+3. **Domain Events**: Reside in `domain/events/`, end with `Event`, define `type` + `timestamp`, and implement `toJSON()` serialization for Outbox persistence.
+4. **Domain Exceptions**: Reside in `domain/exceptions/`, end with `Error`, and extend base `DomainError` / `EntityNotFoundError`.
+5. **Repositories**: Interfaces live in `domain/`, implementations live in `infrastructure/` and reconstitute domain entities using `.fromData(...)` static factory methods.
 
 ## 🧠 Karpathy Principles for AI Agents
 

@@ -11,11 +11,20 @@ import {describe, it, expect} from 'vitest';
 import {project, modules, classes, slices, functions, call, matching, defineCondition, getElementFile} from '@nielspeter/ts-archunit';
 import {existsSync, readFileSync} from 'fs';
 import {join, dirname} from 'path';
+// Scope tsconfig loading to target module if provided for ultra-fast AI agent feedback (e.g. TARGET_MODULE=conference)
+const targetModule = process.env.TARGET_MODULE;
+const tsconfigPath = targetModule
+  ? `packages/modules/${targetModule}/tsconfig.json`
+  : 'tsconfig.json';
 
-// For monorepo structure, use root tsconfig to include packages/modules
-const p = project('tsconfig.json');
-// Dynamically add source files under packages/modules/*/src to ensure unimported/ghost DTOs are loaded
-p._project.addSourceFilesAtPaths('packages/modules/*/src/**/*.ts');
+const p = project(tsconfigPath);
+if (targetModule) {
+  p._project.addSourceFilesAtPaths(`packages/modules/${targetModule}/src/**/*.ts`);
+} else {
+  p._project.addSourceFilesAtPaths('packages/modules/*/src/**/*.ts');
+}
+
+const describeArch = describe;
 
 /**
  * Creates a condition that checks each matched handler class has a co-located file
