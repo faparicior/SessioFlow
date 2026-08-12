@@ -649,6 +649,7 @@ MIT License - see [LICENSE](LICENSE) file for details
 ## 🔗 Resources
 
 ### Architecture Documentation
+- [Architecture Rules & Invariants Guide](./docs/ARCHITECTURE-RULES.md)
 - [ADR Documentation](./docs/adr/)
 - [DDD Implementation Guide](./docs/adr/009-adopt-domain-driven-design-structure.md)
 - [Authentication Strategy (ADR-004-01)](./docs/adr/004-01-implement-magic-link-authentication-amendment-ddd-abstraction.md)

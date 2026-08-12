@@ -240,6 +240,7 @@ A task is complete when ALL of the following pass:
 | Topic | Location |
 |-------|----------|
 | Architecture (DDD) | `docs/ARCHITECTURE.md` |
+| Architecture Rules & Invariants | `docs/ARCHITECTURE-RULES.md` |
 | Architecture Decisions | `docs/adr/README.md` |
 | Testing Strategy | `docs/TESTING.md` |
 | API Design | `docs/API-DESIGN.md` |
