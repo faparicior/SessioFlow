@@ -7,10 +7,10 @@
  * @see docs/adr/009-adopt-domain-driven-design-structure.md
  * @see docs/adr/019-use-ts-archunit-for-architecture-testing.md
  */
-import {describe, it, expect} from 'vitest';
-import {project, modules, classes, slices, functions, call, matching, defineCondition, getElementFile} from '@nielspeter/ts-archunit';
-import {existsSync, readFileSync} from 'fs';
-import {join, dirname} from 'path';
+import { describe, it, expect } from 'vitest';
+import { project, modules, classes, slices, functions, call, matching, defineCondition, getElementFile } from '@nielspeter/ts-archunit';
+import { existsSync, readFileSync } from 'fs';
+import { join, dirname } from 'path';
 // Scope tsconfig loading to target module if provided for ultra-fast AI agent feedback (e.g. TARGET_MODULE=conference)
 const targetModule = process.env.TARGET_MODULE;
 const tsconfigPath = targetModule
@@ -38,9 +38,9 @@ function coLocatedFile(suffix: string) {
     return matchedClasses.map((cls: any) => {
       const filePath = cls.getSourceFile().getFilePath();
       const fileName = cls.getSourceFile().getBaseName();
-      const stem     = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
-      const dir      = dirname(filePath);
-      const target   = join(dir, stem + suffix + '.ts');
+      const stem = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
+      const dir = dirname(filePath);
+      const target = join(dir, stem + suffix + '.ts');
 
       if (!existsSync(target)) {
         return {
@@ -49,8 +49,8 @@ function coLocatedFile(suffix: string) {
           file: filePath,
           line: 0,
           message: `Handler "${stem}" is missing "${stem}${suffix}.ts". ` +
-                   `Convention: each CQRS handler folder is self-contained — ` +
-                   `the command/query, handler, and response all live at the folder root.`,
+            `Convention: each CQRS handler folder is self-contained — ` +
+            `the command/query, handler, and response all live at the folder root.`,
         };
       }
       return null;
@@ -74,7 +74,7 @@ function handlerMustReferenceCoLocatedDto(suffix: string) {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
       const fileName = relPath.split('/').at(-1)!;
-      const stem     = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
+      const stem = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
 
       // Convert kebab-case stem to PascalCase for matching class names.
       // e.g. "create-conference" → "CreateConference"
@@ -110,7 +110,7 @@ function handlerMustReferenceCoLocatedDto(suffix: string) {
           file: relPath,
           line: executeMethod.getStartLineNumber() ?? 0,
           message: `Handler "${cls.getName()}" execute() method parameters do not use type "${className}". ` +
-                   `The DTO should be referenced as a parameter type (e.g. execute(command: ${className})).`,
+            `The DTO should be referenced as a parameter type (e.g. execute(command: ${className})).`,
         };
       }
 
@@ -139,8 +139,8 @@ function hasInputType() {
           file: relPath,
           line: 0,
           message: `Class "${stem}" is missing a primitive Input type. ` +
-                   `Convention: export an Input type (e.g. "${stem}Input") and have ` +
-                   `the class accept it (e.g. "constructor(readonly input: ${stem}Input)").`,
+            `Convention: export an Input type (e.g. "${stem}Input") and have ` +
+            `the class accept it (e.g. "constructor(readonly input: ${stem}Input)").`,
         };
       }
       return null;
@@ -161,7 +161,7 @@ function notContainDomainProperties() {
       for (const prop of props) {
         const propType = prop.getTypeAtLocation(cls);
         const typeText = propType.getNonNullableType().getText();
-        
+
         if (domainPattern.test(typeText)) {
           return {
             rule: 'class must not contain domain type properties',
@@ -169,7 +169,7 @@ function notContainDomainProperties() {
             file: relPath,
             line: 0,
             message: `Class "${cls.getName()}" has property "${prop.getName()}" of domain type "${typeText}". ` +
-                     `Query DTOs must only contain primitive types — never domain entities or value objects.`,
+              `Query DTOs must only contain primitive types — never domain entities or value objects.`,
           };
         }
       }
@@ -232,7 +232,7 @@ function controllerInstantiatesDto() {
           file: relPath,
           line: fn.getStartLineNumber() ?? 0,
           message: `Controller "${fn.getName()}" imports "${dtoClassName}" but never instantiates it with "new ${dtoClassName}(…)". ` +
-                   `Passing plain objects bypasses the DTO boundary contract.`,
+            `Passing plain objects bypasses the DTO boundary contract.`,
         };
       }
 
@@ -263,8 +263,8 @@ function controllerImportsHandlerType() {
           file: relPath,
           line: 0,
           message: `Controller "${fn.getName()}" does not import a Handler type. ` +
-                   `Controllers must explicitly include "import type { [UseCase]Handler }" ` +
-                   `for 100% LLM traceability and compile-time type safety.`,
+            `Controllers must explicitly include "import type { [UseCase]Handler }" ` +
+            `for 100% LLM traceability and compile-time type safety.`,
         };
       }
 
@@ -275,7 +275,7 @@ function controllerImportsHandlerType() {
           file: relPath,
           line: 0,
           message: `Controller "${fn.getName()}" imports handler as a runtime value instead of type-only. ` +
-                   `Use "import type { ... }" to prevent runtime coupling while preserving explicit IDE/LLM linkage.`,
+            `Use "import type { ... }" to prevent runtime coupling while preserving explicit IDE/LLM linkage.`,
         };
       }
 
@@ -737,6 +737,154 @@ function domainExceptionConventions() {
   });
 }
 
+/**
+ * Condition to check that domain entity private properties do not use
+ * TypeScript's definite-assignment-assertion operator (`!`).
+ *
+ * Catches the anti-pattern where entity fields are declared with `!`
+ * and assigned piecemeal in static factories instead of via the constructor.
+ *
+ * Example bug this catches:
+ *   private _id!: ConferenceId;       ← BAD: tells TS "trust me"
+ *   private constructor() { }         ← BAD: empty body
+ *   static create() {
+ *     const i = new Conference();
+ *     i._id = id;                     ← BAD: scattered mutation
+ *   }
+ *
+ * Correct pattern: the constructor receives all required values and
+ * assigns them — TypeScript sees the assignments and is satisfied.
+ */
+function domainEntityNoDefiniteAssignmentAssertions() {
+  return defineCondition('domainEntityNoDefiniteAssignmentAssertions', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      // Target domain entity files under packages/modules/*/src/domain/
+      // (excluding value-objects, exceptions, events)
+      if (
+        relPath.includes('/value-objects/') ||
+        relPath.includes('/exceptions/') ||
+        relPath.includes('/events/')
+      ) {
+        return null;
+      }
+
+      // Regex: private <prop>! followed by type annotation
+      // Matches: private _id!: ConferenceId;
+      //          private readonly _id!: ConferenceId;
+      // Does NOT match: private _id: ConferenceId; (without !)
+      const matches = fileSource.matchAll(
+        /private\s+(?:readonly\s+)?(?:_(?:[A-Za-z]+))!\s*:\s*\w+/g,
+      );
+
+      for (const match of matches) {
+        return {
+          rule: 'domain entities must not use definite assignment assertions (!) on private properties',
+          element: name,
+          file: relPath,
+          line: fileSource.substring(0, match.index!).split('\n').length,
+          message:
+            `Domain entity "${name}" in "${relPath}" uses definite assignment assertion "${match[0]}". ` +
+            `Convention: declare private properties without "!" and initialize them in the constructor body. ` +
+            `TypeScript is satisfied when the constructor assigns all properties — no "trust me" needed.`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
+/**
+ * Condition to check that domain entity private constructors have a body
+ * that performs assignments (not empty).
+ *
+ * Catches the "lazy constructor" anti-pattern where the constructor is
+ * empty and all assignments happen in static factory methods.
+ *
+ * Example bug this catches:
+ *   private constructor() {             ← BAD: empty body (or trivial init)
+ *     this._domainEvents = [];         ← only event list, not real properties
+ *   }
+ *   static create(id, name, ...) {
+ *     const i = new Entity();
+ *     i._id = id; i._name = name;      ← BAD: scattered outside constructor
+ *   }
+ *
+ * Correct: the constructor receives all values and assigns them.
+ */
+function domainEntityConstructorHasPropertyAssignments() {
+  return defineCondition('domainEntityConstructorAssignments', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      // Target domain entity files under packages/modules/*/src/domain/
+      if (
+        relPath.includes('/value-objects/') ||
+        relPath.includes('/exceptions/') ||
+        relPath.includes('/events/')
+      ) {
+        return null;
+      }
+
+      // Extract the private constructor parameters and body
+      const constructorMatch = fileSource.match(
+        /private\s+constructor\s*\(([^)]*)\)\s*\{([\s\S]*?)^\s{2}\}/m,
+      );
+      if (!constructorMatch) return null;
+
+      const paramsText = constructorMatch[1];
+      const body = constructorMatch[2];
+
+      // Parameter properties (e.g. private readonly _data: ConferenceData) automatically initialize properties
+      const hasParameterProperties = /(?:private|protected|public)\s+(?:readonly\s+)?_?[A-Za-z0-9]+\s*:/i.test(paramsText);
+      if (hasParameterProperties) {
+        return null;
+      }
+
+      // Count actual property assignments (this._xxx = ...)
+      // Exclude trivial-only assignments like this._domainEvents = []
+      const propertyAssignments = body.matchAll(/this\._[A-Za-z]+\s*=/g);
+      let assignmentCount = 0;
+      let hasNonTrivial = false;
+      for (const m of propertyAssignments) {
+        assignmentCount++;
+        const rest = body.slice(m.index! + m[0].length);
+        // If the assignment is followed by anything other than `[]` or `new Date()`
+        // it's a real property assignment (Date is borderline but OK for createdAt)
+        if (!/^(\s*\[\]|\s*new\s+Date\(\))/.test(rest)) {
+          hasNonTrivial = true;
+        }
+      }
+
+      // A valid constructor must assign at least one real property.
+      // If only _domainEvents or _createdAt/_updatedAt = new Date() exist,
+      // that means the actual property values are assigned in the factory — an anti-pattern.
+      if (assignmentCount === 0 || !hasNonTrivial) {
+        return {
+          rule: 'private constructor must assign property values (not empty or trivial only)',
+          element: name,
+          file: relPath,
+          line: fileSource.substring(0, constructorMatch.index!).split('\n').length,
+          message:
+            `Domain entity "${name}" in "${relPath}" has a private constructor that ` +
+            `${assignmentCount === 0 ? 'does not assign any properties' : 'only assigns trivial fields'}. ` +
+            `Convention: the constructor must receive all required values as parameters and assign them. ` +
+            `This ensures TypeScript verifies all properties are initialized, preventing "!" assertions and ` +
+            `scattered mutation from static factories.`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
 describe('DDD Architecture', () => {
   describe('Domain layer isolation', () => {
     it('domain must only import from domain, shared, and node_modules', () => {
@@ -780,6 +928,26 @@ describe('DDD Architecture', () => {
         .should()
         .satisfy(domainEntityFactoryConventions())
         .because('domain entities require private constructors and named factory methods for creation vs reconstitution')
+        .check();
+    });
+
+    it('domain entities must not use definite assignment assertions (!) on private properties', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/**')
+        .should()
+        .satisfy(domainEntityNoDefiniteAssignmentAssertions())
+        .because('private properties must be assigned in the constructor, never with "trust me" assertions')
+        .check();
+    });
+
+    it('domain entity private constructors must assign property values (not lazy)', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/**')
+        .should()
+        .satisfy(domainEntityConstructorHasPropertyAssignments())
+        .because('the constructor must receive and assign all property values so TypeScript verifies initialization')
         .check();
     });
 
