@@ -11,11 +11,39 @@ import {describe, it, expect} from 'vitest';
 import {project, modules, classes, slices, functions, call, matching, defineCondition, getElementFile} from '@nielspeter/ts-archunit';
 import {existsSync, readFileSync} from 'fs';
 import {join, dirname} from 'path';
+import {execSync} from 'child_process';
 
 // For monorepo structure, use root tsconfig to include packages/modules
 const p = project('tsconfig.json');
 // Dynamically add source files under packages/modules/*/src to ensure unimported/ghost DTOs are loaded
 p._project.addSourceFilesAtPaths('packages/modules/*/src/**/*.ts');
+
+/**
+ * Returns a Set of modified/staged/untracked git file paths when ONLY_CHANGED=true.
+ * If ONLY_CHANGED is not set, returns null (checks all files).
+ */
+function getGitChangedFiles(): Set<string> | null {
+  if (!process.env.ONLY_CHANGED) return null;
+  try {
+    const output = execSync('git status --porcelain', { encoding: 'utf-8' });
+    const files = output
+      .split('\n')
+      .map((line) => {
+        const parts = line.trim().split(/\s+/);
+        return parts.length >= 2 ? parts[parts.length - 1] : null;
+      })
+      .filter(Boolean) as string[];
+    return new Set(files);
+  } catch {
+    return null;
+  }
+}
+
+function isChangedFile(filePath: string): boolean {
+  const changedSet = getGitChangedFiles();
+  if (!changedSet) return true;
+  return Array.from(changedSet).some((changedPath) => filePath.endsWith(changedPath));
+}
 
 /**
  * Creates a condition that checks each matched handler class has a co-located file
@@ -421,6 +449,7 @@ function domainEntityNoPrimitivesConventions() {
   return defineCondition('domainEntityNoPrimitivesConventions', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
+      if (!isChangedFile(relPath)) return null;
       const name = cls.getName();
       const fileSource = cls.getSourceFile().getFullText();
 
@@ -466,6 +495,7 @@ function domainFactoryNoPrimitivesConventions() {
   return defineCondition('domainFactoryNoPrimitivesConventions', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
+      if (!isChangedFile(relPath)) return null;
       const name = cls.getName();
       const fileSource = cls.getSourceFile().getFullText();
 
@@ -511,6 +541,7 @@ function valueObjectConventions() {
   return defineCondition('valueObjectConventions', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
+      if (!isChangedFile(relPath)) return null;
       const name = cls.getName();
       const fileSource = cls.getSourceFile().getFullText();
 
@@ -589,6 +620,7 @@ function repositoryReconstitutionConventions() {
   return defineCondition('repositoryReconstitutionConventions', (matchedClasses: any[]) => {
     return matchedClasses.map((cls: any) => {
       const relPath = getElementFile(cls);
+      if (!isChangedFile(relPath)) return null;
       const name = cls.getName();
       const fileSource = cls.getSourceFile().getFullText();
 
@@ -613,6 +645,115 @@ function repositoryReconstitutionConventions() {
           message:
             `Repository implementation "${name}" in "${relPath}" does not use .fromData(...) factory method for domain entity reconstitution. ` +
             `DDD Invariant: Repositories must reconstruct entities via static fromData(...) factory methods.`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
+/**
+ * Condition to check that Domain Event classes follow strict DDD invariants:
+ * 1. Reside in domain/events/ and end with Event
+ * 2. Define a type discriminator property
+ * 3. Define a timestamp / occurredOn property
+ * 4. Implement toJSON() for outbox serialization
+ */
+function domainEventConventions() {
+  return defineCondition('domainEventConventions', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      if (!isChangedFile(relPath)) return null;
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      if (!relPath.includes('/domain/events/')) return null;
+
+      if (!name.endsWith('Event')) {
+        return {
+          rule: 'domain event classes must end with Event',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Domain Event class "${name}" in "${relPath}" must end with "Event".`,
+        };
+      }
+
+      // Check for type property
+      const hasTypeProperty = /\btype\b/.test(fileSource);
+      if (!hasTypeProperty) {
+        return {
+          rule: 'domain events must define a type property',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Domain Event "${name}" in "${relPath}" must define a "type" property for event identification.`,
+        };
+      }
+
+      // Check for timestamp property
+      const hasTimestamp = /\btimestamp\b|\boccurredOn\b/.test(fileSource);
+      if (!hasTimestamp) {
+        return {
+          rule: 'domain events must include a timestamp or occurredOn property',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Domain Event "${name}" in "${relPath}" must include a timestamp or occurredOn property.`,
+        };
+      }
+
+      // Check for toJSON method
+      const hasToJSON = /\btoJSON\s*\(/.test(fileSource);
+      if (!hasToJSON) {
+        return {
+          rule: 'domain events must implement toJSON() method for outbox payload serialization',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Domain Event "${name}" in "${relPath}" must implement a toJSON() method for outbox persistence.`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
+/**
+ * Condition to check that Domain Exception classes follow strict DDD invariants:
+ * 1. Reside in domain/exceptions/ and end with Error
+ * 2. Extend a base DomainError class from @sessioflow/shared-domain
+ */
+function domainExceptionConventions() {
+  return defineCondition('domainExceptionConventions', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      if (!isChangedFile(relPath)) return null;
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      if (!relPath.includes('/domain/exceptions/')) return null;
+
+      if (!name.endsWith('Error')) {
+        return {
+          rule: 'domain exception classes must end with Error',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Domain Exception class "${name}" in "${relPath}" must end with "Error".`,
+        };
+      }
+
+      const extendsDomainError = /extends\s+(Domain\w+Error|EntityNotFoundError)\b/.test(fileSource);
+      if (!extendsDomainError) {
+        return {
+          rule: 'domain exception classes must extend a base DomainError',
+          element: name,
+          file: relPath,
+          line: 0,
+          message: `Domain Exception class "${name}" in "${relPath}" must extend DomainError, DomainInvariantError, or DomainConflictError.`,
         };
       }
 
@@ -730,6 +871,26 @@ describe('DDD Architecture', () => {
         .and()
         .notImportFrom('**/drizzle-orm/**')
         .because('Repository interfaces belong strictly to the domain layer and must have no infrastructure or ORM dependencies')
+        .check();
+    });
+
+    it('domain events must reside in domain/events, end with Event, and implement toJSON serialization', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/events/**')
+        .should()
+        .satisfy(domainEventConventions())
+        .because('Domain Events represent immutable domain facts and must provide type, timestamp, and toJSON() serialization for outbox persistence')
+        .check();
+    });
+
+    it('domain exceptions must reside in domain/exceptions, end with Error, and extend base DomainError', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/exceptions/**')
+        .should()
+        .satisfy(domainExceptionConventions())
+        .because('Domain Exception classes represent domain invariant failures and must extend base DomainError classes')
         .check();
     });
   });
