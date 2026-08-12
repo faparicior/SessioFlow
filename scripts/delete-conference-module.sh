@@ -71,9 +71,9 @@ DELETE_PATHS=(
   # Database migration
   "$ROOT/drizzle/0000_create_conferences_table.sql"
 
-  # Documentation
-  #"$ROOT/docs/product/bounded-contexts/conference"
-  #"$ROOT/docs/inception/6-user-journeys/journey-01-setup-conference.md"
+  # Documentation - delete plan and feature, keep the flow
+  "$ROOT/docs/product/bounded-contexts/conference/flows/journey-01-setup-conference-plan.md"
+  "$ROOT/docs/product/bounded-contexts/conference/flows/features"
 
   # Build cache
   "$ROOT/packages/modules/conference/.turbo"
