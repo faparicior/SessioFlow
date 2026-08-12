@@ -582,6 +582,45 @@ function valueObjectConventions() {
   });
 }
 
+/**
+ * Condition to check that repository implementation classes reconstitute domain entities using fromData static factory methods.
+ */
+function repositoryReconstitutionConventions() {
+  return defineCondition('repositoryReconstitutionConventions', (matchedClasses: any[]) => {
+    return matchedClasses.map((cls: any) => {
+      const relPath = getElementFile(cls);
+      const name = cls.getName();
+      const fileSource = cls.getSourceFile().getFullText();
+
+      // Only check repository implementations in infrastructure
+      if (!relPath.includes('/infrastructure/') || !name.endsWith('Repository')) {
+        return null;
+      }
+
+      // OutboxRepository is a shared event queue repository, not an entity aggregate repository
+      if (name.includes('Outbox')) {
+        return null;
+      }
+
+      // Check that mapping or retrieval uses fromData
+      const usesFromData = /\.fromData\(/.test(fileSource);
+      if (!usesFromData) {
+        return {
+          rule: 'repository implementations must reconstitute domain entities using fromData factory methods',
+          element: name,
+          file: relPath,
+          line: 0,
+          message:
+            `Repository implementation "${name}" in "${relPath}" does not use .fromData(...) factory method for domain entity reconstitution. ` +
+            `DDD Invariant: Repositories must reconstruct entities via static fromData(...) factory methods.`,
+        };
+      }
+
+      return null;
+    }).filter(Boolean) as any;
+  });
+}
+
 describe('DDD Architecture', () => {
   describe('Domain layer isolation', () => {
     it('domain must only import from domain, shared, and node_modules', () => {
@@ -679,6 +718,20 @@ describe('DDD Architecture', () => {
         .because('Value Objects are fundamental domain building blocks and must not depend on higher layers')
         .check();
     });
+
+    it('repository interfaces must reside in domain and not import infrastructure or ORMs', () => {
+      modules(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/domain/**')
+        .and()
+        .haveNameMatching(/repository/i)
+        .should()
+        .notImportFrom('**/infrastructure/**')
+        .and()
+        .notImportFrom('**/drizzle-orm/**')
+        .because('Repository interfaces belong strictly to the domain layer and must have no infrastructure or ORM dependencies')
+        .check();
+    });
   });
 
   describe('API Definitions package boundaries', () => {
@@ -738,6 +791,30 @@ describe('DDD Architecture', () => {
           '**/packages/shared/**',
           '**/node_modules/**',
         )
+        .check();
+    });
+
+    it('repository implementations must reside in infrastructure layer and end with Repository', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/infrastructure/**')
+        .and()
+        .haveNameMatching(/repository$/i)
+        .should()
+        .beExported()
+        .because('Concrete repository implementations belong to the infrastructure layer and must be exported for container wiring')
+        .check();
+    });
+
+    it('repository implementations must reconstitute entities using fromData factory methods', () => {
+      classes(p)
+        .that()
+        .resideInFolder('**/packages/modules/**/infrastructure/**')
+        .and()
+        .haveNameMatching(/repository$/i)
+        .should()
+        .satisfy(repositoryReconstitutionConventions())
+        .because('Repositories must map database records to domain entities using static fromData(...) factory methods')
         .check();
     });
   });
