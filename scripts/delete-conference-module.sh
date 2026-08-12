@@ -37,6 +37,7 @@ DELETE_PATHS=(
   # Build artifacts & dist (will also be cleaned by npm, but explicit)
   "$ROOT/packages/modules/conference/dist"
   "$ROOT/packages/modules/conference/tsconfig.tsbuildinfo"
+  "$ROOT/packages/modules/conference/.turbo"
 
   # Package manifest (keep .gitignore for reference)
   "$ROOT/packages/modules/conference/package.json"
@@ -44,14 +45,28 @@ DELETE_PATHS=(
   # API definitions
   "$ROOT/packages/api-definitions/src/types/conference.ts"
   "$ROOT/packages/api-definitions/src/zod/conference.ts"
+  "$ROOT/packages/api-definitions/dist/types/conference.d.ts"
+  "$ROOT/packages/api-definitions/dist/zod/conference.js"
 
   # App frontend sources
   "$ROOT/apps/frontend/src/app/conferences"
   "$ROOT/apps/frontend/src/modules/conference"
   "$ROOT/apps/frontend/src/app/api/v1/conferences"
+  "$ROOT/apps/frontend/src/app/dashboard"
+  "$ROOT/apps/frontend/src/app/api/v1"
+  "$ROOT/apps/frontend/src/app/api"     # empty after api/v1 removed
+  "$ROOT/apps/frontend/src/modules"    # empty scaffold placeholder
+  "$ROOT/apps/frontend/.next"
 
   # App backend sources
   "$ROOT/apps/backend/src/interfaces/api/v1/conferences"
+
+  # Database migration (check both possible locations)
+  "$ROOT/drizzle/0000_create_conferences_table.sql"
+  "$ROOT/apps/backend/drizzle/0000_lame_lyja.sql"
+
+  # Drizzle meta (tracks conference migration)
+  "$ROOT/drizzle/meta/0000_snapshot.json"
 
   # Unit tests
   "$ROOT/tests/unit/modules/conference"
@@ -67,16 +82,6 @@ DELETE_PATHS=(
 
   # E2E tests
   "$ROOT/tests/e2e/conference-setup.spec.ts"
-
-  # Database migration
-  "$ROOT/drizzle/0000_create_conferences_table.sql"
-
-  # Documentation - delete plan and feature, keep the flow
-  "$ROOT/docs/product/bounded-contexts/conference/flows/journey-01-setup-conference-plan.md"
-  "$ROOT/docs/product/bounded-contexts/conference/flows/features"
-
-  # Build cache
-  "$ROOT/packages/modules/conference/.turbo"
 )
 
 # ── 2. File paths to remove from package.json dependencies ────────────────
