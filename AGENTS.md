@@ -339,6 +339,12 @@ All AI agents working on this project must follow these 6 core principles:
 
 See `docs/ADRS.md` for full decision history.
 
+## 📦 New Module Package
+
+Create a new DDD module under `packages/modules/{context}/` using the `create-module` skill (`create-module`). It scaffolds `package.json`, `tsconfig.json`, `.gitignore`, and `container.ts` — the minimum wiring to make the folder a buildable workspace package.
+
+---
+
 ## 📝 Git Workflow
 
 **Branch naming:**
