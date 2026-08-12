@@ -604,6 +604,33 @@ class LoginUseCase {
 
 ---
 
+## 🛠️ Development & Architecture Quality Commands
+
+```bash
+# Fast Standalone Architecture Check (< 2s) for AI Agents & Developers
+npm run check:arch                                # Check all domain modules
+npm run check:arch packages/modules/conference   # Check target module/file
+
+# Testing & Type Safety
+npm run test                                      # Run unit test suite (Vitest)
+npm run test:changed                              # Run tests for Git modified files
+npm run test:architecture                         # Run full Vitest architecture test suite
+npm run typecheck                                 # TypeScript type checking
+npm run lint                                      # Run ESLint checks
+```
+
+### 🏛️ Automated Architecture Invariants
+
+SessioFlow enforces strict Domain-Driven Design (DDD) rules via `ts-archunit` automated checks:
+
+- **Domain Isolation**: Domain modules (`packages/modules/*/src/domain/`) cannot depend on application, infrastructure, ORMs, or external UI frameworks.
+- **Value Objects**: Must have `private constructor`, static factory (`create`/`fromString`), `get value()`, and `equals(other)` method. Raw primitives (`string`, `number`, `boolean`) are forbidden in domain entity properties and factory parameters.
+- **Domain Events**: Must reside in `domain/events/`, end with `Event`, define `type` + `timestamp`, and implement `toJSON()` serialization for Outbox persistence.
+- **Domain Exceptions**: Must reside in `domain/exceptions/`, end with `Error`, and extend base `DomainError` / `EntityNotFoundError`.
+- **Repositories**: Repository interfaces reside in `domain/`, implementations reside in `infrastructure/` and reconstitute entities via static `.fromData(...)` factory methods.
+
+---
+
 ## 🤝 Contributing
 
 1. Read the [ADR documentation](./docs/adr/) to understand architectural decisions
