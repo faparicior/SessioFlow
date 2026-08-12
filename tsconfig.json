@@ -19,8 +19,6 @@
       "@sessioflow/shared-http/*": ["./packages/shared/http/src/*"],
       "@sessioflow/bus": ["./packages/shared/bus/src"],
       "@sessioflow/bus/*": ["./packages/shared/bus/src/*"],
-      "@sessioflow/conference": ["./packages/modules/conference/src"],
-      "@sessioflow/conference/*": ["./packages/modules/conference/src/*"],
       "@backend/*": ["./apps/backend/src/*"],
       "@frontend/*": ["./apps/frontend/src/*"]
     }

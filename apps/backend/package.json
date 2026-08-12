@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@sessioflow/api-definitions": "*",
-    "@sessioflow/conference": "*",
     "@sessioflow/shared-database": "*",
     "@sessioflow/shared-logging": "*",
     "@opentelemetry/api": "^1.9.1",
