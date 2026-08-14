@@ -1,9 +1,11 @@
 # [Feature Name] - Feature Specification
 
 * **Parent Flow:** [Flow filename] (e.g., `journey-01-setup-event.md`)
-* **Context:** [Bounded Context]
+* **Bounded Context:** [Context Name] (e.g., `conference`)
 * **Status:** 📋 Planned | 🔄 In Progress | ✅ Complete
 * **Priority:** High | Medium | Low
+
+> **Architecture Reference**: See `AGENTS.md` and `docs/ARCHITECTURE.md` for project folder layout, layer conventions, and verification commands.
 
 ---
 
@@ -13,7 +15,7 @@
 
 **User Value:** [How this feature benefits users in the flow]
 
-**Flow Step:** [Which step(s) of the flow this feature enables]
+**Flow Step:** [Which step(s) of the parent flow this feature implements]
 
 ---
 
@@ -26,8 +28,8 @@
 
 ### Non-Functional Requirements
 - [ ] Performance: [e.g., API response <200ms]
-- [ ] Security: [e.g., RLS policies, authorization]
-- [ ] Accessibility: [if applicable]
+- [ ] Security: [e.g., authentication & authorization rules]
+- [ ] Architecture: [DDD layer rules from docs/ARCHITECTURE.md]
 
 ---
 
@@ -36,132 +38,68 @@
 ### Entities Affected
 | Entity | Role | Changes |
 |--------|------|---------|
-| [Entity1] | [Primary/Related] | [Create/Update/Read] |
-| [Entity2] | [Related] | [Create/Update/Read] |
+| [Entity1] | Aggregate Root | [Create/Update/Read] |
+| [ChildEntity] | Entity | [Create/Update/Read] |
 
 ### Value Objects
-- [ValueObject1] - [purpose]
-- [ValueObject2] - [purpose]
+- `[ValueObjectName]` - [validation rules & purpose]
+- `[ValueObjectName]` - [validation rules & purpose]
 
-### Domain Events (if any)
-- [EventName] - [when triggered]
+### Domain Events
+- `[EventName]` - [when triggered, payload]
 
----
-
-## 📦 Implementation Scope
-
-### Files to Create/Modify
-
-**Domain Layer:**
-- [ ] `modules/[context]/entities/[entity].[ext]`
-- [ ] `modules/[context]/value-objects/[vo].[ext]`
-- [ ] `modules/[context]/services/[service].[ext]`
-
-**Application Layer:**
-- [ ] `modules/[context]/application/use-cases/[use-case].[ext]`
-- [ ] `modules/[context]/application/dto/[dto].[ext]`
-
-**Infrastructure Layer:**
-- [ ] `modules/[context]/infrastructure/database/[entity]-repository.[ext]`
-- [ ] Database migrations
-
-**Interface Layer:**
-- [ ] `modules/[context]/interfaces/api/v1/[resource]/[handler].[ext]`
-- [ ] `modules/[context]/interfaces/web/[resource]/[view-component].[ext]`
+### Domain Exceptions
+- `[ErrorName]` - [when thrown, error type]
 
 ---
 
-## 🧪 Hybrid TDD Implementation
+## 📦 Implementation Scope by Layer
+*(Consult `AGENTS.md` / `docs/ARCHITECTURE.md` for exact paths)*
 
-### Phase 0: Define E2E Contract (Outside-In)
-
-**Step 1: Write E2E Test**
-- [ ] Write E2E test for complete flow: [Flow step]
-- [ ] Document acceptance criteria
-- [ ] **Expected to FAIL initially** - defines the goal
-
-### Phase 1-3: Build Inside-Out
-
-**Step 2: Write Tests First**
-
-**Unit Tests:**
-- [ ] Test `[Entity]` creates with valid data
-- [ ] Test `[Entity]` rejects invalid data
-- [ ] Test `[ValueObject]` validation rules
-- [ ] Test edge cases and boundary conditions
-
-**Integration Tests:**
-- [ ] Test `[UseCase]` with mocked dependencies
-- [ ] Test repository integration
-
-**Step 3: Implement to Pass Tests**
-- [ ] Implement domain objects
-- [ ] Implement use cases
-- [ ] Implement infrastructure
-- [ ] Make all tests pass
-
-**Step 4: Refactor**
-- [ ] Clean up code
-- [ ] Maintain test coverage
-- [ ] Document behavior
-
-### Phase 4: Validate E2E (Outside-In)
-
-**Step 5: Run E2E Test**
-- [ ] Run E2E test from Phase 0
-- [ ] **Expected to PASS** - goal achieved!
-- [ ] Fix any remaining issues
+- **Contracts / Schemas Layer**: [Data schemas / validation DTOs]
+- **Domain Layer**: [Entities, Value Objects, Domain Events, Repository Interfaces]
+- **Application Layer**: [Commands / Queries and their Handlers]
+- **Infrastructure Layer**: [Repository implementations, Database schemas, Container wiring]
+- **Interface Layer**: [HTTP Controllers, UI components, API route handlers]
 
 ---
 
-## 🔗 Dependencies
+## 🧪 TDD Execution Checklist
 
-### Blocks
-- [ ] This feature must be complete before: [Feature/Flow step]
+Follow the 4-step cycle: **1. First Test $\rightarrow$ 2. After Code $\rightarrow$ 3. After Architecture Tests $\rightarrow$ 4. Linter & Types**
 
-### Blocked By
-- [ ] This feature requires: [Feature/Entity/Infrastructure]
+- [ ] **1. Test First (Domain)**: Write unit tests for domain models (Expect FAIL)
+- [ ] **2. Implement Code (Domain)**: Implement VOs & Entities to make tests PASS
+- [ ] **3. Test First (Application)**: Write Command/Query handler tests with mocked dependencies
+- [ ] **4. Implement Code (Application)**: Implement handlers & DTOs to make tests PASS
+- [ ] **5. Architecture Check**: Run architecture verification from `AGENTS.md` (Must pass 0 errors)
+- [ ] **6. Infrastructure & Container**: Implement repositories, database mappings, and container wiring
+- [ ] **7. Interfaces**: Implement controllers and route handlers
+- [ ] **8. Linter & Types**: Run project lint and typecheck commands from `AGENTS.md`
 
 ---
 
 ## ✅ Acceptance Criteria
 
-**Given** [context]
-**When** [action]
-**Then** [expected outcome]
+**Scenario 1: Happy Path**
+- **Given** [initial state]
+- **When** [action taken]
+- **Then** [expected result & state change]
 
-### Test Scenarios
-1. [Scenario 1]
-2. [Scenario 2]
-3. [Edge case scenario]
-
----
-
-## 📝 Implementation Notes
-
-[Any technical decisions, constraints, or considerations]
-
----
-
-## 🔗 Related Documentation
-
-- [Parent Flow Documentation](./[flow-filename].md)
-- [Development Plan](./[flow-filename]-plan.md)
-- [Entity Documentation](../entities/[entity].md)
-- [ADR References](../../adr/)
+**Scenario 2: Validation / Error Case**
+- **Given** [invalid state or input]
+- **When** [action taken]
+- **Then** [expected domain error / rejection]
 
 ---
 
 ## 📊 Progress Tracking
 
-| Phase | Status | Notes |
+| Layer | Status | Notes |
 |-------|--------|-------|
-| E2E Contract | 📋 | Write failing E2E test (Phase 0) |
-| Tests Written | 📋 | Write unit/integration tests |
-| Implementation | 📋 | Implement to pass tests |
-| Refactoring | 📋 | Clean up while tests pass |
-| E2E Validation | 📋 | Run E2E - should PASS |
-
----
-
-*This feature spec is part of the [Flow Name] development plan and follows Hybrid TDD (Outside-In + Inside-Out).*
+| Domain Models & Tests | 📋 | Tests pass, invariants enforced |
+| Application Handlers | 📋 | CQRS handlers implemented |
+| Architecture Verification | 📋 | Arch checks pass |
+| Infrastructure & Wiring | 📋 | Repositories & container wired |
+| Interface & Routes | 📋 | Route handlers connected |
+| Lint & Typecheck | 📋 | 0 errors |

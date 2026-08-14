@@ -10,169 +10,85 @@ description: >-
 
 # Implement Flow Skill
 
-This skill guides feature implementation through flow-driven analysis, planning, and incremental development.
+This skill guides feature implementation through flow-driven analysis, planning, and phased TDD development.
 
-**Important**: Follow AGENTS.md for all code conventions, testing standards, and quality requirements.
+> **Single Source of Truth**:
+> - Consult **`AGENTS.md`** and **`docs/ARCHITECTURE.md`** for folder layout, coding style, naming conventions, layer boundaries, and exact verification commands.
+> - Consult **`docs/adr/README.md`** for architectural decision records.
 
-### Step 0: Read ADR Index First
-- **Always start** by reading `docs/adr/README.md` to understand the complete ADR landscape
-- Use the ADR index to identify which ADRs are relevant to your task
-- Read specific ADRs in detail based on what the index reveals
-- **Do not assume** specific ADR numbers - let the index guide your discovery
-- Pay special attention to:
-  - Core Technology Stack ADRs
-  - Architecture Decisions (DDD, CQRS, etc.)
-  - Authentication & Storage strategies
-  - Data Access patterns
+---
 
-### Step 1: Understand the Flow
-- Read flow documentation in `docs/product/bounded-contexts/[context]/flows/`
-- Identify which DDD layer(s) are affected
-- Check development plan for implementation phase
+## 🔄 The 4-Stage Implementation Lifecycle
 
-### Step 2: Review Existing Patterns
-- Search `src/` for similar implementations (`rg` command)
-- Review relevant ADRs identified from the index
-- Follow conventions in AGENTS.md
-
-### Step 3: Implement Incrementally (Hybrid TDD)
-
-**Hybrid Approach** (Outside-In + Inside-Out):
-
-1. **Define E2E Contract** (Outside)
-   - Write E2E test that describes complete user journey
-   - Document acceptance criteria from flow documentation
-   - This test will FAIL initially (defines the goal)
-
-2. **Build Domain Core** (Inside-Out)
-   - Write tests for value objects → Implement → Verify
-   - Write tests for entities → Implement → Verify
-   - Write tests for domain services → Implement → Verify
-
-3. **Build Application Layer** (Inside-Out)
-   - Write application logic tests (with mocked repository) → Implement → Verify
-   - Write repository interface tests (mocked) → Implement → Verify
-   - Follow architectural patterns identified from ADR index review
-   - Create appropriate response DTOs for API contracts
-
-4. **Build Infrastructure** (Inside-Out)
-   - Write integration tests for repository → Implement → Verify
-   - Implement database schema and migrations
-
-5. **Build Interface Layer** (Outside-In)
-   - Write API tests → Implement → Verify
-   - Write UI component tests → Implement → Verify
-
-6. **Validate E2E** (Outside)
-   - Run the E2E test from Step 1
-   - Fix any failing tests
-   - Verify complete user journey works
-
-**Hybrid TDD Workflow:**
-```
-1. Write E2E test (fails) - defines the goal
-2. Write domain tests (fails) - defines the core
-3. Implement domain → E2E still fails (missing layers)
-4. Write use case tests (fails)
-5. Implement use cases → E2E still fails (missing infrastructure)
-6. Write integration tests (fails)
-7. Implement infrastructure → E2E still fails (missing API/UI)
-8. Write API/UI tests (fails)
-9. Implement API/UI → E2E PASSES!
+```mermaid
+flowchart LR
+    A["1. Read Flow & Architecture<br/>(flows/, AGENTS.md, ARCHITECTURE.md)"] --> B["2. Create Feature Specs<br/>(features/feature-*.md)"]
+    B --> C["3. Create Flow Plan<br/>([flow]-plan.md)"]
+    C --> D["4. Apply / Execute<br/>(Phased TDD)"]
 ```
 
-**Module-Based Organization:**
+---
+
+### Step 1: Read Flow Documentation, ADRs & Architecture
+1. **Flow Specification**:
+   - Read `docs/product/bounded-contexts/[context]/flows/[flow-name].md` for actors, steps, state transitions, and business rules.
+2. **Architecture & Project Layout**:
+   - Read **`AGENTS.md`** and **`docs/ARCHITECTURE.md`** to determine the current directory paths for each layer (Domain, Application, Infrastructure, Interfaces, Shared).
+3. **ADR Index**:
+   - Read `docs/adr/README.md` to identify relevant decisions (CQRS, Auth, Storage, Data Access).
+
+---
+
+### Step 2: Create Feature Specifications
+1. Break down the flow into individual features under:
+   `docs/product/bounded-contexts/[context]/flows/features/feature-[feature-name].md`
+2. Use the template: `templates/feature-specification.md` (located in this skill)
+3. Define the requirements, domain model, layer scope, and acceptance criteria.
+
+---
+
+### Step 3: Create Flow Development Plan
+1. Create a flow-level plan alongside the flow document:
+   `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md`
+2. Use the template: `templates/flow-development-plan.md` (located in this skill)
+3. The plan acts as the **state tracker** containing phased checkboxes (`[ ]` $\rightarrow$ `[x]`) for the agent to execute sequentially.
+
+---
+
+### Step 4: Apply & Execute (Strict TDD Micro-Cycle)
+
+In each phase of the plan, strictly follow the 4-step execution order:
+
+```mermaid
+flowchart LR
+    T1["1. First Test<br/>(Write failing test)"] --> C2["2. Code<br/>(Implement to pass)"]
+    C2 --> A3["3. Architecture Tests<br/>(Run arch check)"]
+    A3 --> L4["4. Linter & Types<br/>(lint & typecheck)"]
 ```
-src/
-├── modules/                    # Feature modules (bounded contexts)
-│   ├── [module-name]/          # e.g., conference, event, submission
-│   │   ├── domain/             # Domain layer for this module
-│   │   │   ├── entities/
-│   │   │   ├── value-objects/
-│   │   │   ├── services/
-│   │   │   └── repositories/   # Interface
-│   │   ├── application/        # Application layer
-│   │   │   └── [pattern-based structure from ADRs]
-│   │   ├── infrastructure/     # Implementations for this module
-│   │   │   └── database/
-│   │   └── interfaces/         # API/UI for this module
-│   │       └── api/
-│   └── [module-name]/
-└── shared/                     # Cross-cutting concerns
-    ├── domain/                 # Shared VOs, exceptions
-    └── infrastructure/         # Shared database client, etc.
-```
 
-*Note: Application layer structure should follow patterns identified from ADR index review (e.g., CQRS, use cases, services, etc.)*
-
-*Note: Adjust based on feature requirements and existing patterns.*
-
-### Step 4: Validate & Update
-- Run tests: `npm test`
-- Check linting: `npm run lint`
-- Verify types: `npm run typecheck`
-- Update development plan with completed tasks
+1. **First: Write Test**
+   - Write failing test (E2E in Phase 0; Unit/Integration in Phases 1–4).
+   - Run the test $\rightarrow$ must **FAIL** initially (verifying test validity).
+2. **After: Implement Code**
+   - Implement only the code necessary to make the test **PASS**.
+3. **After: Run Architecture Tests & Checks**
+   - Run the architecture checks defined in `AGENTS.md` (e.g. `npm run check:arch`).
+   - Ensure layer boundaries and invariants remain unviolated.
+4. **After: Run Linter & Typecheck**
+   - Run project linter and typecheck commands defined in `AGENTS.md` (e.g. `npm run lint:fix && npm run typecheck`).
+5. **Update State**:
+   - Mark completed checkboxes (`- [x]`) in `[flow-name]-plan.md` and proceed to the next step.
 
 ---
 
 ## 📝 Planning Templates
 
-### Flow-Level Plan
-
-**Location:** Created alongside flow markdown files
-
-**Naming Convention:** `[flow-filename]-plan.md`
-
-**Example:** For `journey-01-setup-event.md`, create `journey-01-setup-event-plan.md`
-
-**Purpose:** Track implementation of ALL features within a flow, validate E2E completion, and manage dependencies between features.
-
-### Feature-Level Specification
-
-**Location:** `docs/product/bounded-contexts/[context]/flows/features/`
-
-**Naming Convention:** `feature-[feature-name].md`
-
-**Example:** `feature-event-basics.md`, `feature-cfp-management.md`
-
-**Purpose:** Define individual feature requirements, implementation scope, and acceptance criteria within a flow.
-
-**Template:** `.pi/skills/implement-flow/templates/feature-specification.md`
+- **Flow Plan Template**: `templates/flow-development-plan.md`
+- **Feature Spec Template**: `templates/feature-specification.md`
 
 ---
 
-**Workflow:**
-1. Read flow documentation
-2. Create feature specifications for each feature in the flow
-3. Create flow-level development plan that tracks all features
-4. Implement features incrementally, updating both feature spec and flow plan
-
----
-
-## 📚 Key Files
-
-| File | Purpose |
-|------|---------|
-| Flow Development Plan | `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md` |
-| Feature Specification | `docs/product/bounded-contexts/[context]/flows/features/feature-[name].md` |
-| Flow Documentation | `docs/product/bounded-contexts/[context]/flows/[flow-name].md` |
-| AGENTS.md | **Project conventions and quality standards** |
-| ADRs | `docs/adr/` - Architectural decisions |
-
-**Templates:**
-- Flow Plan Template: `.pi/skills/implement-flow/templates/flow-development-plan.md`
-- Feature Spec Template: `.pi/skills/implement-flow/templates/feature-specification.md`
-
-**Reference**: See AGENTS.md for code style, testing guidelines, and definition of done.
-
----
-
-## ✅ Success Criteria
-
-- **ADR Compliance**: All relevant ADRs identified from `docs/adr/README.md` index and followed
-- Follows AGENTS.md definition of done
-- Development plan updated with completed tasks
-- Application layer follows architectural patterns from ADR index review
-- All tests pass (`npm test`)
-- Linting passes (`npm run lint`)
-- Type checking passes (`npm run typecheck`)
+## ✅ Definition of Done
+A flow/feature is considered complete when:
+1. All checkboxes in `[flow-name]-plan.md` are marked `[x]`.
+2. All Definition of Done criteria listed in `AGENTS.md` pass (Architecture tests, Unit/Integration tests, E2E tests, Linting, and Typechecking).
