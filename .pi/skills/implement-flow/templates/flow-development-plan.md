@@ -35,6 +35,7 @@
 > 2. **After: Implement Code** (Make test pass)
 > 3. **After: Architecture Tests** (Run architecture check from `AGENTS.md`)
 > 4. **After: Linter & Typecheck** (Run lint:fix and typecheck from `AGENTS.md`)
+> 5. **🛑 User Checkpoint**: Report phase verification results and confirm before advancing to next phase
 
 ---
 
