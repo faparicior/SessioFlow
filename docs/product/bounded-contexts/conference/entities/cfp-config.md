@@ -1,27 +1,12 @@
-# Entity: CfpConfig
-
-## 🛡️ ADR Compliance Checklist
-After generating the entity lifecycle document, review the project's Architecture Decision Records (ADRs) to ensure alignment with established architectural decisions.
-
-- [x] Entity is properly designated as Aggregate Root or Child Entity
-- [x] Value Objects encapsulate validation and business rules
-- [x] Domain behavior is exposed through methods (not data setters)
-- [x] State transitions are explicit and validated
-- [x] Domain events are published on state changes
-- [x] Repository interfaces are defined for data access
-- [x] Entity invariants are documented and enforced
-- [x] Entity links to relevant User Flows / Journeys
-- [x] Domain events are documented with triggers and side effects
-- [x] State definitions are clear and unambiguous
-- [x] Validation rules are comprehensive
+# Component: CfpConfig (Composite Value Object)
 
 ## 📋 Definition & Context
-* **Description:** Configuration settings for a Call for Papers (CfP) submission window. Defines the submission period, rules, and settings for how speakers can submit proposals to a conference.
-* **Aggregate Relationship:** Child Entity of `Conference` Aggregate (not a root entity)
-* **Database Table / Collection:** `cfp_configs` (embedded or separate table with conferenceId foreign key)
-* **Primary Key / Identifier:** Inherited from parent `Conference.id` (no separate identity)
+* **Description:** Configuration settings for a Call for Papers (CfP) submission window. Defines the submission window dates, submission limits, and approval rules.
+* **DDD Classification:** **Composite Value Object** embedded inside the `Conference` Aggregate Root (has no independent database ID or table).
+* **Database Storage:** Stored as an embedded JSONB column (`cfp_config`) in the `conferences` table.
+* **Primary Key / Identifier:** None (identified strictly by its immutable attributes and lifecycle within parent `Conference`).
 * **Owner Team:** Core Conference Team
-* **Domain Context:** Conference Bounded Context (see ADR-009)
+* **Domain Context:** Conference Bounded Context (see ADR-009, ADR-021)
 
 ---
 
@@ -29,8 +14,8 @@ After generating the entity lifecycle document, review the project's Architectur
 
 ### Aggregate Relationship
 ```
-ConferenceAggregate (Root)
-└── cfpConfig: CfpConfig (Child Entity / Embedded)
+Conference (Aggregate Root)
+└── cfpConfig: CfpConfig (Composite Value Object)
     ├── startDate: CfpStartDate (Value Object)
     ├── endDate: CfpEndDate (Value Object)
     ├── maxSubmissions: MaxSubmissions (Value Object, optional)

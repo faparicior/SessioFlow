@@ -44,7 +44,8 @@ import { Invalid[VoName]Error } from '../exceptions/invalid-[vo-name]-error';
 
 export class [VoName] {
   /**
-   * Static factory method for creating validated Value Objects.
+   * Static factory method for creating NEW validated Value Objects.
+   * Enforces business invariants (e.g. future dates, format checks).
    */
   public static create(rawValue: [PrimitiveType]): Result<[VoName]> {
     if (![VoName].isValid(rawValue)) {
@@ -53,13 +54,21 @@ export class [VoName] {
     return Result.ok(new [VoName](rawValue));
   }
 
+  /**
+   * Static factory method for RECONSTITUTING historical records from database.
+   * Bypasses time-relative validation (e.g. historical start dates already in past).
+   */
+  public static fromData(rawValue: [PrimitiveType]): [VoName] {
+    return new [VoName](rawValue);
+  }
+
   private static isValid(val: [PrimitiveType]): boolean {
     // Domain validation logic
     return val !== undefined && val !== null;
   }
 
   /**
-   * Private constructor prevents direct instantiations.
+   * Private constructor prevents direct external instantiations.
    */
   private constructor(private readonly _value: [PrimitiveType]) {}
 
@@ -82,7 +91,8 @@ export class [VoName] {
 
 **Key Invariants for Value Objects:**
 - Private constructor.
-- Static `create()` or `fromString()` factory method.
+- Static `create()` or `fromString()` factory method for new validated instances.
+- Static `fromData()` factory method for database reconstitution (when creation rules like time-relative constraints must not block historical data).
 - `get value()` getter.
 - `equals(other: [VoName]): boolean` method for structural equality.
 - ❌ **NO `implements [VoName]` self-implementation anti-pattern**.
