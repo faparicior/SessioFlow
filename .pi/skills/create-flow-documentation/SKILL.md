@@ -137,6 +137,8 @@ Where:
 
 ## 📖 Documentation Structure
 
+This skill is **language- and framework-agnostic**. Adapt technical notes, schema definitions, and endpoint patterns to the target repository's architectural conventions (consult `AGENTS.md` or `ARCHITECTURE.md`).
+
 The generated flow document should be a **single, comprehensive document** that includes:
 
 1. **Overview** - User story format (As a... I want... So that...)
@@ -146,7 +148,7 @@ The generated flow document should be a **single, comprehensive document** that 
 5. **Step-by-Step Walkthrough** - Aligned with sequence diagram
 6. **Acceptance Criteria** - Gherkin format scenarios
 7. **Edge Cases** - Business logic failures, technical failures, validation boundaries
-8. **Technical Notes** - API endpoints, Zod schemas, database constraints, RLS policies
+8. **Technical Notes** - API endpoints, validation schemas/contracts, database constraints, security/access policies
 9. **Linked Documentation** - References to entities, value objects, ADRs
 
 **Do NOT create separate flow map files** - all diagrams must be embedded in the main flow specification document.

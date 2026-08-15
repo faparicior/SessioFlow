@@ -32,7 +32,8 @@ sequenceDiagram
     participant UI as Frontend
     participant API as Application Service
     participant Domain as [Aggregate Name]
-    participant DB as Repository
+    participant DB as Repository & Outbox
+    participant Worker as Outbox Worker (Async)
     participant Ext as External Service (optional)
 
     Note over User,Ext: Journey [XX]: [Flow Name]
@@ -48,12 +49,17 @@ sequenceDiagram
         API->>Domain: [Domain Operation]
         Note over Domain: Entity state: [State]
         Domain->>Domain: [Domain Method Call]
-        Note over Domain: Publishes [Domain Event]
-        API->>DB: Save aggregate
+        Note over Domain: Records [Domain Event]
+        API->>DB: Save aggregate + write outbox events (Transaction)
         DB-->>API: Persisted
-        API->>Ext: [Async operation if applicable]
         API-->>UI: Success Response
         UI-->>User: [Success Feedback]
+        
+        opt Async Side Effects
+            Worker->>DB: Poll outbox (pending events)
+            Worker->>Ext: [Dispatch async side-effect, e.g. email]
+            Worker->>DB: Mark outbox event published
+        end
     end
 
     rect rgb(255, 235, 238)
@@ -172,12 +178,12 @@ stateDiagram-v2
 
 ## 🛠️ Technical Notes & Validation Rules
 
-### RESTful API Endpoint (ADR-006)
+### API Endpoint / Interface Specification
 
 ```
 POST /api/v1/[endpoint]
 Content-Type: application/json
-Authorization: Bearer {jwt}
+Authorization: Bearer {token}
 
 Request Body:
 {
@@ -187,34 +193,33 @@ Request Body:
 
 Response: 201 Created
 {
-  "id": "uuid",
+  "id": "identifier",
   "field1": "value",
   "status": "state"
 }
 ```
 
-### Zod Validation Schema (ADR-007)
+### Input Validation Schema / Contract
 
-```typescript
-const [entity]CreateSchema = z.object({
-  field1: z.string().min(3).max(100),
-  field2: z.number().int().positive().optional()
-});
+```
+// Schema defining input validation rules according to project conventions
+{
+  field1: string, min length 3, max length 100,
+  field2: positive integer (optional)
+}
 ```
 
-### Database Constraints (ADR-002)
+### Database Constraints & Indexes
 
-| Constraint | Description |
-|------------|-------------|
-| `[table].[column]` | [Constraint description] |
+| Table / Collection | Column / Field | Constraint / Index Type | Description |
+|-------------------|----------------|-------------------------|-------------|
+| `[table]` | `[column]` | `[e.g., UNIQUE / NOT NULL / FK]` | [Constraint description] |
 
-### Row-Level Security (ADR-002)
+### Data Access & Security Policies
 
-```sql
--- RLS Policy: [Policy description]
-CREATE POLICY "[Policy name]"
-ON [table] FOR [operation]
-WITH CHECK ([condition]);
+```
+-- Security & access policies according to project data tier conventions
+[Define access rules, ownership checks, or security constraints]
 ```
 
 ### Generated Fields
