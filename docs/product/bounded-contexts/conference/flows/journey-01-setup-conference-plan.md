@@ -93,13 +93,13 @@ packages/
 │       └── src/
 │           ├── domain/
 │           │   ├── conference.ts              # Conference aggregate root
-│           │   ├── cfp-config.ts              # CfpConfig child aggregate entity
 │           │   ├── conference-repository.interface.ts # Interface (root level)
 │           │   ├── value-objects/
 │           │   │   ├── conference-id.ts
 │           │   │   ├── conference-name.ts
 │           │   │   ├── conference-slug.ts
 │           │   │   ├── conference-status.ts
+│           │   │   ├── cfp-config.ts          # Composite Value Object
 │           │   │   ├── cfp-start-date.ts
 │           │   │   ├── cfp-end-date.ts
 │           │   │   ├── cfp-status.ts
@@ -115,12 +115,12 @@ packages/
 │           │   │   ├── conference-completed.ts
 │           │   │   └── conference-cancelled.ts
 │           │   └── exceptions/
-│           │       ├── invalid-conference-error.ts
 │           │       ├── conference-name-too-short-error.ts
-│           │       ├── cfp-dates-invalid-error.ts
+│           │       ├── conference-name-too-long-error.ts
+│           │       ├── invalid-cfp-config-error.ts
+│           │       ├── duplicate-slug-error.ts
 │           │       ├── conference-free-tier-limit-error.ts
-│           │       ├── state-transition-error.ts
-│           │       └── submission-date-in-past-error.ts
+│           │       └── state-transition-error.ts
 │           ├── application/
 │           │   ├── commands/
 │           │   │   └── create-conference/
@@ -444,12 +444,13 @@ apps/
 - [x] Response times <200ms (P95)
 
 #### Deliverables
-- [x] `src/app/api/v1/conferences/route.ts` (POST)
-- [x] `src/app/api/v1/conferences/[id]/route.ts` (GET)
-- [x] `src/app/api/v1/auth/me/route.ts`
-- [x] `src/modules/conference/interfaces/api/v1/conferences/conference-create.schema.ts`
-- [x] `src/modules/conference/interfaces/api/v1/conferences/conference-response.schema.ts`
-- [x] `tests/api/conference/conferences.test.ts`
+- [x] `apps/frontend/src/app/api/v1/conferences/route.ts` (POST)
+- [x] `apps/frontend/src/app/api/v1/conferences/[id]/route.ts` (GET)
+- [x] `apps/frontend/src/app/api/v1/auth/me/route.ts`
+- [x] `packages/api-definitions/src/zod/conference.ts`
+- [x] `packages/api-definitions/src/types/conference.ts`
+- [x] `packages/modules/conference/src/interfaces/http/create-conference.controller.ts`
+- [x] `tests/unit/modules/conference/interfaces/http/create-conference.controller.test.ts`
 - [x] API documentation
 
 ---
@@ -488,9 +489,8 @@ apps/
 - [x] Component coverage ≥ 80%
 
 #### Deliverables
-- [x] `src/app/conferences/create/page.tsx`
-- [x] `src/modules/conference/interfaces/web/components/conference-form.tsx`
-- [~] `src/modules/conference/interfaces/web/components/conference-form-validation.ts` (Omitted per ADR-007-01: form validation is integrated directly in conference-form.tsx)
+- [x] `apps/frontend/src/app/conferences/create/page.tsx`
+- [x] `apps/frontend/src/components/conference-form.tsx`
 - [x] `tests/components/conference/conference-form.test.tsx`
 - [x] Dashboard integration
 
