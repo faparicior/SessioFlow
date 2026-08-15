@@ -71,10 +71,12 @@ flowchart TD
      `docs/product/bounded-contexts/[context]/flows/features/feature-02-[feature-name].md`
    - Use two-digit zero-padded prefixes (`01`, `02`, `03`...) and standard short identifiers (`F1`, `F2`, `F3`...) to ensure clear, unambiguous execution ordering.
 2. Use the template: `templates/feature-specification.md` (located in this skill).
-3. Define the requirements, domain model, layer scope, and acceptance criteria mapped to the repository's architectural layers.
-4. **🛑 Review Gate**:
+3. **Log All Design Decisions & Assumptions (Lack of Information Log)**:
+   - Explicitly record any judgment calls, fallback ports, error code mappings, or tie-breakers made by the LLM in the `🧠 Agent Design Decisions & Assumptions` section so they are visible for user audit.
+4. Define the requirements, domain model, layer scope, and acceptance criteria mapped to the repository's architectural layers.
+5. **🛑 Review Gate**:
    - Stop and present the generated feature specification document(s) to the user with file links.
-   - Ask the user to review the document and provide feedback.
+   - Ask the user to review the document and provide feedback on the design decisions.
    - **Do NOT proceed to Step 3 until the user approves the feature specifications.**
 
 ---
@@ -83,10 +85,12 @@ flowchart TD
 1. Create a flow-level plan alongside the flow document:
    `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md`
 2. Use the template: `templates/flow-development-plan.md` (located in this skill).
-3. The plan acts as the **state tracker** containing phased checkboxes (`[ ]` $\rightarrow$ `[x]`) for sequential execution.
-4. **🛑 Review Gate**:
+3. **Populate the Lack of Information Log**:
+   - Consolidate all architectural decisions, runtime configurations, and tie-breakers in the `🧠 Agent Design Decisions & Assumptions` table.
+4. The plan acts as the **state tracker** containing phased checkboxes (`[ ]` $\rightarrow$ `[x]`) for sequential execution.
+5. **🛑 Review Gate**:
    - Stop and present the generated flow development plan to the user with file links.
-   - Confirm phase ordering, test scope, and affected files.
+   - Confirm phase ordering, test scope, affected files, and LLM design decisions.
    - **Do NOT start implementing code (Step 4) until the user explicitly approves the plan.**
 
 ---
