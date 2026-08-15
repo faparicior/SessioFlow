@@ -1,6 +1,8 @@
-# [Feature Name] - Feature Specification
+# Feature [01]: [Feature Name] - Feature Specification
 
-* **Parent Flow:** [Flow filename] (e.g., `journey-01-setup-event.md`)
+* **Feature ID:** `F[01]`
+* **Specification File:** `docs/product/bounded-contexts/[context]/flows/features/feature-[01]-[feature-name].md`
+* **Parent Flow:** [Flow filename] (e.g., `journey-01-setup-conference.md`)
 * **Bounded Context:** [Context Name] (e.g., `conference`)
 * **Status:** 📋 Planned | 🔄 In Progress | ✅ Complete
 * **Priority:** High | Medium | Low

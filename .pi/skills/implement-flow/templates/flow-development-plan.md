@@ -13,11 +13,11 @@
 
 **Flow Description:** [Brief summary of the flow and user journey]
 
-### Associated Features
-| Feature | Specification File | Status |
-|---------|---------------------|--------|
-| [Feature 1] | `features/feature-[name1].md` | 📋 Planned |
-| [Feature 2] | `features/feature-[name2].md` | 📋 Planned |
+### Associated Features (Sequentially Ordered)
+| # | Feature | Specification File | Status |
+|---|---------|---------------------|--------|
+| F1 | [Feature 1] | `features/feature-01-[name1].md` | 📋 Planned |
+| F2 | [Feature 2] | `features/feature-02-[name2].md` | 📋 Planned |
 
 ---
 
