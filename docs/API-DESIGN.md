@@ -224,4 +224,4 @@ X-RateLimit-Reset: 1656162600
 
 - [Architecture Overview](./ARCHITECTURE.md)
 - [Testing Strategy](./TESTING.md)
-- [ADR-006: RESTful API Design](../docs/adr/006-use-restful-api-design.md)
+- [ADR-006: RESTful API Design](./adr/006-use-restful-api-design.md)

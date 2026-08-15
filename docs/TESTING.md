@@ -11,19 +11,18 @@ SessioFlow uses a comprehensive testing strategy with multiple layers.
 - **Run**: `npm test` or `npx vitest run`
 
 ```typescript
-// tests/unit/conference/conference-name.test.ts
+// tests/unit/modules/conference/domain/value-objects/conference-name.test.ts
 import { describe, it, expect } from 'vitest';
-import { ConferenceName } from '@/domains/conference/value-objects/conference-name';
+import { ConferenceName } from '@sessioflow/conference/domain/value-objects/conference-name';
 
 describe('ConferenceName', () => {
   it('creates valid conference name', () => {
-    const result = ConferenceName.create('Tech Conference 2026');
-    expect(result.isSuccess).toBe(true);
+    const name = ConferenceName.create('Tech Conference 2026');
+    expect(name.value).toBe('Tech Conference 2026');
   });
 
   it('rejects too short name', () => {
-    const result = ConferenceName.create('Ab');
-    expect(result.isFailure).toBe(true);
+    expect(() => ConferenceName.create('Ab')).toThrow();
   });
 });
 ```
@@ -34,23 +33,22 @@ describe('ConferenceName', () => {
 - **Framework**: Vitest (+ Testcontainers or in-memory repositories)
 
 ```typescript
-// tests/integration/conference-repository.test.ts
+// tests/integration/modules/conference/conference-repository.test.ts
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { SupabaseConferenceRepository } from '@/infrastructure/database/conference-repository';
+import { DrizzleConferenceRepository } from '@sessioflow/conference/infrastructure/database/conference.repository';
 
-describe('SupabaseConferenceRepository', () => {
-  let repository: SupabaseConferenceRepository;
+describe('DrizzleConferenceRepository', () => {
+  let repository: DrizzleConferenceRepository;
 
   beforeAll(async () => {
-    // Setup test database
-    repository = new SupabaseConferenceRepository(testDbClient);
+    repository = new DrizzleConferenceRepository(testDbClient);
   });
 
   it('saves and retrieves conference', async () => {
     const conference = createTestConference();
     await repository.save(conference);
     const retrieved = await repository.findById(conference.id);
-    expect(retrieved).toEqual(conference);
+    expect(retrieved?.id.value).toEqual(conference.id.value);
   });
 });
 ```
@@ -82,6 +80,10 @@ test('user can create a conference', async ({ page }) => {
 ## 📋 Test Commands
 
 ```bash
+# Architecture Checks (Fast standalone check < 2s)
+npm run check:arch
+npm run test:architecture
+
 # Run all tests
 npm test
 
@@ -92,7 +94,7 @@ npx vitest run
 npx vitest run --coverage
 
 # Run single test file
-npx vitest run tests/unit/conference/conference-name.test.ts
+npx vitest run tests/unit/modules/conference/domain/value-objects/conference-name.test.ts
 
 # Run E2E tests
 npm run test:e2e
@@ -108,12 +110,13 @@ npx playwright test --ui
 
 A task is complete when ALL of the following pass:
 
-1. ✅ Unit tests pass: `npx vitest run`
-2. ✅ Integration tests pass: `npx vitest run tests/integration`
-3. ✅ E2E tests pass: `npm run test:e2e`
-4. ✅ Linting passes: `npm run lint`
-5. ✅ Type checking passes: `npm run typecheck`
-6. ✅ Code coverage ≥ 80% for new code
+1. ✅ Architecture rules pass: `npm run check:arch`
+2. ✅ Unit tests pass: `npx vitest run`
+3. ✅ Integration tests pass: `npx vitest run tests/integration`
+4. ✅ E2E tests pass: `npm run test:e2e`
+5. ✅ Linting passes: `npm run lint`
+6. ✅ Type checking passes: `npm run typecheck`
+7. ✅ Code coverage ≥ 80% for new code
 
 ## 🎯 Testing Guidelines
 
@@ -169,7 +172,7 @@ describe('Conference entity', () => {
 describe('ConferenceId value object', () => {
   it('generates valid UUID', () => {
     const id = ConferenceId.create();
-    expect(id.getValue()).toMatch(/^[0-9a-f-]{36}$/);
+    expect(id.value).toMatch(/^[0-9a-f-]{36}$/);
   });
 });
 ```

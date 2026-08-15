@@ -77,7 +77,7 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 ### 🏗️ Infrastructure & Deployment
 - **003** - Containerization: Docker Compose
 - **012** - CI/CD: GitHub Actions
-- **023** - **Monorepo with Backend/Frontend Separation (Superseded)**
+- **023** - **Comprehensive Monorepo Structure Update (Supersedes 009-01)**
 
 ### 🧪 Development Practices
 - **008** - Testing Strategy: Comprehensive Testing
@@ -162,40 +162,39 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 
 ---
 
-### 🏛️ Architecture Pattern (ADR-009)
+### 🏛️ Architecture Pattern (ADR-009 & ADR-023)
 
-**Decision:** Domain-Driven Design (DDD) Structure
+**Decision:** Domain-Driven Design (DDD) with Modular Monorepo Architecture
 
 **Benefits:**
 - ✅ Clear domain model with entities, value objects, aggregates
-- ✅ Separation of concerns (Domain, Application, Infrastructure, Interfaces)
+- ✅ Strict separation of concerns (Domain, Application, Infrastructure, Interfaces)
 - ✅ Swappable infrastructure via repository pattern
-- ✅ Scales well for complex domain features (scheduling, reviews)
-- ✅ AI-friendly (well-documented patterns)
+- ✅ Shared peripheral contracts via `packages/api-definitions/`
+- ✅ Decoupled frontend (`apps/frontend/`) and standalone microservice entrypoint (`apps/backend/`)
+- ✅ Automated boundary enforcement via `ts-archunit` (ADR-019)
 
 **Project Structure:**
 ```
-src/
-├── domain/               # Business logic (vendor-agnostic)
-│   ├── auth/             # IAuthProvider interface
-│   ├── storage/          # IStorageProvider interface
-│   ├── email/            # IEmailProvider interface (optional)
-│   ├── conference/       # Conference, Submission entities
-│   ├── submission/       # Submission entity
-│   ├── review/           # Review entity
-│   └── scheduling/       # Schedule entity
-├── application/          # Use cases
-├── infrastructure/       # External service implementations
-│   ├── external/
-│   │   ├── auth0-provider.ts
-│   │   ├── supabase-auth-adapter.ts
-│   │   ├── cloudflare-r2-adapter.ts
-│   │   └── resend-email-adapter.ts
-│   └── database/
-└── interfaces/          # UI and API entry points
+sessioflow/
+├── apps/
+│   ├── frontend/               # Next.js web application (UI + API Route Handlers)
+│   └── backend/                # Standalone API Gateway / Microservice entrypoint
+│
+├── packages/
+│   ├── api-definitions/        # Data-only schemas & Zod validation (@sessioflow/api-definitions)
+│   ├── modules/                # DDD Bounded Context Modules (@sessioflow/[module])
+│   │   ├── conference/         # Conference bounded context
+│   │   │   ├── domain/         # Entities, Value Objects, Domain Events & Interfaces
+│   │   │   ├── application/    # CQRS Commands & Queries
+│   │   │   ├── infrastructure/ # Drizzle ORM Repositories & Database mappings
+│   │   │   ├── interfaces/     # HTTP Controller factories
+│   │   │   └── container.ts    # Module Composition Root
+│   │   └── [other-modules]/
+│   └── shared/                 # Shared infrastructure
+│       ├── database/           # Drizzle client (@sessioflow/shared-database)
+│       └── logging/            # Structured Pino logger (@sessioflow/shared-logging)
 ```
-
-**Note:** Entities and repository interfaces live directly in their domain context folders (not in separate entities/ repositories/ subfolders). The `domain` folder uses singular form.
 
 ---
 
@@ -286,17 +285,15 @@ Each ADR follows this structure:
 
 | Metric | Count |
 |--------|-------|
-| **Total ADRs** | 32 (including amendments and analyses) |
-| **Approved** | 21 |
-| **Superseded** | 4 |
-| **Accepted** | 2 |
-| **Completed** | 1 |
-| **Proposed** | 4 |
-| **Optional** | 1 |
+| **Total ADR Documents** | 33 (including amendments, analyses, and superseded decisions) |
+| **Approved / Active** | 21 (including 1 Optional) |
+| **Accepted** | 6 |
+| **Completed Analyses** | 1 |
+| **Superseded** | 5 |
 | **Date Range** | 2026-06-05 to 2026-07-25 |
-| **Most Active Category** | Core Technology Stack (7 decisions) |
+| **Architecture Pattern** | Modular Monorepo with DDD & CQRS (ADR-009, ADR-015, ADR-023) |
 
 ---
 
-**Last Updated**: 2026-07-25
+**Last Updated**: 2026-08-15
 **Maintained By**: Technical Team
