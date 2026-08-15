@@ -151,6 +151,12 @@ export async function createConferenceController(request, commandHandler) {
 - **Integration tests**: `tests/integration/modules/[module]/[feature].test.ts`
 - **E2E tests**: `tests/e2e/[feature].spec.ts`
 
+### 🎭 E2E Testing Architecture (Playwright)
+- **Single Web Server (`apps/frontend` on port 3010)**: Playwright's `webServer` automatically launches `apps/frontend` (`next dev -p 3010`).
+- **In-Process API Route Handlers**: Next.js App Router route handlers (`apps/frontend/src/app/api/v1/*`) directly invoke DDD module controllers from `@sessioflow/[module]/container.ts`.
+- **🚫 Do NOT spawn `apps/backend` (port 3020)**: `apps/backend` is not needed or run during E2E tests. All `/api/v1/*` requests are served directly by `apps/frontend`.
+- **Database Lifecycle**: Global setup (`tests/e2e/setup.ts`) waits for PostgreSQL, applies Drizzle migrations, and cleans test data. `tests/e2e/utils/cleanup.ts` ensures clean database state per test.
+
 ### Architecture Tests
 - **Location**: `tests/unit/architecture/` (files: `ddd-boundaries.test.ts`, `response-conventions.test.ts`)
 - **Framework**: ts-archunit — enforces DDD layer boundaries, CQRS conventions, and architectural invariants
