@@ -272,15 +272,15 @@ apps/
 - [x] Coverage ≥ 95% for domain layer
 
 #### Deliverables
-- [x] `src/modules/conference/domain/entities/conference.ts`
-- [x] `src/modules/conference/domain/entities/cfp-config.ts`
-- [x] `src/modules/conference/domain/value-objects/*` (9 files)
-- [~] `src/modules/conference/domain/services/conference-validation-service.ts` (Omitted per ADR-007-01)
-- [x] `src/modules/conference/domain/events/conference-created.ts`
-- [x] `src/modules/conference/domain/events/cfp-opened.ts`
-- [x] `src/modules/conference/domain/exceptions/` (6 error classes)
-- [x] `tests/unit/conference/value-objects/*.test.ts`
-- [x] `tests/unit/conference/entities/*.test.ts`
+- [x] `packages/modules/conference/src/domain/conference.ts`
+- [x] `packages/modules/conference/src/domain/value-objects/cfp-config.ts`
+- [x] `packages/modules/conference/src/domain/value-objects/*` (9 files)
+- [~] `packages/modules/conference/src/domain/services/conference-validation-service.ts` (Omitted per ADR-007-01)
+- [x] `packages/modules/conference/src/domain/events/conference-created.ts`
+- [x] `packages/modules/conference/src/domain/events/cfp-opened.ts`
+- [x] `packages/modules/conference/src/domain/exceptions/` (6 error classes)
+- [x] `tests/unit/modules/conference/domain/value-objects/*.test.ts`
+- [x] `tests/unit/modules/conference/domain/*.test.ts`
 
 ---
 
@@ -304,7 +304,7 @@ apps/
 
 3. **Exception Tests**
    - [x] Test `InvalidConferenceError` is thrown correctly
-   - [x] Test `CfpDatesInvalidError` throws on invalid dates
+   - [x] Test `InvalidCfpConfigError` throws on invalid dates
 
 **Step 2: Implement to Pass Tests**
 1. **Repository Interface**
@@ -323,14 +323,14 @@ apps/
 - [x] Coverage ≥ 90%
 
 #### Deliverables
-- [x] `src/modules/conference/domain/repositories/conference-repository.ts`
-- [x] `src/modules/conference/domain/events/cfp-closed.ts`
-- [x] `src/modules/conference/domain/events/review-started.ts`
-- [x] `src/modules/conference/domain/events/selection-completed.ts`
-- [x] `src/modules/conference/domain/events/schedule-published.ts`
-- [x] `src/modules/conference/domain/events/conference-completed.ts`
-- [x] `src/modules/conference/domain/events/conference-cancelled.ts`
-- [x] `tests/unit/conference/repository-interface.test.ts`
+- [x] `packages/modules/conference/src/domain/conference-repository.interface.ts`
+- [x] `packages/modules/conference/src/domain/events/cfp-closed.ts`
+- [x] `packages/modules/conference/src/domain/events/review-started.ts`
+- [x] `packages/modules/conference/src/domain/events/selection-completed.ts`
+- [x] `packages/modules/conference/src/domain/events/schedule-published.ts`
+- [x] `packages/modules/conference/src/domain/events/conference-completed.ts`
+- [x] `packages/modules/conference/src/domain/events/conference-cancelled.ts`
+- [x] `tests/unit/modules/conference/domain/repository-interface.test.ts`
 
 ---
 
@@ -341,32 +341,31 @@ apps/
 #### Tasks
 
 **Step 1: Write Tests First**
-1. **Command Tests (Mocked Repository)**
-   - [x] Test `CreateConference` command happy path
-   - [x] Test `CreateConference` command - validation error (short name)
-   - [x] Test `CreateConference` command - CFP dates invalid
-   - [x] Test `CreateConference` command - slug already exists
-   - [x] Test `CreateConference` command - free tier limit exceeded
-   - [x] Test `CreateConference` command - publishes domain events
+1. **Command Handler Tests (Mocked Repositories)**
+   - [x] Test `CreateConferenceHandler.execute()` creates and saves conference
+   - [x] Test `CreateConferenceHandler` rejects invalid dates
+   - [x] Test `CreateConferenceHandler` rejects duplicate slug
+   - [x] Test `CreateConferenceHandler` checks free tier limit
+   - [x] Test domain events dispatched on save
 
-2. **Query Tests (Mocked Repository)**
-   - [x] Test `GetConference` query returns conference by ID
-   - [x] Test `GetConference` query returns null for non-existent
+2. **Query Handler Tests (Mocked Repositories)**
+   - [x] Test `GetConferenceHandler.execute()` returns conference
+   - [x] Test `GetConferenceHandler` returns null for non-existent conference
 
-3. **Repository Integration Tests**
-   - [x] Test `save()` persists conference and CfpConfig
-   - [x] Test `findById()` retrieves conference with CfpConfig
-   - [x] Test `findBySlug()` retrieves conference
+3. **Database Repository Integration Tests**
+   - [x] Test repository saves and retrieves conference
+   - [x] Test repository handles status transitions
+   - [x] Test repository maps database types to domain entities
 
 **Step 2: Implement to Pass Tests**
-1. **Database Schema (Drizzle ORM)**
-   - [x] Create `conferences` table schema with RLS
-   - [x] Define columns: id (UUID PK), name, description, slug, status, organizer_id, cfp_config (JSONB or JSON), created_at, updated_at
-   - [x] Unique constraint on `slug`
+1. **Drizzle ORM Schema**
+   - [x] Implement conference schema (`conferences.ts`)
+   - [x] Implement outbox schema (`outbox.ts`)
+   - [x] Generate and apply migrations
 
-2. **Repository Implementation**
-   - [x] Implement `ConferenceRepository` with Supabase/Drizzle
-   - [x] Implement all repository methods
+2. **Drizzle Repository Implementation**
+   - [x] Implement `DrizzleConferenceRepository`
+   - [x] Implement `DrizzleOutboxRepository`
    - [x] Add transaction support for aggregate save
 
 3. **CQRS Implementation**
@@ -378,9 +377,9 @@ apps/
    - [x] Implement `GetConference` response DTO
 
 4. **Shared Infrastructure**
-   - [x] Implement database client setup (shared/infrastructure/database)
-   - [x] Implement auth provider abstraction (shared/infrastructure/auth)
-   - [x] Implement email provider abstraction (shared/infrastructure/email)
+   - [x] Implement database client setup (`packages/shared/database`)
+   - [x] Implement logging setup (`packages/shared/logging`)
+   - [x] Implement bus mediator (`packages/shared/bus`)
 
 **Step 3: Verify**
 - [x] Run tests: `npx vitest run`
@@ -388,21 +387,19 @@ apps/
 - [x] Integration tests pass
 
 #### Deliverables
-- [x] `src/modules/conference/infrastructure/database/drizzle-schema.ts`
-- [x] `src/modules/conference/infrastructure/database/conference-repository.ts`
-- [x] `src/shared/infrastructure/database/db-client.ts`
-- [x] `src/shared/infrastructure/auth/auth-provider.ts`
-- [x] `src/shared/infrastructure/email/email-provider.ts`
-- [x] `src/modules/conference/application/commands/create-conference/create-conference.command.ts`
-- [x] `src/modules/conference/application/commands/create-conference/create-conference.handler.ts`
-- [x] `src/modules/conference/application/commands/create-conference/create-conference.dto.ts`
-- [x] `src/modules/conference/application/queries/get-conference/get-conference.query.ts`
-- [x] `src/modules/conference/application/queries/get-conference/get-conference.handler.ts`
-- [x] `src/modules/conference/application/queries/get-conference/get-conference.dto.ts`
-- [x] `src/modules/conference/application/dto/conference-response.dto.ts`
-- [x] `tests/integration/conference/repository.test.ts`
-- [x] `tests/unit/conference/commands/create-conference.test.ts`
-- [x] `tests/unit/conference/queries/get-conference.test.ts`
+- [x] `packages/shared/database/src/schema/conferences.ts`
+- [x] `packages/modules/conference/src/infrastructure/database/conference.repository.ts`
+- [x] `packages/shared/database/src/client.ts`
+- [x] `packages/modules/conference/src/application/commands/create-conference/create-conference.command.ts`
+- [x] `packages/modules/conference/src/application/commands/create-conference/create-conference.handler.ts`
+- [x] `packages/modules/conference/src/application/commands/create-conference/create-conference.dto.ts`
+- [x] `packages/modules/conference/src/application/queries/get-conference/get-conference.query.ts`
+- [x] `packages/modules/conference/src/application/queries/get-conference/get-conference.handler.ts`
+- [x] `packages/modules/conference/src/application/queries/get-conference/get-conference.dto.ts`
+- [x] `packages/modules/conference/src/application/dto/conference-response.dto.ts`
+- [x] `tests/integration/modules/conference/conference-repository.test.ts`
+- [x] `tests/unit/modules/conference/application/commands/create-conference.test.ts`
+- [x] `tests/unit/modules/conference/application/queries/get-conference.test.ts`
 
 ---
 

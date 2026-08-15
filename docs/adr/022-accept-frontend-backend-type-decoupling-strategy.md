@@ -8,7 +8,7 @@
 
 ## Context and Problem Statement
 
-SessioFlow's monorepo structure will separate frontend (`apps/web/`) and backend (`apps/backend/`) into distinct applications. A critical architectural decision is how to handle shared types between these domains. The current approach of potentially sharing types risks creating tight coupling between frontend and backend, reducing microservice readiness and violating DDD principles.
+SessioFlow's monorepo structure will separate frontend (`apps/frontend/`) and backend (`apps/backend/`) into distinct applications. A critical architectural decision is how to handle shared types between these domains. The current approach of potentially sharing types risks creating tight coupling between frontend and backend, reducing microservice readiness and violating DDD principles.
 
 **Current Challenge:**
 - Frontend needs types to shape API calls and handle responses
