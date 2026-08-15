@@ -32,10 +32,10 @@ sequenceDiagram
     participant UI as Frontend
     participant API as Application Service
     participant Domain as Conference Aggregate
-    participant DB as Repository
-    participant Email as Email Service
+    participant DB as Repository & Outbox
+    participant Worker as Outbox Worker (Async)
 
-    Note over Organizer, Email: Journey 01: Setup Conference Flow
+    Note over Organizer, Worker: Journey 01: Setup Conference Flow
 
     Organizer->>UI: Click "Create New Conference"
     UI->>API: GET /auth/me
@@ -49,21 +49,23 @@ sequenceDiagram
         Organizer->>UI: Click "Create Conference"
         UI->>API: POST /api/v1/conferences
         API->>API: Validate payload with Zod
-        API->>DB: Check slug uniqueness
-        DB-->>API: Slug available
+        API->>DB: Check slug uniqueness & active count (BR-004)
+        DB-->>API: Valid & within free tier limit
         
         API->>Domain: Conference.create(id, data)
         Note over Domain: Conference state: DRAFT
         API->>Domain: Conference.publishCfp()
         Note over Domain: Conference state: CFP_OPEN<br/>CfpConfig created: ACTIVE
         
-        Domain->>Domain: Publish ConferenceCreated<br/>CfpOpened events
-        API->>DB: Save Conference aggregate
+        Domain->>Domain: Record ConferenceCreated<br/>& CfpOpened events
+        API->>DB: Save Aggregate & Outbox Events (Transaction)
         DB-->>API: Persisted
         
-        API->>Email: Send welcome email (async)
         API-->>UI: 201 Created + CfP URL
         UI-->>Organizer: Redirect to Dashboard<br/>with CfP link
+
+        Worker->>DB: Poll Outbox (CfpOpened)
+        Worker->>Worker: Send welcome email via Resend (async)
     end
 
     rect rgb(255, 235, 238)
@@ -84,15 +86,14 @@ sequenceDiagram
     end
 
     rect rgb(255, 235, 238)
-        note right of Domain: Error Path - Business Rule Violation
-        API->>Domain: Conference.create()
-        Domain->>Domain: Check free tier limit
-        Domain-->>API: FreeTierLimitExceeded
+        note right of API: Error Path - Free Tier Limit Exceeded
+        API->>DB: Check active count by organizerId
+        DB-->>API: Active conferences >= 5 (BR-004)
         API-->>UI: 403 Forbidden + upgrade prompt
     end
 
-    Note over Organizer, Email: Domain Events Published
-    Note right of Domain: ConferenceCreated → Analytics<br/>CfpOpened → Welcome Email
+    Note over Organizer, Worker: Domain Events Published
+    Note right of Domain: ConferenceCreated → Analytics / Outbox<br/>CfpOpened → Welcome Email Worker / Outbox
 ```
 
 ---
@@ -108,14 +109,14 @@ sequenceDiagram
 | **5** | Selects CfP start and end dates via date picker | Validates end date is after start date, prevents past dates | None (UI Level) |
 | **6** | Clicks "Create Conference" submit button | Shows loading state, sends POST request with payload | None (UI Level) |
 | **7** | — | **Application Service:** Validates all fields against Zod schema | None (Validation) |
-| **8** | — | **Repository:** Check slug uniqueness (findBySlug) | None (Validation) |
+| **8** | — | **Repository:** Check slug uniqueness (`findBySlug`) and free tier limit (`countActiveByOrganizerId`) | None (Validation) |
 | **9** | — | **Domain Layer:** `ConferenceId.generate()` creates UUIDv4 | New ConferenceId |
 | **10** | — | **Domain Layer:** `Conference.create(id, validatedData)` creates Conference in `DRAFT` state | `Conference` → `DRAFT` |
 | **11** | — | **Domain Layer:** `Conference.publishCfp()` transitions Conference to `CFP_OPEN` | `Conference` → `CFP_OPEN` |
 | **12** | — | **Domain Layer:** `CfpConfig` child entity created with validated dates | `CfpConfig` → `ACTIVE` |
-| **13** | — | **Domain Layer:** Publishes `ConferenceCreated` and `CfpOpened` domain events | Domain Events Published |
-| **14** | — | **Repository:** `ConferenceRepository.save()` persists Conference and CfpConfig | Database Persisted |
-| **15** | — | **Application Service:** Triggers welcome email (async) via Resend | External Service |
+| **13** | — | **Domain Layer:** Records `ConferenceCreated` and `CfpOpened` domain events on Aggregate | Domain Events Recorded |
+| **14** | — | **Repository:** `ConferenceRepository.save()` persists Aggregate & Outbox Events in a single DB transaction | Database Persisted |
+| **15** | — | **Outbox Worker (Async):** Polls/processes `CfpOpened` event and dispatches welcome email via Resend (best-effort) | External Async Worker |
 | **16** | — | Returns 201 Created with Conference and CfP URL | Response Sent |
 | **17** | Views success notification | Redirects to Conference Dashboard with pre-populated CfP link | None (UI Level) |
 
@@ -129,7 +130,7 @@ sequenceDiagram
 * **Then** the system creates a `Conference` record with `DRAFT` status,
 * **And** calls `Conference.publishCfp()` to transition to `CFP_OPEN` status,
 * **And** creates a linked `CfpConfig` with the specified submission window in `ACTIVE` state,
-* **And** publishes `ConferenceCreated` and `CfpOpened` domain events,
+* **And** records `ConferenceCreated` and `CfpOpened` domain events into the Transactional Outbox,
 * **And** redirects the user to the Conference Dashboard with a shareable CfP link.
 
 ### Scenario 2: Minimal Conference Setup
@@ -144,11 +145,11 @@ sequenceDiagram
 
 ### 1. Business Logic Failures
 
-| What If | System Handling | Domain Method | Entity Impact |
-|---------|-----------------|---------------|---------------|
+| What If | System Handling | Domain / Application Method | Entity Impact |
+|---------|-----------------|-----------------------------|---------------|
 | User selects CfP end date before start date | Display inline validation error *"End date must be after start date"*, prevent form submission | `CfpConfig.validateDates()` throws `InvalidCfpConfigError` | No lifecycle change; no entities created |
 | Conference name contains special characters or is too long | Sanitize input, truncate to max 100 characters, display warning | `ConferenceName.create()` validates and sanitizes | `Conference` created with sanitized name |
-| User tries to create more than 5 active conferences (free tier limit) | Display upgrade prompt with pricing information | `CreateConference.execute()` checks subscription tier | No lifecycle change; `Conference` not created |
+| User tries to create more than 5 active conferences (free tier limit) | Display upgrade prompt with pricing information | `CreateConferenceHandler.execute()` evaluates `countActiveByOrganizerId(organizerId) >= 5` | No lifecycle change; `Conference` not created |
 | Slug already exists in database | Display error *"Conference name already taken, try a different name"* | `ConferenceRepository.findBySlug()` returns existing conference | No lifecycle change; `Conference` not created |
 
 ### 2. Technical Failures
@@ -288,25 +289,29 @@ flowchart TB
     CheckSlug -->|No| Error3[Suggest Alternative]
     Error3 --> Form
     
-    CheckSlug -->|Yes| CreateConference[Create Conference Aggregate]
-    CreateConference --> PublishCfp[Publish CfP]
-    
-    PublishCfp --> CheckTier{Free Tier Limit?}
+    CheckSlug -->|Yes| CheckTier{Free Tier Limit?}
     CheckTier -->|Exceeded| Error4[Show Upgrade Prompt]
     Error4 --> EndFail([Create Failed])
     
-    CheckTier -->|OK| SaveDB[(Save to Database)]
-    SaveDB --> PublishEvents[Publish Domain Events]
+    CheckTier -->|OK| CreateConference[Create Conference Aggregate]
+    CreateConference --> PublishCfp[Publish CfP]
     
-    PublishEvents --> SendEmail[Send Welcome Email]
-    SendEmail --> Success[Redirect to Dashboard]
+    PublishCfp --> RecordEvents[Record Domain Events]
+    RecordEvents --> SaveDB[(Save Aggregate & Outbox Events in DB)]
     
+    SaveDB --> Success[Return 201 + Redirect to Dashboard]
     Success --> EndSuccess([CfP Link Generated])
+    
+    SaveDB -.->|Async Outbox Poll| OutboxWorker[Outbox Worker]
+    OutboxWorker -.-> SendEmail[Send Welcome Email via Resend]
     
     style CreateConference fill:#e1f5fe
     style PublishCfp fill:#e8f5e9
-    style PublishEvents fill:#fff3e0
+    style RecordEvents fill:#fff3e0
+    style SaveDB fill:#e8f5e9
     style Success fill:#c8e6c9
+    style OutboxWorker fill:#f3e5f5
+    style SendEmail fill:#f3e5f5
     style Error1 fill:#ffcdd2
     style Error2 fill:#ffcdd2
     style Error3 fill:#ffcdd2
@@ -375,3 +380,6 @@ This flow document follows the consistency guidelines:
 | [ADR-006: Use RESTful API Design](../../../../adr/006-use-restful-api-design.md) | RESTful API design decision |
 | [ADR-007: Use Zod for Validation](../../../../adr/007-use-zod-for-validation.md) | Zod validation strategy |
 | [ADR-009: Adopt DDD Structure](../../../../adr/009-adopt-domain-driven-design-structure.md) | DDD architecture decision |
+| [ADR-011-01: Optional Email Abstraction](../../../../adr/011-01-use-resend-email-amendment-optional-abstraction.md) | Asynchronous email sending |
+| [ADR-017: Drizzle ORM](../../../../adr/017-use-drizzle-orm-with-ddd-transactions.md) | Drizzle ORM and transactional outbox |
+| [ADR-023: Comprehensive Monorepo Structure](../../../../adr/023-comprehensive-monorepo-structure-update.md) | Monorepo module and app boundaries |
