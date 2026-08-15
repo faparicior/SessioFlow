@@ -31,7 +31,7 @@ The user maintains explicit control over every stage and execution step:
 
 ```mermaid
 flowchart TD
-    A["1. Read Flow & Architecture<br/>(flows/, AGENTS.md, ARCHITECTURE.md)"] --> B["2. Create Feature Specs<br/>(features/feature-*.md)"]
+    A["1. Read Flow & Architecture<br/>(flows/, AGENTS.md, ARCHITECTURE.md)"] --> B["2. Create Feature Specs<br/>(features/feature-01-*.md, feature-02-*.md)"]
     B --> R1{{"🛑 USER REVIEW & APPROVAL<br/>(Inspect Feature Specs)"}}
     R1 -->|Approved| C["3. Create Flow Plan<br/>([flow]-plan.md)"]
     R1 -->|Changes requested| B
@@ -64,8 +64,12 @@ flowchart TD
 
 ---
 
-### Step 2: Create Feature Specifications
-1. Break down the flow into individual feature specifications under the context's flow features directory (e.g. `docs/product/bounded-contexts/[context]/flows/features/feature-[feature-name].md`).
+### Step 2: Create Feature Specifications (Sequentially Numbered)
+1. **Sequential Numbering & Ordering**:
+   - Break down the flow into **sequentially numbered** feature specifications under the context's flow features directory:
+     `docs/product/bounded-contexts/[context]/flows/features/feature-01-[feature-name].md`
+     `docs/product/bounded-contexts/[context]/flows/features/feature-02-[feature-name].md`
+   - Use two-digit zero-padded prefixes (`01`, `02`, `03`...) and standard short identifiers (`F1`, `F2`, `F3`...) to ensure clear, unambiguous execution ordering.
 2. Use the template: `templates/feature-specification.md` (located in this skill).
 3. Define the requirements, domain model, layer scope, and acceptance criteria mapped to the repository's architectural layers.
 4. **🛑 Review Gate**:
