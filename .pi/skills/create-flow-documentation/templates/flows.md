@@ -32,8 +32,8 @@ sequenceDiagram
     participant UI as Frontend
     participant API as Application Service
     participant Domain as [Aggregate Name]
-    participant DB as Repository & Outbox
-    participant Worker as Outbox Worker (Async)
+    participant DB as Repository (or Repository & Outbox)
+    participant Worker as Background Worker / Event Bus (optional, per ADRs)
     participant Ext as External Service (optional)
 
     Note over User,Ext: Journey [XX]: [Flow Name]
@@ -49,16 +49,16 @@ sequenceDiagram
         API->>Domain: [Domain Operation]
         Note over Domain: Entity state: [State]
         Domain->>Domain: [Domain Method Call]
-        Note over Domain: Records [Domain Event]
-        API->>DB: Save aggregate + write outbox events (Transaction)
+        Note over Domain: Publishes / Records [Domain Event]
+        API->>DB: Save aggregate (and Outbox events if using Outbox pattern)
         DB-->>API: Persisted
         API-->>UI: Success Response
         UI-->>User: [Success Feedback]
         
-        opt Async Side Effects
-            Worker->>DB: Poll outbox (pending events)
-            Worker->>Ext: [Dispatch async side-effect, e.g. email]
-            Worker->>DB: Mark outbox event published
+        opt Async Side Effects (if Outbox / Event Bus used per project ADRs)
+            Worker->>DB: Poll pending events / Listen to Event Bus
+            Worker->>Ext: [Dispatch async side-effect, e.g. email, webhook]
+            Worker->>DB: Mark event processed (if Outbox)
         end
     end
 
