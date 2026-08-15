@@ -59,21 +59,33 @@ describe('DrizzleConferenceRepository', () => {
 - **Framework**: Playwright
 - **Run**: `npm run test:e2e`
 
-```typescript
-// tests/e2e/create-conference.spec.ts
-import { test, expect } from '@playwright/test';
+#### 🎭 E2E Testing Architecture & How It Works
+- **Single WebServer (`apps/frontend` on port 3010)**: Playwright's `webServer` config automatically launches `apps/frontend` (`next dev -p 3010`).
+- **In-Process API Route Handlers**: Next.js App Router route handlers (`apps/frontend/src/app/api/v1/*`) directly invoke DDD module controllers from `@sessioflow/[module]/container.ts` in-process.
+- **🚫 Do NOT spawn `apps/backend`**: `apps/backend` (port 3020) is a standalone microservice gateway and is **NOT** needed or started for E2E tests. All `/api/v1/*` requests are served directly by `apps/frontend`.
+- **Database Setup & Migrations (`tests/e2e/setup.ts`)**: Global setup connects to PostgreSQL via `postgres-js`, polls until the DB is ready, applies Drizzle migrations, and cleans up test records.
+- **Per-Test Isolation (`tests/e2e/utils/cleanup.ts`)**: `deleteConferences()` runs in `test.beforeEach()` to ensure clean database state for every test case.
 
-test('user can create a conference', async ({ page }) => {
-  await page.goto('/dashboard/conferences/new');
-  
-  await page.fill('[name="conferenceName"]', 'Tech Conference 2026');
-  await page.fill('[name="cfpStartDate"]', '2026-01-01');
-  await page.fill('[name="cfpEndDate"]', '2026-03-31');
-  
-  await page.click('[type="submit"]');
-  
-  await expect(page).toHaveURL(/\/conferences\/\w+/);
-  await expect(page.locator('h1')).toContainText('Tech Conference 2026');
+```typescript
+// tests/e2e/conference-setup.spec.ts
+import { test, expect } from '@playwright/test';
+import { deleteConferences } from './utils/cleanup';
+
+test.describe('Conference Setup E2E', () => {
+  test.beforeEach(async ({ page }) => {
+    await deleteConferences();
+    await page.goto('/conferences/create');
+  });
+
+  test('user can create a conference', async ({ page }) => {
+    await page.getByLabel('Conference Name').fill('Tech Conference 2026');
+    await page.getByLabel('CfP Start Date').fill('2026-01-01');
+    await page.getByLabel('CfP End Date').fill('2026-03-31');
+    await page.getByRole('button', { name: /create conference/i }).click();
+
+    await page.waitForURL(/\/conferences\/[\da-fA-F-]{36}$/);
+    await expect(page.locator('code').first()).toBeVisible();
+  });
 });
 ```
 
