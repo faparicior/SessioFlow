@@ -28,6 +28,16 @@
 
 ---
 
+## 🧠 Agent Design Decisions & Assumptions (Lack of Information Log)
+*Explicitly documents all judgment calls, runtime defaults, or tie-breakers made by the LLM due to missing, underspecified, or conflicting information in repository documents.*
+
+| # | Topic / Area | Documentation State / Gap | Decision / Judgment Made | Status |
+|---|--------------|---------------------------|--------------------------|--------|
+| D1 | [e.g. Runtime Port] | [What docs specified vs what was missing] | [Chosen solution / default] | 📋 Proposed / ✅ Approved |
+| D2 | [e.g. Error Codes] | [What docs specified vs what was missing] | [Chosen solution / default] | 📋 Proposed / ✅ Approved |
+
+---
+
 ## 📦 Phased Execution Plan
 
 > **Disciplined TDD Micro-Cycle for every phase:**

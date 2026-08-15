@@ -35,6 +35,15 @@
 
 ---
 
+## 🧠 Agent Design Decisions & Assumptions (Lack of Information Log)
+*Documents all judgment calls, assumptions, and tie-breakers made by the LLM for this feature.*
+
+| # | Topic / Area | Documentation State / Gap | Decision / Judgment Made | Status |
+|---|--------------|---------------------------|--------------------------|--------|
+| D1 | [e.g. Error Mapping] | [What docs specified vs what was missing] | [Chosen solution / default] | 📋 Proposed / ✅ Approved |
+
+---
+
 ## 🏗️ Domain Model
 
 ### Entities Affected
