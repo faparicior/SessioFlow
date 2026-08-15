@@ -64,6 +64,19 @@
 
 ---
 
+## 🛡️ Concurrency, TOCTOU & Invariant Integrity Analysis
+*Evaluate race conditions, check-then-act vulnerabilities, and data consistency safeguards.*
+
+| Concurrency Vector | Risk in This Feature | Guard / Mitigation Strategy | Enforcement Mechanism |
+|--------------------|----------------------|-----------------------------|-----------------------|
+| **Uniqueness (TOCTOU)** | e.g. Concurrent inserts with duplicate slug | Database UNIQUE index + Domain Error translation | `UNIQUE INDEX` $\rightarrow$ `[DuplicateKeyError]` $\rightarrow$ `409` |
+| **Quotas & Limits** | e.g. Concurrent creations exceeding free tier quota | Atomic count check within transaction / lock / constraint | DB constraint / Isolation level |
+| **State Machine Race** | e.g. Concurrent transitions on same aggregate | Optimistic locking / conditional update | `version` column / `WHERE status = ...` |
+| **Time-Drift Invariants** | e.g. Historical dates vs creation validation | Separation of `create()` (validates) vs `fromData()` (reconstitutes) | Factory method separation |
+| **Dual-Write Consistency** | e.g. DB updated but event dispatch drops | Transactional Outbox / Atomic unit of work | Outbox table in same DB transaction |
+
+---
+
 ## 📦 Implementation Scope by Layer
 *(Consult `AGENTS.md` / `docs/ARCHITECTURE.md` for exact paths)*
 

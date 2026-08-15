@@ -174,6 +174,15 @@ stateDiagram-v2
 |---------|-----------------|---------------|---------------|
 | [Validation edge case] | [System handling] | [Domain method] | [Entity impact] |
 
+### 4. 🛡️ Concurrency, TOCTOU & Invariant Integrity
+
+| Concurrency Scenario (TOCTOU) | Potential Risk | Mitigation / Guard Mechanism | Error / Outcome |
+|-------------------------------|----------------|------------------------------|-----------------|
+| **Unique Constraint Race** (e.g. concurrent inserts with same slug/code) | Duplicate entries bypass application-level check | Database-level unique constraint/index + repository exception translation | `409 Conflict` (`[DuplicateKeyError]`) |
+| **Quota / Limit Race** (e.g. concurrent creation exceeding tier limits) | User creates multiple resources simultaneously exceeding limits | Atomic transaction / locking / DB constraint | `403 Forbidden` / `422 Unprocessable` |
+| **State Machine Race** (e.g. concurrent state transitions on same entity) | Double transition / duplicate events | Optimistic locking (`version` column) / conditional update (`WHERE status = '...'`) | `409 Conflict` (`[StateTransitionError]`) |
+| **Dual-Write / Event Race** (e.g. DB commit succeeds but event dispatch fails) | Entity updated without downstream side effects | Transactional Outbox pattern or atomic messaging | Event safely published asynchronously |
+
 ---
 
 ## 🛠️ Technical Notes & Validation Rules
