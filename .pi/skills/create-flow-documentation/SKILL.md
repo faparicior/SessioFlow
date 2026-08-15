@@ -147,7 +147,7 @@ The generated flow document should be a **single, comprehensive document** that 
 4. **State Diagram** - Entity lifecycle visualization
 5. **Step-by-Step Walkthrough** - Aligned with sequence diagram
 6. **Acceptance Criteria** - Gherkin format scenarios
-7. **Edge Cases** - Business logic failures, technical failures, validation boundaries
+7. **Edge Cases & Invariant Integrity** - Business logic failures, technical failures, validation boundaries, and concurrency/TOCTOU race mitigations
 8. **Technical Notes** - API endpoints, validation schemas/contracts, database constraints, security/access policies
 9. **Linked Documentation** - References to entities, value objects, ADRs
 
