@@ -127,15 +127,15 @@ export class DrizzleConferenceRepository implements ConferenceRepository {
 ## 🔗 Dependencies
 
 ```
-interfaces → application → domains
+interfaces → application → domain
                 ↓
          infrastructure
 ```
 
 - **interfaces** depend on **application** for use cases
-- **application** depends on **domains** for business logic
-- **infrastructure** implements **domains** repository interfaces
-- **domains** has NO dependencies on other layers
+- **application** depends on **domain** for business logic
+- **infrastructure** implements **domain** repository interfaces
+- **domain** has NO dependencies on other layers
 
 ## 🎯 Design Rules
 
@@ -148,6 +148,7 @@ interfaces → application → domains
 
 ## 📚 Related Documentation
 
-- [Architecture Decision Records](../docs/adr/README.md)
+- [Architecture Decision Records](./adr/README.md)
+- [Architecture Rules & Invariants](./ARCHITECTURE-RULES.md)
 - [Testing Strategy](./TESTING.md)
 - [API Design](./API-DESIGN.md)

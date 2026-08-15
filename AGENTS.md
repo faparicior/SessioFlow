@@ -207,19 +207,18 @@ export async function createConferenceController(request, commandHandler) {
 
 ### Test Example
 ```typescript
-// tests/unit/conference/conference-name.test.ts
+// tests/unit/modules/conference/value-objects/conference-name.test.ts
 import { describe, it, expect } from 'vitest';
-import { ConferenceName } from '@/modules/conference/domain/value-objects/conference-name';
+import { ConferenceName } from '@sessioflow/conference/domain/value-objects/conference-name';
 
 describe('ConferenceName', () => {
   it('creates valid conference name', () => {
     const result = ConferenceName.create('Tech Conference 2026');
-    expect(result.isSuccess).toBe(true);
+    expect(result.value).toBe('Tech Conference 2026');
   });
 
   it('rejects too short name', () => {
-    const result = ConferenceName.create('Ab');
-    expect(result.isFailure).toBe(true);
+    expect(() => ConferenceName.create('Ab')).toThrow();
   });
 });
 ```
@@ -245,7 +244,7 @@ A task is complete when ALL of the following pass:
 | Architecture Decisions | `docs/adr/README.md` |
 | Testing Strategy | `docs/TESTING.md` |
 | API Design | `docs/API-DESIGN.md` |
-| Coding Rules & Linting | `DEV-RULES.md` |
+| Logging & Observability | `docs/LOGGING.md` |
 
 ## 🏛️ Architecture Principles
 
@@ -340,7 +339,7 @@ All AI agents working on this project must follow these 6 core principles:
 - **Email**: Resend (optional, ADR-011-01) — dispatched asynchronously via Outbox domain events (`CfpOpenedEvent` $\rightarrow$ Outbox repository)
 - **Business Limits**: Wave 1 (MVP) checks (e.g. Free Tier limit in BR-004) are evaluated directly via Repository count queries (e.g., `countActiveByOrganizerId`) before introducing separate billing modules.
 
-See `docs/ADRS.md` for full decision history.
+See `docs/adr/README.md` for full decision history.
 
 ## 📦 New Module Package
 
