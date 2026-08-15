@@ -146,9 +146,9 @@ export interface ConferenceRepository {
 
 ---
 
-## 🔗 Domain Conferences
+## 🔗 Domain Events
 
-| Conference | Triggered By | Published When |
+| Event | Triggered By | Published When |
 |-------|--------------|----------------|
 | `CfpOpened` | `Conference.publishCfp()` | CfP transitions to `ACTIVE` |
 | `CfpClosed` | `Conference.closeCfp()` / `CfpDeadlineReached` | CfP transitions to `CLOSED` |

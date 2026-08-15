@@ -10,11 +10,11 @@ The Conference Bounded Context manages the lifecycle of Call for Papers (CfP) co
 |--------|------|-------------|
 | **Conference** | Root Entity | Main conference with CfP configuration, sessions, and scheduling |
 
-### Child Entities
+### Value Objects & Embedded Components
 
-| Entity | Parent | Description |
-|--------|--------|-------------|
-| **CfpConfig** | Child Entity | Call for Papers submission window configuration |
+| Component | Type | Description |
+|-----------|------|-------------|
+| **CfpConfig** | Composite Value Object | Embedded Call for Papers submission window configuration |
 
 ### Value Objects
 
