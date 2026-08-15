@@ -22,7 +22,9 @@
 *Break down the exact logic. Use tables, bullet points, or Gherkin syntax (Given/When/Then) to cover different edge cases.*
 
 ### Evaluation Logic
-* **If** `organizer.tier == FREE` AND `count(activeConferences) >= 5` -> Block creation, show upgrade prompt
+* **Active Conference Definition:** Any conference where `status != 'DELETED'` (including `DRAFT`, `CFP_OPEN`, `CFP_CLOSED`, `PUBLISHED`).
+* **Wave 1 (MVP) Default:** In the absence of a separate billing module, all organizers default to `FREE` tier.
+* **If** `organizer.tier == FREE` AND `count(activeConferences) >= 5` -> Block creation, show upgrade prompt (HTTP 403 / `FREE_TIER_LIMIT_EXCEEDED`)
 * **If** `organizer.tier == FREE` AND `count(activeConferences) < 5` -> Allow creation
 * **If** `organizer.tier != FREE` (PRO/ENTERPRISE) -> No limit applied
 
