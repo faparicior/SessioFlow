@@ -68,8 +68,8 @@ npm run start            # Start production server
 ```
 sessioflow/
 ├── apps/
-│   ├── frontend/               # Next.js web app (UI + API Controllers)
-│   └── backend/                # Standalone API Gateway / Microservice
+│   ├── frontend/               # Next.js web app (UI + Next.js App Router API Route Handlers)
+│   └── backend/                # Standalone API Gateway / Microservice entrypoint
 │
 ├── packages/
 │   ├── api-definitions/        # Data-only API schemas & Zod validation (@sessioflow/api-definitions)
@@ -78,6 +78,7 @@ sessioflow/
 │   │   │   ├── domain/         # Pure domain entities, value objects & interfaces
 │   │   │   ├── application/    # Command & query use cases
 │   │   │   ├── infrastructure/ # Drizzle ORM repository implementations
+│   │   │   ├── interfaces/     # Primary HTTP Controller factories (createConferenceController)
 │   │   │   └── container.ts    # Module Composition Root (Application & HTTP Controller factories)
 │   │   └── [other-modules]/
 │   └── shared/
@@ -315,9 +316,10 @@ All AI agents working on this project must follow these 6 core principles:
 ### Search-First Requirement
 
 **Before creating new code:**
-- Use `rg` (ripgrep) to search for similar functionality
-- Check `src/modules/[context]/domain/` for existing value objects or entities
-- Look in `src/modules/[context]/application/` for similar use cases
+- Use `rg` (ripgrep) or file listing to search for existing implementations first
+- Check `packages/modules/[context]/src/domain/` for existing value objects, entities, and repository interfaces
+- Check `packages/modules/[context]/src/application/` for existing commands, queries, and handlers
+- Check `docs/product/bounded-contexts/[context]/flows/` for existing feature specs and flow plans
 - Review existing tests for patterns
 - **Only create new code if nothing suitable exists**
 
@@ -330,18 +332,19 @@ All AI agents working on this project must follow these 6 core principles:
   - Split into multiple focused files
 - **Exception**: Test files can be larger if testing a single complex feature
 
-## 🔐 Authentication & Storage
+## 🔐 Authentication, Storage & Outbox Events
 
 - **Auth**: Auth0 with DDD abstraction (ADR-002, ADR-004)
-- **Database**: Supabase PostgreSQL with DDD abstraction (ADR-002)
+- **Database**: Supabase PostgreSQL with DDD abstraction via Drizzle ORM (ADR-002, ADR-017)
 - **Storage**: Supabase Storage with DDD abstraction (ADR-005)
-- **Email**: Resend (optional, ADR-011)
+- **Email**: Resend (optional, ADR-011-01) — dispatched asynchronously via Outbox domain events (`CfpOpenedEvent` $\rightarrow$ Outbox repository)
+- **Business Limits**: Wave 1 (MVP) checks (e.g. Free Tier limit in BR-004) are evaluated directly via Repository count queries (e.g., `countActiveByOrganizerId`) before introducing separate billing modules.
 
 See `docs/ADRS.md` for full decision history.
 
 ## 📦 New Module Package
 
-Create a new DDD module under `packages/modules/{context}/` using the `create-module` skill (`create-module`). It scaffolds `package.json`, `tsconfig.json`, `.gitignore`, and `container.ts` — the minimum wiring to make the folder a buildable workspace package.
+Before scaffolding, **always check if `packages/modules/{context}/` already exists**. If creating a truly new bounded context, create it under `packages/modules/{context}/` using the `create-module` skill (`create-module`). It scaffolds `package.json`, `tsconfig.json`, `.gitignore`, and `container.ts` — the minimum wiring to make the folder a buildable workspace package.
 
 ---
 

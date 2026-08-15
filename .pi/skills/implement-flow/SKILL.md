@@ -43,22 +43,31 @@ flowchart TD
 ---
 
 ### Step 1: Read Flow Documentation, ADRs & Architecture
-1. **Flow Specification**:
-   - Read `docs/product/bounded-contexts/[context]/flows/[flow-name].md` for actors, steps, state transitions, and business rules.
-2. **Architecture & Project Layout**:
-   - Read **`AGENTS.md`** and **`docs/ARCHITECTURE.md`** to determine the current directory paths for each layer (Domain, Application, Infrastructure, Interfaces, Shared).
-3. **ADR Index**:
-   - Read `docs/adr/README.md` to identify relevant decisions (CQRS, Auth, Storage, Data Access).
-4. **Summarize Understanding**:
-   - Briefly summarize the scope and target features to the user before proceeding to write specifications.
+
+1. **Inspect Existing Codebase & Artifacts First (Search-First)**:
+   - Consult **`AGENTS.md`** and **`docs/ARCHITECTURE.md`** to determine the repository's folder structure, bounded context paths, and framework transport layers.
+   - Check if the target bounded context module already exists in the codebase before scaffolding. **Never re-scaffold or overwrite existing modules**.
+   - Check the flow's features directory and existing flow plan files to identify pre-existing specifications or plans to refine/update.
+
+2. **Read Flow Specification & Business Rules**:
+   - Read the target flow document: `docs/product/bounded-contexts/[context]/flows/[flow-name].md` (or the repository's flow specification path).
+   - Extract the user journey, actors, sequence flow, state machine transitions, invariants, and business rules.
+   - Extract domain event side-effects and external integration boundaries.
+
+3. **Consult Architectural Documents & ADRs (Single Sources of Truth)**:
+   - **`AGENTS.md` & `docs/ARCHITECTURE.md`**: For directory layout, package boundaries, framework routes/entrypoints, and verification commands.
+   - **`docs/ARCHITECTURE-RULES.md`**: For strict DDD templates (Value Objects, Entities, Domain Events, Exceptions, CQRS Handlers, Response DTOs, and Repositories).
+   - **`docs/adr/README.md`**: For architectural decisions relevant to this flow (CQRS, Auth, Storage, Data Access, Outbox, API Contracts).
+
+4. **Summarize Understanding & Scope**:
+   - Present a clear summary of the current codebase state (existing vs missing files), target flow scope, and impacted layers to the user before writing or updating specifications.
 
 ---
 
 ### Step 2: Create Feature Specifications
-1. Break down the flow into individual features under:
-   `docs/product/bounded-contexts/[context]/flows/features/feature-[feature-name].md`
+1. Break down the flow into individual feature specifications under the context's flow features directory (e.g. `docs/product/bounded-contexts/[context]/flows/features/feature-[feature-name].md`).
 2. Use the template: `templates/feature-specification.md` (located in this skill).
-3. Define the requirements, domain model, layer scope, and acceptance criteria.
+3. Define the requirements, domain model, layer scope, and acceptance criteria mapped to the repository's architectural layers.
 4. **🛑 Review Gate**:
    - Stop and present the generated feature specification document(s) to the user with file links.
    - Ask the user to review the document and provide feedback.

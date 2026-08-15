@@ -46,18 +46,18 @@ This approach supersedes ADR-009-01 with a more complete structure that incorpor
 ```
 sessioflow/
 ├── apps/
-│   ├── web/                # Frontend (Next.js app)
+│   ├── frontend/           # Frontend Web Application (Next.js App Router)
 │   │   ├── src/
-│   │   │   ├── app/        # Next.js App Router
+│   │   │   ├── app/        # Next.js App Router (Pages, Layouts & API Route Handlers)
 │   │   │   ├── components/ # UI components (frontend-only types)
 │   │   │   ├── hooks/      # Client-side hooks
 │   │   │   └── queries/    # Frontend queries (data from API schema)
 │   │   └── package.json
 │   │
-│   └── backend/            # Backend gateway/adapter
+│   └── backend/            # Standalone API Gateway / Microservice entrypoint
 │       ├── src/
-│       │   ├── gateway/    # API routes (Express/Fastify/NestJS)
-│       │   ├── domain/     # (deprecated, moved to packages/modules/)
+│       │   ├── gateway/    # Standalone API routes
+│       │   ├── interfaces/ # API route handlers
 │       │   └── ...
 │       └── drizzle.config.ts
 │
@@ -168,11 +168,12 @@ sessioflow/
   - `hooks/`: Custom hooks for client state
   - `queries/`: Server state management (React Query)
 
-#### 5. `apps/web/` (Frontend App - Next.js)
-- **Purpose:** The complete Next.js frontend application
+#### 5. `apps/frontend/` (Frontend Web App - Next.js)
+- **Purpose:** The complete Next.js frontend web application
 - **Structure:**
-  - `src/app/`: Next.js App Router (pages, layouts)
-  - `src/components/`: Some UI components (if needed)
+  - `src/app/`: Next.js App Router (pages, layouts, and API Route Handlers delegating to module controllers)
+  - `src/components/`: Reusable UI components
+  - `src/lib/`: Frontend utilities and helpers
 
 #### 6. `apps/backend/` (Backend Gateway)
 - **Purpose:** API entry point for all frontend requests

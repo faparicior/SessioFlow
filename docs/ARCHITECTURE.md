@@ -77,16 +77,22 @@ export class Conference {
 ```typescript
 // Example: ConferenceName value object
 export class ConferenceName {
-  private constructor(private readonly value: string) {}
+  private constructor(private readonly _value: string) {}
 
   static create(name: string): Result<ConferenceName> {
-    if (name.length < 3) return Result.fail('Name must be at least 3 characters');
-    if (name.length > 100) return Result.fail('Name must be at most 100 characters');
-    return Result.ok(new ConferenceName(name));
+    const trimmed = name.trim();
+    if (trimmed.length < 3) return Result.fail(new ConferenceNameTooShortError());
+    if (trimmed.length > 100) return Result.fail(new ConferenceNameTooLongError());
+    return Result.ok(new ConferenceName(trimmed));
   }
 
-  getValue(): string {
-    return this.value;
+  get value(): string {
+    return this._value;
+  }
+
+  equals(other: ConferenceName): boolean {
+    if (!other || !(other instanceof ConferenceName)) return false;
+    return this._value === other._value;
   }
 }
 ```
@@ -102,16 +108,18 @@ export interface ConferenceRepository {
 }
 
 // Infrastructure implementation (adapter)
-export class SupabaseConferenceRepository implements ConferenceRepository {
+export class DrizzleConferenceRepository implements ConferenceRepository {
   constructor(private db: DatabaseClient) {}
 
   async findById(id: ConferenceId): Promise<Conference | null> {
-    const result = await this.db.from('conferences').select('*').eq('id', id.getValue()).single();
-    return result ? this.mapToConference(result) : null;
+    const record = await this.db.query.conferences.findFirst({
+      where: (conferences, { eq }) => eq(conferences.id, id.value),
+    });
+    return record ? Conference.fromData(record) : null;
   }
 
   async save(conference: Conference): Promise<void> {
-    await this.db.from('conferences').upsert(this.mapFromConference(conference));
+    await this.db.insert(conferences).values(conference.toData());
   }
 }
 ```
