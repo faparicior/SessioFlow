@@ -24,11 +24,14 @@
 
 ---
 
-## 🎯 Behavior
+## 🎯 Behavior & Methods
 
 | Method | Purpose |
 |--------|---------|
-| `[method(args)]` | [What it does] |
+| `static create(rawValue)` | Static factory method creating validated instance (enforces invariants) |
+| `static fromData(rawValue)` | Static factory method reconstituting from database (bypasses time-relative validation) |
+| `get value` | Encapsulated getter for underlying primitive |
+| `equals(other)` | Structural equality comparison |
 
 ---
 

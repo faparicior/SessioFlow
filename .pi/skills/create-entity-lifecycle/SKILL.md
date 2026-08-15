@@ -95,8 +95,10 @@ During entity lifecycle creation, you MUST identify all business rules and invar
 
 ## 📖 Documentation Structure
 
+This skill is **language- and framework-agnostic**. File paths and class conventions should follow the target repository's established architecture (consult `AGENTS.md` or `ARCHITECTURE.md`).
+
 ### Entities (aggregate roots / child entities)
-1. **Definition & Context** - Description, database table, primary key, Kotlin file
+1. **Definition & Context** - Description, database table / collection, primary key, implementation source path
 2. **State Machine Diagram** - Mermaid state diagram showing all states and transitions
 3. **State Transition Matrix** - Complete mapping of allowed state changes
 4. **State Definitions** - Detailed criteria for each state
@@ -104,14 +106,14 @@ During entity lifecycle creation, you MUST identify all business rules and invar
 6. **Linked User Stories & Flows** - References to flows that interact with the entity
 
 ### Value Objects
-1. **Definition & Context** - Description, class name, Kotlin file
-2. **State Machine Diagram** - Simplified — typically just VALID / construction failure
-3. **Construction & Validation** - What is accepted, what throws, which exception
+1. **Definition & Context** - Description, class/type name, implementation source path
+2. **Construction & Reconstitution** - Factory methods (`create()` for validated new instances, `fromData()` for persistence reconstitution)
+3. **Validation & Immutability** - What is accepted, validation constraints, error exceptions thrown
 4. **Invariants & Business Rules** - Links to relevant BRs and INVs
-5. **Linked User Stories & Flows** - Which entities embed this VO
+5. **Linked Entities & Use Cases** - Which aggregates embed this VO
 
 ### Domain Services
-1. **Definition** - Description, class name, Kotlin file
+1. **Definition** - Description, service name, implementation source path
 2. **Collaborators** - Dependencies and what each provides
 3. **Methods** - Each public method: guards, steps, side effects, return value
 4. **Sequence Diagram** - One diagram showing all method orchestration flows (use `rect` blocks per method)
@@ -143,7 +145,7 @@ During entity lifecycle creation, you MUST identify all business rules and invar
 ## 🔗 Related Documentation
 
 - [User Journey Mapping](../../../docs/inception/6-user-journey-mapping.md)
-- [Flow Documentation](../../../docs/product/flows/README.md)
+- [Bounded Contexts & Flows](../../../docs/product/bounded-contexts/README.md)
 
 ---
 
