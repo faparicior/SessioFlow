@@ -8,6 +8,13 @@
       "when": 1784568963454,
       "tag": "0000_lame_lyja",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786982919483,
+      "tag": "0001_clean_loa",
+      "breakpoints": true
     }
   ]
 }
