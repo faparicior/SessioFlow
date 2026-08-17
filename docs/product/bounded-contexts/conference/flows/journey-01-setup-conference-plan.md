@@ -130,22 +130,25 @@
 ### Phase 2: Application Layer (Inside-Out) — F1 command + F2 query
 
 #### 2.1 Tests First (Application)
-- [ ] `tests/unit/modules/conference/application/commands/create-conference.test.ts` (mocked repository/outbox): happy path (VOs → aggregate → `publishCfp` → transactional save + outbox), BR-003 duplicate slug → 409 error, BR-004 free tier → 403 error, domain error propagation (past date, name, dates order), transaction receives both save + outbox calls
-- [ ] `tests/unit/modules/conference/application/queries/get-conference.test.ts` (mocked repository): found → response mapping, missing → `ConferenceNotFoundError`, malformed id → `InvalidConferenceId`-style rejection
-- [ ] Verify application tests **FAIL** initially
+- [x] `tests/unit/modules/conference/application/commands/create-conference.test.ts` (mocked repository/outbox, typed `vi.fn<T>` mocks): happy path (VOs → aggregate → `publishCfp` → transactional save + outbox, events `CONFERENCE_CREATED` + `CFP_OPENED`, tx handle received by both), BR-003 ordering (slug before free-tier) + duplicate slug → `SLUG_EXISTS`, BR-004 → `FREE_TIER_LIMIT`, domain error propagation (past date `CFP_START_DATE_NOT_IN_FUTURE`, name `NAME_TOO_SHORT`, dates order + >180d window `CFP_DATES_INVALID`), slug derivation from name, unlimited maxSubmissions, empty description — 11 tests
+- [x] `tests/unit/modules/conference/application/queries/get-conference.test.ts` (mocked repository): found → response mapping (API shape), unlimited variant, missing → `ConferenceNotFoundError` (NOT_FOUND), malformed id → `INVALID_CONFERENCE_ID` (drives the D14 `ConferenceId` → `DomainInvariantError` change)
+- [x] Verify application tests **FAIL** initially — ✅ both suites failed (module missing)
 
 #### 2.2 Implement Code (Application)
-- [ ] `src/application/commands/create-conference/`: `create-conference.command.ts` (`CreateConferenceInput` type + `CreateConferenceCommand` DTO, primitives only), `create-conference.handler.ts` (BR-003 check → BR-004 check → `Conference.create()` → `publishCfp()` → `db.transaction { save + outbox.saveAll(events, 'Conference', id, tx) }` → `CreateConferenceResponse.from(conference)`), `create-conference.response.ts` (private ctor, readonly primitives, static `from`, matches `ConferenceApiResponse`)
-- [ ] `src/application/queries/get-conference/`: `get-conference.query.ts`, `get-conference.handler.ts` (read-only), `get-conference.response.ts`
-- [ ] Additive contract edit (D10): `packages/api-definitions/src/zod/conference.ts` — `.refine(end > start, {message: 'End date must be after start date'})`
-- [ ] Additive shared edit (D6): `packages/shared/database/src/outbox-repository.ts` — optional `tx?: unknown` on `saveAll`
-- [ ] Verify application tests **PASS**
+- [x] `src/application/commands/create-conference/`: `create-conference.command.ts` (`CreateConferenceInput` type + `CreateConferenceCommand` DTO, primitives only — slug is derived by the handler from the name, not an input), `create-conference.handler.ts` (BR-003 check → BR-004 check → `Conference.create()` → `publishCfp()` → `transactionRunner.transaction { save(conference, tx) + outbox.saveAll(events, 'Conference', id, tx) }` (ADR-017 via the `TransactionRunner` port) → `CreateConferenceResponse.from(conference)`; structured `logger.info/error`), `create-conference.response.ts` (private ctor, readonly primitives, static `from`, matches `ConferenceApiResponse`; `GetConferenceResponse` re-exports it — DRY)
+- [x] `src/application/queries/get-conference/`: `get-conference.query.ts` (`GetConferenceInput` + DTO), `get-conference.handler.ts` (read-only: `ConferenceId.create` defense-in-depth → `findById` → `ConferenceNotFoundError`), `get-conference.response.ts`
+- [x] `src/application/transaction-runner.port.ts` (opaque `TransactionRunner` — drizzle `db.transaction` satisfies it structurally; tests inject a fake)
+- [x] Additive contract edit (D10): `packages/api-definitions/src/zod/conference.ts` — `.refine(end > start, {message: 'End date must be after start date'})` (rebuild dist)
+- [x] Additive shared edit (D6): `packages/shared/database/src/outbox-repository.ts` — backward-compatible optional `tx?: unknown` on `OutboxRepository.saveAll` + `DrizzleOutboxRepository` (writes inside the provided handle; rebuild dist)
+- [x] Domain tweak: `ConferenceId.create` now throws `DomainInvariantError(INVALID_CONFERENCE_ID)` instead of a bare `Error` (D14 defense-in-depth)
+- [x] Verify application tests **PASS** — ✅ 15/15
 
 #### 2.3 Architecture & Quality Checks (Application)
-- [ ] `npm run check:arch` → 0 errors (CQRS naming, co-located folders, DTO purity, handler outbox rule, response DTO conventions)
-- [ ] `npm run test:architecture` → 0 errors
-- [ ] `npm run lint:fix && npm run typecheck` → 0 errors
-- 🛑 **Checkpoint 2**: report phase verification; confirm before Phase 3
+- [x] `npm run check:arch` → 0 errors (CQRS naming, self-contained handler folders, DTO purity, handler outbox rule, response DTO conventions) — ✅ monorepo-wide check green (re-verified after moving command/query files into their self-contained subfolders)
+- [x] `npm run test:architecture` → 0 errors (61/61)
+- [x] `npm run lint:fix && npm run typecheck` → 0 errors (9/9 workspaces; 17/17 + root tsc clean)
+- [x] Full unit suite green: 215/215 (no regressions)
+- 🛑 **Checkpoint 2**: ✅ Phase 2 verified (CQRS files live in self-contained subfolders `commands/create-conference/`, `queries/get-conference/`) — awaiting user confirmation
 
 ---
 
@@ -224,7 +227,7 @@
 | 1.0 | `packages/modules/conference/{package.json,tsconfig.json,.gitignore,src/container.ts}` | New (scaffold) |
 | 1.2 | `packages/modules/conference/src/domain/**` (1 entity + interface, 12 VOs, 3 events, 13 exceptions) | New |
 | 1.1 | `tests/unit/modules/conference/domain/**` (14 test files) | New |
-| 2.2 | `packages/modules/conference/src/application/**` (6 files), `packages/api-definitions/src/zod/conference.ts`, `packages/shared/database/src/outbox-repository.ts` | New + 2 additive edits |
+| 2.2 | `packages/modules/conference/src/application/**` (7 files: `transaction-runner.port.ts` + self-contained `commands/create-conference/` and `queries/get-conference/` folders), `packages/api-definitions/src/zod/conference.ts`, `packages/shared/database/src/outbox-repository.ts`, `packages/modules/conference/src/domain/value-objects/conference-id.ts` | New + 2 additive edits + 1 domain tweak (D14) |
 | 2.1 | `tests/unit/modules/conference/application/**` (2 test files) | New |
 | 3.2 | `packages/modules/conference/src/infrastructure/database/conference.repository.ts`, `src/container.ts` (wiring) | New + update |
 | 3.1 | `tests/integration/modules/conference/**` (2 test files) | New |

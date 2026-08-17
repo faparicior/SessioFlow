@@ -1,3 +1,5 @@
+import {DomainInvariantError} from '@sessioflow/shared-domain/exceptions';
+
 const UUID_V4_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -13,7 +15,10 @@ export class ConferenceId {
   public static create(raw: string): ConferenceId {
     const normalized = raw.trim().toLowerCase();
     if (!UUID_V4_PATTERN.test(normalized)) {
-      throw new Error(`ConferenceId "${raw}" must be a valid UUID`);
+      throw new DomainInvariantError(
+        'INVALID_CONFERENCE_ID',
+        `ConferenceId "${raw}" must be a valid UUID`,
+      );
     }
     return new ConferenceId(normalized);
   }
