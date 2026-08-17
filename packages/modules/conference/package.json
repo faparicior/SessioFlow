@@ -1,0 +1,29 @@
+{
+  "name": "@sessioflow/conference",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./container": "./dist/container.js",
+    "./domain/*": "./dist/domain/*.js",
+    "./application/*": "./dist/application/*.js",
+    "./infrastructure/*": "./dist/infrastructure/*.js",
+    "./interfaces/*": "./dist/interfaces/*.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sessioflow/bus": "*",
+    "@sessioflow/shared-database": "*",
+    "@sessioflow/shared-domain": "*",
+    "@sessioflow/shared-logging": "*",
+    "drizzle-orm": "^0.45.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@sessioflow/tsconfig": "*",
+    "typescript": "^5"
+  }
+}

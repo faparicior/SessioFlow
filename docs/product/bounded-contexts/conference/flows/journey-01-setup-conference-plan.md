@@ -100,30 +100,30 @@
 ### Phase 1: Domain Core (Inside-Out) — F1
 
 #### 1.0 Module Scaffold (prerequisite)
-- [ ] Create `@sessioflow/conference` package via `create-module` skill: `packages/modules/conference/{package.json, tsconfig.json, .gitignore, src/container.ts}` (scaffold container, full wiring in Phase 3)
-- [ ] `npm install` (re-links the `@sessioflow/conference` workspace symlink already referenced by `apps/frontend` and root configs)
-- [ ] `npm run typecheck` → green (empty module compiles)
+- [x] Create `@sessioflow/conference` package via `create-module` skill: `packages/modules/conference/{package.json, tsconfig.json, .gitignore, src/container.ts}` (scaffold container, full wiring in Phase 3)
+- [x] `npm install` (re-links the `@sessioflow/conference` workspace symlink already referenced by `apps/frontend` and root configs)
+- [x] `npm run typecheck` → green (empty module compiles)
 
 #### 1.1 Tests First (Domain)
-- [ ] Write Value Object unit tests → `tests/unit/modules/conference/domain/value-objects/{conference-id,conference-name,conference-slug,conference-status,conference-description,organizer-id,cfp-start-date,cfp-end-date,cfp-status,max-submissions,requires-approval}.test.ts`
-- [ ] Write `CfpConfig` composite VO tests → `tests/unit/modules/conference/domain/cfp-config.test.ts`
-- [ ] Write `Conference` aggregate tests (create → `DRAFT`; `publishCfp()` → `CFP_OPEN`; transition guards; `pullDomainEvents()`; `fromData()` purity) → `tests/unit/modules/conference/domain/conference.test.ts`
-- [ ] Write exception tests (codes + inheritance) → `tests/unit/modules/conference/domain/exceptions/exceptions.test.ts`
-- [ ] Verify domain tests **FAIL** initially (run `npx vitest run tests/unit/modules/conference/`)
+- [x] Write Value Object unit tests → `tests/unit/modules/conference/domain/value-objects/{conference-id,conference-name,conference-slug,conference-status,conference-description,organizer-id,cfp-start-date,cfp-end-date,cfp-status,max-submissions,requires-approval}.test.ts`
+- [x] Write `CfpConfig` composite VO tests → `tests/unit/modules/conference/domain/cfp-config.test.ts`
+- [x] Write `Conference` aggregate tests (create → `DRAFT`; `publishCfp()` → `CFP_OPEN`; transition guards; `pullDomainEvents()`; `fromData()` purity) → `tests/unit/modules/conference/domain/conference.test.ts`
+- [x] Write exception tests (codes + inheritance) → `tests/unit/modules/conference/domain/exceptions/exceptions.test.ts`
+- [x] Verify domain tests **FAIL** initially (run `npx vitest run tests/unit/modules/conference/`) — ✅ 14/14 files failed before implementation
 
 #### 1.2 Implement Code (Domain)
-- [ ] `src/domain/value-objects/`: `conference-id.ts`, `conference-name.ts`, `conference-slug.ts` (slugify + `toCfpUrl`), `conference-status.ts` (transition matrix), `conference-description.ts`, `organizer-id.ts`, `cfp-start-date.ts`, `cfp-end-date.ts`, `cfp-status.ts`, `max-submissions.ts`, `requires-approval.ts`, `cfp-config.ts` (composite; `create()` enforces INV-002, `fromData()`, `isActive()`, `close()`, `isWithinWindow()`)
-- [ ] `src/domain/events/`: `domain-event.interface.ts`, `conference-created-event.ts`, `cfp-opened-event.ts` (`type` + `timestamp` + `toJSON()`)
-- [ ] `src/domain/exceptions/`: `conference-name-too-short-error.ts`, `conference-name-too-long-error.ts`, `empty-slug-error.ts`, `slug-exists-error.ts`, `invalid-cfp-start-date-error.ts`, `cfp-start-date-not-in-future-error.ts`, `invalid-cfp-end-date-error.ts`, `cfp-dates-invalid-error.ts`, `max-submissions-invalid-error.ts`, `conference-free-tier-limit-error.ts`, `invalid-conference-status-error.ts`, `invalid-status-transition-error.ts`, `conference-not-found-error.ts`
-- [ ] `src/domain/conference.ts`: aggregate (`ConferenceData` with VOs only, `create(parameters)` records `ConferenceCreatedEvent`, `publishCfp()`, `fromData()`, `pullDomainEvents()`)
-- [ ] `src/domain/conference-repository.interface.ts`: `findById`, `findBySlug`, `countActiveByOrganizerId`, `save(conference, tx?)` + `TransactionClient` type (D5)
-- [ ] Verify domain tests **PASS**
+- [x] `src/domain/value-objects/`: `conference-id.ts`, `conference-name.ts`, `conference-slug.ts` (slugify + `toCfpUrl`), `conference-status.ts` (transition matrix), `conference-description.ts`, `organizer-id.ts`, `cfp-start-date.ts`, `cfp-end-date.ts`, `cfp-status.ts`, `max-submissions.ts`, `requires-approval.ts`, `cfp-config.ts` (composite; `create()` enforces INV-002, `fromData()`, `isActive()`, `close()`, `isWithinWindow()`)
+- [x] `src/domain/events/`: `domain-event.interface.ts`, `conference-created-event.ts`, `cfp-opened-event.ts` (`type` + `timestamp` + `toJSON()`)
+- [x] `src/domain/exceptions/`: `conference-name-too-short-error.ts`, `conference-name-too-long-error.ts`, `empty-slug-error.ts`, `slug-exists-error.ts`, `invalid-cfp-start-date-error.ts`, `cfp-start-date-not-in-future-error.ts`, `invalid-cfp-end-date-error.ts`, `cfp-dates-invalid-error.ts`, `max-submissions-invalid-error.ts`, `conference-free-tier-limit-error.ts`, `invalid-conference-status-error.ts`, `invalid-status-transition-error.ts`, `conference-not-found-error.ts`, `invalid-cfp-status-error.ts`
+- [x] `src/domain/conference.ts`: aggregate (`ConferenceData` with VOs only, `create(parameters)` records `ConferenceCreatedEvent`, `publishCfp()`, `fromData()`, `pullDomainEvents()`)
+- [x] `src/domain/conference-repository.interface.ts`: `findById`, `findBySlug`, `countActiveByOrganizerId`, `save(conference, tx?)` + `TransactionClient` type (D5)
+- [x] Verify domain tests **PASS** — ✅ 97/97 (14 files)
 
 #### 1.3 Architecture & Quality Checks (Domain)
-- [ ] `npm run check:arch packages/modules/conference` → 0 errors (VO conventions, entity factory conventions, event/exception conventions, domain isolation)
-- [ ] `npm run test:architecture` → 0 errors
-- [ ] `npm run lint:fix && npm run typecheck` → 0 errors
-- 🛑 **Checkpoint 1**: report phase verification; confirm before Phase 2
+- [x] `npm run check:arch packages/modules/conference` → 0 errors (VO conventions, entity factory conventions, event/exception conventions, domain isolation) — ✅ monorepo-wide check green
+- [x] `npm run test:architecture` → 0 errors (61/61)
+- [x] `npm run lint:fix && npm run typecheck` → 0 errors (9/9 workspaces lint; 17/17 + root tsc clean)
+- 🛑 **Checkpoint 1**: ✅ Phase 1 verified — awaiting user confirmation
 
 ---
 
@@ -223,7 +223,7 @@
 |-------|-------|------|
 | 1.0 | `packages/modules/conference/{package.json,tsconfig.json,.gitignore,src/container.ts}` | New (scaffold) |
 | 1.2 | `packages/modules/conference/src/domain/**` (1 entity + interface, 12 VOs, 3 events, 13 exceptions) | New |
-| 1.1 | `tests/unit/modules/conference/domain/**` (15 test files) | New |
+| 1.1 | `tests/unit/modules/conference/domain/**` (14 test files) | New |
 | 2.2 | `packages/modules/conference/src/application/**` (6 files), `packages/api-definitions/src/zod/conference.ts`, `packages/shared/database/src/outbox-repository.ts` | New + 2 additive edits |
 | 2.1 | `tests/unit/modules/conference/application/**` (2 test files) | New |
 | 3.2 | `packages/modules/conference/src/infrastructure/database/conference.repository.ts`, `src/container.ts` (wiring) | New + update |
