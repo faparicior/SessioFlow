@@ -54,6 +54,7 @@ npm run start            # Start production server
 - Adding new dependencies
 - Changing authentication strategy
 - Modifying API contracts
+- Modifying architecture tests (`tests/unit/architecture/`) or changing architectural invariants
 
 **🚫 Never do:**
 - Commit secrets or API keys
@@ -62,6 +63,7 @@ npm run start            # Start production server
 - Use `any` type without justification
 - Touch `node_modules/` directory
 - Over-engineer solutions - prefer simplicity
+- Modify architecture tests (`tests/unit/architecture/`) to make failing code pass — always fix the application/domain code to satisfy architectural invariants
 
 ## 📁 Project Structure
 
@@ -162,6 +164,8 @@ export async function createConferenceController(request, commandHandler) {
 - **Framework**: ts-archunit — enforces DDD layer boundaries, CQRS conventions, and architectural invariants
 - **Entry points**: `classes(p)` for class declarations, `functions(p)` for function exports, `modules(p)` for module imports, `slices(p)` for dependency cycles
 
+> ⚠️ **Architecture tests are immutable guardrails**: AI agents must NEVER modify `tests/unit/architecture/` or relax rules to make failing code pass. When an architecture test fails, refactor your application/domain code to comply with DDD rules.
+
 **Critical ts-archunit patterns:**
 
 1. **Function exports need `functions(p)`, not `classes(p)`**
@@ -210,6 +214,11 @@ export async function createConferenceController(request, commandHandler) {
    - Layer isolation checks: `modules(p).that().resideInFolder('**/domain/**').should().onlyImportFrom(...)`
    - File-name filtering on modules: `.and().haveNameMatching(/\.controller\.ts$/)`
    - Import restrictions: `.should().notImportFrom('**/packages/modules/**/domain/**')`
+
+7. **Aggregate Roots vs Child Entities in domain/**
+   - `classes(p).that().resideInFolder('**/domain/**')` matches all classes in `domain/` (Aggregate Roots, Child Entities, Value Objects, Domain Events, Domain Exceptions).
+   - Rules specific to Aggregate Roots (such as `pullDomainEvents()`) exclude Value Objects (`/value-objects/`), Exceptions (`/exceptions/`), Events (`/events/`), and Child Entities (e.g. `cfp-config.ts`), because child entities emit events through their parent Aggregate Root rather than exposing event flush methods directly.
+   - Tests scan TypeScript source files (`src/**/*.ts`); compiled declaration files (`.d.ts`) are build artifacts and do not exist in source paths.
 
 ### Test Example
 ```typescript
