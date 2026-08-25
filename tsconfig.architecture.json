@@ -1,17 +1,5 @@
 {
-  "extends": "./config/tsconfig/base.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/modules/*": ["packages/modules/*"],
-      "@sessioflow/conference": ["packages/modules/conference/src"],
-      "@sessioflow/api-definitions": ["packages/api-definitions/src"],
-      "@sessioflow/bus": ["packages/shared/bus/src"],
-      "@sessioflow/shared-database": ["packages/shared/database/src"],
-      "@sessioflow/shared-domain": ["packages/shared/domain/src"],
-      "@sessioflow/shared-logging": ["packages/shared/logging/src"]
-    }
-  },
+  "extends": "./config/tsconfig/paths.json",
   "include": [
     "packages/modules/*/src/**/*.ts",
     "packages/shared/*/src/**/*.ts",
