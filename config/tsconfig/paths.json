@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "baseUrl": "../..",
+    "paths": {
+      "@sessioflow/shared-domain": ["./packages/shared/domain/src"],
+      "@sessioflow/shared-domain/*": ["./packages/shared/domain/src/*"],
+      "@sessioflow/shared-http": ["./packages/shared/http/src"],
+      "@sessioflow/shared-http/*": ["./packages/shared/http/src/*"],
+      "@sessioflow/bus": ["./packages/shared/bus/src"],
+      "@sessioflow/bus/*": ["./packages/shared/bus/src/*"],
+      "@sessioflow/conference": ["./packages/modules/conference/src"],
+      "@sessioflow/conference/*": ["./packages/modules/conference/src/*"],
+      "@sessioflow/shared-database": ["./packages/shared/database/src"],
+      "@sessioflow/shared-database/*": ["./packages/shared/database/src/*"],
+      "@sessioflow/shared-logging": ["./packages/shared/logging/src"],
+      "@sessioflow/shared-logging/*": ["./packages/shared/logging/src/*"],
+      "@sessioflow/api-definitions": ["./packages/api-definitions/src"],
+      "@sessioflow/api-definitions/*": ["./packages/api-definitions/src/*"],
+      "@backend/*": ["./apps/backend/src/*"],
+      "@frontend/*": ["./apps/frontend/src/*"]
+    }
+  }
+}
