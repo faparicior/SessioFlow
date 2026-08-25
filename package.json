@@ -27,6 +27,7 @@
     "db:migrate": "npm run db:migrate --workspace=apps/backend",
     "db:push": "npm run db:push --workspace=apps/backend",
     "db:studio": "npm run db:studio --workspace=apps/backend",
+    "prepare": "husky",
     "postinstall": "npm run postinstall --workspace=apps/backend"
   },
   "dependencies": {
@@ -38,7 +39,6 @@
     "@opentelemetry/semantic-conventions": "^1.42.0",
     "@radix-ui/react-slot": "^1.3.0",
     "@supabase/supabase-js": "^2.110.0",
-    "@unrs/resolver-binding-linux-x64-gnu": "^1.12.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
@@ -66,6 +66,7 @@
     "dotenv": "^17.4.2",
     "drizzle-kit": "^0.31.10",
     "eslint-config-xo-react": "^0.29.0",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
     "postgres": "^3.4.9",
     "tailwindcss": "^4",
