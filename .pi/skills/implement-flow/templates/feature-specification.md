@@ -74,6 +74,7 @@
 | **State Machine Race** | e.g. Concurrent transitions on same aggregate | Optimistic locking / conditional update | `version` column / `WHERE status = ...` |
 | **Time-Drift Invariants** | e.g. Historical dates vs creation validation | Separation of `create()` (validates) vs `fromData()` (reconstitutes) | Factory method separation |
 | **Dual-Write Consistency** | e.g. DB updated but event dispatch drops | Transactional Outbox / Atomic unit of work | Outbox table in same DB transaction |
+| **Idempotency & Replays** | e.g. Duplicate webhook payload or repeated client submission | Deduplication key / idempotency table / status idempotency | Return existing success response without side effects |
 
 ---
 
@@ -114,6 +115,11 @@ Follow the 4-step cycle: **1. First Test $\rightarrow$ 2. After Code $\rightarro
 - **Given** [invalid state or input]
 - **When** [action taken]
 - **Then** [expected domain error / rejection]
+
+**Scenario 3: Idempotent Execution / Replay**
+- **Given** [operation has already completed successfully]
+- **When** [same payload / idempotency key is submitted again]
+- **Then** [system returns previous successful result without duplicate state mutations or duplicate event dispatches]
 
 ---
 

@@ -73,9 +73,9 @@ flowchart TD
 2. Use the template: `templates/feature-specification.md` (located in this skill).
 3. **Log All Design Decisions & Assumptions (Lack of Information Log)**:
    - Explicitly record any judgment calls, fallback ports, error code mappings, or tie-breakers made by the LLM in the `🧠 Agent Design Decisions & Assumptions` section so they are visible for user audit.
-4. **Perform Concurrency, TOCTOU & Invariant Analysis**:
-   - Explicitly evaluate race conditions, check-then-act vulnerabilities, and data consistency safeguards (e.g. database-level unique constraints, optimistic locking, idempotent event dispatch) in the `🛡️ Concurrency, TOCTOU & Invariant Integrity Analysis` section.
-5. Define the requirements, domain model, layer scope, and acceptance criteria mapped to the repository's architectural layers.
+4. **Perform Concurrency, TOCTOU, Idempotency & Invariant Analysis**:
+   - Explicitly evaluate race conditions, check-then-act vulnerabilities, idempotency / duplicate replay handling, and data consistency safeguards (e.g. database-level unique constraints, optimistic locking versioning, transactional outbox atomicity, idempotent event dispatch) in the `🛡️ Concurrency, TOCTOU & Invariant Integrity Analysis` section.
+5. Define the requirements, domain model, layer scope, and acceptance criteria (including idempotent replay scenarios) mapped to the repository's architectural layers.
 6. **🛑 Review Gate**:
    - Stop and present the generated feature specification document(s) to the user with file links.
    - Ask the user to review the document and provide feedback on the design decisions.

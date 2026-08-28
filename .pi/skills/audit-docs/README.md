@@ -25,7 +25,7 @@ to act on findings.
 | Scope | Example |
 |-------|---------|
 | Full audit | "audit all docs", "docs health check" |
-| Bounded context | "audit the mandate context" |
+| Bounded context | "audit the [context] context" |
 | Doc type | "check all business rules", "verify entity lifecycles" |
 | Single doc | "is flow-02 still accurate?" |
 
@@ -49,7 +49,7 @@ to act on findings.
 | Business Rules (BR-XXX) | File cited exists, enforcement logic present, values match |
 | Invariants (INV-XXX) | Same as BRs + must be in domain layer |
 | Entity Lifecycle docs | States, transitions, domain events, repository interface |
-| Flow docs | Entry point, step sequence, BR/INV citations, Kafka events, external calls |
+| Flow docs | Entry point, step sequence, BR/INV citations, Event messaging, external calls, DB constraints, idempotency |
 
 ---
 
@@ -64,7 +64,7 @@ to act on findings.
 ## Files
 
 ```
-.claude/skills/audit-docs/
+.pi/skills/audit-docs/
 ├── SKILL.md    # Full skill instructions
 └── README.md   # This summary
 ```

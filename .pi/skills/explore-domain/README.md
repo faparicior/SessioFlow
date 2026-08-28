@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Answer any question about the existing domain — flows, entities, business rules, Kafka events, and
+Answer any question about the existing domain — flows, entities, business rules, events, and
 source code — accurately, grounded in the real implementation, **without modifying any file**.
 
 Designed for two audiences: Product Owners who want business-level explanations, and developers
@@ -14,11 +14,11 @@ Designed for two audiences: Product Owners who want business-level explanations,
 
 Any time you want to *understand* the system, not change it:
 
-- "What does mandate creation do?"
-- "What Kafka events does this service emit?"
-- "What happens when a publisher is cancelled?"
-- "Is there a rule that prevents duplicate mandates?"
-- "Walk me through the FC Pro Cartera lifecycle for a new dev"
+- "What does [entity/feature] creation do?"
+- "What events does this service emit?"
+- "What happens when a resource is cancelled?"
+- "Is there a rule that prevents duplicate [entities]?"
+- "Walk me through the [entity] lifecycle for a new dev"
 
 ---
 
@@ -27,7 +27,7 @@ Any time you want to *understand* the system, not change it:
 | Mode | Trigger phrase | Output |
 |------|---------------|--------|
 | `explain` | "what does X do?", "explain X", "how does X work?" | Narrative + Mermaid diagram + code pointers |
-| `list-events` | "what events does this service emit/consume?", "kafka catalog" | Full event catalog table (consumed + produced) |
+| `list-events` | "what events does this service emit/consume?", "event catalog" | Full event catalog table (consumed + produced) |
 | `trace-flow` | "what happens when X?", "trace X", "walk me through event X" | Step-by-step call chain from entry point to side effects |
 | `find-rule` | "find rule for X", "what enforces X?", "is there a rule that…?" | Matching BRs/INVs + code file + confirmed/stale status |
 
@@ -55,7 +55,7 @@ Mode is detected automatically from the question. If ambiguous, the skill asks.
 ## Files
 
 ```
-.claude/skills/explore-domain/
+.pi/skills/explore-domain/
 ├── SKILL.md    # Full skill instructions
 └── README.md   # This summary
 ```

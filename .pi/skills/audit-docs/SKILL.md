@@ -88,6 +88,10 @@ Same checks as BRs, plus:
 | BR/INV references | Every BR/INV cited in the flow exists as a doc file |
 | Event messaging | Every produced/consumed event named in the flow appears in the messaging/channel config or event definitions |
 | External calls | Every external service call mentioned in the flow has a real HTTP / gRPC / RPC client or adapter |
+| Concurrency & DB constraints | Documented race mitigations (e.g. `UNIQUE INDEX`, `version` lock column) exist in the database schema / migrations |
+| Error & status code parity | Documented HTTP/gRPC error codes in acceptance criteria match the controller / exception mapper |
+| Transactional Outbox atomicity | Domain events are persisted atomically via Outbox repository / transaction boundary rather than uncommitted dispatch |
+| Idempotency & replay | Message consumers / mutating endpoints implement documented idempotency keys or deduplication checks |
 
 ---
 
@@ -164,7 +168,7 @@ When you cannot confidently verify a claim (complex logic, ambiguous mapping), m
    update BR-007 to reflect the current enforcement location or mark it retired.
 
 ### Medium priority — ⚠️ Stale (doc exists but is inaccurate)
-1. **BR-003**: Update cap value from 10 → 12 in `business-rules/BR-003-annual-cap-by-agency.md`.
+1. **BR-003**: Update cap value from 10 → 12 in `business-rules/BR-003-[rule-name].md`.
    No code change needed — this is a doc correction.
 2. **flow-02, Step 6**: Update step to reference `NewService` — no code change needed.
 3. **INV-003**: Move enforcement from `use-case.ext` into the domain entity to restore invariant
