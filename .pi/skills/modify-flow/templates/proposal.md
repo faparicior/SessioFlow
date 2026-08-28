@@ -63,6 +63,15 @@
 | **Check-Then-Act Race** | [e.g. Concurrent modification of status, balance, or quota limits] | [e.g. Optimistic locking / atomic update / DB constraint] | `[Constraint/Mechanism]` $\rightarrow$ `[DomainError]` |
 | **Uniqueness & Collisions** | [e.g. Concurrent duplicate creation or rename] | [e.g. Unique index / database constraint] | `UNIQUE INDEX` $\rightarrow$ `[DuplicateKeyError]` |
 | **State Transition Ordering** | [e.g. Conflicting concurrent state changes on same entity] | [e.g. Aggregate version check / optimistic concurrency] | `VersionMismatchError` |
+| **Idempotency & Replays** | [e.g. Duplicate webhook/event or double-submit] | [e.g. Idempotency key / deduplication / aggregate status check] | `[Deduplication]` $\rightarrow$ idempotent success |
+
+### 4.1 Migration & Backward Compatibility Assessment
+
+| Dimension | Risk / Impact | Mitigation / Strategy |
+| :--- | :--- | :--- |
+| **API Contract** | [Additive (non-breaking) / Deprecation / Breaking change] | [e.g. Optional fields with defaults / API versioning] |
+| **Database Schema** | [New column / modified constraint / enum change] | [e.g. Nullable column with default value before making non-null] |
+| **Existing Data Backfill** | [Do existing rows violate the new invariant or lack new data?] | [e.g. Migration backfill script / none required] |
 
 ## 5. Why
 

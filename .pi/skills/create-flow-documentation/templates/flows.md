@@ -182,6 +182,7 @@ stateDiagram-v2
 | **Quota / Limit Race** (e.g. concurrent creation exceeding tier limits) | User creates multiple resources simultaneously exceeding limits | Atomic transaction / locking / DB constraint | `403 Forbidden` / `422 Unprocessable` |
 | **State Machine Race** (e.g. concurrent state transitions on same entity) | Double transition / duplicate events | Optimistic locking (`version` column) / conditional update (`WHERE status = '...'`) | `409 Conflict` (`[StateTransitionError]`) |
 | **Dual-Write / Event Race** (e.g. DB commit succeeds but event dispatch fails) | Entity updated without downstream side effects | Transactional Outbox pattern or atomic messaging | Event safely published asynchronously |
+| **Idempotency & Replays** (e.g. duplicate webhook/message delivery or double-submit) | Duplicate processing, corrupted aggregates, or duplicate charges/emails | Idempotency key / deduplication table / natural aggregate state checks | `200 OK` (idempotent result) / event acknowledged without side effects |
 
 ---
 

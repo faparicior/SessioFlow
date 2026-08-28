@@ -3,7 +3,7 @@
 ## 📋 Definition
 * **Description:** [What this service does and why it exists as a domain service rather than inside an aggregate]
 * **Type:** Domain Service (stateless)
-* **Kotlin file:** `[path/to/ServiceName.kt]`
+* **Source file:** `[path/to/ServiceName.ext]`
 * **Owner Team:** [Team name]
 
 ---
