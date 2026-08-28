@@ -11,11 +11,11 @@ Since this skill is a collection of structured prompt definitions, templates, an
 Instruct your agent to execute the workshop using the files in this folder:
 
 *   **Interactive Facilitation (Step-by-Step)**:
-    > "Read the instructions in `.pi/skills/inception-workshop/SKILL.md` and facilitate Step 1 of the Lean Inception workshop."
+    > "Read the instructions in `skills/inception-workshop/SKILL.md` and facilitate Step 1 of the Lean Inception workshop."
 *   **Batch Mode (Automated Discovery)**:
-    > "Read `.pi/skills/inception-workshop/SKILL.md` and generate all 8 steps in batch mode for: [your product description]."
+    > "Read `skills/inception-workshop/SKILL.md` and generate all 8 steps in batch mode for: [your product description]."
 *   **Tradeoff Debate Simulation (Step 2)**:
-    > "Read `.pi/skills/inception-workshop/SKILL.md` and run the tradeoff debate simulation based on the vision in `docs/inception/1-product-vision-and-boundaries.md`."
+    > "Read `skills/inception-workshop/SKILL.md` and run the tradeoff debate simulation based on the vision in `docs/inception/1-product-vision-and-boundaries.md`."
 
 ### 2. In the Pi CLI Tool
 

@@ -55,7 +55,7 @@ Mode is detected automatically from the question. If ambiguous, the skill asks.
 ## Files
 
 ```
-.pi/skills/explore-domain/
+skills/explore-domain/
 ├── SKILL.md    # Full skill instructions
 └── README.md   # This summary
 ```

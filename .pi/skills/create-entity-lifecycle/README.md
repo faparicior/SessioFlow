@@ -24,7 +24,7 @@ Creates:
 ## 📁 File Structure
 
 ```
-.pi/skills/create-entity-lifecycle/
+skills/create-entity-lifecycle/
 ├── SKILL.md                    # Main skill instructions
 ├── README.md                   # This file
 ├── evals/

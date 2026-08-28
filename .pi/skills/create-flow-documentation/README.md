@@ -2,7 +2,7 @@
 
 ## 📦 Skill Created
 
-**Location:** `.pi/skills/create-flow-documentation/SKILL.md`
+**Location:** `skills/create-flow-documentation/SKILL.md`
 
 **Purpose:** Generate comprehensive flow documentation from user journey specifications
 
@@ -29,7 +29,7 @@ When you ask to create a flow from a journey, this skill will:
 
 ## 📋 Test Cases Created
 
-**Location:** `.pi/skills/create-flow-documentation/evals/evals.json`
+**Location:** `skills/create-flow-documentation/evals/evals.json`
 
 ### Test 1: Journey 2 - Submitting a Talk
 - **Scenario**: Andrea submits talk proposal with co-speaker
@@ -83,7 +83,7 @@ Modify the skill to add project-specific requirements or adjust the template
 ## 📁 Files Created
 
 ```
-.pi/skills/create-flow-documentation/
+skills/create-flow-documentation/
 ├── SKILL.md              # Main skill instructions (11.8 KB)
 └── evals/
     └── evals.json        # Test cases for evaluation

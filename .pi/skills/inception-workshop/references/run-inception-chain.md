@@ -144,7 +144,7 @@ pi subagent --agent inception-steps-5-8
 
 ### Inception Facilitator Agent
 
-**File:** `.pi/agents/inception-facilitator/config.json`
+**File:** `agents/inception-facilitator/config.json`
 
 ```json
 {

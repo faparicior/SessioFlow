@@ -64,7 +64,7 @@ to act on findings.
 ## Files
 
 ```
-.pi/skills/audit-docs/
+skills/audit-docs/
 ├── SKILL.md    # Full skill instructions
 └── README.md   # This summary
 ```

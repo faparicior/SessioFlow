@@ -102,7 +102,7 @@ flowchart TD
 This skill bundles all references and templates as assets, keeping them separate from the project files:
 
 ```
-.pi/skills/adr-manager/
+skills/adr-manager/
 ├── SKILL.md                 # Core prompt & instructions for the AI agent
 ├── README.md                # This usage guide
 ├── templates/               # Standardized markdown templates
