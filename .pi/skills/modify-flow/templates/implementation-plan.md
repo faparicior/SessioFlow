@@ -18,6 +18,7 @@ Carry each row over from the proposal's Open Questions table with its resolution
 
 - [ ] All Open Questions in `proposal.md` are answered
 - [ ] Confirmed via a project-wide search that the Scope of Change table lists every real caller/usage site (not just the obvious ones)
+- [ ] Concurrency, TOCTOU, and invariant integrity safeguards from `proposal.md` are addressed in the test and implementation plan
 - [ ] Confirmed whether this repo has an architecture-decision-record or equivalent index relevant to this change — if none exist, note that and proceed on this repo's own documented conventions (e.g. its top-level agent/contributor guide) alone
 
 ---
@@ -48,11 +49,12 @@ Derive phases from the proposal's **Scope of Change** table — one phase per fi
 
 ### Phase 3: Integration & Acceptance Tests
 
-**Goal:** Verify the end-to-end behaviour described in the proposal's "Desired Behaviour" table.
+**Goal:** Verify the end-to-end behaviour described in the proposal's "Desired Behaviour" table, including concurrency safeguards and invariant protections.
 
 **Tasks:**
 - [ ] Update `[real/path/to/integration-or-acceptance-test.ext]` to match new behaviour
 - [ ] Add a case for the specific edge case called out in the proposal (e.g. "zone/entity with zero matches now yields an empty result, not a fallback")
+- [ ] Add tests for concurrency/TOCTOU mitigations (e.g. concurrent race condition handling, duplicate key / uniqueness collision mapping, optimistic locking conflict)
 
 ---
 
