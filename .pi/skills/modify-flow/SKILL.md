@@ -94,9 +94,12 @@ runs:
      the frozen record forward can find the reversal. Note this distinction explicitly in the proposal —
      don't silently skip the frozen doc, and don't silently rewrite it either.
 5. While reading upstream docs, also note who is affected (personas) and whether this reverses or extends
-   an already-scoped feature — this feeds Section 1 (Product Rationale), not just Section 6.
+   an already-scoped feature — this feeds Section 1 (Product Rationale), not just Section 7.
 6. Check whether a feature flag already exists for this behaviour (per Step 0's finding) — state explicitly
    in the proposal whether one exists or would need to be created.
+7. **Perform Concurrency, TOCTOU & Invariant Impact Analysis** — evaluate if modifying this flow introduces
+   new race conditions, check-then-act vulnerabilities, or alters domain invariant enforcements (e.g. database-level
+   unique indexes, optimistic locking versioning, aggregate consistency boundaries, or transaction isolation).
 
 ---
 
@@ -122,6 +125,9 @@ Name the folder/file with a kebab-case slug matching the git branch name where p
     "aspect → explanation" shape — it's more scannable and matches the rest of the document.
   - **Known Gaps Introduced** — bullets, not a table. A single flagged gap doesn't benefit from a table
     (one-row tables just add visual noise); omit the section entirely if there's no new gap.
+- **Section 4, "🛡️ Concurrency, TOCTOU & Invariant Integrity Analysis"** — must evaluate whether the
+  modified flow changes check-then-act sequences, concurrent state changes, uniqueness guarantees, or
+  requires new database/locking constraints to protect domain invariants.
 - **All other sections default to tables** (Current Behaviour, Desired Behaviour, Why, Scope of Change,
   Impact on Existing Documentation, Open Questions). Prefer `Aspect/Step | Detail` or `Before | After`
   shaped tables over paragraphs — match whatever this repo's existing docs already favor for enumerable
@@ -149,6 +155,7 @@ Name the folder/file with a kebab-case slug matching the git branch name where p
 - [ ] Every code reference has been verified against the actual source file, not assumed
 - [ ] Every derived doc's upstream source has been traced and checked for staleness (Step 1.4) — not just
       read for context
+- [ ] Concurrency, TOCTOU, and invariant risks evaluated in Section 4
 - [ ] Open Questions table captures every undecided fork (rollout strategy, dead-code removal scope,
       migration/backfill needs) — do not resolve these on the user's behalf
 - [ ] Ask the user to confirm or resolve Open Questions before moving to the implementation plan
@@ -167,6 +174,7 @@ alongside the proposal, in the same folder.
 - Each phase follows this repo's own test-authoring convention (test-first if it does TDD; otherwise match
   its existing pattern), then implement, then remove dead code identified in the proposal (no
   commented-out code, no orphaned flags unless staged rollout was an explicit decision in the proposal).
+- Ensure integration and acceptance test phases include cases for concurrency/TOCTOU mitigations and invariant guards.
 - Include a Documentation Update section listing exactly which existing docs get touched and with which
   mechanism this repo uses to (re)generate them, if any (e.g. a paired "create entity/flow documentation"
   skill) — otherwise state that the docs will be hand-edited in place. Never plan to create a new doc file
