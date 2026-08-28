@@ -2,7 +2,7 @@
 
 ## 📦 Skill Created
 
-**Location:** `.claude/skills/modify-flow/SKILL.md`
+**Location:** `skills/modify-flow/SKILL.md`
 
 **Purpose:** Propose, plan, implement, and document a change to a flow/entity/business rule that is
 **already documented** — as opposed to a "create flow/entity documentation"-style skill, which documents
@@ -58,7 +58,7 @@ will:
 ## 📁 Files Created
 
 ```
-.claude/skills/modify-flow/
+skills/modify-flow/
 ├── SKILL.md                        # Main skill instructions
 ├── README.md                       # This summary
 ├── templates/

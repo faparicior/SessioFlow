@@ -32,7 +32,7 @@ pi subagent --chain inception-workshop
 ```
 
 **How it works:**
-1. Reads chain definition from `.pi/chains/inception-workshop.json`
+1. Reads chain definition from `chains/inception-workshop.json`
 2. Executes all 8 steps sequentially
 3. Each step reads previous outputs
 4. Generates all files in `docs/inception/`
@@ -255,7 +255,7 @@ pi subagent --chain inception-workshop-steps-5-8
 
 | File | Purpose |
 |------|---------|
-| `.pi/chains/inception-workshop.json` | Chain definition |
+| `chains/inception-workshop.json` | Chain definition |
 | `docs/commands/inception/run-inception-chain.md` | Detailed automation guide |
 | `docs/commands/inception/0-inception-workshop.md` | Facilitator agent prompt |
 | `docs/templates/inception/*.md` | Step templates |
