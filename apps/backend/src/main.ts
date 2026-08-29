@@ -16,4 +16,3 @@ process.on('SIGTERM', () => {
   logger.info('[Backend] Shutting down backend service...');
   process.exit(0);
 });
-

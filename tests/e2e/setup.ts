@@ -9,7 +9,8 @@ export default async function setup() {
   // Load environment variables from .env.local
   dotenv.config({path: path.resolve(rootDir, '.env.local')});
 
-  const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/sessioflow';
+  const connectionString =
+    process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/sessioflow';
 
   // Poll database until connection is ready (up to 30 seconds)
   console.log('[E2E Setup] Waiting for database to be ready...');
@@ -47,7 +48,9 @@ export default async function setup() {
   try {
     const migrationClient = postgres(connectionString, {max: 1});
     const db = drizzle(migrationClient);
-    await migrate(db, {migrationsFolder: path.resolve(rootDir, 'apps/backend/drizzle')});
+    await migrate(db, {
+      migrationsFolder: path.resolve(rootDir, 'apps/backend/drizzle'),
+    });
     await migrationClient.end();
     console.log('[E2E Setup] Database migrations applied successfully');
   } catch (error) {

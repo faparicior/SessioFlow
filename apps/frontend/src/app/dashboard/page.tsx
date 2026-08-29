@@ -33,9 +33,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Your Conferences</CardTitle>
-            <CardDescription>
-              Manage your conferences and Call for Papers
-            </CardDescription>
+            <CardDescription>Manage your conferences and Call for Papers</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-center py-8 text-muted-foreground">

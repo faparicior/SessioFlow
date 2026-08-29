@@ -3,11 +3,7 @@ import {DomainError} from '@sessioflow/shared-domain/exceptions';
 import {mapDomainErrorToResponse} from '@sessioflow/shared-http/error-mapper';
 import {CreateConferenceCommand} from '../../application/commands/create-conference/create-conference.command.js';
 import type {CreateConferenceCommandHandler} from '../../application/commands/create-conference/create-conference.handler.js';
-import {
-  invalidBodyResponse,
-  jsonResponse,
-  unauthorizedResponse,
-} from './json-response.js';
+import {invalidBodyResponse, jsonResponse, unauthorizedResponse} from './json-response.js';
 
 /** Authenticated principal injected by the composition root (ADR-004-01). */
 export type GetAuthUser = () => Promise<{id: string} | undefined>;

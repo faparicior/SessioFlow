@@ -72,14 +72,9 @@ describe('Conference aggregate', () => {
     it('transitions DRAFT -> CFP_OPEN (INV-001) and records CfpOpenedEvent', () => {
       const conference = makeConference();
       conference.publishCfp();
-      expect(
-        conference.status.equals(ConferenceStatus.create('CFP_OPEN')),
-      ).toBe(true);
+      expect(conference.status.equals(ConferenceStatus.create('CFP_OPEN'))).toBe(true);
       const events = conference.pullDomainEvents();
-      expect(events.map((event) => event.type)).toEqual([
-        'CONFERENCE_CREATED',
-        'CFP_OPENED',
-      ]);
+      expect(events.map(event => event.type)).toEqual(['CONFERENCE_CREATED', 'CFP_OPENED']);
       const opened = events[1] as CfpOpenedEvent;
       expect(opened).toBeInstanceOf(CfpOpenedEvent);
       expect(opened.aggregateId).toBe(conference.id.value);
@@ -112,9 +107,7 @@ describe('Conference aggregate', () => {
         createdAt: conference.createdAt,
         updatedAt: conference.updatedAt,
       });
-      expect(() => reconstituted.publishCfp()).toThrow(
-        InvalidStatusTransitionError,
-      );
+      expect(() => reconstituted.publishCfp()).toThrow(InvalidStatusTransitionError);
     });
   });
 

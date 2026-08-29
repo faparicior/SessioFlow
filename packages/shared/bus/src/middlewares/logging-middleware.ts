@@ -1,6 +1,6 @@
-import { getCorrelationId } from '@sessioflow/shared-logging/context';
-import { getLogger } from '@sessioflow/shared-logging/logger';
-import { Middleware, NextFunction } from '../interfaces.js';
+import {getCorrelationId} from '@sessioflow/shared-logging/context';
+import {getLogger} from '@sessioflow/shared-logging/logger';
+import {Middleware, NextFunction} from '../interfaces.js';
 
 export class LoggingMiddleware implements Middleware {
   async execute(input: any, next: NextFunction<any>): Promise<any> {

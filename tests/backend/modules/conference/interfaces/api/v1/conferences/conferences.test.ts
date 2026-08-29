@@ -44,10 +44,8 @@ const jsonRequest = (
   });
 
 /** Minimal handler double satisfying the controller's `import type` contract. */
-const mockHandler = (execute: Mock) =>
-  ({execute}) as unknown as CreateConferenceCommandHandler;
-const mockQueryHandler = (execute: Mock) =>
-  ({execute}) as unknown as GetConferenceQueryHandler;
+const mockHandler = (execute: Mock) => ({execute}) as unknown as CreateConferenceCommandHandler;
+const mockQueryHandler = (execute: Mock) => ({execute}) as unknown as GetConferenceQueryHandler;
 
 /** Parses a JSON Response body. */
 const readBody = async (response: Response): Promise<Record<string, any>> =>
@@ -107,11 +105,7 @@ describe('createConferenceController (POST /api/v1/conferences)', () => {
   it('dispatches a CreateConferenceCommand with the validated body + authenticated organizer', async () => {
     const execute = vi.fn().mockResolvedValue(buildResponse());
 
-    await createConferenceController(
-      jsonRequest(validBody),
-      mockHandler(execute),
-      AUTHENTICATED,
-    );
+    await createConferenceController(jsonRequest(validBody), mockHandler(execute), AUTHENTICATED);
 
     expect(execute).toHaveBeenCalledTimes(1);
     const command = execute.mock.calls[0][0];
@@ -127,11 +121,7 @@ describe('createConferenceController (POST /api/v1/conferences)', () => {
       cfpEndDate: '2026-09-30',
     };
 
-    await createConferenceController(
-      jsonRequest(body),
-      mockHandler(execute),
-      AUTHENTICATED,
-    );
+    await createConferenceController(jsonRequest(body), mockHandler(execute), AUTHENTICATED);
 
     expect(execute.mock.calls[0][0].input).toMatchObject({
       description: '',
@@ -277,16 +267,10 @@ describe('createConferenceController (POST /api/v1/conferences)', () => {
   }
 
   it('rethrows unexpected errors for the route safety net', async () => {
-    const execute = vi
-      .fn()
-      .mockRejectedValue(new Error('database unavailable'));
+    const execute = vi.fn().mockRejectedValue(new Error('database unavailable'));
 
     await expect(
-      createConferenceController(
-        jsonRequest(validBody),
-        mockHandler(execute),
-        AUTHENTICATED,
-      ),
+      createConferenceController(jsonRequest(validBody), mockHandler(execute), AUTHENTICATED),
     ).rejects.toThrow('database unavailable');
   });
 });
@@ -294,12 +278,9 @@ describe('createConferenceController (POST /api/v1/conferences)', () => {
 describe('getConferenceController (GET /api/v1/conferences/{id})', () => {
   // GET requests carry no body (Web Standard restriction).
   const getRequest = (id: string = CONFERENCE_ID): Request =>
-    new Request(
-      `http://localhost/api/v1/conferences/${encodeURIComponent(id)}`,
-      {
-        method: 'GET',
-      },
-    );
+    new Request(`http://localhost/api/v1/conferences/${encodeURIComponent(id)}`, {
+      method: 'GET',
+    });
 
   it('returns 200 with the { data } conference payload', async () => {
     const execute = vi.fn().mockResolvedValue(buildResponse());
@@ -337,9 +318,7 @@ describe('getConferenceController (GET /api/v1/conferences/{id})', () => {
   });
 
   it('returns 404 NOT_FOUND when the conference does not exist', async () => {
-    const execute = vi
-      .fn()
-      .mockRejectedValue(new ConferenceNotFoundError(CONFERENCE_ID));
+    const execute = vi.fn().mockRejectedValue(new ConferenceNotFoundError(CONFERENCE_ID));
 
     const response = await getConferenceController(
       getRequest(),

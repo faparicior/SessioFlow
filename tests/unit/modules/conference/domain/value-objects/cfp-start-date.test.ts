@@ -18,27 +18,21 @@ describe('CfpStartDate', () => {
   });
 
   it('rejects start dates in the past (BR-001)', () => {
-    expect(() => CfpStartDate.create(pastDate(1))).toThrow(
-      CfpStartDateNotInFutureError,
-    );
+    expect(() => CfpStartDate.create(pastDate(1))).toThrow(CfpStartDateNotInFutureError);
     expect(() => CfpStartDate.create(pastDate(1))).toThrow(
       'CfpStartDate must be in the future or today',
     );
   });
 
   it('rejects invalid dates', () => {
-    expect(() => CfpStartDate.create(new Date('not-a-date'))).toThrow(
-      InvalidCfpStartDateError,
-    );
+    expect(() => CfpStartDate.create(new Date('not-a-date'))).toThrow(InvalidCfpStartDateError);
     expect(() => CfpStartDate.create(new Date('not-a-date'))).toThrow(
       'CfpStartDate is not a valid date',
     );
   });
 
   it('rejects start dates more than 365 days ahead', () => {
-    expect(() => CfpStartDate.create(futureDate(366))).toThrow(
-      InvalidCfpStartDateError,
-    );
+    expect(() => CfpStartDate.create(futureDate(366))).toThrow(InvalidCfpStartDateError);
   });
 
   it('accepts the 365-day boundary', () => {

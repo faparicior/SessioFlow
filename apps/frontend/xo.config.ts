@@ -5,18 +5,15 @@ import type {FlatXoConfig} from 'xo';
 
 const xoConfig: FlatXoConfig = [
   {
-    ignores: [
-      '.next/**',
-      'next-env.d.ts',
-      'out/**',
-      'node_modules/**',
-      'coverage/**',
-    ],
+    ignores: ['.next/**', 'next-env.d.ts', 'out/**', 'node_modules/**', 'coverage/**'],
   },
   {
     space: true,
     semicolon: true,
     react: true,
+    // Formatting is delegated to Prettier (eslint-plugin-prettier + eslint-config-prettier
+    // switch xo's 180 @stylistic rules off), so `xo --fix` and `npm run format` agree.
+    prettier: true,
   },
   {
     files: ['**/*.{ts,tsx,mts,cts}'],
@@ -28,7 +25,8 @@ const xoConfig: FlatXoConfig = [
             {
               target: './apps/frontend',
               from: './apps/backend',
-              message: 'Frontend must not import from apps/backend. Use @sessioflow/* workspace packages instead.',
+              message:
+                'Frontend must not import from apps/backend. Use @sessioflow/* workspace packages instead.',
             },
           ],
         },
@@ -67,17 +65,15 @@ const xoConfig: FlatXoConfig = [
 
       'n/prefer-global/process': 'off',
 
-      '@stylistic/max-len': [
-        'error',
-        {
-          code: 100,
-          ignorePattern: String.raw`^import\s`,
-          ignoreUrls: true,
-          ignoreStrings: true,
-          ignoreTemplateLiterals: true,
-          ignoreRegExpLiterals: true,
-        },
-      ],
+      // Line length is Prettier's `printWidth`; @stylistic/max-len would otherwise be
+      // re-enabled here (later config items win over eslint-config-prettier).
+      '@stylistic/max-len': 'off',
+      // Prettier-compatible opinions that eslint-config-prettier drops (Prettier never
+      // rewrites these, so there is no formatting loop):
+      curly: ['error', 'all'],
+      'unicorn/no-nested-ternary': 'error',
+      'arrow-body-style': ['error', 'as-needed'],
+      'prefer-arrow-callback': ['error', {allowNamedFunctions: true, allowUnboundThis: true}],
       '@stylistic/curly-newline': 'off',
       '@stylistic/object-curly-newline': 'off',
       '@stylistic/function-paren-newline': 'off',
@@ -287,11 +283,7 @@ const xoConfig: FlatXoConfig = [
     // (`baseURL`), and similar config objects. Renaming these breaks the
     // library contract, so naming-convention is disabled only in these
     // specific files rather than loosened project-wide.
-    files: [
-      '**/db-client.ts',
-      '**/drizzle/**/*.{ts,mts}',
-      'playwright.config.ts',
-    ],
+    files: ['**/db-client.ts', '**/drizzle/**/*.{ts,mts}', 'playwright.config.ts'],
     rules: {
       '@typescript-eslint/naming-convention': 'off',
       'unicorn/prefer-module': 'off',

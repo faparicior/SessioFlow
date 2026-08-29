@@ -5,8 +5,8 @@
  * requests across application layers.
  */
 
-import { AsyncLocalStorage } from 'node:async_hooks';
-import { v4 as uuidv4 } from 'uuid';
+import {AsyncLocalStorage} from 'node:async_hooks';
+import {v4 as uuidv4} from 'uuid';
 
 export type RequestContextData = {
   correlationId: string;
@@ -23,25 +23,17 @@ export function getRequestContext(): RequestContextData | undefined {
 }
 
 export function extractCorrelationId(
-  headers?: Headers | Record<string, string | string[] | undefined>
+  headers?: Headers | Record<string, string | string[] | undefined>,
 ): string | undefined {
   if (!headers) return undefined;
 
   if (typeof (headers as Headers).get === 'function') {
     const webHeaders = headers as Headers;
-    return (
-      webHeaders.get('x-correlation-id') ??
-      webHeaders.get('x-request-id') ??
-      undefined
-    );
+    return webHeaders.get('x-correlation-id') ?? webHeaders.get('x-request-id') ?? undefined;
   }
 
-  const recordHeaders = headers as Record<
-    string,
-    string | string[] | undefined
-  >;
-  const rawValue =
-    recordHeaders['x-correlation-id'] ?? recordHeaders['x-request-id'];
+  const recordHeaders = headers as Record<string, string | string[] | undefined>;
+  const rawValue = recordHeaders['x-correlation-id'] ?? recordHeaders['x-request-id'];
   if (Array.isArray(rawValue)) {
     return rawValue[0];
   }
@@ -55,10 +47,7 @@ export function generateCorrelationId(headerValue?: string): string {
   return `req-${uuidv4()}`.slice(0, 32);
 }
 
-export function withRequestContext<T>(
-  context: Partial<RequestContextData>,
-  fn: () => T
-): T {
+export function withRequestContext<T>(context: Partial<RequestContextData>, fn: () => T): T {
   const defaultContext: RequestContextData = {
     correlationId: context.correlationId ?? generateCorrelationId(),
     userId: context.userId,
@@ -72,7 +61,7 @@ export function withRequestContext<T>(
 
 export async function withRequestContextAsync<T>(
   context: Partial<RequestContextData>,
-  fn: () => Promise<T>
+  fn: () => Promise<T>,
 ): Promise<T> {
   const defaultContext: RequestContextData = {
     correlationId: context.correlationId ?? generateCorrelationId(),

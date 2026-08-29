@@ -77,9 +77,7 @@ export function ConferenceForm() {
     setValues(previous => ({...previous, [field]: value}));
   };
 
-  const createConference = async (
-    body: ConferenceCreateBody,
-  ): Promise<void> => {
+  const createConference = async (body: ConferenceCreateBody): Promise<void> => {
     setSubmitting(true);
 
     try {
@@ -129,8 +127,8 @@ export function ConferenceForm() {
       <CardHeader>
         <CardTitle>Conference details</CardTitle>
         <CardDescription>
-          Set the identity of the conference and open its Call-for-Papers
-          window. Conferences are created in CFP_OPEN state.
+          Set the identity of the conference and open its Call-for-Papers window. Conferences are
+          created in CFP_OPEN state.
         </CardDescription>
       </CardHeader>
       <CardContent>

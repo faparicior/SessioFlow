@@ -41,9 +41,7 @@ function cfpStatusNote(isOpen: boolean): string {
 export default function ConferenceDashboardPage() {
   const {id} = useParams<{id: string}>();
 
-  const [conference, setConference] = useState<
-    ConferenceApiResponse | undefined
-  >();
+  const [conference, setConference] = useState<ConferenceApiResponse | undefined>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [loading, setLoading] = useState(true);
 
@@ -111,8 +109,7 @@ export default function ConferenceDashboardPage() {
         <CardHeader>
           <CardTitle>Call for Papers</CardTitle>
           <CardDescription>
-            Share this link with potential speakers.{' '}
-            {cfpStatusNote(conference.cfp.isOpen)}
+            Share this link with potential speakers. {cfpStatusNote(conference.cfp.isOpen)}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

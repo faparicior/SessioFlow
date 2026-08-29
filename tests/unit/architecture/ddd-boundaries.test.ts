@@ -7,10 +7,20 @@
  * @see docs/adr/009-adopt-domain-driven-design-structure.md
  * @see docs/adr/019-use-ts-archunit-for-architecture-testing.md
  */
-import { describe, it, expect } from 'vitest';
-import { project, modules, classes, slices, functions, call, matching, defineCondition, getElementFile } from '@nielspeter/ts-archunit';
-import { existsSync, readFileSync } from 'fs';
-import { join, dirname } from 'path';
+import {describe, it, expect} from 'vitest';
+import {
+  project,
+  modules,
+  classes,
+  slices,
+  functions,
+  call,
+  matching,
+  defineCondition,
+  getElementFile,
+} from '@nielspeter/ts-archunit';
+import {existsSync, readFileSync} from 'fs';
+import {join, dirname} from 'path';
 // Scope tsconfig loading to target module if provided for ultra-fast AI agent feedback (e.g. TARGET_MODULE=conference)
 const targetModule = process.env.TARGET_MODULE;
 const tsconfigPath = targetModule
@@ -35,26 +45,29 @@ const describeArch = describe;
  */
 function coLocatedFile(suffix: string) {
   return defineCondition('coLocatedFile', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const filePath = cls.getSourceFile().getFilePath();
-      const fileName = cls.getSourceFile().getBaseName();
-      const stem = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
-      const dir = dirname(filePath);
-      const target = join(dir, stem + suffix + '.ts');
+    return matchedClasses
+      .map((cls: any) => {
+        const filePath = cls.getSourceFile().getFilePath();
+        const fileName = cls.getSourceFile().getBaseName();
+        const stem = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
+        const dir = dirname(filePath);
+        const target = join(dir, stem + suffix + '.ts');
 
-      if (!existsSync(target)) {
-        return {
-          rule: `class must have a co-located file "${stem}${suffix}"`,
-          element: stem,
-          file: filePath,
-          line: 0,
-          message: `Handler "${stem}" is missing "${stem}${suffix}.ts". ` +
-            `Convention: each CQRS handler folder is self-contained — ` +
-            `the command/query, handler, and response all live at the folder root.`,
-        };
-      }
-      return null;
-    }).filter(Boolean) as any;
+        if (!existsSync(target)) {
+          return {
+            rule: `class must have a co-located file "${stem}${suffix}"`,
+            element: stem,
+            file: filePath,
+            line: 0,
+            message:
+              `Handler "${stem}" is missing "${stem}${suffix}.ts". ` +
+              `Convention: each CQRS handler folder is self-contained — ` +
+              `the command/query, handler, and response all live at the folder root.`,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -71,51 +84,58 @@ function coLocatedFile(suffix: string) {
  */
 function handlerMustReferenceCoLocatedDto(suffix: string) {
   return defineCondition('handlerMustReferenceCoLocatedDto', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const fileName = relPath.split('/').at(-1)!;
-      const stem = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const fileName = relPath.split('/').at(-1)!;
+        const stem = fileName.replace(/\.ts$/, '').replace(/\.handler$/, '');
 
-      // Convert kebab-case stem to PascalCase for matching class names.
-      // e.g. "create-conference" → "CreateConference"
-      const pascalStem = stem
-        .split('-')
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join('');
+        // Convert kebab-case stem to PascalCase for matching class names.
+        // e.g. "create-conference" → "CreateConference"
+        const pascalStem = stem
+          .split('-')
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+          .join('');
 
-      // Map suffix to PascalCase suffix used in class names.
-      // ".command" → "Command",  ".query" → "Query"
-      const suffixMap: Record<string, string> = { '.command': 'Command', '.query': 'Query' };
-      const suffixClass = suffixMap[suffix] ?? suffix.replace('.', '').replace(/^./, (c) => c.toUpperCase());
-
-      // Match the full exported class name: stem + suffix
-      // e.g. "CreateConferenceCommand" or "GetConferenceQuery"
-      const className = pascalStem + suffixClass;
-
-      const executeMethod = cls.getMethod('execute');
-      if (!executeMethod) {
-        return null;
-      }
-
-      const params = executeMethod.getParameters();
-      const hasMatchingParam = params.some((param: any) => {
-        const typeText = param.getType().getText();
-        return typeText.includes(className);
-      });
-
-      if (!hasMatchingParam) {
-        return {
-          rule: `class must use its co-located ${suffix} DTO in execute()`,
-          element: cls.getName()!,
-          file: relPath,
-          line: executeMethod.getStartLineNumber() ?? 0,
-          message: `Handler "${cls.getName()}" execute() method parameters do not use type "${className}". ` +
-            `The DTO should be referenced as a parameter type (e.g. execute(command: ${className})).`,
+        // Map suffix to PascalCase suffix used in class names.
+        // ".command" → "Command",  ".query" → "Query"
+        const suffixMap: Record<string, string> = {
+          '.command': 'Command',
+          '.query': 'Query',
         };
-      }
+        const suffixClass =
+          suffixMap[suffix] ?? suffix.replace('.', '').replace(/^./, c => c.toUpperCase());
 
-      return null;
-    }).filter(Boolean) as any;
+        // Match the full exported class name: stem + suffix
+        // e.g. "CreateConferenceCommand" or "GetConferenceQuery"
+        const className = pascalStem + suffixClass;
+
+        const executeMethod = cls.getMethod('execute');
+        if (!executeMethod) {
+          return null;
+        }
+
+        const params = executeMethod.getParameters();
+        const hasMatchingParam = params.some((param: any) => {
+          const typeText = param.getType().getText();
+          return typeText.includes(className);
+        });
+
+        if (!hasMatchingParam) {
+          return {
+            rule: `class must use its co-located ${suffix} DTO in execute()`,
+            element: cls.getName()!,
+            file: relPath,
+            line: executeMethod.getStartLineNumber() ?? 0,
+            message:
+              `Handler "${cls.getName()}" execute() method parameters do not use type "${className}". ` +
+              `The DTO should be referenced as a parameter type (e.g. execute(command: ${className})).`,
+          };
+        }
+
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -124,27 +144,34 @@ function handlerMustReferenceCoLocatedDto(suffix: string) {
  */
 function hasInputType() {
   return defineCondition('hasInputType', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const stem = relPath.split('/').at(-1)!.replace(/\.ts$/, '').replace(/\.(command|query)$/, '');
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const stem = relPath
+          .split('/')
+          .at(-1)!
+          .replace(/\.ts$/, '')
+          .replace(/\.(command|query)$/, '');
+        const fileSource = cls.getSourceFile().getFullText();
 
-      // Check if the file exports an Input type
-      const hasInputType = /export\s+type\s+\w*Input/.test(fileSource);
+        // Check if the file exports an Input type
+        const hasInputType = /export\s+type\s+\w*Input/.test(fileSource);
 
-      if (!hasInputType) {
-        return {
-          rule: `class must have a co-located Input type alias`,
-          element: stem,
-          file: relPath,
-          line: 0,
-          message: `Class "${stem}" is missing a primitive Input type. ` +
-            `Convention: export an Input type (e.g. "${stem}Input") and have ` +
-            `the class accept it (e.g. "constructor(readonly input: ${stem}Input)").`,
-        };
-      }
-      return null;
-    }).filter(Boolean) as any;
+        if (!hasInputType) {
+          return {
+            rule: `class must have a co-located Input type alias`,
+            element: stem,
+            file: relPath,
+            line: 0,
+            message:
+              `Class "${stem}" is missing a primitive Input type. ` +
+              `Convention: export an Input type (e.g. "${stem}Input") and have ` +
+              `the class accept it (e.g. "constructor(readonly input: ${stem}Input)").`,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -153,28 +180,32 @@ function hasInputType() {
  */
 function notContainDomainProperties() {
   return defineCondition('notContainDomainProperties', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const props = cls.getType().getProperties();
-      const domainPattern = /ConferenceId|ConferenceSlug|ConferenceName|ConferenceStatus|ConferenceCreatedEvent|CfpConfig/;
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const props = cls.getType().getProperties();
+        const domainPattern =
+          /ConferenceId|ConferenceSlug|ConferenceName|ConferenceStatus|ConferenceCreatedEvent|CfpConfig/;
 
-      for (const prop of props) {
-        const propType = prop.getTypeAtLocation(cls);
-        const typeText = propType.getNonNullableType().getText();
+        for (const prop of props) {
+          const propType = prop.getTypeAtLocation(cls);
+          const typeText = propType.getNonNullableType().getText();
 
-        if (domainPattern.test(typeText)) {
-          return {
-            rule: 'class must not contain domain type properties',
-            element: cls.getName()!,
-            file: relPath,
-            line: 0,
-            message: `Class "${cls.getName()}" has property "${prop.getName()}" of domain type "${typeText}". ` +
-              `Query DTOs must only contain primitive types — never domain entities or value objects.`,
-          };
+          if (domainPattern.test(typeText)) {
+            return {
+              rule: 'class must not contain domain type properties',
+              element: cls.getName()!,
+              file: relPath,
+              line: 0,
+              message:
+                `Class "${cls.getName()}" has property "${prop.getName()}" of domain type "${typeText}". ` +
+                `Query DTOs must only contain primitive types — never domain entities or value objects.`,
+            };
+          }
         }
-      }
-      return null;
-    }).filter(Boolean) as any;
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -183,61 +214,64 @@ function notContainDomainProperties() {
  */
 function controllerInstantiatesDto() {
   return defineCondition('controllerInstantiatesDto', (matchedFns: any[]) => {
-    return matchedFns.map((fn: any) => {
-      const relPath = getElementFile(fn);
-      const sourceFile = fn.getSourceFile();
+    return matchedFns
+      .map((fn: any) => {
+        const relPath = getElementFile(fn);
+        const sourceFile = fn.getSourceFile();
 
-      // Get imports referencing .command or .query
-      const imports = sourceFile.getImportDeclarations();
-      const dtoImport = imports.find((imp: any) => {
-        const moduleSpecifier = imp.getModuleSpecifierValue();
-        return moduleSpecifier.includes('.command') || moduleSpecifier.includes('.query');
-      });
+        // Get imports referencing .command or .query
+        const imports = sourceFile.getImportDeclarations();
+        const dtoImport = imports.find((imp: any) => {
+          const moduleSpecifier = imp.getModuleSpecifierValue();
+          return moduleSpecifier.includes('.command') || moduleSpecifier.includes('.query');
+        });
 
-      if (!dtoImport) {
-        return null; // Not a DTO-based controller, skip
-      }
-
-      const namedImports = dtoImport.getNamedImports();
-      const dtoClassSpecifier = namedImports.find((spec: any) => {
-        const name = spec.getName();
-        return name.endsWith('Command') || name.endsWith('Query');
-      });
-
-      if (!dtoClassSpecifier) {
-        return {
-          rule: 'controller must import its co-located DTO',
-          element: fn.getName()!,
-          file: relPath,
-          line: 0,
-          message: `Controller "${fn.getName()}" imports a .command or .query file but no named class import ending with Command/Query was found.`,
-        };
-      }
-
-      const dtoClassName = dtoClassSpecifier.getName();
-
-      // Check if the function body contains a NewExpression for this class name
-      const descendants = fn.getNode().getDescendants();
-      const hasInstantiation = descendants.some((node: any) => {
-        if (node.getKindName() === 'NewExpression') {
-          return node.getExpression().getText() === dtoClassName;
+        if (!dtoImport) {
+          return null; // Not a DTO-based controller, skip
         }
-        return false;
-      });
 
-      if (!hasInstantiation) {
-        return {
-          rule: 'controller must instantiate its co-located DTO',
-          element: fn.getName()!,
-          file: relPath,
-          line: fn.getStartLineNumber() ?? 0,
-          message: `Controller "${fn.getName()}" imports "${dtoClassName}" but never instantiates it with "new ${dtoClassName}(…)". ` +
-            `Passing plain objects bypasses the DTO boundary contract.`,
-        };
-      }
+        const namedImports = dtoImport.getNamedImports();
+        const dtoClassSpecifier = namedImports.find((spec: any) => {
+          const name = spec.getName();
+          return name.endsWith('Command') || name.endsWith('Query');
+        });
 
-      return null;
-    }).filter(Boolean) as any;
+        if (!dtoClassSpecifier) {
+          return {
+            rule: 'controller must import its co-located DTO',
+            element: fn.getName()!,
+            file: relPath,
+            line: 0,
+            message: `Controller "${fn.getName()}" imports a .command or .query file but no named class import ending with Command/Query was found.`,
+          };
+        }
+
+        const dtoClassName = dtoClassSpecifier.getName();
+
+        // Check if the function body contains a NewExpression for this class name
+        const descendants = fn.getNode().getDescendants();
+        const hasInstantiation = descendants.some((node: any) => {
+          if (node.getKindName() === 'NewExpression') {
+            return node.getExpression().getText() === dtoClassName;
+          }
+          return false;
+        });
+
+        if (!hasInstantiation) {
+          return {
+            rule: 'controller must instantiate its co-located DTO',
+            element: fn.getName()!,
+            file: relPath,
+            line: fn.getStartLineNumber() ?? 0,
+            message:
+              `Controller "${fn.getName()}" imports "${dtoClassName}" but never instantiates it with "new ${dtoClassName}(…)". ` +
+              `Passing plain objects bypasses the DTO boundary contract.`,
+          };
+        }
+
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -246,41 +280,45 @@ function controllerInstantiatesDto() {
  */
 function controllerImportsHandlerType() {
   return defineCondition('controllerImportsHandlerType', (matchedFns: any[]) => {
-    return matchedFns.map((fn: any) => {
-      const relPath = getElementFile(fn);
-      const sourceFile = fn.getSourceFile();
-      const imports = sourceFile.getImportDeclarations();
+    return matchedFns
+      .map((fn: any) => {
+        const relPath = getElementFile(fn);
+        const sourceFile = fn.getSourceFile();
+        const imports = sourceFile.getImportDeclarations();
 
-      const handlerImport = imports.find((imp: any) => {
-        const specifier = imp.getModuleSpecifierValue();
-        return specifier.includes('.handler');
-      });
+        const handlerImport = imports.find((imp: any) => {
+          const specifier = imp.getModuleSpecifierValue();
+          return specifier.includes('.handler');
+        });
 
-      if (!handlerImport) {
-        return {
-          rule: 'controllers must explicitly import their co-located Handler type',
-          element: fn.getName()!,
-          file: relPath,
-          line: 0,
-          message: `Controller "${fn.getName()}" does not import a Handler type. ` +
-            `Controllers must explicitly include "import type { [UseCase]Handler }" ` +
-            `for 100% LLM traceability and compile-time type safety.`,
-        };
-      }
+        if (!handlerImport) {
+          return {
+            rule: 'controllers must explicitly import their co-located Handler type',
+            element: fn.getName()!,
+            file: relPath,
+            line: 0,
+            message:
+              `Controller "${fn.getName()}" does not import a Handler type. ` +
+              `Controllers must explicitly include "import type { [UseCase]Handler }" ` +
+              `for 100% LLM traceability and compile-time type safety.`,
+          };
+        }
 
-      if (!handlerImport.isTypeOnly()) {
-        return {
-          rule: 'controllers must use type-only imports for handlers',
-          element: fn.getName()!,
-          file: relPath,
-          line: 0,
-          message: `Controller "${fn.getName()}" imports handler as a runtime value instead of type-only. ` +
-            `Use "import type { ... }" to prevent runtime coupling while preserving explicit IDE/LLM linkage.`,
-        };
-      }
+        if (!handlerImport.isTypeOnly()) {
+          return {
+            rule: 'controllers must use type-only imports for handlers',
+            element: fn.getName()!,
+            file: relPath,
+            line: 0,
+            message:
+              `Controller "${fn.getName()}" imports handler as a runtime value instead of type-only. ` +
+              `Use "import type { ... }" to prevent runtime coupling while preserving explicit IDE/LLM linkage.`,
+          };
+        }
 
-      return null;
-    }).filter(Boolean) as any;
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -292,64 +330,66 @@ function controllerImportsHandlerType() {
  */
 function domainEntityFactoryConventions() {
   return defineCondition('domainEntityFactoryConventions', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      // Target domain entity files under packages/modules/*/src/domain/ (excluding value-objects, exceptions, events)
-      if (
-        relPath.includes('/value-objects/') ||
-        relPath.includes('/exceptions/') ||
-        relPath.includes('/events/')
-      ) {
+        // Target domain entity files under packages/modules/*/src/domain/ (excluding value-objects, exceptions, events)
+        if (
+          relPath.includes('/value-objects/') ||
+          relPath.includes('/exceptions/') ||
+          relPath.includes('/events/')
+        ) {
+          return null;
+        }
+
+        // 1. Private constructor check
+        const hasPrivateConstructor = /private\s+constructor\s*\(/.test(fileSource);
+        if (!hasPrivateConstructor) {
+          return {
+            rule: 'domain entity must have a private constructor',
+            element: name,
+            file: relPath,
+            line: 0,
+            message:
+              `Domain entity "${name}" in "${relPath}" must have a private constructor. ` +
+              `Convention: private constructor enforces static factory methods create() and fromData().`,
+          };
+        }
+
+        // 2. Static create() method check
+        const hasStaticCreate = /static\s+create\s*\(/.test(fileSource);
+        if (!hasStaticCreate) {
+          return {
+            rule: 'domain entity must have static create() factory method',
+            element: name,
+            file: relPath,
+            line: 0,
+            message:
+              `Domain entity "${name}" in "${relPath}" must have a static create() factory method. ` +
+              `Convention: static create(...) encapsulates domain creation rules & initial state.`,
+          };
+        }
+
+        // 3. Static fromData() method check
+        const hasStaticFromData = /static\s+(fromData|createFromData)\s*\(/.test(fileSource);
+        if (!hasStaticFromData) {
+          return {
+            rule: 'domain entity must have static fromData() factory method',
+            element: name,
+            file: relPath,
+            line: 0,
+            message:
+              `Domain entity "${name}" in "${relPath}" must have a static fromData() factory method. ` +
+              `Convention: static fromData(...) reconstitutes state from persistence without raising side effects or domain events.`,
+          };
+        }
+
         return null;
-      }
-
-      // 1. Private constructor check
-      const hasPrivateConstructor = /private\s+constructor\s*\(/.test(fileSource);
-      if (!hasPrivateConstructor) {
-        return {
-          rule: 'domain entity must have a private constructor',
-          element: name,
-          file: relPath,
-          line: 0,
-          message:
-            `Domain entity "${name}" in "${relPath}" must have a private constructor. ` +
-            `Convention: private constructor enforces static factory methods create() and fromData().`,
-        };
-      }
-
-      // 2. Static create() method check
-      const hasStaticCreate = /static\s+create\s*\(/.test(fileSource);
-      if (!hasStaticCreate) {
-        return {
-          rule: 'domain entity must have static create() factory method',
-          element: name,
-          file: relPath,
-          line: 0,
-          message:
-            `Domain entity "${name}" in "${relPath}" must have a static create() factory method. ` +
-            `Convention: static create(...) encapsulates domain creation rules & initial state.`,
-        };
-      }
-
-      // 3. Static fromData() method check
-      const hasStaticFromData = /static\s+(fromData|createFromData)\s*\(/.test(fileSource);
-      if (!hasStaticFromData) {
-        return {
-          rule: 'domain entity must have static fromData() factory method',
-          element: name,
-          file: relPath,
-          line: 0,
-          message:
-            `Domain entity "${name}" in "${relPath}" must have a static fromData() factory method. ` +
-            `Convention: static fromData(...) reconstitutes state from persistence without raising side effects or domain events.`,
-        };
-      }
-
-      return null;
-    }).filter(Boolean) as any;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -359,37 +399,39 @@ function domainEntityFactoryConventions() {
  */
 function aggregateRootDomainEventsConventions() {
   return defineCondition('aggregateRootDomainEventsConventions', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      // Target Aggregate Roots under packages/modules/*/src/domain/ (excluding value-objects, exceptions, events, child entities)
-      if (
-        relPath.includes('/value-objects/') ||
-        relPath.includes('/exceptions/') ||
-        relPath.includes('/events/') ||
-        relPath.endsWith('cfp-config.ts')
-      ) {
+        // Target Aggregate Roots under packages/modules/*/src/domain/ (excluding value-objects, exceptions, events, child entities)
+        if (
+          relPath.includes('/value-objects/') ||
+          relPath.includes('/exceptions/') ||
+          relPath.includes('/events/') ||
+          relPath.endsWith('cfp-config.ts')
+        ) {
+          return null;
+        }
+
+        // Check for pullDomainEvents() method
+        const hasPullDomainEvents = /pullDomainEvents\s*\(/.test(fileSource);
+        if (!hasPullDomainEvents) {
+          return {
+            rule: 'aggregate root must implement pullDomainEvents() method',
+            element: name,
+            file: relPath,
+            line: 0,
+            message:
+              `Aggregate Root "${name}" in "${relPath}" must implement pullDomainEvents(). ` +
+              `Convention: aggregate roots record domain events internally and expose pullDomainEvents() to flush pending events.`,
+          };
+        }
+
         return null;
-      }
-
-      // Check for pullDomainEvents() method
-      const hasPullDomainEvents = /pullDomainEvents\s*\(/.test(fileSource);
-      if (!hasPullDomainEvents) {
-        return {
-          rule: 'aggregate root must implement pullDomainEvents() method',
-          element: name,
-          file: relPath,
-          line: 0,
-          message:
-            `Aggregate Root "${name}" in "${relPath}" must implement pullDomainEvents(). ` +
-            `Convention: aggregate roots record domain events internally and expose pullDomainEvents() to flush pending events.`,
-        };
-      }
-
-      return null;
-    }).filter(Boolean) as any;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -398,27 +440,29 @@ function aggregateRootDomainEventsConventions() {
  */
 function commandHandlerOutboxConventions() {
   return defineCondition('commandHandlerOutboxConventions', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      // Check for OutboxRepository usage or import
-      const usesOutbox = /OutboxRepository|outboxRepository/.test(fileSource);
-      if (!usesOutbox) {
-        return {
-          rule: 'command handlers must accept and use OutboxRepository',
-          element: name,
-          file: relPath,
-          line: 0,
-          message:
-            `Command Handler "${name}" in "${relPath}" must accept and use OutboxRepository ` +
-            `to persist domain events using the Transactional Outbox pattern.`,
-        };
-      }
+        // Check for OutboxRepository usage or import
+        const usesOutbox = /OutboxRepository|outboxRepository/.test(fileSource);
+        if (!usesOutbox) {
+          return {
+            rule: 'command handlers must accept and use OutboxRepository',
+            element: name,
+            file: relPath,
+            line: 0,
+            message:
+              `Command Handler "${name}" in "${relPath}" must accept and use OutboxRepository ` +
+              `to persist domain events using the Transactional Outbox pattern.`,
+          };
+        }
 
-      return null;
-    }).filter(Boolean) as any;
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -428,42 +472,44 @@ function commandHandlerOutboxConventions() {
  */
 function domainEntityNoPrimitivesConventions() {
   return defineCondition('domainEntityNoPrimitivesConventions', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      // Target domain entity files under packages/modules/*/src/domain/ (excluding value-objects, exceptions, events)
-      if (
-        relPath.includes('/value-objects/') ||
-        relPath.includes('/exceptions/') ||
-        relPath.includes('/events/')
-      ) {
+        // Target domain entity files under packages/modules/*/src/domain/ (excluding value-objects, exceptions, events)
+        if (
+          relPath.includes('/value-objects/') ||
+          relPath.includes('/exceptions/') ||
+          relPath.includes('/events/')
+        ) {
+          return null;
+        }
+
+        // Extract Entity Data type definition block e.g. type ConferenceData = { ... }
+        const dataTypeMatch = fileSource.match(/type\s+\w+Data\s*=\s*\{([^}]+)\}/);
+        if (!dataTypeMatch) return null;
+
+        const dataBlock = dataTypeMatch[1];
+        // Check for raw primitives (string, number, boolean) in Data properties (excluding Date)
+        const primitiveMatches = dataBlock.match(/(\w+)\s*:\s*(string|number|boolean)\b/g);
+
+        if (primitiveMatches && primitiveMatches.length > 0) {
+          return {
+            rule: 'domain entity properties must use Value Objects instead of raw primitives',
+            element: name,
+            file: relPath,
+            line: 0,
+            message:
+              `Domain Entity Data type in "${relPath}" contains raw primitive property types: [${primitiveMatches.join(', ')}]. ` +
+              `DDD Convention: domain entities must wrap properties in Value Objects (e.g. OrganizerId, ConferenceDescription) instead of using raw primitives (string, number, boolean).`,
+          };
+        }
+
         return null;
-      }
-
-      // Extract Entity Data type definition block e.g. type ConferenceData = { ... }
-      const dataTypeMatch = fileSource.match(/type\s+\w+Data\s*=\s*\{([^}]+)\}/);
-      if (!dataTypeMatch) return null;
-
-      const dataBlock = dataTypeMatch[1];
-      // Check for raw primitives (string, number, boolean) in Data properties (excluding Date)
-      const primitiveMatches = dataBlock.match(/(\w+)\s*:\s*(string|number|boolean)\b/g);
-
-      if (primitiveMatches && primitiveMatches.length > 0) {
-        return {
-          rule: 'domain entity properties must use Value Objects instead of raw primitives',
-          element: name,
-          file: relPath,
-          line: 0,
-          message:
-            `Domain Entity Data type in "${relPath}" contains raw primitive property types: [${primitiveMatches.join(', ')}]. ` +
-            `DDD Convention: domain entities must wrap properties in Value Objects (e.g. OrganizerId, ConferenceDescription) instead of using raw primitives (string, number, boolean).`,
-        };
-      }
-
-      return null;
-    }).filter(Boolean) as any;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -473,40 +519,46 @@ function domainEntityNoPrimitivesConventions() {
  */
 function domainFactoryNoPrimitivesConventions() {
   return defineCondition('domainFactoryNoPrimitivesConventions', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      if (
-        relPath.includes('/value-objects/') ||
-        relPath.includes('/exceptions/') ||
-        relPath.includes('/events/')
-      ) {
+        if (
+          relPath.includes('/value-objects/') ||
+          relPath.includes('/exceptions/') ||
+          relPath.includes('/events/')
+        ) {
+          return null;
+        }
+
+        // Check parameter types of static create(...) methods for raw primitives (string, number, boolean)
+        const createMethodMatch = fileSource.match(
+          /static\s+create\s*\(\s*parameters\s*:\s*\{([^}]+)\}/,
+        );
+        if (!createMethodMatch) return null;
+
+        const paramsBlock = createMethodMatch[1];
+        const primitiveParamMatches = paramsBlock.match(
+          /(\w+)\s*\??:\s*(string|number|boolean)\b/g,
+        );
+
+        if (primitiveParamMatches && primitiveParamMatches.length > 0) {
+          return {
+            rule: 'domain factory methods must accept Value Objects instead of raw primitives',
+            element: name,
+            file: relPath,
+            line: 0,
+            message:
+              `Domain entity factory method in "${relPath}" accepts raw primitive parameters: [${primitiveParamMatches.join(', ')}]. ` +
+              `DDD Convention: domain entity create(...) factory methods must accept Value Objects instead of raw primitives.`,
+          };
+        }
+
         return null;
-      }
-
-      // Check parameter types of static create(...) methods for raw primitives (string, number, boolean)
-      const createMethodMatch = fileSource.match(/static\s+create\s*\(\s*parameters\s*:\s*\{([^}]+)\}/);
-      if (!createMethodMatch) return null;
-
-      const paramsBlock = createMethodMatch[1];
-      const primitiveParamMatches = paramsBlock.match(/(\w+)\s*\??:\s*(string|number|boolean)\b/g);
-
-      if (primitiveParamMatches && primitiveParamMatches.length > 0) {
-        return {
-          rule: 'domain factory methods must accept Value Objects instead of raw primitives',
-          element: name,
-          file: relPath,
-          line: 0,
-          message:
-            `Domain entity factory method in "${relPath}" accepts raw primitive parameters: [${primitiveParamMatches.join(', ')}]. ` +
-            `DDD Convention: domain entity create(...) factory methods must accept Value Objects instead of raw primitives.`,
-        };
-      }
-
-      return null;
-    }).filter(Boolean) as any;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -518,76 +570,78 @@ function domainFactoryNoPrimitivesConventions() {
  */
 function valueObjectConventions() {
   return defineCondition('valueObjectConventions', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      if (!relPath.includes('/value-objects/')) return null;
-      if (name.endsWith('Error')) return null;
+        if (!relPath.includes('/value-objects/')) return null;
+        if (name.endsWith('Error')) return null;
 
-      // 1. Check for private constructor
-      const hasPrivateConstructor = /private\s+constructor\b/.test(fileSource);
-      if (!hasPrivateConstructor) {
-        return {
-          rule: 'Value Objects must have a private constructor',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Value Object "${name}" in "${relPath}" must have a private constructor.`,
-        };
-      }
+        // 1. Check for private constructor
+        const hasPrivateConstructor = /private\s+constructor\b/.test(fileSource);
+        if (!hasPrivateConstructor) {
+          return {
+            rule: 'Value Objects must have a private constructor',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Value Object "${name}" in "${relPath}" must have a private constructor.`,
+          };
+        }
 
-      // 2. Check for static factory method (create or fromString)
-      const hasStaticFactory = /static\s+(create|fromString)\b/.test(fileSource);
-      if (!hasStaticFactory) {
-        return {
-          rule: 'Value Objects must have a static factory method (create or fromString)',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Value Object "${name}" in "${relPath}" must have a static factory method (create or fromString).`,
-        };
-      }
+        // 2. Check for static factory method (create or fromString)
+        const hasStaticFactory = /static\s+(create|fromString)\b/.test(fileSource);
+        if (!hasStaticFactory) {
+          return {
+            rule: 'Value Objects must have a static factory method (create or fromString)',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Value Object "${name}" in "${relPath}" must have a static factory method (create or fromString).`,
+          };
+        }
 
-      // 3. Check for get value() getter
-      const hasValueGetter = /get\s+value\s*\(\)/.test(fileSource);
-      if (!hasValueGetter) {
-        return {
-          rule: 'Value Objects must expose a "get value()" getter',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Value Object "${name}" in "${relPath}" must expose a "get value()" getter.`,
-        };
-      }
+        // 3. Check for get value() getter
+        const hasValueGetter = /get\s+value\s*\(\)/.test(fileSource);
+        if (!hasValueGetter) {
+          return {
+            rule: 'Value Objects must expose a "get value()" getter',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Value Object "${name}" in "${relPath}" must expose a "get value()" getter.`,
+          };
+        }
 
-      // 4. Check for equals(other) method
-      const hasEqualsMethod = /\bequals\s*\(/.test(fileSource);
-      if (!hasEqualsMethod) {
-        return {
-          rule: 'Value Objects must implement an equals(other) method',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Value Object "${name}" in "${relPath}" must implement an equals(other) method for structural equality.`,
-        };
-      }
+        // 4. Check for equals(other) method
+        const hasEqualsMethod = /\bequals\s*\(/.test(fileSource);
+        if (!hasEqualsMethod) {
+          return {
+            rule: 'Value Objects must implement an equals(other) method',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Value Object "${name}" in "${relPath}" must implement an equals(other) method for structural equality.`,
+          };
+        }
 
-      // 5. Check for redundant implements Self clause
-      const hasSelfImplements = new RegExp(`implements\\s+${name}\\b`).test(fileSource);
-      if (hasSelfImplements) {
-        return {
-          rule: 'Value Objects must not use redundant "implements Self" anti-pattern',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Value Object "${name}" in "${relPath}" has redundant self-implementation "implements ${name}".`,
-        };
-      }
+        // 5. Check for redundant implements Self clause
+        const hasSelfImplements = new RegExp(`implements\\s+${name}\\b`).test(fileSource);
+        if (hasSelfImplements) {
+          return {
+            rule: 'Value Objects must not use redundant "implements Self" anti-pattern',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Value Object "${name}" in "${relPath}" has redundant self-implementation "implements ${name}".`,
+          };
+        }
 
-      return null;
-    }).filter(Boolean) as any;
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -596,37 +650,39 @@ function valueObjectConventions() {
  */
 function repositoryReconstitutionConventions() {
   return defineCondition('repositoryReconstitutionConventions', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      // Only check repository implementations in infrastructure
-      if (!relPath.includes('/infrastructure/') || !name.endsWith('Repository')) {
+        // Only check repository implementations in infrastructure
+        if (!relPath.includes('/infrastructure/') || !name.endsWith('Repository')) {
+          return null;
+        }
+
+        // OutboxRepository is a shared event queue repository, not an entity aggregate repository
+        if (name.includes('Outbox')) {
+          return null;
+        }
+
+        // Check that mapping or retrieval uses fromData
+        const usesFromData = /\.fromData\(/.test(fileSource);
+        if (!usesFromData) {
+          return {
+            rule: 'repository implementations must reconstitute domain entities using fromData factory methods',
+            element: name,
+            file: relPath,
+            line: 0,
+            message:
+              `Repository implementation "${name}" in "${relPath}" does not use .fromData(...) factory method for domain entity reconstitution. ` +
+              `DDD Invariant: Repositories must reconstruct entities via static fromData(...) factory methods.`,
+          };
+        }
+
         return null;
-      }
-
-      // OutboxRepository is a shared event queue repository, not an entity aggregate repository
-      if (name.includes('Outbox')) {
-        return null;
-      }
-
-      // Check that mapping or retrieval uses fromData
-      const usesFromData = /\.fromData\(/.test(fileSource);
-      if (!usesFromData) {
-        return {
-          rule: 'repository implementations must reconstitute domain entities using fromData factory methods',
-          element: name,
-          file: relPath,
-          line: 0,
-          message:
-            `Repository implementation "${name}" in "${relPath}" does not use .fromData(...) factory method for domain entity reconstitution. ` +
-            `DDD Invariant: Repositories must reconstruct entities via static fromData(...) factory methods.`,
-        };
-      }
-
-      return null;
-    }).filter(Boolean) as any;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -639,61 +695,63 @@ function repositoryReconstitutionConventions() {
  */
 function domainEventConventions() {
   return defineCondition('domainEventConventions', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      if (!relPath.includes('/domain/events/')) return null;
+        if (!relPath.includes('/domain/events/')) return null;
 
-      if (!name.endsWith('Event')) {
-        return {
-          rule: 'domain event classes must end with Event',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Domain Event class "${name}" in "${relPath}" must end with "Event".`,
-        };
-      }
+        if (!name.endsWith('Event')) {
+          return {
+            rule: 'domain event classes must end with Event',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Domain Event class "${name}" in "${relPath}" must end with "Event".`,
+          };
+        }
 
-      // Check for type property
-      const hasTypeProperty = /\btype\b/.test(fileSource);
-      if (!hasTypeProperty) {
-        return {
-          rule: 'domain events must define a type property',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Domain Event "${name}" in "${relPath}" must define a "type" property for event identification.`,
-        };
-      }
+        // Check for type property
+        const hasTypeProperty = /\btype\b/.test(fileSource);
+        if (!hasTypeProperty) {
+          return {
+            rule: 'domain events must define a type property',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Domain Event "${name}" in "${relPath}" must define a "type" property for event identification.`,
+          };
+        }
 
-      // Check for timestamp property
-      const hasTimestamp = /\btimestamp\b|\boccurredOn\b/.test(fileSource);
-      if (!hasTimestamp) {
-        return {
-          rule: 'domain events must include a timestamp or occurredOn property',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Domain Event "${name}" in "${relPath}" must include a timestamp or occurredOn property.`,
-        };
-      }
+        // Check for timestamp property
+        const hasTimestamp = /\btimestamp\b|\boccurredOn\b/.test(fileSource);
+        if (!hasTimestamp) {
+          return {
+            rule: 'domain events must include a timestamp or occurredOn property',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Domain Event "${name}" in "${relPath}" must include a timestamp or occurredOn property.`,
+          };
+        }
 
-      // Check for toJSON method
-      const hasToJSON = /\btoJSON\s*\(/.test(fileSource);
-      if (!hasToJSON) {
-        return {
-          rule: 'domain events must implement toJSON() method for outbox payload serialization',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Domain Event "${name}" in "${relPath}" must implement a toJSON() method for outbox persistence.`,
-        };
-      }
+        // Check for toJSON method
+        const hasToJSON = /\btoJSON\s*\(/.test(fileSource);
+        if (!hasToJSON) {
+          return {
+            rule: 'domain events must implement toJSON() method for outbox payload serialization',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Domain Event "${name}" in "${relPath}" must implement a toJSON() method for outbox persistence.`,
+          };
+        }
 
-      return null;
-    }).filter(Boolean) as any;
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -704,36 +762,40 @@ function domainEventConventions() {
  */
 function domainExceptionConventions() {
   return defineCondition('domainExceptionConventions', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      if (!relPath.includes('/domain/exceptions/')) return null;
+        if (!relPath.includes('/domain/exceptions/')) return null;
 
-      if (!name.endsWith('Error')) {
-        return {
-          rule: 'domain exception classes must end with Error',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Domain Exception class "${name}" in "${relPath}" must end with "Error".`,
-        };
-      }
+        if (!name.endsWith('Error')) {
+          return {
+            rule: 'domain exception classes must end with Error',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Domain Exception class "${name}" in "${relPath}" must end with "Error".`,
+          };
+        }
 
-      const extendsDomainError = /extends\s+(Domain\w+Error|EntityNotFoundError)\b/.test(fileSource);
-      if (!extendsDomainError) {
-        return {
-          rule: 'domain exception classes must extend a base DomainError',
-          element: name,
-          file: relPath,
-          line: 0,
-          message: `Domain Exception class "${name}" in "${relPath}" must extend DomainError, DomainInvariantError, or DomainConflictError.`,
-        };
-      }
+        const extendsDomainError = /extends\s+(Domain\w+Error|EntityNotFoundError)\b/.test(
+          fileSource,
+        );
+        if (!extendsDomainError) {
+          return {
+            rule: 'domain exception classes must extend a base DomainError',
+            element: name,
+            file: relPath,
+            line: 0,
+            message: `Domain Exception class "${name}" in "${relPath}" must extend DomainError, DomainInvariantError, or DomainConflictError.`,
+          };
+        }
 
-      return null;
-    }).filter(Boolean) as any;
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -757,44 +819,46 @@ function domainExceptionConventions() {
  */
 function domainEntityNoDefiniteAssignmentAssertions() {
   return defineCondition('domainEntityNoDefiniteAssignmentAssertions', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      // Target domain entity files under packages/modules/*/src/domain/
-      // (excluding value-objects, exceptions, events)
-      if (
-        relPath.includes('/value-objects/') ||
-        relPath.includes('/exceptions/') ||
-        relPath.includes('/events/')
-      ) {
+        // Target domain entity files under packages/modules/*/src/domain/
+        // (excluding value-objects, exceptions, events)
+        if (
+          relPath.includes('/value-objects/') ||
+          relPath.includes('/exceptions/') ||
+          relPath.includes('/events/')
+        ) {
+          return null;
+        }
+
+        // Regex: private <prop>! followed by type annotation
+        // Matches: private _id!: ConferenceId;
+        //          private readonly _id!: ConferenceId;
+        // Does NOT match: private _id: ConferenceId; (without !)
+        const matches = fileSource.matchAll(
+          /private\s+(?:readonly\s+)?(?:_(?:[A-Za-z]+))!\s*:\s*\w+/g,
+        );
+
+        for (const match of matches) {
+          return {
+            rule: 'domain entities must not use definite assignment assertions (!) on private properties',
+            element: name,
+            file: relPath,
+            line: fileSource.substring(0, match.index!).split('\n').length,
+            message:
+              `Domain entity "${name}" in "${relPath}" uses definite assignment assertion "${match[0]}". ` +
+              `Convention: declare private properties without "!" and initialize them in the constructor body. ` +
+              `TypeScript is satisfied when the constructor assigns all properties — no "trust me" needed.`,
+          };
+        }
+
         return null;
-      }
-
-      // Regex: private <prop>! followed by type annotation
-      // Matches: private _id!: ConferenceId;
-      //          private readonly _id!: ConferenceId;
-      // Does NOT match: private _id: ConferenceId; (without !)
-      const matches = fileSource.matchAll(
-        /private\s+(?:readonly\s+)?(?:_(?:[A-Za-z]+))!\s*:\s*\w+/g,
-      );
-
-      for (const match of matches) {
-        return {
-          rule: 'domain entities must not use definite assignment assertions (!) on private properties',
-          element: name,
-          file: relPath,
-          line: fileSource.substring(0, match.index!).split('\n').length,
-          message:
-            `Domain entity "${name}" in "${relPath}" uses definite assignment assertion "${match[0]}". ` +
-            `Convention: declare private properties without "!" and initialize them in the constructor body. ` +
-            `TypeScript is satisfied when the constructor assigns all properties — no "trust me" needed.`,
-        };
-      }
-
-      return null;
-    }).filter(Boolean) as any;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -818,70 +882,73 @@ function domainEntityNoDefiniteAssignmentAssertions() {
  */
 function domainEntityConstructorHasPropertyAssignments() {
   return defineCondition('domainEntityConstructorAssignments', (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const relPath = getElementFile(cls);
-      const name = cls.getName();
-      const fileSource = cls.getSourceFile().getFullText();
+    return matchedClasses
+      .map((cls: any) => {
+        const relPath = getElementFile(cls);
+        const name = cls.getName();
+        const fileSource = cls.getSourceFile().getFullText();
 
-      // Target domain entity files under packages/modules/*/src/domain/
-      if (
-        relPath.includes('/value-objects/') ||
-        relPath.includes('/exceptions/') ||
-        relPath.includes('/events/')
-      ) {
-        return null;
-      }
-
-      // Extract the private constructor parameters and body
-      const constructorMatch = fileSource.match(
-        /private\s+constructor\s*\(([^)]*)\)\s*\{([\s\S]*?)^\s{2}\}/m,
-      );
-      if (!constructorMatch) return null;
-
-      const paramsText = constructorMatch[1];
-      const body = constructorMatch[2];
-
-      // Parameter properties (e.g. private readonly _data: ConferenceData) automatically initialize properties
-      const hasParameterProperties = /(?:private|protected|public)\s+(?:readonly\s+)?_?[A-Za-z0-9]+\s*:/i.test(paramsText);
-      if (hasParameterProperties) {
-        return null;
-      }
-
-      // Count actual property assignments (this._xxx = ...)
-      // Exclude trivial-only assignments like this._domainEvents = []
-      const propertyAssignments = body.matchAll(/this\._[A-Za-z]+\s*=/g);
-      let assignmentCount = 0;
-      let hasNonTrivial = false;
-      for (const m of propertyAssignments) {
-        assignmentCount++;
-        const rest = body.slice(m.index! + m[0].length);
-        // If the assignment is followed by anything other than `[]` or `new Date()`
-        // it's a real property assignment (Date is borderline but OK for createdAt)
-        if (!/^(\s*\[\]|\s*new\s+Date\(\))/.test(rest)) {
-          hasNonTrivial = true;
+        // Target domain entity files under packages/modules/*/src/domain/
+        if (
+          relPath.includes('/value-objects/') ||
+          relPath.includes('/exceptions/') ||
+          relPath.includes('/events/')
+        ) {
+          return null;
         }
-      }
 
-      // A valid constructor must assign at least one real property.
-      // If only _domainEvents or _createdAt/_updatedAt = new Date() exist,
-      // that means the actual property values are assigned in the factory — an anti-pattern.
-      if (assignmentCount === 0 || !hasNonTrivial) {
-        return {
-          rule: 'private constructor must assign property values (not empty or trivial only)',
-          element: name,
-          file: relPath,
-          line: fileSource.substring(0, constructorMatch.index!).split('\n').length,
-          message:
-            `Domain entity "${name}" in "${relPath}" has a private constructor that ` +
-            `${assignmentCount === 0 ? 'does not assign any properties' : 'only assigns trivial fields'}. ` +
-            `Convention: the constructor must receive all required values as parameters and assign them. ` +
-            `This ensures TypeScript verifies all properties are initialized, preventing "!" assertions and ` +
-            `scattered mutation from static factories.`,
-        };
-      }
+        // Extract the private constructor parameters and body
+        const constructorMatch = fileSource.match(
+          /private\s+constructor\s*\(([^)]*)\)\s*\{([\s\S]*?)^\s{2}\}/m,
+        );
+        if (!constructorMatch) return null;
 
-      return null;
-    }).filter(Boolean) as any;
+        const paramsText = constructorMatch[1];
+        const body = constructorMatch[2];
+
+        // Parameter properties (e.g. private readonly _data: ConferenceData) automatically initialize properties
+        const hasParameterProperties =
+          /(?:private|protected|public)\s+(?:readonly\s+)?_?[A-Za-z0-9]+\s*:/i.test(paramsText);
+        if (hasParameterProperties) {
+          return null;
+        }
+
+        // Count actual property assignments (this._xxx = ...)
+        // Exclude trivial-only assignments like this._domainEvents = []
+        const propertyAssignments = body.matchAll(/this\._[A-Za-z]+\s*=/g);
+        let assignmentCount = 0;
+        let hasNonTrivial = false;
+        for (const m of propertyAssignments) {
+          assignmentCount++;
+          const rest = body.slice(m.index! + m[0].length);
+          // If the assignment is followed by anything other than `[]` or `new Date()`
+          // it's a real property assignment (Date is borderline but OK for createdAt)
+          if (!/^(\s*\[\]|\s*new\s+Date\(\))/.test(rest)) {
+            hasNonTrivial = true;
+          }
+        }
+
+        // A valid constructor must assign at least one real property.
+        // If only _domainEvents or _createdAt/_updatedAt = new Date() exist,
+        // that means the actual property values are assigned in the factory — an anti-pattern.
+        if (assignmentCount === 0 || !hasNonTrivial) {
+          return {
+            rule: 'private constructor must assign property values (not empty or trivial only)',
+            element: name,
+            file: relPath,
+            line: fileSource.substring(0, constructorMatch.index!).split('\n').length,
+            message:
+              `Domain entity "${name}" in "${relPath}" has a private constructor that ` +
+              `${assignmentCount === 0 ? 'does not assign any properties' : 'only assigns trivial fields'}. ` +
+              `Convention: the constructor must receive all required values as parameters and assign them. ` +
+              `This ensures TypeScript verifies all properties are initialized, preventing "!" assertions and ` +
+              `scattered mutation from static factories.`,
+          };
+        }
+
+        return null;
+      })
+      .filter(Boolean) as any;
   });
 }
 
@@ -897,7 +964,9 @@ describe('DDD Architecture', () => {
           '**/packages/shared/**',
           '**/node_modules/**',
         )
-        .because('domain layer must have no dependencies on external layers (infrastructure, application, interfaces)')
+        .because(
+          'domain layer must have no dependencies on external layers (infrastructure, application, interfaces)',
+        )
         .check();
     });
 
@@ -927,7 +996,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/**/domain/**')
         .should()
         .satisfy(domainEntityFactoryConventions())
-        .because('domain entities require private constructors and named factory methods for creation vs reconstitution')
+        .because(
+          'domain entities require private constructors and named factory methods for creation vs reconstitution',
+        )
         .check();
     });
 
@@ -937,7 +1008,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/**/domain/**')
         .should()
         .satisfy(domainEntityNoDefiniteAssignmentAssertions())
-        .because('private properties must be assigned in the constructor, never with "trust me" assertions')
+        .because(
+          'private properties must be assigned in the constructor, never with "trust me" assertions',
+        )
         .check();
     });
 
@@ -947,7 +1020,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/**/domain/**')
         .should()
         .satisfy(domainEntityConstructorHasPropertyAssignments())
-        .because('the constructor must receive and assign all property values so TypeScript verifies initialization')
+        .because(
+          'the constructor must receive and assign all property values so TypeScript verifies initialization',
+        )
         .check();
     });
 
@@ -957,7 +1032,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/**/domain/**')
         .should()
         .satisfy(aggregateRootDomainEventsConventions())
-        .because('aggregate roots record domain events internally and expose pullDomainEvents() for event dispatching')
+        .because(
+          'aggregate roots record domain events internally and expose pullDomainEvents() for event dispatching',
+        )
         .check();
     });
 
@@ -967,7 +1044,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/**/domain/**')
         .should()
         .satisfy(domainEntityNoPrimitivesConventions())
-        .because('domain entities must encapsulate domain concepts in Value Objects instead of using raw primitives')
+        .because(
+          'domain entities must encapsulate domain concepts in Value Objects instead of using raw primitives',
+        )
         .check();
     });
 
@@ -977,7 +1056,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/**/domain/**')
         .should()
         .satisfy(domainFactoryNoPrimitivesConventions())
-        .because('domain entity create(...) factory methods must receive Value Objects for type safety and invariant validation')
+        .because(
+          'domain entity create(...) factory methods must receive Value Objects for type safety and invariant validation',
+        )
         .check();
     });
 
@@ -987,7 +1068,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/**/domain/value-objects/**')
         .should()
         .satisfy(valueObjectConventions())
-        .because('Value Objects in DDD must enforce immutability with private constructors, static factory methods, and a value getter')
+        .because(
+          'Value Objects in DDD must enforce immutability with private constructors, static factory methods, and a value getter',
+        )
         .check();
     });
 
@@ -999,7 +1082,9 @@ describe('DDD Architecture', () => {
         .notImportFrom('**/infrastructure/**')
         .and()
         .notImportFrom('**/application/**')
-        .because('Value Objects are fundamental domain building blocks and must not depend on higher layers')
+        .because(
+          'Value Objects are fundamental domain building blocks and must not depend on higher layers',
+        )
         .check();
     });
 
@@ -1013,7 +1098,9 @@ describe('DDD Architecture', () => {
         .notImportFrom('**/infrastructure/**')
         .and()
         .notImportFrom('**/drizzle-orm/**')
-        .because('Repository interfaces belong strictly to the domain layer and must have no infrastructure or ORM dependencies')
+        .because(
+          'Repository interfaces belong strictly to the domain layer and must have no infrastructure or ORM dependencies',
+        )
         .check();
     });
 
@@ -1023,7 +1110,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/**/domain/events/**')
         .should()
         .satisfy(domainEventConventions())
-        .because('Domain Events represent immutable domain facts and must provide type, timestamp, and toJSON() serialization for outbox persistence')
+        .because(
+          'Domain Events represent immutable domain facts and must provide type, timestamp, and toJSON() serialization for outbox persistence',
+        )
         .check();
     });
 
@@ -1033,7 +1122,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/**/domain/exceptions/**')
         .should()
         .satisfy(domainExceptionConventions())
-        .because('Domain Exception classes represent domain invariant failures and must extend base DomainError classes')
+        .because(
+          'Domain Exception classes represent domain invariant failures and must extend base DomainError classes',
+        )
         .check();
     });
   });
@@ -1044,11 +1135,10 @@ describe('DDD Architecture', () => {
         .that()
         .resideInFolder('**/packages/api-definitions/**')
         .should()
-        .onlyImportFrom(
-          '**/packages/api-definitions/**',
-          '**/node_modules/**',
+        .onlyImportFrom('**/packages/api-definitions/**', '**/node_modules/**')
+        .because(
+          'api-definitions is a pure contract package — it must contain zero backend domain or module dependencies',
         )
-        .because('api-definitions is a pure contract package — it must contain zero backend domain or module dependencies')
         .check();
     });
 
@@ -1062,7 +1152,9 @@ describe('DDD Architecture', () => {
           '**/packages/shared/logging/**',
           '**/node_modules/**',
         )
-        .because('bus package is pure CQRS infrastructure — it must not depend on feature modules or database schemas')
+        .because(
+          'bus package is pure CQRS infrastructure — it must not depend on feature modules or database schemas',
+        )
         .check();
     });
   });
@@ -1106,7 +1198,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/repository$/i)
         .should()
         .beExported()
-        .because('Concrete repository implementations belong to the infrastructure layer and must be exported for container wiring')
+        .because(
+          'Concrete repository implementations belong to the infrastructure layer and must be exported for container wiring',
+        )
         .check();
     });
 
@@ -1118,7 +1212,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/repository$/i)
         .should()
         .satisfy(repositoryReconstitutionConventions())
-        .because('Repositories must map database records to domain entities using static fromData(...) factory methods')
+        .because(
+          'Repositories must map database records to domain entities using static fromData(...) factory methods',
+        )
         .check();
     });
   });
@@ -1147,7 +1243,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/**/interfaces/**')
         .should()
         .notImportFrom('**/packages/modules/**/domain/*repository*')
-        .because('interfaces must only interact with application layer handlers, never domain repositories directly')
+        .because(
+          'interfaces must only interact with application layer handlers, never domain repositories directly',
+        )
         .check();
     });
   });
@@ -1159,7 +1257,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/apps/**/api/**')
         .should()
         .notImportFrom('**/packages/modules/**/domain/**')
-        .because('API routes must only interact with application CQRS handlers, never domain objects or repositories directly')
+        .because(
+          'API routes must only interact with application CQRS handlers, never domain objects or repositories directly',
+        )
         .check();
     });
 
@@ -1171,7 +1271,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/route\.ts$/)
         .should()
         .notImportFrom('zod')
-        .because('request payload validation belongs in module HTTP controllers, not thin API route wrappers')
+        .because(
+          'request payload validation belongs in module HTTP controllers, not thin API route wrappers',
+        )
         .check();
     });
 
@@ -1183,7 +1285,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/route\.ts$/)
         .should()
         .notImportFrom('**/infrastructure/**', '**/database/**')
-        .because('API routes must resolve controllers via the module composition root, never import infrastructure')
+        .because(
+          'API routes must resolve controllers via the module composition root, never import infrastructure',
+        )
         .check();
     });
 
@@ -1195,11 +1299,12 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/route\.ts$/)
         .should()
         .haveNameMatching(/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)$/)
-        .because('Next.js App Router route files must export standard uppercase HTTP verb functions')
+        .because(
+          'Next.js App Router route files must export standard uppercase HTTP verb functions',
+        )
         .check();
     });
   });
-
 
   describe('CQRS Architecture', () => {
     it('command handlers and query handlers must end with Handler', () => {
@@ -1240,7 +1345,9 @@ describe('DDD Architecture', () => {
         .resideInFolder('**/packages/modules/*/src/application/**')
         .should()
         .notContain(call(/console\.log|console\.error|console\.warn/))
-        .because('application handlers must use structured logging via @sessioflow/shared-logging, never direct console statements')
+        .because(
+          'application handlers must use structured logging via @sessioflow/shared-logging, never direct console statements',
+        )
         .check();
     });
 
@@ -1252,7 +1359,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/(^|\.)execute$/)
         .should()
         .contain(call(/logger\.info|logger\.error/))
-        .because('command handlers perform state-changing use cases and must include structured logging for auditability')
+        .because(
+          'command handlers perform state-changing use cases and must include structured logging for auditability',
+        )
         .check();
     });
 
@@ -1264,7 +1373,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/Handler$/)
         .should()
         .satisfy(commandHandlerOutboxConventions())
-        .because('command handlers handle write operations and must persist domain events using OutboxRepository')
+        .because(
+          'command handlers handle write operations and must persist domain events using OutboxRepository',
+        )
         .check();
     });
 
@@ -1298,7 +1409,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/(^|\.)execute$/)
         .should()
         .haveReturnTypeMatching(matching(/Result|Dto|Response/))
-        .because('CQRS handlers must return Result objects or DTOs to avoid leaking Domain Entities directly')
+        .because(
+          'CQRS handlers must return Result objects or DTOs to avoid leaking Domain Entities directly',
+        )
         .check();
     });
 
@@ -1324,7 +1437,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/Handler$/)
         .should()
         .satisfy(coLocatedFile('.command'))
-        .because('command folders must be self-contained — the command (input DTO) lives alongside the handler')
+        .because(
+          'command folders must be self-contained — the command (input DTO) lives alongside the handler',
+        )
         .check();
     });
 
@@ -1336,7 +1451,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/Handler$/)
         .should()
         .satisfy(coLocatedFile('.response'))
-        .because('command folders must be self-contained — the response DTO lives alongside the handler')
+        .because(
+          'command folders must be self-contained — the response DTO lives alongside the handler',
+        )
         .check();
     });
 
@@ -1360,7 +1477,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/Handler$/)
         .should()
         .satisfy(coLocatedFile('.response'))
-        .because('query folders must be self-contained — the response DTO lives alongside the handler')
+        .because(
+          'query folders must be self-contained — the response DTO lives alongside the handler',
+        )
         .check();
     });
 
@@ -1388,7 +1507,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/Handler$/)
         .should()
         .satisfy(handlerMustReferenceCoLocatedDto('.command'))
-        .because('handlers must use their co-located command DTO as the execute() parameter, not plain objects')
+        .because(
+          'handlers must use their co-located command DTO as the execute() parameter, not plain objects',
+        )
         .check();
     });
 
@@ -1400,7 +1521,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/Handler$/)
         .should()
         .satisfy(handlerMustReferenceCoLocatedDto('.query'))
-        .because('handlers must use their co-located query DTO as the execute() parameter, not plain objects')
+        .because(
+          'handlers must use their co-located query DTO as the execute() parameter, not plain objects',
+        )
         .check();
     });
 
@@ -1450,7 +1573,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/Query$/)
         .should()
         .satisfy(notContainDomainProperties())
-        .because('query DTOs must only contain primitive types — never domain entities or value objects')
+        .because(
+          'query DTOs must only contain primitive types — never domain entities or value objects',
+        )
         .check();
     });
 
@@ -1462,7 +1587,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/\.command\.ts$/)
         .should()
         .notImportFrom('**/packages/modules/**/domain/**')
-        .because('CQRS command DTOs are boundary data carriers — they must only contain primitives, never domain types')
+        .because(
+          'CQRS command DTOs are boundary data carriers — they must only contain primitives, never domain types',
+        )
         .check();
     });
 
@@ -1480,7 +1607,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/Command$/)
         .should()
         .satisfy(hasInputType())
-        .because('commands must separate the primitive Input type from the Command wrapper for clarity')
+        .because(
+          'commands must separate the primitive Input type from the Command wrapper for clarity',
+        )
         .check();
     });
 
@@ -1492,7 +1621,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/Query$/)
         .should()
         .satisfy(hasInputType())
-        .because('queries must separate the primitive Input type from the Query wrapper for clarity')
+        .because(
+          'queries must separate the primitive Input type from the Query wrapper for clarity',
+        )
         .check();
     });
   });
@@ -1506,7 +1637,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/controller$/i)
         .should()
         .satisfy(controllerInstantiatesDto())
-        .because('controllers must instantiate command/query DTOs to enforce the primitive-only boundary contract')
+        .because(
+          'controllers must instantiate command/query DTOs to enforce the primitive-only boundary contract',
+        )
         .check();
     });
 
@@ -1566,7 +1699,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/\.controller\.ts$/)
         .should()
         .notImportFrom('**/interfaces/http/*.schema*')
-        .because('controllers must source shared API contract schemas from @sessioflow/api-definitions per ADR-020, not local duplicate schema files')
+        .because(
+          'controllers must source shared API contract schemas from @sessioflow/api-definitions per ADR-020, not local duplicate schema files',
+        )
         .check();
     });
 
@@ -1578,7 +1713,9 @@ describe('DDD Architecture', () => {
         .haveNameMatching(/controller$/i)
         .should()
         .satisfy(controllerImportsHandlerType())
-        .because('HTTP controllers must explicitly import their co-located Handler type via "import type" for 100% LLM/IDE traceability and zero runtime coupling')
+        .because(
+          'HTTP controllers must explicitly import their co-located Handler type via "import type" for 100% LLM/IDE traceability and zero runtime coupling',
+        )
         .check();
     });
   });
@@ -1591,23 +1728,17 @@ describe('DDD Architecture', () => {
         .and()
         .haveNameMatching(/container\.ts$/)
         .should()
-        .onlyImportFrom(
-          '**/packages/modules/**',
-          '**/packages/shared/**',
-          '**/node_modules/**',
+        .onlyImportFrom('**/packages/modules/**', '**/packages/shared/**', '**/node_modules/**')
+        .because(
+          'module containers act as composition roots and wire handlers into the Mediator / Bus',
         )
-        .because('module containers act as composition roots and wire handlers into the Mediator / Bus')
         .check();
     });
   });
 
   describe('Dependency cycles', () => {
     it('modules must not contain cycles', () => {
-      slices(p)
-        .matching('packages/modules/*/')
-        .should()
-        .beFreeOfCycles()
-        .check();
+      slices(p).matching('packages/modules/*/').should().beFreeOfCycles().check();
     });
   });
 });

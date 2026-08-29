@@ -3,7 +3,10 @@ import {spawn, spawnSync} from 'node:child_process';
 import process from 'node:process';
 
 console.log('[Dev] Starting Docker Compose...');
-const composeUp = spawnSync('docker', ['compose', 'up', '-d'], {stdio: 'inherit', shell: true});
+const composeUp = spawnSync('docker', ['compose', 'up', '-d'], {
+  stdio: 'inherit',
+  shell: true,
+});
 if (composeUp.status !== 0) {
   console.error('[Dev] Failed to start Docker Compose');
   process.exit(composeUp.status ?? 1);

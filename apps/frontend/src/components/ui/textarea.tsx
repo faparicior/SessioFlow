@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {cn} from '@frontend/lib/utils';
 
-export type TextareaProps =
-  {} & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+export type TextareaProps = {} & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({className, ...props}, ref) => (

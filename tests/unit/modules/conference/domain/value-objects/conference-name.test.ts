@@ -32,9 +32,7 @@ describe('ConferenceName', () => {
   });
 
   it('rejects names longer than 100 characters (BR-002)', () => {
-    expect(() => ConferenceName.create('x'.repeat(101))).toThrow(
-      ConferenceNameTooLongError,
-    );
+    expect(() => ConferenceName.create('x'.repeat(101))).toThrow(ConferenceNameTooLongError);
     expect(() => ConferenceName.create('x'.repeat(101))).toThrow(
       'Conference name cannot exceed 100 characters',
     );

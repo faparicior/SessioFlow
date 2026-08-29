@@ -15,18 +15,18 @@ describe('CfpStatus', () => {
   });
 
   it('validates transitions (ACTIVE -> CLOSED -> ARCHIVED)', () => {
-    expect(
-      CfpStatus.canTransitionTo(CfpStatus.create('ACTIVE'), CfpStatus.create('CLOSED')),
-    ).toBe(true);
+    expect(CfpStatus.canTransitionTo(CfpStatus.create('ACTIVE'), CfpStatus.create('CLOSED'))).toBe(
+      true,
+    );
     expect(
       CfpStatus.canTransitionTo(CfpStatus.create('CLOSED'), CfpStatus.create('ARCHIVED')),
     ).toBe(true);
     expect(
       CfpStatus.canTransitionTo(CfpStatus.create('ACTIVE'), CfpStatus.create('ARCHIVED')),
     ).toBe(false);
-    expect(
-      CfpStatus.canTransitionTo(CfpStatus.create('CLOSED'), CfpStatus.create('ACTIVE')),
-    ).toBe(false);
+    expect(CfpStatus.canTransitionTo(CfpStatus.create('CLOSED'), CfpStatus.create('ACTIVE'))).toBe(
+      false,
+    );
   });
 
   it('reports whether the CfP is accepting submissions', () => {

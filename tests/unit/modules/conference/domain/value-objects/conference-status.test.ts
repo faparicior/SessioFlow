@@ -19,12 +19,8 @@ describe('ConferenceStatus', () => {
   });
 
   it('rejects unknown statuses', () => {
-    expect(() => ConferenceStatus.create('BOGUS')).toThrow(
-      InvalidConferenceStatusError,
-    );
-    expect(() => ConferenceStatus.create('draft')).toThrow(
-      InvalidConferenceStatusError,
-    );
+    expect(() => ConferenceStatus.create('BOGUS')).toThrow(InvalidConferenceStatusError);
+    expect(() => ConferenceStatus.create('draft')).toThrow(InvalidConferenceStatusError);
   });
 
   it('allows the full lifecycle transition path (INV-001)', () => {
@@ -109,11 +105,9 @@ describe('ConferenceStatus', () => {
   });
 
   it('implements structural equality', () => {
-    expect(
-      ConferenceStatus.create('DRAFT').equals(ConferenceStatus.create('DRAFT')),
-    ).toBe(true);
-    expect(
-      ConferenceStatus.create('DRAFT').equals(ConferenceStatus.create('CFP_OPEN')),
-    ).toBe(false);
+    expect(ConferenceStatus.create('DRAFT').equals(ConferenceStatus.create('DRAFT'))).toBe(true);
+    expect(ConferenceStatus.create('DRAFT').equals(ConferenceStatus.create('CFP_OPEN'))).toBe(
+      false,
+    );
   });
 });

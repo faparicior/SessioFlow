@@ -40,9 +40,7 @@ export class CfpEndDate {
   }
 
   public daysRemaining(): number {
-    return Math.round(
-      (startOfUtcDayMs(this._value) - startOfUtcDayMs(new Date())) / MS_PER_DAY,
-    );
+    return Math.round((startOfUtcDayMs(this._value) - startOfUtcDayMs(new Date())) / MS_PER_DAY);
   }
 
   public equals(other: CfpEndDate): boolean {

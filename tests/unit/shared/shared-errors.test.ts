@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import {describe, it, expect} from 'vitest';
 import {
   DomainError,
   DomainInvariantError,
@@ -6,7 +6,7 @@ import {
   DomainConflictError,
   DomainForbiddenError,
 } from '@sessioflow/shared-domain/exceptions';
-import { mapErrorCodeToHttpStatus, mapDomainErrorToResponse } from '@sessioflow/shared-http';
+import {mapErrorCodeToHttpStatus, mapDomainErrorToResponse} from '@sessioflow/shared-http';
 
 describe('Shared Domain Errors & HTTP Error Mapper', () => {
   it('DomainError hierarchy properly sets code and message', () => {
@@ -37,9 +37,15 @@ describe('Shared Domain Errors & HTTP Error Mapper', () => {
 
   it('mapErrorCodeToHttpStatus resolves status codes based on error instance or code string', () => {
     expect(mapErrorCodeToHttpStatus(new EntityNotFoundError('NOT_FOUND', 'Not found'))).toBe(404);
-    expect(mapErrorCodeToHttpStatus(new DomainConflictError('SLUG_EXISTS', 'Slug exists'))).toBe(409);
-    expect(mapErrorCodeToHttpStatus(new DomainForbiddenError('FREE_TIER_LIMIT', 'Limit'))).toBe(403);
-    expect(mapErrorCodeToHttpStatus(new DomainInvariantError('CFP_DATES_INVALID', 'Invalid dates'))).toBe(400);
+    expect(mapErrorCodeToHttpStatus(new DomainConflictError('SLUG_EXISTS', 'Slug exists'))).toBe(
+      409,
+    );
+    expect(mapErrorCodeToHttpStatus(new DomainForbiddenError('FREE_TIER_LIMIT', 'Limit'))).toBe(
+      403,
+    );
+    expect(
+      mapErrorCodeToHttpStatus(new DomainInvariantError('CFP_DATES_INVALID', 'Invalid dates')),
+    ).toBe(400);
 
     expect(mapErrorCodeToHttpStatus('UNAUTHORIZED')).toBe(401);
     expect(mapErrorCodeToHttpStatus('NOT_FOUND')).toBe(404);

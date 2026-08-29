@@ -13,11 +13,7 @@ describe('RequiresApproval', () => {
   });
 
   it('implements structural equality', () => {
-    expect(RequiresApproval.create(true).equals(RequiresApproval.create(true))).toBe(
-      true,
-    );
-    expect(RequiresApproval.create(true).equals(RequiresApproval.create(false))).toBe(
-      false,
-    );
+    expect(RequiresApproval.create(true).equals(RequiresApproval.create(true))).toBe(true);
+    expect(RequiresApproval.create(true).equals(RequiresApproval.create(false))).toBe(false);
   });
 });

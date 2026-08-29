@@ -22,9 +22,7 @@ export type ApiEnvelope<T> = {
  * Reads the envelope defensively: empty or non-JSON bodies resolve to an empty
  * envelope so callers can fall back to a generic message.
  */
-export async function readEnvelope<T>(
-  response: Response,
-): Promise<ApiEnvelope<T>> {
+export async function readEnvelope<T>(response: Response): Promise<ApiEnvelope<T>> {
   const text = await response.text();
 
   if (text === '') {
@@ -39,8 +37,7 @@ export async function readEnvelope<T>(
 }
 
 /** Convenience fallback message when the API returned no `error.message`. */
-export const GENERIC_FAILURE_MESSAGE =
-  'Something went wrong. Please try again.';
+export const GENERIC_FAILURE_MESSAGE = 'Something went wrong. Please try again.';
 
 /** Extracts a user-facing message from an API error envelope. */
 export function describeApiError(envelope: ApiEnvelope<unknown>): string {

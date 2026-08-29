@@ -22,22 +22,24 @@ const p = project('tsconfig.json');
 const mustHavePrivateConstructor = defineCondition(
   'mustHavePrivateConstructor',
   (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const source = cls.getFullText();
-      // Match "private constructor" pattern (skip comment lines)
-      const hasPrivateCtor = /private\s+constructor/.test(source);
+    return matchedClasses
+      .map((cls: any) => {
+        const source = cls.getFullText();
+        // Match "private constructor" pattern (skip comment lines)
+        const hasPrivateCtor = /private\s+constructor/.test(source);
 
-      if (!hasPrivateCtor) {
-        return {
-          rule: 'class must have a private constructor',
-          element: cls.getName()!,
-          file: cls.getSourceFile().getFilePath(),
-          line: cls.getLine() ?? 0,
-          message: `Response class "${cls.getName()}" must have a private constructor to enforce factory-only creation.`,
-        };
-      }
-      return null;
-    }).filter(Boolean) as any;
+        if (!hasPrivateCtor) {
+          return {
+            rule: 'class must have a private constructor',
+            element: cls.getName()!,
+            file: cls.getSourceFile().getFilePath(),
+            line: cls.getLine() ?? 0,
+            message: `Response class "${cls.getName()}" must have a private constructor to enforce factory-only creation.`,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean) as any;
   },
 );
 
@@ -50,50 +52,48 @@ const mustHavePrivateConstructor = defineCondition(
 const mustOnlyHaveStaticFromMethod = defineCondition(
   'mustOnlyHaveStaticFromMethod',
   (matchedClasses: any[]) => {
-    return matchedClasses.map((cls: any) => {
-      const methods = cls.getMethods();
-      const staticFromMethods = methods.filter(
-        (m: any) =>
-          m.getName() === 'from' && m.isStatic() && !m.isPrivate(),
-      );
+    return matchedClasses
+      .map((cls: any) => {
+        const methods = cls.getMethods();
+        const staticFromMethods = methods.filter(
+          (m: any) => m.getName() === 'from' && m.isStatic() && !m.isPrivate(),
+        );
 
-      if (staticFromMethods.length === 0) {
-        return {
-          rule: 'class must have a static from() method',
-          element: cls.getName()!,
-          file: cls.getSourceFile().getFilePath(),
-          line: cls.getLine() ?? 0,
-          message: `Response class "${cls.getName()}" must have a static \`from()\` factory method.`,
-        };
-      }
+        if (staticFromMethods.length === 0) {
+          return {
+            rule: 'class must have a static from() method',
+            element: cls.getName()!,
+            file: cls.getSourceFile().getFilePath(),
+            line: cls.getLine() ?? 0,
+            message: `Response class "${cls.getName()}" must have a static \`from()\` factory method.`,
+          };
+        }
 
-      // Exclude constructor and the static 'from' from the count
-      const nonConstructorMethods = methods.filter(
-        (m: any) => !m.isConstructor() && !m.getName().startsWith('get'),
-      );
+        // Exclude constructor and the static 'from' from the count
+        const nonConstructorMethods = methods.filter(
+          (m: any) => !m.isConstructor() && !m.getName().startsWith('get'),
+        );
 
-      // Allow only the static 'from' method (non-private)
-      const disallowedMethods = methods.filter(
-        (m: any) =>
-          !m.isConstructor() &&
-          !m.isStatic() &&
-          m.getName() !== 'from' &&
-          !m.isPrivate(),
-      );
+        // Allow only the static 'from' method (non-private)
+        const disallowedMethods = methods.filter(
+          (m: any) =>
+            !m.isConstructor() && !m.isStatic() && m.getName() !== 'from' && !m.isPrivate(),
+        );
 
-      if (disallowedMethods.length > 0) {
-        const names = disallowedMethods.map((m: any) => m.getName()).join(', ');
-        return {
-          rule: 'class must not have methods beyond static from()',
-          element: cls.getName()!,
-          file: cls.getSourceFile().getFilePath(),
-          line: cls.getLine() ?? 0,
-          message: `Response class "${cls.getName()}" has disallowed methods: ${names}. Response classes must only contain readonly fields and the static from() factory.`,
-        };
-      }
+        if (disallowedMethods.length > 0) {
+          const names = disallowedMethods.map((m: any) => m.getName()).join(', ');
+          return {
+            rule: 'class must not have methods beyond static from()',
+            element: cls.getName()!,
+            file: cls.getSourceFile().getFilePath(),
+            line: cls.getLine() ?? 0,
+            message: `Response class "${cls.getName()}" has disallowed methods: ${names}. Response classes must only contain readonly fields and the static from() factory.`,
+          };
+        }
 
-      return null;
-    }).filter(Boolean) as any;
+        return null;
+      })
+      .filter(Boolean) as any;
   },
 );
 
@@ -141,7 +141,9 @@ describe('CQRS Response Conventions', () => {
         .resideInFolder('**/packages/modules/**/application/**/**/*.response.ts')
         .should()
         .notContain(matching(/: [A-Z][a-zA-Z]+;$/) as any)
-        .because('response classes must only contain primitive types — never domain entities or value objects')
+        .because(
+          'response classes must only contain primitive types — never domain entities or value objects',
+        )
         .check();
     });
 

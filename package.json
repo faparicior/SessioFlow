@@ -15,6 +15,8 @@
     "build": "npx turbo build",
     "lint": "npx turbo lint",
     "lint:fix": "npx turbo lint:fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint:md": "markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
     "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\"",
     "check:links": "markdown-link-check --config .markdown-link-check.json README.md",

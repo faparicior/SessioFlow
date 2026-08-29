@@ -3,9 +3,9 @@ import {ConferenceDescription} from '@sessioflow/conference/domain/value-objects
 
 describe('ConferenceDescription', () => {
   it('wraps a description string', () => {
-    expect(
-      ConferenceDescription.create('A conference about technology').value,
-    ).toBe('A conference about technology');
+    expect(ConferenceDescription.create('A conference about technology').value).toBe(
+      'A conference about technology',
+    );
   });
 
   it('allows an empty description (optional field)', () => {
@@ -24,13 +24,9 @@ describe('ConferenceDescription', () => {
   });
 
   it('implements structural equality', () => {
-    expect(
-      ConferenceDescription.create('same').equals(
-        ConferenceDescription.create('same'),
-      ),
-    ).toBe(true);
-    expect(
-      ConferenceDescription.create('a').equals(ConferenceDescription.create('b')),
-    ).toBe(false);
+    expect(ConferenceDescription.create('same').equals(ConferenceDescription.create('same'))).toBe(
+      true,
+    );
+    expect(ConferenceDescription.create('a').equals(ConferenceDescription.create('b'))).toBe(false);
   });
 });

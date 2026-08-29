@@ -15,7 +15,7 @@ These environment behaviors cost agents the most iterations:
 | Vitest config: `environment: 'jsdom'`, `globals: true`, `include: tests/**/*.test.ts(x)`, `exclude: ['tests/frontend/**']` | files under `tests/frontend/` are never run by `npm test` |
 | `fileParallelism: false` | integration test **files** run serially because they share the local PostgreSQL tables; the whole suite still finishes in ~30s |
 | `@sessioflow/shared-database` reads `DATABASE_URL` **at import time** | integration tests must load `.env.local` before importing it — the fixture `tests/integration/modules/conference/utils/test-db.ts` does exactly that |
-| `npm run test:e2e` = `npm run build` + `docker compose up` + playwright + **`docker compose down`** | PostgreSQL is left **down**; run `docker compose up -d` before integration tests afterwards |
+| The **scripts own the container lifecycle** (by design): `npm run test:e2e` = `npm run build` → `docker compose up -d` → Playwright → `docker compose down` (same pattern in `npm run dev`) | E2E needs nothing pre-started (`tests/e2e/setup.ts` polls `SELECT 1` and migrates), but it leaves PostgreSQL **down** — run integration tests before E2E, or start the stack yourself: `docker compose -f apps/backend/docker-compose.yml up -d` (there is no root compose file) |
 
 ### Test layers and how to run each one
 
@@ -25,7 +25,10 @@ These environment behaviors cost agents the most iterations:
 | Architecture | `tests/unit/architecture/**` | `npm run test:architecture` | no |
 | Interface (controllers, mocked handlers) | `tests/backend/**` | `npx vitest run tests/backend` | no |
 | Integration (repositories, real handlers) | `tests/integration/**` | `npx vitest run tests/integration` | **yes** |
-| E2E (browser) | `tests/e2e/*.spec.ts` | `npm run test:e2e` | managed by the script |
+| E2E (browser) | `tests/e2e/*.spec.ts` | `npm run test:e2e` | **managed by the script** |
+
+> **Recommended order**: unit → architecture → interface → **integration** (start the stack) →
+> **E2E last**, since it builds everything and closes the container on exit.
 
 ## 🧪 Test Layers
 
@@ -59,7 +62,7 @@ describe('ConferenceName', () => {
 - **Fixture**: `tests/integration/modules/[module]/utils/test-db.ts` loads `.env.local` **before**
   `@sessioflow/shared-database` is imported (that client reads `DATABASE_URL` at import time) and
   exports `testSql`, `cleanTables()`, `rowCount()` for assertions that bypass the repository layer
-- **Run**: `docker compose up -d && npx vitest run tests/integration`
+- **Run**: `docker compose -f apps/backend/docker-compose.yml up -d && npx vitest run tests/integration`
 - **Isolation**: `cleanTables()` in `beforeEach`/`afterAll`, plus `fileParallelism: false` so test
   files never race on the shared `conferences` / `outbox_messages` tables
 
@@ -148,16 +151,16 @@ npx vitest run --coverage
 # Run single test file
 npx vitest run tests/unit/modules/conference/domain/value-objects/conference-name.test.ts
 
-# Run E2E tests (⚠️ builds everything and stops docker compose on exit)
+# Run E2E tests — the script builds everything, brings PostgreSQL up and closes it on exit
 npm run test:e2e
 
-# Integration tests need PostgreSQL
-docker compose up -d && npx vitest run tests/integration
+# Integration tests reuse that same container, so start it explicitly
+docker compose -f apps/backend/docker-compose.yml up -d && npx vitest run tests/integration
 
 # Run specific E2E test (config lives with the frontend app)
 npx playwright test tests/e2e/conference-setup.spec.ts --config=apps/frontend/playwright.config.ts
 
-# Run E2E with UI mode
+# Run E2E with UI mode (⚠️ bypasses the npm script, so start PostgreSQL yourself)
 npx playwright test --ui
 ```
 

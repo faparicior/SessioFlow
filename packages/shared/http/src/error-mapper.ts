@@ -67,6 +67,6 @@ export function mapDomainErrorToResponse(error: DomainError): Response {
 
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: {'Content-Type': 'application/json'},
   });
 }

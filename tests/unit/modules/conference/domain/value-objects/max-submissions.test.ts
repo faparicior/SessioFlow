@@ -19,9 +19,7 @@ describe('MaxSubmissions', () => {
     expect(() => MaxSubmissions.create(0)).toThrow(MaxSubmissionsInvalidError);
     expect(() => MaxSubmissions.create(-5)).toThrow(MaxSubmissionsInvalidError);
     expect(() => MaxSubmissions.create(2.5)).toThrow(MaxSubmissionsInvalidError);
-    expect(() => MaxSubmissions.create(2.5)).toThrow(
-      'Max submissions must be a positive integer',
-    );
+    expect(() => MaxSubmissions.create(2.5)).toThrow('Max submissions must be a positive integer');
   });
 
   it('rejects values above the 10000 sanity cap', () => {
@@ -42,14 +40,8 @@ describe('MaxSubmissions', () => {
   });
 
   it('implements structural equality', () => {
-    expect(MaxSubmissions.create(100).equals(MaxSubmissions.create(100))).toBe(
-      true,
-    );
-    expect(MaxSubmissions.create(100).equals(MaxSubmissions.create(50))).toBe(
-      false,
-    );
-    expect(
-      MaxSubmissions.create(null).equals(MaxSubmissions.create(undefined)),
-    ).toBe(true);
+    expect(MaxSubmissions.create(100).equals(MaxSubmissions.create(100))).toBe(true);
+    expect(MaxSubmissions.create(100).equals(MaxSubmissions.create(50))).toBe(false);
+    expect(MaxSubmissions.create(null).equals(MaxSubmissions.create(undefined))).toBe(true);
   });
 });

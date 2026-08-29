@@ -106,10 +106,7 @@ describe('Transactional Outbox via CreateConferenceCommandHandler (integration)'
       FROM outbox_messages ORDER BY event_type
     `;
     expect(events).toHaveLength(2);
-    expect(events.map(event => event.event_type)).toEqual([
-      'CFP_OPENED',
-      'CONFERENCE_CREATED',
-    ]);
+    expect(events.map(event => event.event_type)).toEqual(['CFP_OPENED', 'CONFERENCE_CREATED']);
     for (const event of events) {
       expect(event.aggregate_type).toBe('Conference');
       expect(event.aggregate_id).toBe(response.id);
@@ -136,23 +133,17 @@ describe('Transactional Outbox via CreateConferenceCommandHandler (integration)'
       'simulated outbox failure',
     );
 
-    const [conferenceCount] =
-      await testSql`SELECT COUNT(*)::int AS count FROM conferences`;
-    const [outboxCount] =
-      await testSql`SELECT COUNT(*)::int AS count FROM outbox_messages`;
+    const [conferenceCount] = await testSql`SELECT COUNT(*)::int AS count FROM conferences`;
+    const [outboxCount] = await testSql`SELECT COUNT(*)::int AS count FROM outbox_messages`;
     expect(conferenceCount.count).toBe(0);
     expect(outboxCount.count).toBe(0);
   });
 
   it('supports the full write + read journey through the real repositories', async () => {
-    const created = await handler.execute(
-      buildCommand({name: 'Journey Read Conf'}),
-    );
+    const created = await handler.execute(buildCommand({name: 'Journey Read Conf'}));
 
     const getHandler = new GetConferenceQueryHandler(conferenceRepository);
-    const found = await getHandler.execute(
-      new GetConferenceQuery({conferenceId: created.id}),
-    );
+    const found = await getHandler.execute(new GetConferenceQuery({conferenceId: created.id}));
 
     expect(found.id).toBe(created.id);
     expect(found.name).toBe('Journey Read Conf');
@@ -165,9 +156,7 @@ describe('Transactional Outbox via CreateConferenceCommandHandler (integration)'
   it('throws ConferenceNotFoundError for a valid but unknown id', async () => {
     const getHandler = new GetConferenceQueryHandler(conferenceRepository);
     await expect(
-      getHandler.execute(
-        new GetConferenceQuery({conferenceId: crypto.randomUUID()}),
-      ),
+      getHandler.execute(new GetConferenceQuery({conferenceId: crypto.randomUUID()})),
     ).rejects.toThrow(ConferenceNotFoundError);
   });
 });
