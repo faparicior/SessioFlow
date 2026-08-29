@@ -2,10 +2,35 @@
 
 SessioFlow uses a comprehensive testing strategy with multiple layers.
 
+## ⚡ Facts First (read before writing a test)
+
+These environment behaviors cost agents the most iterations:
+
+| Fact | Consequence |
+| --- | --- |
+| `tests/setup.ts` replaces the global `Date` with a **frozen clock: `2026-07-28T00:00:00.000Z`** | every time-based rule is evaluated against that date — CfP dates must be later (`2026-08-17` works, `2026-01-01` throws); `Date.now()` and `new Date()` are both frozen, so never assert on elapsed time |
+| Domain code **throws** `DomainError` subclasses | assert `expect(() => …).toThrow(…)`. There is **no** `Result` / `isFailure` wrapper in `@sessioflow/shared-domain` — examples using `.isFailure` are stale |
+| `ConferenceId.create(...)` / `.fromData(...)` require a **UUID v4** string | pass a real UUID (`crypto.randomUUID()`); there is no zero-arg overload |
+| `@sessioflow/*` resolves to **`src/`** in Vitest but to **`dist/`** when building | a green `vitest run` does not prove `npm run build` works |
+| Vitest config: `environment: 'jsdom'`, `globals: true`, `include: tests/**/*.test.ts(x)`, `exclude: ['tests/frontend/**']` | files under `tests/frontend/` are never run by `npm test` |
+| `fileParallelism: false` | integration test **files** run serially because they share the local PostgreSQL tables; the whole suite still finishes in ~30s |
+| `@sessioflow/shared-database` reads `DATABASE_URL` **at import time** | integration tests must load `.env.local` before importing it — the fixture `tests/integration/modules/conference/utils/test-db.ts` does exactly that |
+| `npm run test:e2e` = `npm run build` + `docker compose up` + playwright + **`docker compose down`** | PostgreSQL is left **down**; run `docker compose up -d` before integration tests afterwards |
+
+### Test layers and how to run each one
+
+| Layer | Path | Command | Needs DB |
+| --- | --- | --- | --- |
+| Unit (domain / application) | `tests/unit/modules/<module>/<layer>/**` | `npx vitest run tests/unit` | no |
+| Architecture | `tests/unit/architecture/**` | `npm run test:architecture` | no |
+| Interface (controllers, mocked handlers) | `tests/backend/**` | `npx vitest run tests/backend` | no |
+| Integration (repositories, real handlers) | `tests/integration/**` | `npx vitest run tests/integration` | **yes** |
+| E2E (browser) | `tests/e2e/*.spec.ts` | `npm run test:e2e` | managed by the script |
+
 ## 🧪 Test Layers
 
 ### Unit Tests (Vitest)
-- **Location**: `tests/unit/[domain]/[feature].test.ts`
+- **Location**: `tests/unit/modules/[module]/[layer]/[feature].test.ts`
 - **Scope**: Pure functions, utilities, value objects, Zod schemas
 - **Framework**: Vitest
 - **Run**: `npm test` or `npx vitest run`
@@ -29,29 +54,44 @@ describe('ConferenceName', () => {
 
 ### Integration Tests
 - **Location**: `tests/integration/modules/[module]/[feature].integration.test.ts`
-- **Scope**: Repository implementations, database operations, and HTTP Controllers paired with real CQRS handlers (unmocked handler logic to prevent DTO schema drift)
-- **Framework**: Vitest (+ Testcontainers or in-memory repositories)
+- **Scope**: repository implementations against the real local PostgreSQL, plus controllers wired to
+  real (unmocked) CQRS handlers so DTO/contract drift cannot hide
+- **Fixture**: `tests/integration/modules/[module]/utils/test-db.ts` loads `.env.local` **before**
+  `@sessioflow/shared-database` is imported (that client reads `DATABASE_URL` at import time) and
+  exports `testSql`, `cleanTables()`, `rowCount()` for assertions that bypass the repository layer
+- **Run**: `docker compose up -d && npx vitest run tests/integration`
+- **Isolation**: `cleanTables()` in `beforeEach`/`afterAll`, plus `fileParallelism: false` so test
+  files never race on the shared `conferences` / `outbox_messages` tables
 
 ```typescript
-// tests/integration/modules/conference/conference-repository.test.ts
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+// tests/integration/modules/conference/conference-repository.integration.test.ts
+import { beforeEach, describe, expect, it } from 'vitest';
 import { DrizzleConferenceRepository } from '@sessioflow/conference/infrastructure/database/conference.repository';
+import { cleanTables } from './utils/test-db';
 
 describe('DrizzleConferenceRepository', () => {
-  let repository: DrizzleConferenceRepository;
+  // No argument = the shared `db` client; an argument overrides it (transaction handle).
+  const repository = new DrizzleConferenceRepository();
 
-  beforeAll(async () => {
-    repository = new DrizzleConferenceRepository(testDbClient);
+  beforeEach(async () => {
+    await cleanTables();
   });
 
-  it('saves and retrieves conference', async () => {
-    const conference = createTestConference();
+  it('saves and reconstitutes the aggregate from the schema', async () => {
+    const conference = buildTestConference(); // factory: crypto.randomUUID() id + CfP dates after the frozen clock
     await repository.save(conference);
+
     const retrieved = await repository.findById(conference.id);
-    expect(retrieved?.id.value).toEqual(conference.id.value);
+
+    expect(retrieved?.name.value).toBe(conference.name.value);
+    expect(retrieved?.slug.value).toBe(conference.slug.value);
   });
 });
 ```
+
+> The ADR-017 outbox invariant (aggregate row + `outbox_messages` rows in **one** transaction) is
+> covered by `tests/integration/modules/conference/outbox-pattern.integration.test.ts`, which forces
+> a failure after the aggregate insert and asserts that nothing was committed.
 
 ### E2E Tests (Playwright)
 - **Location**: `tests/e2e/[feature].spec.ts`
@@ -79,8 +119,8 @@ test.describe('Conference Setup E2E', () => {
 
   test('user can create a conference', async ({ page }) => {
     await page.getByLabel('Conference Name').fill('Tech Conference 2026');
-    await page.getByLabel('CfP Start Date').fill('2026-01-01');
-    await page.getByLabel('CfP End Date').fill('2026-03-31');
+    await page.getByLabel('CfP Start Date').fill('2026-08-17');
+    await page.getByLabel('CfP End Date').fill('2026-11-30');
     await page.getByRole('button', { name: /create conference/i }).click();
 
     await page.waitForURL(/\/conferences\/[\da-fA-F-]{36}$/);
@@ -99,8 +139,8 @@ npm run test:architecture
 # Run all tests
 npm test
 
-# Run only unit tests (fast)
-npx vitest run
+# Run a layer subset (fast)
+npx vitest run tests/unit
 
 # Run with coverage
 npx vitest run --coverage
@@ -108,11 +148,14 @@ npx vitest run --coverage
 # Run single test file
 npx vitest run tests/unit/modules/conference/domain/value-objects/conference-name.test.ts
 
-# Run E2E tests
+# Run E2E tests (⚠️ builds everything and stops docker compose on exit)
 npm run test:e2e
 
-# Run specific E2E test
-npx playwright test tests/e2e/create-conference.spec.ts
+# Integration tests need PostgreSQL
+docker compose up -d && npx vitest run tests/integration
+
+# Run specific E2E test (config lives with the frontend app)
+npx playwright test tests/e2e/conference-setup.spec.ts --config=apps/frontend/playwright.config.ts
 
 # Run E2E with UI mode
 npx playwright test --ui
@@ -164,45 +207,52 @@ A task is complete when ALL of the following pass:
 
 ### Testing DDD Components
 
-**Entities:**
 ```typescript
-describe('Conference entity', () => {
-  it('validates CFP dates', () => {
-    const conference = Conference.create({
-      name: 'Test',
-      cfpStartDate: new Date('2026-01-01'),
-      cfpEndDate: new Date('2025-12-31') // Invalid: before start
-    });
-    
-    expect(conference.isFailure).toBe(true);
+// Value Objects — immutable, self-validating, throw on invariant violation
+describe('ConferenceName', () => {
+  it('keeps the validated value', () => {
+    expect(ConferenceName.create('Tech Conference 2026').value).toBe('Tech Conference 2026');
   });
+
+  it('rejects invalid input instead of returning a failure object', () => {
+    expect(() => ConferenceName.create('Ab')).toThrow();
+  });
+});
+
+// Entities — transitions enforce the state machine and expose events to the outbox
+describe('Conference.publishCfp', () => {
+  it('emits a CFP_OPENED domain event', () => {
+    const conference = buildTestConference();
+    conference.publishCfp();
+
+    expect(conference.pullDomainEvents().map(event => event.type)).toContain('CFP_OPENED');
+  });
+
+  it('refuses illegal transitions (INV-001)', () => {
+    const conference = buildTestConference({ status: 'CFP_CLOSED' });
+    expect(() => conference.publishCfp()).toThrow(InvalidStatusTransitionError);
+  });
+});
+
+// Handlers — pure: mocked repository + fake transaction runner, no try/catch
+it('persists the aggregate and its events in one transaction (ADR-017)', async () => {
+  await handler.execute(command);
+
+  expect(save).toHaveBeenCalledWith(expect.anything(), tx);
+  expect(saveAll).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({ type: 'CONFERENCE_CREATED' })]), tx);
+});
+
+// Controllers — web-standard Request/Response, handler mocked
+it('returns 201 with the { data } envelope', async () => {
+  const response = await createConferenceController(request, handler, async () => ({ id: organizerId }));
+
+  expect(response.status).toBe(201);
+  expect(await response.json()).toHaveProperty('data');
 });
 ```
 
-**Value Objects:**
-```typescript
-describe('ConferenceId value object', () => {
-  it('generates valid UUID', () => {
-    const id = ConferenceId.create();
-    expect(id.value).toMatch(/^[0-9a-f-]{36}$/);
-  });
-});
-```
-
-**Repositories:**
-```typescript
-describe('ConferenceRepository', () => {
-  it('enforces unique slugs', async () => {
-    const conference1 = createConference({ slug: 'test-conference' });
-    const conference2 = createConference({ slug: 'test-conference' });
-    
-    await repository.save(conference1);
-    const result = await repository.save(conference2);
-    
-    expect(result.isFailure).toBe(true);
-  });
-});
-```
+> **Never** write `expect(result.isFailure).toBe(true)` — the `Result` wrapper does not exist in
+> `@sessioflow/shared-domain`. Domain errors are thrown and mapped by the controller.
 
 ## 📊 Coverage Requirements
 
@@ -217,10 +267,12 @@ describe('ConferenceRepository', () => {
 ## 🔧 Test Configuration
 
 **Vitest config** (`vitest.config.ts`):
-- Mock external services
-- Use test database
-- Enable code coverage
-- Run in parallel
+- `setupFiles: ['./tests/setup.ts']` — installs the frozen clock (see **Facts First**)
+- `alias` maps `@sessioflow/*` (and `@backend`, `@frontend`) to **`src/`**, while `package.json`
+  `exports` point at `dist/` — build separately to catch resolution regressions
+- `fileParallelism: false` — integration files share the same PostgreSQL tables
+- `coverage.provider: 'v8'` (`npx vitest run --coverage`)
+- `exclude: ['tests/frontend/**']`
 
 **Playwright config** (`playwright.config.ts`):
 - Headless mode for CI

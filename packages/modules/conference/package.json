@@ -15,9 +15,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@sessioflow/api-definitions": "*",
     "@sessioflow/bus": "*",
     "@sessioflow/shared-database": "*",
     "@sessioflow/shared-domain": "*",
+    "@sessioflow/shared-http": "*",
     "@sessioflow/shared-logging": "*",
     "drizzle-orm": "^0.45.2",
     "zod": "^4.4.3"

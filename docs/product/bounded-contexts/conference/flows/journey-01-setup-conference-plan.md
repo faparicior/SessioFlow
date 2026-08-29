@@ -68,6 +68,14 @@
 | D15 | Dashboard fetching (F2) | RSC vs client unspecified | Client component fetches `/api/v1/conferences/{id}` (single-server E2E architecture) | 📋 Proposed |
 | D16 | CfP link base URL (F2) | No base-URL env exists | Relative `/cfp/{slug}` rendered in `<code>` (E2E asserts slug text only) | 📋 Proposed |
 | D17 | Dashboard scope (F2) | Flow requires CfP link only | Minimal page: name + status + CfP link; no sessions/submissions UI | 📋 Proposed |
+| D18 | JSONB `maxSubmissions` shape (Phase 3) | Shared `conferencesTable` annotates the JSONB as `maxSubmissions?: number`; domain `CfpConfigData` uses `number \| null` | Repository-local `toCfpConfigJson`/`fromCfpConfigJson` mappers — the shared schema `$type` is left untouched (still additive-safe); an unlimited CfP round-trips as a dropped JSON key | ✅ Applied (Phase 3) |
+| D19 | Integration test isolation (Phase 3) | Integration tests share the local PostgreSQL tables with per-test cleanup, but Vitest ran test *files* in parallel → cross-file flakiness | `fileParallelism: false` in root `vitest.config.ts` (only shared-config edit; E2E runs under Playwright, unit tests are DB-free). Full suite stays fast (~28s) | ✅ Applied (Phase 3) |
+| D20 | Container controller factories (Phase 3) | Plan lists them under 3.2, but the controllers they delegate to are Phase 4 artifacts | Container ships mediator + handler factories now; `create*Controller` factories stay stubbed and land with the controllers in Phase 4 (ADR-016-01) | ✅ Applied (Phase 3) |
+| D21 | Controller transport (Phase 4) | Plan pseudocode is Next-flavoured (`NextResponse`); architecture forbids framework imports in `interfaces/` and `apps/backend` must stay able to reuse controllers | Controllers are framework-agnostic: take a web-standard `Request` and return a plain `Response` (`interfaces/http/json-response.ts` helper). Route handlers stay 5-line delegates; `mapDomainErrorToResponse` remains the single error mapper | ✅ Applied (Phase 4) |
+| D22 | Frontend helper imports (Phase 4) | `xo` type-aware rules resolve relative and `@sessioflow/*` imports, but report “type that could not be resolved” (`no-unsafe-call`/`no-unsafe-return`) for `@/*` / `@frontend/*` aliases when the imported symbol is *called* (JSX-only usage is unaffected — the existing pattern in `apps/frontend`) | New callable helpers (`src/lib/api-response.ts`, `src/lib/api-error.ts`) are imported with **relative** paths; alias imports are kept only for shadcn UI components as JSX, matching repo convention. No tsconfig/lint-config change needed | ✅ Applied (Phase 4) |
+| D23 | Frontend style constraints (Phase 4) | Frontend lint is `xo` (not `eslint-config-next`) and is stricter than existing code samples: no `null` types, JSX-event handler types, no single-line ternaries (`@stylistic/multiline-ternary` collides with Prettier collapsing), `react/jsx-sort-props` (shorthand first, callbacks last, alphabetical), `react/jsx-no-leaked-render` on plain boolean `&&` | New UI files use `undefined` state, multiline `x !== undefined && (<Alert/>)` guards, `if`-return helpers instead of ternaries, sorted props. Prettier 80-col wrapping applied on top so `xo` and Prettier agree | ✅ Applied (Phase 4) |
+| D24 | Route safety net (Phase 4) | Controllers rethrow unexpected errors (AGENTS.md), but the App Router default 500 body is not the platform envelope | Small `src/lib/api-error.ts` helper logs with request context (`{method, path, error}`) and returns `500 INTERNAL_ERROR` `{ error: { code, message } }`. Route-only; no business logic | ✅ Applied (Phase 4) |
+| D25 | Architecture rule coverage for `apps/**` | `tests/unit/architecture/ddd-boundaries.test.ts` builds its ts-archunit project from `tests/**` plus forced `packages/modules/*/src/**` sources, and its `apps/frontend` route-import rule is commented out; `scripts/check-architecture.mjs` only enforces `packages/modules/**/domain/**` rules. So **no automated rule inspects the new route handlers or UI files** | Kept as-is (architecture tests are immutable). The module `interfaces/http/**` controllers *are* covered by the ts-archunit function/module rules (naming, DTO instantiation, no domain imports). Route + UI safety rests on the interface contract tests, the E2E suite and review; widening the ts-archunit project scope to `apps/**` is logged as a follow-up, not done here | 📋 Noted (Phase 4) |
 
 ---
 
@@ -155,41 +163,51 @@
 ### Phase 3: Infrastructure & Container Wiring
 
 #### 3.1 Tests First (Infrastructure)
-- [ ] `tests/integration/modules/conference/conference-repository.integration.test.ts` (real PostgreSQL via docker compose): save + `findBySlug` round-trip, `findById` reconstitution (cfp config JSONB → VOs), `countActiveByOrganizerId` (excludes `DELETED`), transactional save visibility
-- [ ] `tests/integration/modules/conference/outbox-pattern.integration.test.ts`: handler-driven transaction persists aggregate + 2 `outbox_messages` rows atomically (rollback on failure)
-- [ ] Verify integration tests **FAIL** initially
+- [x] `tests/integration/modules/conference/conference-repository.integration.test.ts` (real PostgreSQL via docker compose): save + `findBySlug` round-trip, `findById` reconstitution (cfp config JSONB → VOs), `countActiveByOrganizerId` (excludes `DELETED`), transactional save visibility — 11 tests, incl. upsert-safety, `fromData` purity (no events on rehydrate), unlimited CfP, unknown id/slug → `null`, tx commit + rollback
+- [x] `tests/integration/modules/conference/outbox-pattern.integration.test.ts`: handler-driven transaction persists aggregate + 2 `outbox_messages` rows atomically (rollback on failure) — 4 tests; asserts `save` and `saveAll` receive the **same** tx handle, `PENDING` status + `aggregate_type/id` + `type`/`timestamp` payload, outbox failure rolls back the aggregate row, full write + read journey via `GetConferenceQueryHandler`, unknown-id → `ConferenceNotFoundError`
+- [x] Shared fixture helper `tests/integration/modules/conference/utils/test-db.ts` (loads `.env.local` before the shared client reads `DATABASE_URL`, raw client for fixtures, `cleanTables`, `rowCount`)
+- [x] Verify integration tests **FAIL** initially — ✅ both suites failed (`Failed to resolve import .../infrastructure/database/conference.repository`)
 
 #### 3.2 Implement Code (Infrastructure)
-- [ ] `src/infrastructure/database/conference.repository.ts`: `DrizzleConferenceRepository` (row mapping from `conferencesTable`, reconstitution via `Conference.fromData(...)` with VO `fromData()`s, `tx` delegation)
-- [ ] `src/container.ts` (full wiring): `createMediator()` (Mediator + `LoggingMiddleware` + register `CreateConferenceCommand` / `GetConferenceQuery`), handler factories (default `DrizzleConferenceRepository` + `DrizzleOutboxRepository` + `getLogger()`, injectable for tests), controller factories `createCreateConferenceController(getAuthUser?)` / `createGetConferenceController(getAuthUser?)`
-- [ ] Verify integration tests **PASS**
+- [x] `src/infrastructure/database/conference.repository.ts`: `DrizzleConferenceRepository` (row mapping from `conferencesTable`, reconstitution via `Conference.fromData(...)` with VO `fromData()`s, `tx` delegation, id-keyed upsert, `ne(status,'DELETED')` count, `client` injectable for tests)
+- [x] `src/container.ts` (full application wiring): `createMediator(deps?)` (Mediator + `LoggingMiddleware` + registers `CreateConferenceCommand` / `GetConferenceQuery`), handler factories `createCreateConferenceHandler(deps?)` / `createGetConferenceHandler(deps?)` with Drizzle defaults (`DrizzleConferenceRepository`, `DrizzleOutboxRepository`, `db` as `TransactionRunner`, `getLogger()`) and `ConferenceHandlerDependencies` overrides for tests
+- [x] Controller factories intentionally deferred to Phase 4 with their controllers (D20) — `createCreateConferenceController` stays a documented stub
+- [x] Additive-safe JSONB mapping instead of a shared schema edit (D18)
+- [x] Verify integration tests **PASS** — ✅ 15/15 (stable across repeated runs after D19)
 
 #### 3.3 Architecture & Quality Checks (Infrastructure)
-- [ ] `npm run check:arch` → 0 errors (repo in infrastructure, `fromData` reconstitution, container imports Mediator from `@sessioflow/bus`)
-- [ ] `npm run test:architecture` → 0 errors
-- [ ] `npm run lint:fix && npm run typecheck` → 0 errors
-- 🛑 **Checkpoint 3**: report phase verification; confirm before Phase 4
+- [x] `npm run check:arch` → 0 errors (monorepo-wide and scoped `packages/modules/conference`) — repo in infrastructure, `fromData` reconstitution, container wiring
+- [x] Mutation-checked the arch rule (renamed every `.fromData(` in the new repository → suite flagged `DrizzleConferenceRepository`, then restored) so the rule genuinely scans the new file
+- [x] `npm run test:architecture` → 0 errors (61/61)
+- [x] `npm run lint:fix` → 0 errors (9/9 tasks) and `npm run typecheck` → 0 errors (17/17 tasks + root tsc); new files Prettier-clean
+- [x] Chore: rebuilt `@sessioflow/bus` `dist/` after a stale `tsconfig.tsbuildinfo` (gitignored artifact, no source change) masked its declarations and broke `@sessioflow/conference#build`
+- [x] No regressions: `npx vitest run` → 230/230 (26 files, 215 unit + 15 integration)
+- 🛑 **Checkpoint 3**: ✅ Phase 3 verified — reported to user; D19 (shared Vitest config) flagged for approval
 
 ---
 
 ### Phase 4: Interface Layer, API Routes & Frontend UI — F1 + F2
 
 #### 4.1 Tests First (Interfaces)
-- [ ] `tests/backend/modules/conference/interfaces/api/v1/conferences/conferences.test.ts` (mocked handlers): POST 201 shape, Zod `400 VALIDATION_ERROR`, missing auth `401`, each DomainError → mapped status/body (400/403/409 per error contract), unexpected error rethrow; GET 200 mapping, 404, 400 malformed id
-- [ ] Verify interface tests **FAIL** initially
+- [x] `tests/backend/modules/conference/interfaces/api/v1/conferences/conferences.test.ts` (mocked handlers): POST 201 shape, Zod `400 VALIDATION_ERROR`, missing auth `401`, each DomainError → mapped status/body (400/403/409 per error contract), unexpected error rethrow; GET 200 mapping, 404, 400 malformed id — **20 tests**
+- [x] Verify interface tests **FAIL** initially — failed with `Failed to resolve import "@sessioflow/conference/interfaces/http/create-conference.controller"` before the controllers existed
 
 #### 4.2 Implement Code (Interfaces + UI)
-- [ ] `src/interfaces/http/create-conference.controller.ts`: `createConferenceController(request, handler, getAuthUser)` — `import type` handler, `ConferenceCreateSchema.parse`, auth check, `new CreateConferenceCommand(...)`, `DomainError` → `mapDomainErrorToResponse`, rethrow unexpected
-- [ ] `src/interfaces/http/get-conference.controller.ts`: `getConferenceController(request, handler, getAuthUser)` — id extraction + `ConferenceId` format check, dispatch, error mapping
-- [ ] Thin route delegates: `apps/frontend/src/app/api/v1/conferences/route.ts` (`POST`), `apps/frontend/src/app/api/v1/conferences/[id]/route.ts` (`GET`) — resolve controllers from `conferenceContainer` (ADR-016-01)
-- [ ] Frontend create UI: `apps/frontend/src/app/conferences/create/page.tsx` (thin) + `apps/frontend/src/modules/conference/conference-form.tsx` (labels `Conference Name`/`Description`/`CfP Start Date`/`CfP End Date`, shared Zod schema, live slug `<code>` preview, inline error display from `error.message`, redirect to `/conferences/{id}`)
-- [ ] Frontend dashboard UI: `apps/frontend/src/app/conferences/[id]/page.tsx` (client fetch, name + status, CfP link in `<code>`, 404 state)
-- [ ] Verify interface tests **PASS**
+- [x] `src/interfaces/http/create-conference.controller.ts`: `createConferenceController(request, handler, getAuthUser)` — `import type` handler, `ConferenceCreateSchema.parse`, auth check, `new CreateConferenceCommand(...)`, `DomainError` → `mapDomainErrorToResponse`, rethrow unexpected (framework-agnostic `Request`/`Response`, D21)
+- [x] `src/interfaces/http/get-conference.controller.ts`: `getConferenceController(request, handler, getAuthUser)` — id extraction + `ConferenceId` format check, dispatch, error mapping
+- [x] `src/interfaces/http/json-response.ts`: shared `{ data }` / envelope helper used by both controllers (D21)
+- [x] Container controller factories wired (closes D20): `conferenceContainer.createCreateConferenceController()` / `createGetConferenceController()` resolve mediator-backed handlers + mock auth (D12)
+- [x] Thin route delegates: `apps/frontend/src/app/api/v1/conferences/route.ts` (`POST`), `apps/frontend/src/app/api/v1/conferences/[id]/route.ts` (`GET`) — resolve controllers from `conferenceContainer` (ADR-016-01); `src/lib/api-error.ts` safety net returns the `500 INTERNAL_ERROR` envelope (D24)
+- [x] Frontend create UI: `apps/frontend/src/app/conferences/create/page.tsx` (thin) + `apps/frontend/src/modules/conference/conference-form.tsx` (labels `Conference Name`/`Description`/`CfP Start Date`/`CfP End Date`, shared Zod schema, live slug `<code>` preview, inline error display from `error.message`, redirect to `/conferences/{id}`) — style constraints per D22/D23
+- [x] Frontend dashboard UI: `apps/frontend/src/app/conferences/[id]/page.tsx` (client fetch, name + status, CfP link in `<code>`, 404 state) + `src/lib/api-response.ts` typed envelope reader
+- [x] Workspace wiring (additive): `packages/modules/conference/package.json` (+`@sessioflow/api-definitions`, +`@sessioflow/shared-http`), `tsconfig.json` (+2 project references), `package-lock.json` (workspace links only)
+- [x] Verify interface tests **PASS** — 20/20 (35/35 with integration files in the same run)
 
 #### 4.3 Architecture & Quality Checks (Interfaces)
-- [ ] `npm run check:arch` → 0 errors (controller naming, `import type` handler, DTO instantiation, routes have no Zod/domain/infrastructure imports)
-- [ ] `npm run test:architecture` → 0 errors
-- [ ] `npm run lint:fix && npm run typecheck` → 0 errors
+- [x] `npm run check:arch` → 0 errors (monorepo; domain-only rule set — see D25)
+- [x] `npm run test:architecture` → 61/61 pass (covers the new `interfaces/http/**` controllers; rules confirmed live via mutation checks)
+- [x] `npm run lint` → 10/10 tasks clean (`xo` incl. `apps/frontend`); `npm run typecheck` → 18/18 tasks clean; Prettier check clean on every new file (D23)
+- [x] Bonus: `npx vitest run` → **250/250** (27 files) and the full E2E suite already green (**5/5**, 13.1s) ahead of Phase 5
 - 🛑 **Checkpoint 4**: report phase verification; confirm before Phase 5
 
 ---
@@ -216,7 +234,7 @@
 5. `npm run typecheck` exits 0
 6. Code coverage ≥ 80% for new code
 7. Changes committed with conventional commit format
-8. **Deploy-safe**: `git diff` against `main` shows only additive files + the 2 logged additive edits (D6, D10); existing behavior unchanged
+8. **Deploy-safe**: `git diff` against `main` shows only additive files + the logged additive edits (D6, D10, D19 `vitest.config.ts`, D21 workspace deps/references in `packages/modules/conference/{package.json,tsconfig.json}` + `package-lock.json` workspace links); existing behavior unchanged. Drive-by Prettier reflows observed in 6 pre-existing files were reverted to keep the diff surgical
 
 ---
 
@@ -229,8 +247,9 @@
 | 1.1 | `tests/unit/modules/conference/domain/**` (14 test files) | New |
 | 2.2 | `packages/modules/conference/src/application/**` (7 files: `transaction-runner.port.ts` + self-contained `commands/create-conference/` and `queries/get-conference/` folders), `packages/api-definitions/src/zod/conference.ts`, `packages/shared/database/src/outbox-repository.ts`, `packages/modules/conference/src/domain/value-objects/conference-id.ts` | New + 2 additive edits + 1 domain tweak (D14) |
 | 2.1 | `tests/unit/modules/conference/application/**` (2 test files) | New |
-| 3.2 | `packages/modules/conference/src/infrastructure/database/conference.repository.ts`, `src/container.ts` (wiring) | New + update |
-| 3.1 | `tests/integration/modules/conference/**` (2 test files) | New |
-| 4.2 | `packages/modules/conference/src/interfaces/http/**` (2 controllers), `apps/frontend/src/app/api/v1/conferences/{route,[id]/route}.ts`, `apps/frontend/src/app/conferences/{create/page,[id]/page}.tsx`, `apps/frontend/src/modules/conference/conference-form.tsx` | New |
+| 3.2 | `packages/modules/conference/src/infrastructure/database/conference.repository.ts`, `src/container.ts` (mediator + handler wiring) | New + update |
+| 3.1 | `tests/integration/modules/conference/**` (2 test files + `utils/test-db.ts` fixture helper) | New |
+| 3.1 | `vitest.config.ts` — `fileParallelism: false` for DB-shared integration tests (D19) | Additive config edit |
+| 4.2 | `packages/modules/conference/src/interfaces/http/**` (2 controllers + `json-response.ts`), `packages/modules/conference/{package.json,tsconfig.json}` (+2 workspace deps / references), `apps/frontend/src/app/api/v1/conferences/{route,[id]/route}.ts`, `apps/frontend/src/app/conferences/{create/page,[id]/page}.tsx`, `apps/frontend/src/modules/conference/conference-form.tsx`, `apps/frontend/src/lib/{api-response,api-error}.ts` | New + additive wiring |
 | 4.1 | `tests/backend/modules/conference/interfaces/api/v1/conferences/conferences.test.ts` | New |
 | 0 / 5 | `tests/e2e/conference-setup.spec.ts` (existing), `journey-01-setup-conference-plan.md` status | Existing / update |

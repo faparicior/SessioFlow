@@ -30,6 +30,10 @@ export default defineConfig({
     include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
     exclude: ['tests/frontend/**'],
     reporters: ['verbose'],
+    // Integration tests share the local PostgreSQL tables (conferences,
+    // outbox_messages) with per-test cleanup, so test files must not run
+    // concurrently against the same database.
+    fileParallelism: false,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
