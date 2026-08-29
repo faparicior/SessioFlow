@@ -1,4 +1,4 @@
-import { beforeAll, afterAll } from 'vitest';
+import {beforeAll, afterAll} from 'vitest';
 
 const RealDate = global.Date;
 const mockDate = new RealDate('2026-07-28T00:00:00.000Z');

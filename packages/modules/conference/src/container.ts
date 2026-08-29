@@ -1,9 +1,4 @@
-import {
-  InMemoryCommandBus,
-  InMemoryQueryBus,
-  LoggingMiddleware,
-  Mediator,
-} from '@sessioflow/bus';
+import {InMemoryCommandBus, InMemoryQueryBus, LoggingMiddleware, Mediator} from '@sessioflow/bus';
 import type {OutboxRepository} from '@sessioflow/shared-database/outbox-repository';
 import {DrizzleOutboxRepository} from '@sessioflow/shared-database/outbox-repository';
 import type {Logger} from '@sessioflow/shared-logging/logger';
@@ -56,14 +51,8 @@ export const conferenceContainer = {
     commandBus.use(loggingMiddleware);
     queryBus.use(loggingMiddleware);
 
-    commandBus.register(
-      CreateConferenceCommand,
-      this.createCreateConferenceHandler(dependencies),
-    );
-    queryBus.register(
-      GetConferenceQuery,
-      this.createGetConferenceHandler(dependencies),
-    );
+    commandBus.register(CreateConferenceCommand, this.createCreateConferenceHandler(dependencies));
+    queryBus.register(GetConferenceQuery, this.createGetConferenceHandler(dependencies));
 
     return new Mediator(commandBus, queryBus);
   },
@@ -99,12 +88,9 @@ export const conferenceContainer = {
    * HTTP POST /api/v1/conferences controller (ADR-016-01): route delegates
    * resolve it here so only the composition root touches infrastructure.
    */
-  createCreateConferenceController(
-    getAuthUser: GetAuthUser = defaultGetAuthUser,
-  ) {
+  createCreateConferenceController(getAuthUser: GetAuthUser = defaultGetAuthUser) {
     const handler = this.createCreateConferenceHandler();
-    return (request: Request) =>
-      createConferenceController(request, handler, getAuthUser);
+    return (request: Request) => createConferenceController(request, handler, getAuthUser);
   },
 
   /**

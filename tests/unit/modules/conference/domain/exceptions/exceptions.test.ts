@@ -65,12 +65,10 @@ describe('Conference domain exceptions', () => {
 
   it('treats invariant violations as domain invariants', () => {
     expect(new CfpDatesInvalidError()).toBeInstanceOf(DomainInvariantError);
-    expect(new CfpDatesInvalidError().message).toBe(
-      'End date must be after start date',
+    expect(new CfpDatesInvalidError().message).toBe('End date must be after start date');
+    expect(new CfpDatesInvalidError('Cfp window cannot be more than 180 days').message).toBe(
+      'Cfp window cannot be more than 180 days',
     );
-    expect(
-      new CfpDatesInvalidError('Cfp window cannot be more than 180 days').message,
-    ).toBe('Cfp window cannot be more than 180 days');
   });
 
   it('reports user-facing validation messages', () => {
@@ -83,12 +81,8 @@ describe('Conference domain exceptions', () => {
     expect(new CfpStartDateNotInFutureError().message).toBe(
       'CfpStartDate must be in the future or today',
     );
-    expect(new InvalidCfpStartDateError().message).toBe(
-      'CfpStartDate is not a valid date',
-    );
-    expect(new InvalidCfpEndDateError().message).toBe(
-      'CfpEndDate is not a valid date',
-    );
+    expect(new InvalidCfpStartDateError().message).toBe('CfpStartDate is not a valid date');
+    expect(new InvalidCfpEndDateError().message).toBe('CfpEndDate is not a valid date');
     expect(new MaxSubmissionsInvalidError().message).toBe(
       'Max submissions must be a positive integer',
     );

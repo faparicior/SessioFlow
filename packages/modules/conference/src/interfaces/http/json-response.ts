@@ -17,11 +17,7 @@ export function jsonResponse(body: unknown, status = 200): Response {
 }
 
 /** Standard `{ error: { code, message } }` error envelope. */
-export function errorResponse(
-  code: string,
-  message: string,
-  status: number,
-): Response {
+export function errorResponse(code: string, message: string, status: number): Response {
   return jsonResponse({error: {code, message}}, status);
 }
 

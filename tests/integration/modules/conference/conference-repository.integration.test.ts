@@ -22,9 +22,7 @@ import {cleanTables, rowCount, testSql} from './utils/test-db';
 function buildConference(name = 'Tech Conference 2026'): Conference {
   return Conference.create({
     name: ConferenceName.create(name),
-    description: ConferenceDescription.create(
-      'The best tech event of the year',
-    ),
+    description: ConferenceDescription.create('The best tech event of the year'),
     slug: ConferenceSlug.create(name),
     organizerId: OrganizerId.create('mock-user-id'),
     cfpConfig: CfpConfig.create({
@@ -38,14 +36,8 @@ function buildConference(name = 'Tech Conference 2026'): Conference {
 
 /** Forces a persisted row into another status, bypassing the aggregate
  * (exercises the DELETED exclusion of the BR-004 count). */
-async function forceStatus(
-  conferenceId: string,
-  status: string,
-): Promise<void> {
-  await db
-    .update(conferencesTable)
-    .set({status})
-    .where(eq(conferencesTable.id, conferenceId));
+async function forceStatus(conferenceId: string, status: string): Promise<void> {
+  await db.update(conferencesTable).set({status}).where(eq(conferencesTable.id, conferenceId));
 }
 
 describe('DrizzleConferenceRepository (integration)', () => {
@@ -104,9 +96,7 @@ describe('DrizzleConferenceRepository (integration)', () => {
       expect(found!.organizerId.value).toBe('mock-user-id');
 
       const cfp = found!.cfpConfig;
-      expect(cfp.startDate.value.toISOString()).toBe(
-        '2026-08-17T00:00:00.000Z',
-      );
+      expect(cfp.startDate.value.toISOString()).toBe('2026-08-17T00:00:00.000Z');
       expect(cfp.endDate.value.toISOString()).toBe('2026-09-30T23:59:59.000Z');
       expect(cfp.maxSubmissions.value).toBe(50);
       expect(cfp.requiresApproval.value).toBe(true);
@@ -149,9 +139,7 @@ describe('DrizzleConferenceRepository (integration)', () => {
     it('returns null for an unknown id or slug', async () => {
       const known = buildConference();
       expect(await repository.findById(known.id)).toBeNull();
-      expect(
-        await repository.findBySlug(ConferenceSlug.fromData('nope-2026')),
-      ).toBeNull();
+      expect(await repository.findBySlug(ConferenceSlug.fromData('nope-2026'))).toBeNull();
     });
   });
 
@@ -179,11 +167,7 @@ describe('DrizzleConferenceRepository (integration)', () => {
     it('is scoped per organizer', async () => {
       await repository.save(buildConference('Alpha One'));
 
-      expect(
-        await repository.countActiveByOrganizerId(
-          OrganizerId.create('other-user'),
-        ),
-      ).toBe(0);
+      expect(await repository.countActiveByOrganizerId(OrganizerId.create('other-user'))).toBe(0);
     });
   });
 

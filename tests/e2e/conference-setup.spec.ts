@@ -24,39 +24,33 @@ function daysFromNow(n: number): Date {
  * Creates a conference via fetch (browser-side) to build up to 5 conferences
  * for the free tier limit test.
  */
-async function createConferenceViaFetch(
-  page: Page,
-  name: string,
-): Promise<void> {
-  await page.evaluate(
-    async (name: string) => {
-      const formatDate = (d: Date) => {
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        return `${y}-${m}-${dd}`;
-      };
-      const daysFromNow = (n: number) => {
-        const d = new Date();
-        d.setDate(d.getDate() + n);
-        return d;
-      };
-      const result = await fetch('/api/v1/conferences', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          name,
-          description: 'Test conference',
-          cfpStartDate: formatDate(daysFromNow(1)),
-          cfpEndDate: formatDate(daysFromNow(30)),
-          maxSubmissions: 100,
-          requiresApproval: true,
-        }),
-      });
-      return result.ok;
-    },
-    name,
-  );
+async function createConferenceViaFetch(page: Page, name: string): Promise<void> {
+  await page.evaluate(async (name: string) => {
+    const formatDate = (d: Date) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${dd}`;
+    };
+    const daysFromNow = (n: number) => {
+      const d = new Date();
+      d.setDate(d.getDate() + n);
+      return d;
+    };
+    const result = await fetch('/api/v1/conferences', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        name,
+        description: 'Test conference',
+        cfpStartDate: formatDate(daysFromNow(1)),
+        cfpEndDate: formatDate(daysFromNow(30)),
+        maxSubmissions: 100,
+        requiresApproval: true,
+      }),
+    });
+    return result.ok;
+  }, name);
 }
 
 test.describe('Conference Setup E2E', () => {
@@ -66,18 +60,12 @@ test.describe('Conference Setup E2E', () => {
     await page.goto('/conferences/create');
   });
 
-  test('should create a conference with CfP configuration (Happy Path)', async ({
-    page,
-  }) => {
+  test('should create a conference with CfP configuration (Happy Path)', async ({page}) => {
     // Fill conference name (use timestamp for uniqueness)
     const timestamp = Date.now();
-    await page
-      .getByLabel('Conference Name')
-      .fill(`Tech Conference ${timestamp}`);
+    await page.getByLabel('Conference Name').fill(`Tech Conference ${timestamp}`);
 
-    await page
-      .getByLabel('Description')
-      .fill('A conference about technology and innovation');
+    await page.getByLabel('Description').fill('A conference about technology and innovation');
 
     // Select CfP dates (relative so tests don't drift over time)
     await page.getByLabel('CfP Start Date').fill(formatDate(daysFromNow(1)));
@@ -111,9 +99,7 @@ test.describe('Conference Setup E2E', () => {
     await page.getByRole('button', {name: /create conference/i}).click();
     await page.waitForLoadState('networkidle');
 
-    await expect(
-      page.getByText(/end date must be after start date/i),
-    ).toBeVisible();
+    await expect(page.getByText(/end date must be after start date/i)).toBeVisible();
   });
 
   test('should reject conference with duplicate slug', async ({page}) => {
@@ -140,14 +126,10 @@ test.describe('Conference Setup E2E', () => {
     await page.waitForLoadState('networkidle');
 
     // Actual error: "Conference slug already exists"
-    await expect(
-      page.getByText(/conference slug already exists/i),
-    ).toBeVisible();
+    await expect(page.getByText(/conference slug already exists/i)).toBeVisible();
   });
 
-  test('should reject conference with free tier limit exceeded', async ({
-    page,
-  }) => {
+  test('should reject conference with free tier limit exceeded', async ({page}) => {
     // Create 5 conferences via fetch to exhaust the free tier limit.
     for (let i = 0; i < 5; i++) {
       await createConferenceViaFetch(page, `Limit Test Conference ${i + 1}`);
@@ -155,9 +137,7 @@ test.describe('Conference Setup E2E', () => {
 
     // A 6th conference should be rejected
     const timestamp = Date.now();
-    await page
-      .getByLabel('Conference Name')
-      .fill(`Too Many Conferences ${timestamp}`);
+    await page.getByLabel('Conference Name').fill(`Too Many Conferences ${timestamp}`);
     await page.getByLabel('CfP Start Date').fill(formatDate(daysFromNow(1)));
     await page.getByLabel('CfP Start Date').blur();
     await page.getByLabel('CfP End Date').fill(formatDate(daysFromNow(30)));
@@ -172,9 +152,7 @@ test.describe('Conference Setup E2E', () => {
 
   test('should reject conference with past CfP date', async ({page}) => {
     const timestamp = Date.now();
-    await page
-      .getByLabel('Conference Name')
-      .fill(`Past Date Conference ${timestamp}`);
+    await page.getByLabel('Conference Name').fill(`Past Date Conference ${timestamp}`);
     await page.getByLabel('CfP Start Date').fill('2020-01-01'); // Past date
     await page.getByLabel('CfP Start Date').blur();
     await page.getByLabel('CfP End Date').fill(formatDate(daysFromNow(30)));
@@ -184,8 +162,6 @@ test.describe('Conference Setup E2E', () => {
     await page.waitForLoadState('networkidle');
 
     // Actual error: "CfpStartDate must be in the future or today"
-    await expect(
-      page.getByText(/cfpstartdate must be in the future or today/i),
-    ).toBeVisible();
+    await expect(page.getByText(/cfpstartdate must be in the future or today/i)).toBeVisible();
   });
 });

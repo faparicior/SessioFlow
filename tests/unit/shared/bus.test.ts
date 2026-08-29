@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import {
   ICommand,
   ICommandHandler,
@@ -29,9 +29,9 @@ class TestQuery implements IQuery {
   constructor(readonly id: string) {}
 }
 
-class TestQueryHandler implements IQueryHandler<TestQuery, { id: string }> {
-  async execute(query: TestQuery): Promise<{ id: string }> {
-    return { id: query.id };
+class TestQueryHandler implements IQueryHandler<TestQuery, {id: string}> {
+  async execute(query: TestQuery): Promise<{id: string}> {
+    return {id: query.id};
   }
 }
 
@@ -47,16 +47,14 @@ describe('InMemoryCommandBus', () => {
   it('throws error when dispatching unregistered command', async () => {
     const bus = new InMemoryCommandBus();
     await expect(bus.dispatch(new UnregisteredCommand())).rejects.toThrow(
-      'No command handler registered'
+      'No command handler registered',
     );
   });
 
   it('throws error when registering duplicate command handler', () => {
     const bus = new InMemoryCommandBus();
     bus.register(TestCommand, new TestCommandHandler());
-    expect(() => bus.register(TestCommand, new TestCommandHandler())).toThrow(
-      'already registered'
-    );
+    expect(() => bus.register(TestCommand, new TestCommandHandler())).toThrow('already registered');
   });
 
   it('executes middleware in pipeline order', async () => {
@@ -97,15 +95,13 @@ describe('InMemoryQueryBus', () => {
     bus.register(TestQuery, new TestQueryHandler());
 
     const result = await bus.dispatch(new TestQuery('q-123'));
-    expect(result).toEqual({ id: 'q-123' });
+    expect(result).toEqual({id: 'q-123'});
   });
 
   it('throws error when registering duplicate query handler', () => {
     const bus = new InMemoryQueryBus();
     bus.register(TestQuery, new TestQueryHandler());
-    expect(() => bus.register(TestQuery, new TestQueryHandler())).toThrow(
-      'already registered'
-    );
+    expect(() => bus.register(TestQuery, new TestQueryHandler())).toThrow('already registered');
   });
 });
 
@@ -122,7 +118,7 @@ describe('Mediator', () => {
     const queryResult = await mediator.ask(new TestQuery('q-mediator'));
 
     expect(cmdResult).toBe('Handled: via-mediator');
-    expect(queryResult).toEqual({ id: 'q-mediator' });
+    expect(queryResult).toEqual({id: 'q-mediator'});
   });
 });
 

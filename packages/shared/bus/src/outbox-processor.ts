@@ -1,10 +1,10 @@
-import { eq, and } from 'drizzle-orm';
-import { db } from '@sessioflow/shared-database/client';
-import { outboxMessagesTable } from '@sessioflow/shared-database/schema';
-import { getLogger } from '@sessioflow/shared-logging/logger';
+import {eq, and} from 'drizzle-orm';
+import {db} from '@sessioflow/shared-database/client';
+import {outboxMessagesTable} from '@sessioflow/shared-database/schema';
+import {getLogger} from '@sessioflow/shared-logging/logger';
 
 export interface EventPublisher {
-  publish(event: { type: string; payload: unknown }): Promise<void>;
+  publish(event: {type: string; payload: unknown}): Promise<void>;
 }
 
 export class OutboxProcessor {
@@ -13,8 +13,8 @@ export class OutboxProcessor {
    */
   static async processPending(
     publisher: EventPublisher,
-    batchSize = 50
-  ): Promise<{ processed: number; failed: number }> {
+    batchSize = 50,
+  ): Promise<{processed: number; failed: number}> {
     const logger = getLogger();
 
     const pendingMessages = await db
@@ -61,6 +61,6 @@ export class OutboxProcessor {
       }
     }
 
-    return { processed, failed };
+    return {processed, failed};
   }
 }

@@ -40,7 +40,7 @@ export class PinoLogger implements Logger {
     } = config;
 
     if (!enabled) {
-      this.logger = pino({ level: 'silent' });
+      this.logger = pino({level: 'silent'});
       this.boundContext = {};
       return;
     }
@@ -87,7 +87,7 @@ export class PinoLogger implements Logger {
         }
       : {};
 
-    this.log('error', message, { ...context, ...errorContext });
+    this.log('error', message, {...context, ...errorContext});
   }
 
   debug(message: string, context?: LogContext): void {
@@ -100,23 +100,19 @@ export class PinoLogger implements Logger {
 
   child(context: LogContext): Logger {
     const childLogger = new PinoLogger();
-    childLogger.bind({ ...this.boundContext, ...context });
+    childLogger.bind({...this.boundContext, ...context});
     return childLogger;
   }
 
   bind(context: LogContext): void {
-    this.boundContext = { ...this.boundContext, ...context };
+    this.boundContext = {...this.boundContext, ...context};
   }
 
-  private log(
-    level: pino.LevelWithSilent,
-    message: string,
-    context?: LogContext
-  ): void {
-    const mergedContext = { ...this.boundContext, ...context };
+  private log(level: pino.LevelWithSilent, message: string, context?: LogContext): void {
+    const mergedContext = {...this.boundContext, ...context};
 
     const cleanContext = Object.fromEntries(
-      Object.entries(mergedContext).filter(([_, value]) => value !== undefined)
+      Object.entries(mergedContext).filter(([_, value]) => value !== undefined),
     );
 
     if (Object.keys(cleanContext).length > 0) {

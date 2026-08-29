@@ -38,9 +38,7 @@ export class CreateConferenceCommandHandler {
     private readonly logger: Logger,
   ) {}
 
-  public async execute(
-    command: CreateConferenceCommand,
-  ): Promise<CreateConferenceResponse> {
+  public async execute(command: CreateConferenceCommand): Promise<CreateConferenceResponse> {
     const {input} = command;
 
     const name = ConferenceName.create(input.name);
@@ -49,24 +47,21 @@ export class CreateConferenceCommandHandler {
     // BR-003: slug uniqueness (checked before the free-tier rule).
     const existing = await this.conferenceRepository.findBySlug(slug);
     if (existing) {
-      this.logger.error(
-        'Conference creation rejected: slug already exists',
-        undefined,
-        {slug: slug.value, organizerId: input.organizerId},
-      );
+      this.logger.error('Conference creation rejected: slug already exists', undefined, {
+        slug: slug.value,
+        organizerId: input.organizerId,
+      });
       throw new SlugExistsError();
     }
 
     // BR-004: free-tier limit (Wave 1 MVP — all organizers are FREE).
     const organizerId = OrganizerId.create(input.organizerId);
-    const activeCount =
-      await this.conferenceRepository.countActiveByOrganizerId(organizerId);
+    const activeCount = await this.conferenceRepository.countActiveByOrganizerId(organizerId);
     if (activeCount >= FREE_TIER_LIMIT) {
-      this.logger.error(
-        'Conference creation rejected: free tier limit reached',
-        undefined,
-        {organizerId: input.organizerId, activeCount},
-      );
+      this.logger.error('Conference creation rejected: free tier limit reached', undefined, {
+        organizerId: input.organizerId,
+        activeCount,
+      });
       throw new ConferenceFreeTierLimitError();
     }
 
@@ -89,14 +84,9 @@ export class CreateConferenceCommandHandler {
     const events = conference.pullDomainEvents();
 
     // ADR-017: aggregate + outbox events persist atomically.
-    await this.transactionRunner.transaction(async (tx) => {
+    await this.transactionRunner.transaction(async tx => {
       await this.conferenceRepository.save(conference, tx);
-      await this.outboxRepository.saveAll(
-        events,
-        'Conference',
-        conference.id.value,
-        tx,
-      );
+      await this.outboxRepository.saveAll(events, 'Conference', conference.id.value, tx);
     });
 
     this.logger.info('Conference created and CfP opened', {

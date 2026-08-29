@@ -1,11 +1,4 @@
-import {
-  beforeEach,
-  describe,
-  expect,
-  it,
-  type Mock,
-  vi,
-} from 'vitest';
+import {beforeEach, describe, expect, it, type Mock, vi} from 'vitest';
 import type {ConferenceRepository} from '@sessioflow/conference/domain/conference-repository.interface';
 import type {OutboxRepository} from '@sessioflow/shared-database/outbox-repository';
 import type {Logger} from '@sessioflow/shared-logging/logger';
@@ -34,14 +27,10 @@ interface CommandMocks {
 function makeMocks(): CommandMocks {
   const findById = vi.fn<ConferenceRepository['findById']>();
   const findBySlug = vi.fn<ConferenceRepository['findBySlug']>();
-  const countActiveByOrganizerId = vi.fn<
-    ConferenceRepository['countActiveByOrganizerId']
-  >();
+  const countActiveByOrganizerId = vi.fn<ConferenceRepository['countActiveByOrganizerId']>();
   const save = vi.fn<ConferenceRepository['save']>();
   const outboxSaveAll = vi.fn<OutboxRepository['saveAll']>();
-  const transaction = vi.fn<TransactionRunner['transaction']>(async (work) =>
-    work(MOCK_TX),
-  );
+  const transaction = vi.fn<TransactionRunner['transaction']>(async work => work(MOCK_TX));
   const logger: Logger = {
     info: vi.fn(),
     error: vi.fn(),
@@ -62,7 +51,16 @@ function makeMocks(): CommandMocks {
     {transaction},
     logger,
   );
-  return {findById, findBySlug, countActiveByOrganizerId, save, outboxSaveAll, transaction, logger, handler};
+  return {
+    findById,
+    findBySlug,
+    countActiveByOrganizerId,
+    save,
+    outboxSaveAll,
+    transaction,
+    logger,
+    handler,
+  };
 }
 
 function makeInput(overrides: Record<string, unknown> = {}) {
@@ -89,9 +87,7 @@ describe('CreateConferenceCommandHandler', () => {
     mocks.findBySlug.mockResolvedValue(null);
     mocks.countActiveByOrganizerId.mockResolvedValue(0);
 
-    const response = await mocks.handler.execute(
-      new CreateConferenceCommand(makeInput()),
-    );
+    const response = await mocks.handler.execute(new CreateConferenceCommand(makeInput()));
 
     // Response shape (ConferenceApiResponse contract)
     expect(response.id).toMatch(
@@ -125,10 +121,7 @@ describe('CreateConferenceCommandHandler', () => {
     expect(outboxCall[3]).toBe(MOCK_TX);
     const events = outboxCall[0];
     expect(events).toHaveLength(2);
-    expect(events.map((e: {type: string}) => e.type)).toEqual([
-      'CONFERENCE_CREATED',
-      'CFP_OPENED',
-    ]);
+    expect(events.map((e: {type: string}) => e.type)).toEqual(['CONFERENCE_CREATED', 'CFP_OPENED']);
 
     expect(mocks.transaction).toHaveBeenCalledTimes(1);
     expect(mocks.logger.info).toHaveBeenCalled();
@@ -140,9 +133,7 @@ describe('CreateConferenceCommandHandler', () => {
 
     await mocks.handler.execute(new CreateConferenceCommand(makeInput()));
 
-    expect(
-      mocks.findBySlug.mock.invocationCallOrder[0],
-    ).toBeLessThan(
+    expect(mocks.findBySlug.mock.invocationCallOrder[0]).toBeLessThan(
       mocks.countActiveByOrganizerId.mock.invocationCallOrder[0],
     );
   });
@@ -155,9 +146,7 @@ describe('CreateConferenceCommandHandler', () => {
       new CreateConferenceCommand(makeInput({name: 'Startup! Summit 2026'})),
     );
 
-    expect(mocks.findBySlug.mock.calls[0][0].value).toBe(
-      'startup-summit-2026',
-    );
+    expect(mocks.findBySlug.mock.calls[0][0].value).toBe('startup-summit-2026');
   });
 
   it('maps an omitted maxSubmissions to unlimited (undefined)', async () => {
@@ -165,9 +154,7 @@ describe('CreateConferenceCommandHandler', () => {
     mocks.countActiveByOrganizerId.mockResolvedValue(0);
 
     const response = await mocks.handler.execute(
-      new CreateConferenceCommand(
-        makeInput({maxSubmissions: undefined, requiresApproval: false}),
-      ),
+      new CreateConferenceCommand(makeInput({maxSubmissions: undefined, requiresApproval: false})),
     );
 
     expect(response.cfp.maxSubmissions).toBeUndefined();
@@ -177,9 +164,9 @@ describe('CreateConferenceCommandHandler', () => {
   it('rejects a duplicate slug with SLUG_EXISTS (409) and persists nothing', async () => {
     mocks.findBySlug.mockResolvedValue({id: 'existing'});
 
-    await expect(
-      mocks.handler.execute(new CreateConferenceCommand(makeInput())),
-    ).rejects.toThrow(SlugExistsError);
+    await expect(mocks.handler.execute(new CreateConferenceCommand(makeInput()))).rejects.toThrow(
+      SlugExistsError,
+    );
     await expect(
       mocks.handler.execute(new CreateConferenceCommand(makeInput())),
     ).rejects.toMatchObject({code: 'SLUG_EXISTS'});
@@ -192,9 +179,9 @@ describe('CreateConferenceCommandHandler', () => {
     mocks.findBySlug.mockResolvedValue(null);
     mocks.countActiveByOrganizerId.mockResolvedValue(5);
 
-    await expect(
-      mocks.handler.execute(new CreateConferenceCommand(makeInput())),
-    ).rejects.toThrow(ConferenceFreeTierLimitError);
+    await expect(mocks.handler.execute(new CreateConferenceCommand(makeInput()))).rejects.toThrow(
+      ConferenceFreeTierLimitError,
+    );
     await expect(
       mocks.handler.execute(new CreateConferenceCommand(makeInput())),
     ).rejects.toMatchObject({code: 'FREE_TIER_LIMIT'});
@@ -206,14 +193,10 @@ describe('CreateConferenceCommandHandler', () => {
     mocks.countActiveByOrganizerId.mockResolvedValue(0);
 
     await expect(
-      mocks.handler.execute(
-        new CreateConferenceCommand(makeInput({cfpStartDate: '2020-01-01'})),
-      ),
+      mocks.handler.execute(new CreateConferenceCommand(makeInput({cfpStartDate: '2020-01-01'}))),
     ).rejects.toThrow(CfpStartDateNotInFutureError);
     await expect(
-      mocks.handler.execute(
-        new CreateConferenceCommand(makeInput({cfpStartDate: '2020-01-01'})),
-      ),
+      mocks.handler.execute(new CreateConferenceCommand(makeInput({cfpStartDate: '2020-01-01'}))),
     ).rejects.toMatchObject({code: 'CFP_START_DATE_NOT_IN_FUTURE'});
   });
 

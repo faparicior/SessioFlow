@@ -11,9 +11,7 @@ describe('OrganizerId', () => {
   });
 
   it('implements structural equality', () => {
-    expect(
-      OrganizerId.create('a').equals(OrganizerId.create('a')),
-    ).toBe(true);
+    expect(OrganizerId.create('a').equals(OrganizerId.create('a'))).toBe(true);
     expect(OrganizerId.create('a').equals(OrganizerId.create('b'))).toBe(false);
   });
 });

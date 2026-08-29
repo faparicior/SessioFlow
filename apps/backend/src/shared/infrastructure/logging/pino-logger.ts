@@ -146,10 +146,10 @@ export class PinoLogger implements Logger {
   error(message: string, error?: Error, context?: LogContext): void {
     const errorContext = error
       ? {
-        error: error.message,
-        stack: error.stack,
-        name: error.name,
-      }
+          error: error.message,
+          stack: error.stack,
+          name: error.name,
+        }
       : {};
 
     this.log('error', message, {...context, ...errorContext});
@@ -173,11 +173,7 @@ export class PinoLogger implements Logger {
     this.boundContext = {...this.boundContext, ...context};
   }
 
-  private log(
-    level: pino.LevelWithSilent,
-    message: string,
-    context?: LogContext,
-  ): void {
+  private log(level: pino.LevelWithSilent, message: string, context?: LogContext): void {
     const mergedContext = {...this.boundContext, ...context};
 
     // Remove undefined values
@@ -201,10 +197,7 @@ export function getLogger(config?: PinoLoggerConfig): PinoLogger {
   return globalLogger;
 }
 
-export function createChildLogger(
-  parent: PinoLogger,
-  context: LogContext,
-): PinoLogger {
+export function createChildLogger(parent: PinoLogger, context: LogContext): PinoLogger {
   const child = new PinoLogger();
   child.bind(context);
   return child;

@@ -26,8 +26,8 @@ npm run check:arch packages/modules/conference # Scoped architecture check on ta
 npm run typecheck        # TypeScript (turbo, 18 tasks)
 npm run lint             # ⚠️ xo over apps/backend + apps/frontend ONLY — not ESLint, not packages/**
 npm run lint:fix         # xo --fix (same scope)
-npx prettier --check <files>   # Format check on the files you touched
-npx prettier --write <files>   # Format fix — there is NO `npm run format` script
+npm run format:check      # Prettier gate over the repo (policy: see formatting note below)
+npm run format            # Prettier-write everything Prettier owns (bounded by .prettierignore)
 
 # Fast loops (full-suite runs take minutes — prefer these while iterating)
 npx turbo typecheck --filter=@sessioflow/conference   # One package
@@ -39,22 +39,42 @@ npm run db:generate      # Generate migration from schema
 npm run db:migrate       # Apply migrations to database
 npm run db:push          # Push schema directly (no migration file)
 npm run db:studio        # Open Drizzle Studio (database GUI)
-docker compose up -d     # Start local PostgreSQL (Docker)
+docker compose -f apps/backend/docker-compose.yml up -d   # Start local PostgreSQL (there is NO root compose file)
 
-# Build
+# Production build
 npm run build            # Build Next.js app
 npm run start            # Start production server
 ```
 
-> **⚠️ `npm run test:e2e` has side effects**: it runs a full `npm run build`, brings the docker
-> compose stack up and **stops/removes it on exit** — so PostgreSQL is *down* afterwards. Run
-> `docker compose up -d` before any `npx vitest run tests/integration`.
+> **Container lifecycle is owned by the scripts (by design)**: `npm run test:e2e` = `npm run build`
+> → `docker compose up -d` → Playwright → `docker compose down`; `npm run dev` follows the same
+> up/trap-down pattern. Playwright's global setup (`tests/e2e/setup.ts`) polls PostgreSQL until it
+> answers `SELECT 1` and applies migrations, so **E2E needs nothing pre-started** — and it leaves the
+> stack *down* on purpose.
+> Therefore integration tests, which reuse that same container, must either run **before** E2E or
+> start it themselves: `docker compose -f apps/backend/docker-compose.yml up -d`.
 >
-> **Formatting**: there is no `format` script, `packages/**` define no `lint` script, and the repo
-> has no `.prettierignore` — ~240 pre-existing files fail `prettier --check` (including `dist/`
-> artifacts and most of `docs/`). Never run a repo-wide `prettier --write .`: it creates a huge
-> drive-by diff. Format only the files you touched, and revert Prettier reflows in files you did
-> not otherwise modify.
+> **Formatting policy** — **Prettier is the single formatter for the whole repo**:
+> - Both app workspaces run xo with **`prettier: true`** (`apps/*/xo.config.ts`), which mounts
+>   `eslint-plugin-prettier` and switches off xo's 180 `@stylistic` rules via
+>   `eslint-config-prettier`. Verified fixed point: `xo --fix` output passes `prettier --check`, and
+>   `prettier --write` output passes `xo`. **Never re-add `@stylistic` rules to an xo config** — that
+>   is exactly what restarts the two-formatter loop.
+> - `npm run format:check` must pass; run `npm run format` when it does not. **`printWidth` is 100**
+>   (`.prettierrc.json`) — the width xo's `@stylistic/max-len` used to enforce; xo resolves that same
+>   file and forwards it to `prettier/prettier`, so CLI and lint cannot diverge. Changing it is a
+>   repo-wide mechanical pass (80→100 touched 86 files and removed 603 wrapping lines).
+>   `.prettierignore` is the boundary: markdown belongs to markdownlint (`npm run lint:md`), and `.pi/`,
+>   `.claude/`, `dist/`, `*.tsbuildinfo`, `**/drizzle/meta/`, lockfiles and skill-eval artifacts are
+>   skipped.
+> - `eslint-config-prettier` also drops 16 non-whitespace rules. Four of them were real opinions and
+>   are **re-enabled** in `apps/*/xo.config.ts` because Prettier never rewrites what they check
+>   (so there is no loop): `curly: ['error','all']`, `unicorn/no-nested-ternary`,
+>   `arrow-body-style: ['error','as-needed']`, `prefer-arrow-callback`. The rest (`react/jsx-*-spacing`,
+>   `unicorn/template-indent`, `no-unexpected-multiline`, …) are whitespace/ASI cases Prettier
+>   satisfies by construction — do not re-enable them.
+> - `packages/**` have **no** `lint` script (Prettier + typecheck only); enabling xo there is a
+>   separate migration (measured: 26 violations in `packages/shared/domain` alone).
 
 ## 🚦 Boundaries
 
@@ -169,43 +189,56 @@ export async function createConferenceController(request, commandHandler) {
 
 ### Frontend (`apps/frontend`) — linter is `xo`, not `eslint-config-next`
 
-`npm run lint` runs **`xo`** (type-aware + `@stylistic` + `unicorn` + `react` rules) over
-`apps/backend` and `apps/frontend`. It is far stricter than the committed UI samples imply, and a
-run takes **minutes** — lint a subtree while iterating (`cd apps/frontend && npx xo src/app src/lib`).
+`npm run lint` runs **`xo`** (type-aware typescript-eslint + `unicorn` + `react` + `import-x` +
+`promise`) over `apps/backend` and `apps/frontend`. Formatting is delegated to Prettier through the
+`prettier/prettier` rule, so lint output doubles as a format check. A warm run takes seconds, a cold
+type-graph run can take minutes — lint a subtree while iterating (`cd apps/frontend && npx xo src/app src/lib`).
 
-Rules that bite UI code (all of these failed real code in Journey 01):
+Rules that bite UI code (verified by probe on this config, plus real Journey 01 failures):
 
 | Rule | Rejects | Use instead |
 | --- | --- | --- |
-| null-type restriction | `useState<X \| null>(null)` | `useState<X \| undefined>(undefined)` |
-| `@stylistic/multiline-ternary` | any single-line `a ? b : c` | `if`/return helper functions (Prettier collapses multiline ternaries, so plain ternaries are unusable in JSX) |
+| `prettier/prettier` | anything Prettier would rewrite (quotes, spacing, wrapping) | `npm run format` or `npx xo --fix <path>` — never hand-format |
 | `react/jsx-sort-props` | arbitrary prop order | shorthand → alphabetical → **callbacks last** |
-| `react/jsx-no-leaked-render` | `{someMember && <X />}` | `{value !== undefined && (<X />)}` (explicit comparison is accepted) |
-| `no-unsafe-call` / `no-unsafe-return` | calling a function imported via the `@/*` / `@frontend/*` alias | **relative** import for anything you call; aliases stay fine for JSX components |
+| `react/jsx-no-leaked-render` | `{someMember && <X />}` on a member expression | `{value !== undefined && (<X />)}` (explicit comparison is accepted) |
+| `react/boolean-prop-naming` | `flag` / `open` boolean props | `isOpen` / `hasCfp` (config regex `^(is|has)[A-Z]`) |
+| `react/prefer-read-only-props` | mutable props type | mark props `readonly` |
+| `unicorn/no-negated-condition` | `!cond ? a : b`, `if (!x) { … } else { … }` | swap the branches |
+| `@typescript-eslint/naming-convention` | non-`UPPER_CASE` constants, non-PascalCase types/functions (`route.ts` already allows `GET`/`POST`) | follow the existing casing |
+| `no-unsafe-call` / `no-unsafe-return` | *calling* a symbol imported through the `@/*` / `@frontend/*` alias (xo's type program cannot resolve it) | **relative** import for anything you call; aliases stay fine for JSX components |
 | `promise/prefer-await-to-then` | `await response.json().catch(() => null)` | `try { … } catch { … }` |
 
+> `unicorn/no-null` is **off** in `apps/*/xo.config.ts`, so `null` is legal in app code — prefer
+> `undefined` for optional state anyway so `??` and optional chaining stay type-safe. Single-line
+> ternaries are fine too (the old `@stylistic/multiline-ternary` rule is off with `prettier: true`).
+
 ```tsx
-// ✅ xo- and Prettier-compatible UI idioms
-function yesNoLabel(value: boolean): string {
-  if (value) {
-    return 'Yes';
-  }
+// ✅ Accepted by both xo and Prettier (valid, self-contained TSX)
+function CfpNote({
+  isOpen,
+  errorMessage,
+}: {
+  readonly isOpen: boolean;
+  readonly errorMessage?: string;
+}) {
+  const label = isOpen ? 'Submissions are open.' : 'Submissions are closed.';
 
-  return 'No';
+  return (
+    <form noValidate className="space-y-6" onSubmit={() => {}}>
+      {label}
+      {errorMessage !== undefined && (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      )}
+    </form>
+  );
 }
-
-{errorMessage !== undefined && (
-  <Alert variant="destructive">
-    <AlertDescription>{errorMessage}</AlertDescription>
-  </Alert>
-)}
-
-<form noValidate className="space-y-6" onSubmit={event => {handleSubmit(event);}}>
 ```
 
 > **Bracketed App Router paths**: `npx xo 'src/app/api/v1/conferences/[id]/route.ts'` either matches
 > nothing (vacuously "clean") or crashes eslint's glob matcher. Pass the **directory** instead
-> (`npx xo src/app`) — it recurses correctly. Then verify with `npx prettier --check <file>`.
+> (`npx xo src/app`) — it recurses correctly. `npm run format:check` covers app TypeScript as well.
 
 ### Module Resolution & Build Artifacts
 
@@ -227,7 +260,7 @@ function yesNoLabel(value: boolean): string {
 - **Single Web Server (`apps/frontend` on port 3010)**: Playwright's `webServer` automatically launches `apps/frontend` (`next dev -p 3010`).
 - **In-Process API Route Handlers**: Next.js App Router route handlers (`apps/frontend/src/app/api/v1/*`) directly invoke DDD module controllers from `@sessioflow/[module]/container.ts`.
 - **🚫 Do NOT spawn `apps/backend` (port 3020)**: `apps/backend` is not needed or run during E2E tests. All `/api/v1/*` requests are served directly by `apps/frontend`.
-- **Database Lifecycle**: Global setup (`tests/e2e/setup.ts`) waits for PostgreSQL, applies Drizzle migrations, and cleans test data. `tests/e2e/utils/cleanup.ts` ensures clean database state per test.
+- **Database Lifecycle**: the `npm run test:e2e` script owns the container (`docker compose up -d` before Playwright, `down` after). Global setup (`tests/e2e/setup.ts`) then waits for PostgreSQL, applies Drizzle migrations, and cleans test data. `tests/e2e/utils/cleanup.ts` ensures clean database state per test.
 
 ### Architecture Tests
 - **Location**: `tests/unit/architecture/` (files: `ddd-boundaries.test.ts`, `response-conventions.test.ts`)
@@ -335,8 +368,9 @@ A task is complete when ALL of the following pass:
 3. ✅ `npm run test:e2e` exits 0 (E2E tests pass)
 4. ✅ `npm run lint` exits 0 (no linting errors)
 5. ✅ `npm run typecheck` exits 0 (no type errors)
-6. ✅ Code coverage ≥ 80% for new code
-7. ✅ Changes committed with conventional commit format
+6. ✅ `npm run format:check` exits 0 (Prettier owns everything xo does not)
+7. ✅ Code coverage ≥ 80% for new code
+8. ✅ Changes committed with conventional commit format
 
 ## 📚 Documentation
 

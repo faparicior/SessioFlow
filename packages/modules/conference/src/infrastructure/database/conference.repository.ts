@@ -6,10 +6,7 @@ import type {
   ConferenceRepository,
   TransactionClient,
 } from '../../domain/conference-repository.interface.js';
-import {
-  CfpConfig,
-  type CfpConfigData,
-} from '../../domain/value-objects/cfp-config.js';
+import {CfpConfig, type CfpConfigData} from '../../domain/value-objects/cfp-config.js';
 import {ConferenceDescription} from '../../domain/value-objects/conference-description.js';
 import {ConferenceId} from '../../domain/value-objects/conference-id.js';
 import {ConferenceName} from '../../domain/value-objects/conference-name.js';
@@ -76,9 +73,7 @@ export class DrizzleConferenceRepository implements ConferenceRepository {
   }
 
   /** BR-004: every status except DELETED counts against the organizer quota. */
-  public async countActiveByOrganizerId(
-    organizerId: OrganizerId,
-  ): Promise<number> {
+  public async countActiveByOrganizerId(organizerId: OrganizerId): Promise<number> {
     const rows = await this.client
       .select({id: conferencesTable.id})
       .from(conferencesTable)
@@ -97,10 +92,7 @@ export class DrizzleConferenceRepository implements ConferenceRepository {
    * atomically. The handle is opaque here by design (D5); Drizzle
    * transaction clients expose the same insert API as `db`.
    */
-  public async save(
-    conference: Conference,
-    tx?: TransactionClient,
-  ): Promise<void> {
+  public async save(conference: Conference, tx?: TransactionClient): Promise<void> {
     const target = (tx as DatabaseClient | undefined) ?? this.client;
     const data = conference.toData();
 

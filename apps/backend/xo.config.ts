@@ -15,6 +15,9 @@ const backendConfig: FlatXoConfig = [
   {
     space: true,
     semicolon: true,
+    // Formatting is delegated to Prettier (eslint-plugin-prettier + eslint-config-prettier
+    // switch xo's 180 @stylistic rules off), so `xo --fix` and `npm run format` agree.
+    prettier: true,
   },
   {
     files: ['**/*.{ts,tsx,mts,cts}'],
@@ -26,7 +29,8 @@ const backendConfig: FlatXoConfig = [
             {
               target: './apps/backend',
               from: './apps/frontend',
-              message: 'Backend must not import from apps/frontend. Use @sessioflow/* workspace packages instead.',
+              message:
+                'Backend must not import from apps/frontend. Use @sessioflow/* workspace packages instead.',
             },
           ],
         },
@@ -54,17 +58,15 @@ const backendConfig: FlatXoConfig = [
       'unicorn/prevent-abbreviations': 'off',
       'n/prefer-global/process': 'off',
 
-      '@stylistic/max-len': [
-        'error',
-        {
-          code: 100,
-          ignorePattern: String.raw`^import\s`,
-          ignoreUrls: true,
-          ignoreStrings: true,
-          ignoreTemplateLiterals: true,
-          ignoreRegExpLiterals: true,
-        },
-      ],
+      // Line length is Prettier's `printWidth`; @stylistic/max-len would otherwise be
+      // re-enabled here (later config items win over eslint-config-prettier).
+      '@stylistic/max-len': 'off',
+      // Prettier-compatible opinions that eslint-config-prettier drops (Prettier never
+      // rewrites these, so there is no formatting loop):
+      curly: ['error', 'all'],
+      'unicorn/no-nested-ternary': 'error',
+      'arrow-body-style': ['error', 'as-needed'],
+      'prefer-arrow-callback': ['error', {allowNamedFunctions: true, allowUnboundThis: true}],
       '@stylistic/curly-newline': 'off',
       '@stylistic/object-curly-newline': 'off',
       '@stylistic/function-paren-newline': 'off',

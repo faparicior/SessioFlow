@@ -39,10 +39,7 @@ export function generateCorrelationId(headerValue?: string): string {
 /**
  * Run a function with request context
  */
-export function withRequestContext<T>(
-  context: Partial<RequestContextData>,
-  fn: () => T,
-): T {
+export function withRequestContext<T>(context: Partial<RequestContextData>, fn: () => T): T {
   const defaultContext: RequestContextData = {
     correlationId: context.correlationId ?? generateCorrelationId(),
     userId: context.userId,

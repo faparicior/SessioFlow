@@ -8,8 +8,7 @@ import postgres from 'postgres';
 dotenv.config({path: path.resolve(process.cwd(), '.env.local')});
 
 const connectionString =
-  process.env.DATABASE_URL ||
-  'postgresql://postgres:postgres@localhost:5432/sessioflow';
+  process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/sessioflow';
 
 /**
  * Raw postgres client for fixture creation/assertions that must bypass the
@@ -27,10 +26,7 @@ export async function cleanTables(): Promise<void> {
 }
 
 /** Current row counts, used for atomicity/rollback assertions. */
-export async function rowCount(
-  table: 'conferences' | 'outbox_messages',
-): Promise<number> {
-  const [row] =
-    await testSql`SELECT COUNT(*)::int AS count FROM ${testSql(table)}`;
+export async function rowCount(table: 'conferences' | 'outbox_messages'): Promise<number> {
+  const [row] = await testSql`SELECT COUNT(*)::int AS count FROM ${testSql(table)}`;
   return row.count;
 }

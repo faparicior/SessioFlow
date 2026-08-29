@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
-import type { IncomingMessage, ServerResponse } from 'node:http';
-import { correlationMiddleware } from '../../../../apps/backend/src/interfaces/http/middlewares/correlation-middleware.js';
-import { getCorrelationId } from '@sessioflow/shared-logging/context';
+import {describe, it, expect, vi} from 'vitest';
+import type {IncomingMessage, ServerResponse} from 'node:http';
+import {correlationMiddleware} from '../../../../apps/backend/src/interfaces/http/middlewares/correlation-middleware.js';
+import {getCorrelationId} from '@sessioflow/shared-logging/context';
 
 describe('Backend Correlation Middleware', () => {
   it('extracts x-correlation-id from incoming request, sets response header, and establishes context', () => {

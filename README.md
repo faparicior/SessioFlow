@@ -460,8 +460,8 @@ RESEND_API_KEY=re_your-api-key
 The project uses Drizzle Kit for database migrations. Local PostgreSQL is managed via Docker Compose.
 
 ```bash
-# Start local PostgreSQL (Docker)
-docker compose up -d
+# Start local PostgreSQL (Docker) — the compose file lives with the backend app
+docker compose -f apps/backend/docker-compose.yml up -d
 
 # Generate migration from schema (after schema changes)
 npm run db:generate

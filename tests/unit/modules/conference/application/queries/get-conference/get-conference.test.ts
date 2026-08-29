@@ -47,9 +47,7 @@ function makeConference(): Conference {
 describe('GetConferenceQueryHandler', () => {
   it('returns the conference data for a valid id', async () => {
     const conference = makeConference();
-    const findById = vi
-      .fn<ConferenceRepository['findById']>()
-      .mockResolvedValue(conference);
+    const findById = vi.fn<ConferenceRepository['findById']>().mockResolvedValue(conference);
     const handler = new GetConferenceQueryHandler(makeRepositoryMock(findById));
 
     const response = await handler.execute(
@@ -86,9 +84,7 @@ describe('GetConferenceQueryHandler', () => {
         requiresApproval: RequiresApproval.create(false),
       }),
     });
-    const findById = vi
-      .fn<ConferenceRepository['findById']>()
-      .mockResolvedValue(conference);
+    const findById = vi.fn<ConferenceRepository['findById']>().mockResolvedValue(conference);
     const handler = new GetConferenceQueryHandler(makeRepositoryMock(findById));
 
     const response = await handler.execute(
@@ -100,9 +96,7 @@ describe('GetConferenceQueryHandler', () => {
 
   it('throws ConferenceNotFoundError (NOT_FOUND / 404) when the id does not exist', async () => {
     const missingId = ConferenceId.generate().value;
-    const findById = vi
-      .fn<ConferenceRepository['findById']>()
-      .mockResolvedValue(null);
+    const findById = vi.fn<ConferenceRepository['findById']>().mockResolvedValue(null);
     const handler = new GetConferenceQueryHandler(makeRepositoryMock(findById));
 
     await expect(

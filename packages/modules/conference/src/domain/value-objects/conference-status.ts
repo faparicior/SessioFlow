@@ -44,10 +44,7 @@ export class ConferenceStatus {
   }
 
   /** Validates a state transition against the state machine. */
-  public static canTransitionTo(
-    current: ConferenceStatus,
-    target: ConferenceStatus,
-  ): boolean {
+  public static canTransitionTo(current: ConferenceStatus, target: ConferenceStatus): boolean {
     return TRANSITIONS[current.value].includes(target.value);
   }
 

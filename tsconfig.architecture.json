@@ -5,11 +5,5 @@
     "packages/shared/*/src/**/*.ts",
     "packages/api-definitions/src/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "apps",
-    "tests",
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ]
+  "exclude": ["node_modules", "apps", "tests", "**/*.spec.ts", "**/*.test.ts"]
 }

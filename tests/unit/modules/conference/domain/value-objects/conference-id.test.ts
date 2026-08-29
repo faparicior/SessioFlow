@@ -16,9 +16,7 @@ describe('ConferenceId', () => {
   });
 
   it('rejects invalid UUID formats', () => {
-    expect(() => ConferenceId.create('not-a-uuid')).toThrow(
-      'must be a valid UUID',
-    );
+    expect(() => ConferenceId.create('not-a-uuid')).toThrow('must be a valid UUID');
     expect(() => ConferenceId.create('')).toThrow('must be a valid UUID');
   });
 

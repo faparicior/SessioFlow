@@ -4,9 +4,7 @@ import {EmptySlugError} from '@sessioflow/conference/domain/exceptions/empty-slu
 
 describe('ConferenceSlug', () => {
   it('generates a slug from a plain name (BR-003)', () => {
-    expect(ConferenceSlug.create('Tech Conference 2026').value).toBe(
-      'tech-conference-2026',
-    );
+    expect(ConferenceSlug.create('Tech Conference 2026').value).toBe('tech-conference-2026');
   });
 
   it('removes special characters and collapses hyphens', () => {
@@ -19,9 +17,7 @@ describe('ConferenceSlug', () => {
   });
 
   it('keeps digits as valid slug content', () => {
-    expect(ConferenceSlug.create('Summit 2026 Final').value).toBe(
-      'summit-2026-final',
-    );
+    expect(ConferenceSlug.create('Summit 2026 Final').value).toBe('summit-2026-final');
   });
 
   it('never exceeds 100 characters when derived from a valid name', () => {

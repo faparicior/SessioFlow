@@ -10,9 +10,7 @@ describe('CfpEndDate', () => {
   });
 
   it('rejects invalid dates', () => {
-    expect(() => CfpEndDate.create(new Date('not-a-date'))).toThrow(
-      InvalidCfpEndDateError,
-    );
+    expect(() => CfpEndDate.create(new Date('not-a-date'))).toThrow(InvalidCfpEndDateError);
     expect(() => CfpEndDate.create(new Date('not-a-date'))).toThrow(
       'CfpEndDate is not a valid date',
     );

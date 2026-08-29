@@ -7,11 +7,7 @@
  * @module shared/infrastructure/logging
  */
 
-export {
-  type Logger,
-  type LogContext,
-  LoggerSymbol,
-} from '../../domain/logging/logger';
+export {type Logger, type LogContext, LoggerSymbol} from '../../domain/logging/logger';
 
 export {PinoLogger, getLogger, createChildLogger} from './pino-logger';
 

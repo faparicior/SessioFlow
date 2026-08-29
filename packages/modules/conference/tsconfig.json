@@ -7,11 +7,11 @@
   },
   "include": ["src/**/*"],
   "references": [
-    { "path": "../../api-definitions" },
-    { "path": "../../shared/bus" },
-    { "path": "../../shared/database" },
-    { "path": "../../shared/domain" },
-    { "path": "../../shared/http" },
-    { "path": "../../shared/logging" }
+    {"path": "../../api-definitions"},
+    {"path": "../../shared/bus"},
+    {"path": "../../shared/database"},
+    {"path": "../../shared/domain"},
+    {"path": "../../shared/http"},
+    {"path": "../../shared/logging"}
   ]
 }

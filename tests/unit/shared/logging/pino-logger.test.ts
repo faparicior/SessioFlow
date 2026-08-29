@@ -6,10 +6,7 @@
  */
 
 import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest';
-import {
-  PinoLogger,
-  getLogger,
-} from '@backend/shared/infrastructure/logging/pino-logger.js';
+import {PinoLogger, getLogger} from '@backend/shared/infrastructure/logging/pino-logger.js';
 import type {LogContext} from '@backend/shared/domain/logging/logger.js';
 
 describe('PinoLogger', () => {

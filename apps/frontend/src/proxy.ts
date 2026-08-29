@@ -9,8 +9,7 @@ import {type NextRequest, NextResponse} from 'next/server';
  */
 export function proxy(request: NextRequest) {
   const existingCorrelationId =
-    request.headers.get('x-correlation-id') ??
-    request.headers.get('x-request-id');
+    request.headers.get('x-correlation-id') ?? request.headers.get('x-request-id');
 
   const correlationId =
     existingCorrelationId && existingCorrelationId.trim().length > 0

@@ -30,9 +30,7 @@ export class CfpStartDate {
       throw new CfpStartDateNotInFutureError();
     }
     if (daysFromToday > MAX_FUTURE_DAYS) {
-      throw new InvalidCfpStartDateError(
-        'CfpStartDate cannot be more than 365 days in the future',
-      );
+      throw new InvalidCfpStartDateError('CfpStartDate cannot be more than 365 days in the future');
     }
     return new CfpStartDate(date);
   }
@@ -49,9 +47,7 @@ export class CfpStartDate {
   }
 
   public daysUntil(): number {
-    return Math.round(
-      (startOfUtcDayMs(this._value) - startOfUtcDayMs(new Date())) / MS_PER_DAY,
-    );
+    return Math.round((startOfUtcDayMs(this._value) - startOfUtcDayMs(new Date())) / MS_PER_DAY);
   }
 
   public equals(other: CfpStartDate): boolean {

@@ -11,9 +11,7 @@ import {GetConferenceResponse} from './get-conference.response.js';
 export class GetConferenceQueryHandler {
   constructor(private readonly conferenceRepository: ConferenceRepository) {}
 
-  public async execute(
-    query: GetConferenceQuery,
-  ): Promise<GetConferenceResponse> {
+  public async execute(query: GetConferenceQuery): Promise<GetConferenceResponse> {
     const id = ConferenceId.create(query.input.conferenceId);
     const conference = await this.conferenceRepository.findById(id);
     if (!conference) {
