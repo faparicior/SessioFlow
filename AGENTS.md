@@ -9,21 +9,30 @@ Runtime instructions for AI coding agents. See `docs/` for detailed documentatio
 npm run dev              # Start Next.js dev server
 
 # Testing
-npm test                 # Run all tests (Vitest)
-npx vitest run           # Run Vitest tests
-npx vitest run tests/unit/conference/*.test.ts  # Single test file
-npm run test:e2e         # Run Playwright E2E tests
-npx playwright test tests/e2e/create-conference.spec.ts  # Single E2E test
+npm test                 # Run all tests (Vitest: unit + integration + architecture + interface)
+npx vitest run tests/unit/modules/conference/domain/value-objects/conference-name.test.ts  # Single file
+npx vitest run tests/integration   # Integration only (requires PostgreSQL up)
+npx vitest run tests/backend       # Interface/controller tests only
+npm run test:architecture          # Architecture suite only
+npm run test:changed               # Run Vitest tests for Git modified files
+
+# E2E (Playwright) — see ⚠️ side effects below
+npm run test:e2e
+npx playwright test tests/e2e/conference-setup.spec.ts --config=apps/frontend/playwright.config.ts  # Single spec
 
 # Quality & Architecture
-npm run check:arch       # Fast standalone architecture check (< 2s) for AI agents
+npm run check:arch       # Fast standalone architecture check (< 2s) — domain-layer rules ONLY
 npm run check:arch packages/modules/conference # Scoped architecture check on target module/file
-npm run test:architecture # Run Vitest architecture test suite
-npm run test:changed     # Run Vitest tests for Git modified files
-npm run typecheck        # TypeScript type checking (tsgo)
-npm run lint             # ESLint
-npm run lint:fix         # Auto-fix linting issues
-npm run format           # Prettier formatting
+npm run typecheck        # TypeScript (turbo, 18 tasks)
+npm run lint             # ⚠️ xo over apps/backend + apps/frontend ONLY — not ESLint, not packages/**
+npm run lint:fix         # xo --fix (same scope)
+npx prettier --check <files>   # Format check on the files you touched
+npx prettier --write <files>   # Format fix — there is NO `npm run format` script
+
+# Fast loops (full-suite runs take minutes — prefer these while iterating)
+npx turbo typecheck --filter=@sessioflow/conference   # One package
+npm run typecheck --workspace=apps/frontend           # One app
+cd apps/frontend && npx xo src/app src/lib            # Frontend subtree (see Frontend section)
 
 # Database
 npm run db:generate      # Generate migration from schema
@@ -36,6 +45,16 @@ docker compose up -d     # Start local PostgreSQL (Docker)
 npm run build            # Build Next.js app
 npm run start            # Start production server
 ```
+
+> **⚠️ `npm run test:e2e` has side effects**: it runs a full `npm run build`, brings the docker
+> compose stack up and **stops/removes it on exit** — so PostgreSQL is *down* afterwards. Run
+> `docker compose up -d` before any `npx vitest run tests/integration`.
+>
+> **Formatting**: there is no `format` script, `packages/**` define no `lint` script, and the repo
+> has no `.prettierignore` — ~240 pre-existing files fail `prettier --check` (including `dist/`
+> artifacts and most of `docs/`). Never run a repo-wide `prettier --write .`: it creates a huge
+> drive-by diff. Format only the files you touched, and revert Prettier reflows in files you did
+> not otherwise modify.
 
 ## 🚦 Boundaries
 
@@ -55,6 +74,9 @@ npm run start            # Start production server
 - Changing authentication strategy
 - Modifying API contracts
 - Modifying architecture tests (`tests/unit/architecture/`) or changing architectural invariants
+- Editing shared configuration: root `vitest.config.ts`, any `package.json`/`tsconfig.json`
+  (workspace deps or project references), `docker-compose.yml`, `playwright.config.ts`, `.env*`
+- Touching a file outside the flow plan's Affected Files Manifest (report it as a deviation)
 
 **🚫 Never do:**
 - Commit secrets or API keys
@@ -145,6 +167,54 @@ export async function createConferenceController(request, commandHandler) {
 }
 ```
 
+### Frontend (`apps/frontend`) — linter is `xo`, not `eslint-config-next`
+
+`npm run lint` runs **`xo`** (type-aware + `@stylistic` + `unicorn` + `react` rules) over
+`apps/backend` and `apps/frontend`. It is far stricter than the committed UI samples imply, and a
+run takes **minutes** — lint a subtree while iterating (`cd apps/frontend && npx xo src/app src/lib`).
+
+Rules that bite UI code (all of these failed real code in Journey 01):
+
+| Rule | Rejects | Use instead |
+| --- | --- | --- |
+| null-type restriction | `useState<X \| null>(null)` | `useState<X \| undefined>(undefined)` |
+| `@stylistic/multiline-ternary` | any single-line `a ? b : c` | `if`/return helper functions (Prettier collapses multiline ternaries, so plain ternaries are unusable in JSX) |
+| `react/jsx-sort-props` | arbitrary prop order | shorthand → alphabetical → **callbacks last** |
+| `react/jsx-no-leaked-render` | `{someMember && <X />}` | `{value !== undefined && (<X />)}` (explicit comparison is accepted) |
+| `no-unsafe-call` / `no-unsafe-return` | calling a function imported via the `@/*` / `@frontend/*` alias | **relative** import for anything you call; aliases stay fine for JSX components |
+| `promise/prefer-await-to-then` | `await response.json().catch(() => null)` | `try { … } catch { … }` |
+
+```tsx
+// ✅ xo- and Prettier-compatible UI idioms
+function yesNoLabel(value: boolean): string {
+  if (value) {
+    return 'Yes';
+  }
+
+  return 'No';
+}
+
+{errorMessage !== undefined && (
+  <Alert variant="destructive">
+    <AlertDescription>{errorMessage}</AlertDescription>
+  </Alert>
+)}
+
+<form noValidate className="space-y-6" onSubmit={event => {handleSubmit(event);}}>
+```
+
+> **Bracketed App Router paths**: `npx xo 'src/app/api/v1/conferences/[id]/route.ts'` either matches
+> nothing (vacuously "clean") or crashes eslint's glob matcher. Pass the **directory** instead
+> (`npx xo src/app`) — it recurses correctly. Then verify with `npx prettier --check <file>`.
+
+### Module Resolution & Build Artifacts
+
+- `@sessioflow/*` package `exports` point at **`dist/`**, while `vitest.config.ts` aliases the same
+  specifiers to **`src/`**: unit tests can pass while `npm run build` fails.
+- After changing a package's public surface, rebuild it: `npx turbo build --filter=@sessioflow/<package>`.
+- When deleting a stale `dist/`, delete the sibling `tsconfig.tsbuildinfo` as well — otherwise
+  project-reference builds reuse masked declarations from the deleted output.
+
 ## 🧪 Testing Guidelines
 
 ### Test Organization
@@ -219,6 +289,24 @@ export async function createConferenceController(request, commandHandler) {
    - `classes(p).that().resideInFolder('**/domain/**')` matches all classes in `domain/` (Aggregate Roots, Child Entities, Value Objects, Domain Events, Domain Exceptions).
    - Rules specific to Aggregate Roots (such as `pullDomainEvents()`) exclude Value Objects (`/value-objects/`), Exceptions (`/exceptions/`), Events (`/events/`), and Child Entities (e.g. `cfp-config.ts`), because child entities emit events through their parent Aggregate Root rather than exposing event flush methods directly.
    - Tests scan TypeScript source files (`src/**/*.ts`); compiled declaration files (`.d.ts`) are build artifacts and do not exist in source paths.
+
+**What each automated check really scans** (verified 2026-08-29):
+
+| Check | Actual scope | Consequence |
+| --- | --- | --- |
+| `npm run check:arch` | `packages/modules/**/domain/**` only (VO / event / exception / isolation rules) | says nothing about application, infrastructure, interfaces or `apps/**` |
+| `npm run test:architecture` | ts-archunit project = files reachable from `tests/**` plus forced `packages/modules/*/src/**/*.ts` | module `interfaces/**` and `infrastructure/**` **are** covered |
+| *(none)* | `apps/**` (Next route handlers, UI) is in neither project | the `**/apps/**/api/**` rule matches 0 files and passes vacuously |
+
+Before trusting a rule, prove it is not vacuous — inject the violation and watch that one test fail:
+
+```bash
+F=packages/modules/conference/src/interfaces/http/get-conference.controller.ts
+cp "$F" /tmp/controller.bak
+sed -i "1i import {ConferenceSlug} from '../domain/value-objects/conference-slug.js';" "$F"
+npx vitest run tests/unit/architecture   # expect exactly 1 failure: the interfaces import rule
+cp /tmp/controller.bak "$F"              # restore, then re-run to confirm green
+```
 
 ### Test Example
 ```typescript
@@ -387,4 +475,4 @@ chore: update dependencies
 
 ---
 
-*Last updated: 2026-06-25*
+*Last updated: 2026-08-29*
