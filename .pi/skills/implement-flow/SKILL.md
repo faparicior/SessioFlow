@@ -54,7 +54,13 @@ flowchart TD
    - Extract the user journey, actors, sequence flow, state machine transitions, invariants, and business rules.
    - Extract domain event side-effects and external integration boundaries.
 
-3. **Consult Architectural Documents & ADRs (Single Sources of Truth)**:
+3. **Extract & Catalogue All Edge Cases and Implementation Traps**:
+   - Read the flow doc's "Edge Cases & Invariant Integrity", "Technical Failures", and "Alternative Paths" sections in full.
+   - Produce a numbered catalogue of **every** edge case, technical failure mode, and validation boundary.
+   - For each item, explicitly ask: *"Would a naive implementation contradict this?"* — mark those as **⚠️ Implementation Trap**. These are the cases most likely to be implemented incorrectly (e.g. a guard that skips delivery when the spec says delivery must continue).
+   - This catalogue is the primary input for Phase 0 test writing. Every item must map to at least one test before implementation begins.
+
+4. **Consult Architectural Documents & ADRs (Single Sources of Truth)**:
    - **`AGENTS.md` & `docs/ARCHITECTURE.md`**: For directory layout, package boundaries, framework routes/entrypoints, and verification commands.
    - **`docs/ARCHITECTURE-RULES.md`**: For strict DDD templates (Value Objects, Entities, Domain Events, Exceptions, CQRS Handlers, Response DTOs, and Repositories).
    - **`docs/adr/README.md`**: For architectural decisions relevant to this flow (CQRS, Auth, Storage, Data Access, Outbox, API Contracts).
@@ -73,9 +79,9 @@ flowchart TD
 2. Use the template: `templates/feature-specification.md` (located in this skill).
 3. **Log All Design Decisions & Assumptions (Lack of Information Log)**:
    - Explicitly record any judgment calls, fallback ports, error code mappings, or tie-breakers made by the LLM in the `🧠 Agent Design Decisions & Assumptions` section so they are visible for user audit.
-4. **Perform Concurrency, TOCTOU, Idempotency & Invariant Analysis**:
-   - Explicitly evaluate race conditions, check-then-act vulnerabilities, idempotency / duplicate replay handling, and data consistency safeguards (e.g. database-level unique constraints, optimistic locking versioning, transactional outbox atomicity, idempotent event dispatch) in the `🛡️ Concurrency, TOCTOU & Invariant Integrity Analysis` section.
-5. Define the requirements, domain model, layer scope, and acceptance criteria (including idempotent replay scenarios) mapped to the repository's architectural layers.
+4. **Perform Concurrency, TOCTOU & Invariant Analysis**:
+   - Explicitly evaluate race conditions, check-then-act vulnerabilities, and data consistency safeguards (e.g. database-level unique constraints, optimistic locking, idempotent event dispatch) in the `🛡️ Concurrency, TOCTOU & Invariant Integrity Analysis` section.
+5. Define the requirements, domain model, layer scope, and acceptance criteria mapped to the repository's architectural layers.
 6. **🛑 Review Gate**:
    - Stop and present the generated feature specification document(s) to the user with file links.
    - Ask the user to review the document and provide feedback on the design decisions.
@@ -110,7 +116,13 @@ flowchart LR
 
 #### Execution Protocol:
 1. **First: Write Test**
-   - Write failing test (E2E in Phase 0; Unit/Integration in Phases 1–4).
+   - **Phase 0 only — spec-driven test enumeration before writing any code**:
+     1. Open the edge case catalogue built in Step 1.
+     2. Write one failing acceptance test per catalogue item — happy path AND every documented edge case, technical failure, and implementation trap.
+     3. Tests must be derived from the spec, not from what the implementation will look like. If the spec says "delivery continues when X is null", the test must assert delivery happened — even if the naive implementation would skip it.
+     4. Only proceed to implementation once the full catalogue has test coverage.
+   - **Phases 1–4 — spec cross-check before each test**:
+     Before writing each unit or integration test, verify it against the flow spec's acceptance criteria and edge case catalogue. If a test would pass with a naive implementation that contradicts a documented edge case, **the spec wins** — fix the test to match the spec, not the other way around.
    - Run the test $\rightarrow$ must **FAIL** initially (verifying test validity).
 2. **After: Implement Code**
    - Implement only the code necessary to make the test **PASS**.

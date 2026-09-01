@@ -50,14 +50,16 @@
 ---
 
 ### Phase 0: Define E2E Contract (Outside-In)
-- [ ] **0.1 Write E2E Journey Test**: Create E2E test reflecting the flow journey and acceptance criteria
-- [ ] **0.2 Run E2E (Must Fail)**: Verify the test fails due to missing implementation (defining the target outcome)
+- [ ] **0.0 Extract Edge Case Catalogue**: Read the flow spec's "Edge Cases & Invariant Integrity", "Technical Failures", and "Alternative Paths" sections. Produce a numbered list of all edge cases and failure modes. Mark ⚠️ any **Implementation Trap** — a case where a naive implementation would contradict the spec (e.g. an early-return guard that silently skips a required side-effect).
+- [ ] **0.1 Write E2E Tests (Happy Path + All Edge Cases)**: Write one failing acceptance test per catalogue item. Tests must assert what the spec says, not what the naive implementation would do. For each ⚠️ Implementation Trap, the test must specifically exercise the contradicting behaviour.
+- [ ] **0.2 Run E2E (Must Fail)**: Verify all tests fail due to missing implementation (defining the target outcome)
 
 ---
 
 ### Phase 1: Domain Core (Inside-Out)
 
 #### 1.1 Tests First (Domain)
+- [ ] **Spec cross-check**: Before writing each test, verify it against the flow spec's acceptance criteria and the edge case catalogue from Phase 0. If a test would pass with a naive implementation that contradicts a documented edge case, fix the test to match the spec — **the spec wins, not intuition**. Pay special attention to ⚠️ Implementation Traps.
 - [ ] Write Value Object unit tests
 - [ ] Write Entity & Aggregate Root unit tests
 - [ ] Verify domain tests **FAIL** initially
