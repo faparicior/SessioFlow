@@ -64,7 +64,8 @@ runs:
    or any other stack's defaults.
 4. **Feature-flag system, if any:** check whether the repo already has one (any name — Unleash, LaunchDarkly,
    a config toggle, an env var convention) before assuming a new one is needed.
-5. **Existing modification-proposal precedent:** check whether the repo already has a "proposal" or
+5. **Cross-repo dependencies:** read `CLAUDE.md` (or `AGENTS.md`) for a **Cross-Repo Dependencies** section. Note which other repos this change may touch, what changes there, and whether there is a required deploy order. This feeds Section 6 of the proposal and Section 0 of the implementation plan — discover it here, not later.
+6. **Existing modification-proposal precedent:** check whether the repo already has a "proposal" or
    "change request" convention (an `openspec/`-style folder, an ADR process, a "working docs" folder) — if
    so, prefer reusing that shape over this skill's templates; if not, use `templates/proposal.md` /
    `templates/implementation-plan.md` as-is.
@@ -94,7 +95,7 @@ runs:
      the frozen record forward can find the reversal. Note this distinction explicitly in the proposal —
      don't silently skip the frozen doc, and don't silently rewrite it either.
 5. While reading upstream docs, also note who is affected (personas) and whether this reverses or extends
-   an already-scoped feature — this feeds Section 1 (Product Rationale), not just Section 7.
+   an already-scoped feature — this feeds Section 1 (Product Rationale), not just Section 6.
 6. Check whether a feature flag already exists for this behaviour (per Step 0's finding) — state explicitly
    in the proposal whether one exists or would need to be created.
 7. **Perform Concurrency, TOCTOU, Idempotency & Invariant Impact Analysis** — evaluate if modifying this flow introduces
@@ -158,6 +159,7 @@ Name the folder/file with a kebab-case slug matching the git branch name where p
 - [ ] Every derived doc's upstream source has been traced and checked for staleness (Step 1.4) — not just
       read for context
 - [ ] Concurrency, TOCTOU, idempotency, and invariant risks evaluated in Section 4
+- [ ] If the change touches other repos, **Section 6 (Cross-Repo Dependencies)** is filled in with real repo names, roles, and deploy order — not left as a placeholder
 - [ ] Migration, data backfill, and API backward compatibility addressed
 - [ ] Open Questions table captures every undecided fork (rollout strategy, dead-code removal scope,
       migration/backfill needs) — do not resolve these on the user's behalf
@@ -170,6 +172,7 @@ Name the folder/file with a kebab-case slug matching the git branch name where p
 Only after the proposal's Open Questions are resolved. Use `templates/implementation-plan.md`. Save it
 alongside the proposal, in the same folder.
 
+- If the proposal's Section 6 listed cross-repo dependencies, fill in **Section 0 (Cross-Repo Dependencies)** of the implementation plan — carry the repo table and deploy-order note forward from the proposal verbatim. Phases that belong to an external repo come before phases in this repo when deploy order requires it.
 - Phases must be derived from the proposal's **Scope of Change** table — one phase per real
   file/component, ordered **inside-out** matching this specific codebase's actual layering, whatever that
   is (do not impose domain/application/infrastructure, CQRS modules, MVC, or any other template if the

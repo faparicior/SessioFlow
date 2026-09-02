@@ -45,7 +45,8 @@ flowchart TD
 ### Step 1: Read Flow Documentation, ADRs & Architecture
 
 1. **Inspect Existing Codebase & Artifacts First (Search-First)**:
-   - Consult **`AGENTS.md`** and **`docs/ARCHITECTURE.md`** to determine the repository's folder structure, bounded context paths, and framework transport layers.
+   - Consult **`AGENTS.md`** and **`docs/ARCHITECTURE.md`** (or **`CLAUDE.md`** if `AGENTS.md` is absent) to determine the repository's folder structure, bounded context paths, and framework transport layers.
+   - **Check for cross-repo dependencies**: Read the `CLAUDE.md` (or `AGENTS.md`) **Cross-Repo Dependencies** section. If this flow touches other repositories, declare them in the plan's `🔗 Cross-Repo Dependencies` table **before writing any feature specs**. Flag any deploy-order constraint to the user at the summary step.
    - Check if the target bounded context module already exists in the codebase before scaffolding. **Never re-scaffold or overwrite existing modules**.
    - Check the flow's features directory and existing flow plan files to identify pre-existing specifications or plans to refine/update.
 
