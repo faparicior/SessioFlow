@@ -30,7 +30,7 @@
 
 ### Known Gaps Introduced
 
-* [Any new gap this change creates that isn't yet solved — mirror the "Gap" callouts used in journey docs. Omit this section if none.]
+- [Any new gap this change creates that isn't yet solved — mirror the "Gap" callouts used in journey docs. Omit this section if none.]
 
 ---
 
@@ -91,11 +91,22 @@ List every real file touched, not generic module paths. Grep the codebase for th
 | `[real/path/to/dependency.ext]` | Out — needs decision | [Why this is undecided — e.g. shared by another flow, needs confirmation before deleting] |
 | Feature flag | Out — needs decision | [Unconditional rollout vs. new flag/toggle — state whether one already exists in this codebase's feature-flag system, if it has one] |
 
-## 7. Impact on Existing Documentation
+## 7. Cross-Repo Dependencies
+
+Fill this section only if the Scope of Change table spans more than one repository. Remove it for single-repo changes.
+
+| # | Repo | Role in this change | Deploy first? |
+| :---: | :--- | :--- | :---: |
+| 1 | `[repo-name or path]` | [What changes there and why] | ✅ / — |
+| 2 | this repo | [What changes here] | — |
+
+> **Deploy order note:** describe any hard ordering constraint (e.g. "repo 1 must deploy before this repo — the new event payload references a contract that must exist in repo 1 first").
+
+## 8. Impact on Existing Documentation
 
 List the living docs this change will require updating **after implementation ships** — update them in place, do not create new files alongside them. If this repo has upstream product docs (journeys, personas, brainstorming/feature-scoping) behind its derived flow/entity/BR docs, split the impact into two groups — a derived doc rarely repeats its upstream source's full content, so the upstream doc can independently go stale even after the derived doc is fixed.
 
-### 7.1 Derived Bounded-Context / Flow Docs
+### 8.1 Derived Bounded-Context / Flow Docs
 
 | Doc | Change |
 | :--- | :--- |
@@ -103,7 +114,7 @@ List the living docs this change will require updating **after implementation sh
 | [EntityName.md](../../bounded-contexts/[context]/entities/EntityName.md) | [Which states/transitions/notes change] |
 | [flow-NN-name.md](../../bounded-contexts/[context]/flows/flow-NN-name.md) | [Which diagram stages / walkthrough steps / edge cases change] |
 
-### 7.2 Upstream Product Docs
+### 8.2 Upstream Product Docs
 
 Only include this subsection if this repo has upstream journey/persona/brainstorming docs. For each one linked from the derived docs above, decide which bucket it falls into — don't skip a doc just because it's "upstream":
 
@@ -113,7 +124,7 @@ Only include this subsection if this repo has upstream journey/persona/brainstor
 | [5-brainstorming.md](../../../inception/5-brainstorming.md) | [The feature description that scoped the original, now-partially-reversed behaviour] | **Do not rewrite** — frozen record of the original decision. Leave as historical record; the derived doc's History & Evolution entry (7.1) is the forward-link documenting the reversal |
 | [3-personas/*.md](../../../inception/3-personas/) | [State explicitly whether any persona doc needs a change, even if the answer is "no change needed"] | [Edit, or confirm no change needed] |
 
-## 8. Open Questions
+## 9. Open Questions
 
 | # | Question |
 | :---: | :--- |

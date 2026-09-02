@@ -14,6 +14,20 @@ Carry each row over from the proposal's Open Questions table with its resolution
 
 ---
 
+## 0. Cross-Repo Dependencies
+
+Fill this section only if the Scope of Change table in `proposal.md` spans more than one repository. Leave it blank (or remove the table) for single-repo changes.
+
+| # | Repo | Role in this change | Deploy first? |
+| :---: | :--- | :--- | :---: |
+| 1 | `[repo-name or path]` | [What changes there and why] | ✅ / — |
+| 2 | `[repo-name or path]` | [What changes there and why] | — |
+| 3 | this repo | [What changes here] | — |
+
+> **Deploy order note:** describe any hard ordering constraint (e.g. "repo 2 must be deployed before this repo — the new event payload references a template ID that must exist in repo 2 first").
+
+---
+
 ## 1. Pre-Implementation Checklist
 
 - [ ] All Open Questions in `proposal.md` are answered
@@ -33,11 +47,13 @@ Derive phases from the proposal's **Scope of Change** table — one phase per fi
 **Goal:** [What this phase achieves]
 
 **Tasks:**
+
 - [ ] Write/update tests for `[RealUnitName]` describing the new behaviour first (test-first if this repo follows TDD; otherwise match its existing test-authoring convention)
 - [ ] Implement the change in `[real/path/to/source-file.ext]`
 - [ ] Remove now-dead code identified in the proposal (functions, constants, unused params) — don't leave it commented out or behind a flag unless the proposal explicitly calls for a staged rollout
 
 **Deliverables:**
+
 - [ ] `[real/path/to/source-file.test.ext]` updated
 - [ ] `[real/path/to/source-file.ext]` updated
 
@@ -46,6 +62,7 @@ Derive phases from the proposal's **Scope of Change** table — one phase per fi
 **Goal:** [What this phase achieves]
 
 **Tasks:**
+
 - [ ] [...]
 
 ### Phase 3: Integration & Acceptance Tests
@@ -53,6 +70,7 @@ Derive phases from the proposal's **Scope of Change** table — one phase per fi
 **Goal:** Verify the end-to-end behaviour described in the proposal's "Desired Behaviour" table, including concurrency safeguards, migration compatibility, and invariant protections.
 
 **Tasks:**
+
 - [ ] Update `[real/path/to/integration-or-acceptance-test.ext]` to match new behaviour
 - [ ] Add a case for the specific edge case called out in the proposal (e.g. "entity with zero matches now yields an empty result, not a fallback")
 - [ ] Add tests for concurrency/TOCTOU mitigations (e.g. concurrent race condition handling, duplicate key / uniqueness collision mapping, optimistic locking conflict)
