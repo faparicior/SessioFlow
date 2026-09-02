@@ -28,6 +28,19 @@
 
 ---
 
+## 🔗 Cross-Repo Dependencies
+
+Fill this section only if this flow touches more than one repository. Remove it for single-repo flows.
+
+| # | Repo | Role in this flow | Deploy first? |
+|---|------|-------------------|:---:|
+| 1 | `[repo-name or path]` | [What changes there and why] | ✅ / — |
+| 2 | this repo | [What changes here] | — |
+
+> **Deploy order note:** describe any hard ordering constraint (e.g. "repo 1 must deploy before this repo — the new event payload references a contract that must exist in repo 1 first").
+
+---
+
 ## 🧠 Agent Design Decisions & Assumptions (Lack of Information Log)
 *Explicitly documents all judgment calls, runtime defaults, or tie-breakers made by the LLM due to missing, underspecified, or conflicting information in repository documents.*
 
