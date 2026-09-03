@@ -32,7 +32,12 @@ Evaluate the ADR against the following checklist:
 *   **Completeness**: Does the ADR explicitly list **Positive**, **Negative**, and **Risks**?
 *   **Honesty**: Are negative consequences (e.g., increased complexity, technical debt) acknowledged?
 
-### 6. Links & References
+### 6. AI & Agentic Ergonomics (AX)
+*   **Training & Corpus Alignment**: Does the ADR evaluate how common or atypical the proposed solution is for LLMs (% estimated training match)?
+*   **Guardrails & Mitigations**: If the pattern is atypical (<30% corpus), are explicit automated guardrails (`check:arch`, arch tests, `AGENTS.md` rules, linters) defined?
+*   **Supervision Assessment**: Is the guardrail tax / human oversight burden acknowledged?
+
+### 7. Links & References
 *   Are references to ticket systems (Jira) or external docs included where applicable?
 
 ## Output Format
@@ -51,6 +56,7 @@ Please provide your review in the following Markdown format:
 | **Options** | ✅ / ⚠️ / ❌ | ... |
 | **Decision** | ✅ / ⚠️ / ❌ | ... |
 | **Consequences** | ✅ / ⚠️ / ❌ | ... |
+| **AI Ergonomics** | ✅ / ⚠️ / ❌ | ... |
 
 ### Key Questions to Address
 *   (Ask 1-2 probing questions to help the author refine their thinking, if necessary).

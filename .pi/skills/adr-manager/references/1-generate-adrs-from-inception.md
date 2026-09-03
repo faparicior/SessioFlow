@@ -81,6 +81,7 @@ Look for decisions needed in these categories:
 - Security measures (based on data sensitivity)
 - Accessibility standards (from persona needs)
 - Internationalization (from product scope)
+- AI-Assisted Development & Agent Ergonomics (LLM corpus alignment, expected drifts, required automated guardrails)
 
 ### Phase 3: Generate ADRs
 

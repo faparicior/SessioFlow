@@ -66,11 +66,11 @@
 
 #### Current Alternatives (2025-2026)
 
-| Alternative | Bundle Size | DX | Performance | Popularity | Cost | Best For |
-|-------------|-------------|-----|-------------|------------|------|----------|
-| [Option 1] | [size] | ⭐⭐⭐⭐⭐ | [metrics] | ⭐⭐⭐⭐⭐ | [pricing] | [use case] |
-| [Option 2] | [size] | ⭐⭐⭐⭐ | [metrics] | ⭐⭐⭐⭐ | [pricing] | [use case] |
-| [Option 3] | [size] | ⭐⭐⭐ | [metrics] | ⭐⭐⭐ | [pricing] | [use case] |
+| Alternative | Bundle Size | DX | Agent Fit (AX) | Performance | Popularity | Cost | Best For |
+|-------------|-------------|-----|----------------|-------------|------------|------|----------|
+| [Option 1] | [size] | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | [metrics] | ⭐⭐⭐⭐⭐ | [pricing] | [use case] |
+| [Option 2] | [size] | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | [metrics] | ⭐⭐⭐⭐ | [pricing] | [use case] |
+| [Option 3] | [size] | ⭐⭐⭐ | ⭐⭐⭐ | [metrics] | ⭐⭐⭐ | [pricing] | [use case] |
 
 **Analysis Method:**
 - [Describe how alternatives were evaluated - e.g., "Compared 5 sources from 2025-2026"]
@@ -374,10 +374,11 @@ These decisions remain optimal and require no action:
 
 Each alternative was evaluated against:
 - [Criterion 1 - e.g., Performance]
-- [Criterion 2 - e.g., Developer Experience]
-- [Criterion 3 - e.g., Cost]
-- [Criterion 4 - e.g., Community Support]
-- [Criterion 5 - e.g., Learning Curve]
+- [Criterion 2 - e.g., Developer Experience (DX)]
+- [Criterion 3 - e.g., Agent Ergonomics (AX) & LLM Training Corpus Alignment]
+- [Criterion 4 - e.g., Cost & Free Tier Sustainability]
+- [Criterion 5 - e.g., Community Support & Ecosystem Maturity]
+- [Criterion 6 - e.g., Learning Curve & Guardrail Tax]
 
 ---
 
@@ -388,6 +389,7 @@ Each alternative was evaluated against:
 - [ ] All ADRs evaluated with multiple sources
 - [ ] All claims backed by 2025-2026 evidence
 - [ ] Context-specific to SessioFlow requirements
+- [ ] Evaluated AI / Agentic ergonomics and guardrail requirements
 - [ ] Recommendations are actionable and clear
 - [ ] Both strengths and weaknesses documented
 - [ ] Analysis is balanced (not biased toward new tech)
