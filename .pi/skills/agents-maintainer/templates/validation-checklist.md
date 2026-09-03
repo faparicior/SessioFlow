@@ -49,6 +49,11 @@ Use this checklist to validate the quality and completeness of AGENTS.md files.
 - [ ] Tables used for comparisons
 - [ ] Cross-references between related sections
 
+### AI Bias & Guardrail Mitigations
+- [ ] Explicitly addresses atypical architecture decisions that contradict default LLM training bias (e.g., DDD tactical rules, pure handlers, Value Objects without primitive obsession)
+- [ ] Documents toolchain and dual-build idiosyncrasies (e.g., `dist/` vs `src/` resolution in monorepo, `xo` vs Prettier rules)
+- [ ] Lists concrete automated checks (`npm run check:arch`, `ts-archunit`, `npm run lint`) to prevent architectural drift
+
 ## 🔍 Karpathy Principles Checklist
 
 ### Principle Coverage

@@ -33,6 +33,13 @@
 *   **Negative:** [e.g., Increased deployment complexity]
 *   **Risks:** [e.g., Vendor lock-in]
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+*   **LLM Corpus Alignment:** [High (>80%) | Medium (30-80%) | Atypical/Exotic (<10%)]
+*   **Expected Agent Inercias / Biases:** [e.g., Agents will attempt to write CRUD logic in route handlers or use primitive types instead of Value Objects]
+*   **Required Automated Guardrails:** [e.g., `check:arch`, ts-archunit rules, custom linters, explicit AGENTS.md rules]
+*   **Supervision & Guardrail Tax:** [Low | Medium | High — human review and automated verification overhead]
+
 ## Pros and Cons of the Options
 
 ### [Option 1]
