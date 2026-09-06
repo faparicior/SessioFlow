@@ -273,6 +273,47 @@ Si quieres que explore alguno de estos puntos en más profundidad (por ejemplo, 
 
 Qwen 3.8
 
+He revisado el repo para anclar el análisis en lo que hay de verdad aquí (≈126 ficheros TS, un único bounded context `conference`, 23 ADRs con cadena de enmiendas, `tests/` separado, xo, ts-archunit, etc.). Una advertencia honesta antes de empezar: no puedo "introspectar" mis pesos; lo que sigue es una comparación razonada entre lo que este repo hace y lo que estadísticamente domina el corpus TypeScript/web público. Con eso dicho, sí: hay fricción real, y es localizada.
+
+## Dónde está la atipicidad (ordenada por coste para mí)
+
+**1. El prior de Next.js empuja a lo contrario de lo que este repo hace — y es lo más caro.**
+En el 99% del training, un `route.ts` de App Router *contiene* la lógica o llama a un `lib/services/*`. Aquí `apps/frontend/src/app/api/v1/conferences/route.ts` es un adaptador fino que invoca `createConferenceController(...)` desde `@sessioflow/conference/container.ts`. Mi "inercia" propone repetidamente meter validación, try/catch de negocio o acceso a Drizzle dentro de la ruta. La corrección no es un recuerdo, es una *regla activa* que tengo que sostener contra un prior muy fuerte cada vez que toco una ruta. Es el punto #1 porque se toca en cada feature, no una vez.
+
+**2. DDD en TypeScript es un dialecto, no un recuerdo.**
+DDD con Value Objects de constructor privado + `static create()` + `get value()` + `equals()`, DomainError que *lanza* en dominio, handlers *puros sin try/catch*, y el controller como único traductor a HTTP — todo eso existe en mi training, pero casi todo en **Java/C#** (Evans/Vernon, Spring, .NET) y en blogs de Node que cada uno hace una variante distinta y contradictoria. Lo que SessioFlow fija es una *variedad concreta* entre cinco variedades plausibles. Un agente sin AGENTS.md elegiría una de las otras cuatro con total convicción. Los ADRs 015/016/016-01/017/021 hacen exactamente de "fine-tuning sin fine-tuning": cada uno aplasta un prior (Nest/inversify/decoradores para DI, `Result<T>` en dominio, transacciones en repository, etc.).
+
+**3. La taxonomía de rutas es de tres árboles y cada artefacto vive en un solo lugar.**
+Código en `packages/modules/*/src/{domain,application,infrastructure,interfaces}`, tests en `tests/{unit,integration,backend,e2e}/modules/...` espejando capas, specs en `docs/product/bounded-contexts/*/flows/`. El training dice "test junto al src" o `__tests__/`. Yo me equivoco aquí *constantemente* si no releo las convenciones, y el error es silencioso: el test pasa igual, solo que en el sitio prohibido, y solo lo pilla un humano o un reviewer con el mapa en la cabeza.
+
+**4. La trampa `dist` vs `src` es contraria a todo mi modelo mental de feedback.**
+`exports` → `dist/`, vitest aliases → `src/`. Que un unit test en verde conviva con un `npm run build` roto es un modo de fallo que el training casi no contiene, porque la mayoría de setups no tienen esta escisión. Necesité que estuviera escrito en AGENTS.md; ningún olor natural me lo advierte.
+
+**5. La cadena de enmiendas de ADRs (002-00 → 002-01, 009 → 009-01 superseded por 023).**
+El prior es "un ADR = una decisión, numeración lineal". Aquí, leer *un* ADR puede darme la decisión muerta: Supabase "serverless" de 002-00 ya no existe, rige la enmienda de abstracción DDD; Magic Link de 004-00 tampoco. Riesgo real: implementar desde el documento superseded porque es el que aparece primero al hacer glob. La tabla Quick Reference del README mitiga esto enormemente, pero exige leerla *antes* que los ficheros.
+
+**6. Herramientas con presencia web tenue: ts-archunit y xo.**
+`ts-archunit` tiene una fracción mínima de la presencia de ArchUnit (Java). Sus trampas —`functions(p)` vs `classes(p)`, `modules(p)` para restricciones de import, ghost DTOs invisibles sin `addSourceFilesAtPaths`, el builder AND-only sin `.or()`— no están en mi training como conocimiento memorizado; las se aprendió *aquí*, empíricamente. Igual xo: mi prior es ESLint flat config; reglas como `react/jsx-sort-props` (shorthand → alfabético → callbacks al final), el falso `no-unsafe-call` bajo alias `@/*`, y que `npx xo` con rutas `[id]` bracketeadas no matchee, son idiosincrasia de esta config, no del ecosistema.
+
+**7. Qué NO me cuesta: el lenguaje.**
+TypeScript strict, Zod, Drizzle, Tailwind, shadcn, App Router, Vitest, Playwright — todo eso es训练 en estado puro; ahí mi prior es un *acelerador*, no un freno. La fricción no es de lenguaje ni de framework: es de **convención a granularidad fina**. Este repo no hace nada raro en ingredientes; hace algo rarísimo en la *receta*.
+
+## Ranking honesto de "qué me cuesta más"
+
+| # | Fricción | Frecuencia | Silenciosidad del error |
+|---|---|---|---|
+| 1 | Lógica sangrando al route handler (prior Next.js) | Cada feature | Media (arch test la pilla en interfaces) |
+| 2 | Sitios de tests/archivos entre los 3 árboles | Cada artefacto nuevo | **Alta** — nada lo fuerza |
+| 3 | `dist`/`src` build trap | Tras cada cambio de superficie pública | **Alta** — tests verdes engañan |
+| 4 | Elegir el dialecto DDD "de este repo" vs los otros 4 | Cada VO/handler | Alta |
+| 5 | Saber qué ADR está vigente | Cada decisión | Media |
+| 6 | Quirks de xo/ts-archunit | Iteración | Baja (fallback: la herramienta se queja sola) |
+
+## Por qué, aun así, esto funciona mejor de lo que sugiere la tabla
+
+Lo notable es que el repo ya se auto-compensa como si fuera un "system prompt de arquitectura": AGENTS.md como override explícito de priors, `check:arch` + ts-archunit como *especificación ejecutable* (lo que un test arquitectónico atrapa, mi atipicidad deja de importarlo), la política de "arch tests inmutables" que me prohíbe el modo perezoso de relajar la regla, y los skills (`implement-flow`, `create-entity-lifecycle`) que convierten el proceso en checklist determinista. Donde el repo es más vulnerable es justo donde **no hay test que falle**: colocación de tests, y el gap dist/src — los dos ítems "silenciosos" de arriba. Si un día quieres blindar eso, las dos palancas de mayor retorno serían (a) una check-script estilo `check-arch` que valide que cada `tests/unit/**` espeja una ruta real de `src/`, y (b) que `check:arch` o un script barato haga `turbo build --filter` de los paquetes tocados, para que el build roto se vea sin esperar al build completo.
+
+**Resumen en una frase:** no me cuesta TypeScript ni Next.js; me cuesta sostener contra prior que la lógica *no* vive donde Next.js dice que vive, colocar cada artefacto en un árbol que no existe en el training de nadie, y fiarme de señales (tests verdes, un ADR solitario) que aquí mienten — y ese coste está mayormente neutralizado ya por AGENTS.md, los arch tests y los skills, salvo en los dos puntos silenciosos.
 
 
 Qwen 3.6

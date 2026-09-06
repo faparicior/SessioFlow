@@ -185,4 +185,38 @@ El valor de haber tenido ese prompt no era cambiar vuestra visión de producto n
 
 Qwen 3.8
 
+Sí — pero seamos precisos sobre **qué** habría cambiado ese prompt, porque las dos funciones que planteas ("detectar temprano" vs "cambiar la solución técnica") tienen respuestas distintas.
 
+## 1. ¿Habría cambiado la solución técnica? Probablemente no — y esto es importante decirlo
+
+El espacio de decisiones con tus dos restricciones reales (`hosting gratis en Vercel` ∧ `DDD estricto`) es casi degenerado:
+
+| Opción | Choca con |
+|---|---|
+| Backend separado + frontend en Vercel (009-01) | Rompe el `$0/mes`: el API necesita host propio (los free tiers de Railway/Fly volaron), añade CORS, dos runtimes, drift de contratos — **y además** es su propia atipicidad para agentes (doble servidor) |
+| Next.js monolítico con lógica en `lib/` | Es exactamente lo que el training adora... y viola DDD estricto, que es lo que no querías |
+| Edge Functions / Supabase serverless puro | El Node-DDD con Drizzle + transacciones (ADR-017) no encaja bien ahí |
+| **La que tenéis** | Paga el "agent tax" que te describí, pero es la única que satisface ambas restricciones |
+
+Así que un prompt de fricción **no habría cambiado el qué**; habría cambiado el **cuándo y con qué blindajes**. El costo real de no haberlo tenido no fue una mala decisión, fue una *deuda de gobernanza descubierta tarde*: el ADR-009 (DDD) es del 6 de junio, y el ADR-019 (ts-archunit, que es la ejecutabilidad de esas reglas) no llega hasta el 10 de julio. Un mes de features escritas contra priors antes de tener las reglas ejecutables — que es justo cuando se acumularon las trampas documentadas que hoy veis en AGENTS.md.
+
+## 2. Lo que sí habría valido: no un "prompt", sino un criterio de decisión en el template de ADR
+
+Un prompt suelto se diluye; lo que detecta esto temprano es una sección corta del template con 4 preguntas baratas. Algo así:
+
+**Sección "Agent Friction & Enforceability"** (a evaluar al aprobar el ADR):
+
+1. **Test de sorpresa** — ¿Esta decisión va *contra* el prior fuerte del framework? (Next: "la lógica va en la ruta"; testing: "los tests van junto al src"; DI: "Nest/decoradores"). Si ≥1 sí → el ADR *debe* nombrar el prior contrario explícitamente, porque el AGENTS.md futuro tiene que luchar contra él por nombre.
+2. **Detectabilidad** — ¿Existe un check barato y ejecutable que falle si un agente viola esta decisión? Si no existe, el ADR debe **presupuestar el guardrail antes de la primera feature** que dependa de ella, no después.
+3. **Señales que mienten** — ¿Hay verde que engaña? (tests unitarios en verde con build roto por `dist`/`src`; ADR superseded que parece canónico; arch tests que pasan vacuos en `apps/**`). Cada señal engañosa detectada aquí = un script o una tabla de vigencia, no un "ya lo notaremos".
+4. **Impuesto recurrente vs pago único** — Fricción en cada feature (route handlers) ⇒ regla ejecutable obligatoria. Fricción puntual (scaffolding) ⇒ basta documentación.
+
+Con esas 4 preguntas, el ADR-009 habría dicho en junio: *"3 sorpresas fuertes, 0 checks ejecutables ⇒ no escribir features hasta tener ts-archunit y validación de colocación de tests"*. Y el ADR-023 habría declarado en su momento que `apps/**` quedaba fuera del proyecto de ts-archunit (el agujero vacuo que descubristeis luego a mano).
+
+## 3. De hecho, el repo ya intuyó la mitad — y le falta la otra mitad
+
+El ADR-018 es literalmente *"Observability for AI-Assisted Debugging"*: ya admitíais que el agente es un consumidor del sistema. Pero observabilidad = gobernanza en **runtime/debugging**. Lo que faltaba es el análogo en **autoria**: cuando el agente *escribe* código, sus priors solo se corrigen con reglas ejecutables + override explícito (AGENTS.md). Un criterio de fricción en el template sería el puente: cada decisión que pase el test de sorpresa genera un guardrail antes de usarse.
+
+**Conclusión honesta:** el experimento natural ya ocurrió — elegisteis bien bajo vuestras restricciones visibles y pagasteis el impuesto invisible un mes antes de darte cuenta de que existía. Un prompt/criterio en el ADR no os habría llevado a otra arquitectura (no la había), pero habría convertido el descubrimiento empírico actual en una línea del template: *"toda decisión anti-prior nace con su regla ejecutable o nace bloqueada"*.
+
+Si quieres, te lo materializo: (a) añado la sección al template de ADRs del skill `adr-manager` (`templates/`), o (b) lo redacto como ADR-024 propio ("Agent-friction gate en decisiones de arquitectura") con su análisis de alternativas, que encaja con la línea 018/019. ¿Cuál de las dos prefieres, o ambas?
