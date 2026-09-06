@@ -318,3 +318,129 @@ Lo notable es que el repo ya se auto-compensa como si fuera un "system prompt de
 
 Qwen 3.6
 
+
+Ahora tengo una vista completa. Déjate el análisis honesto:
+
+---
+
+## Análisis: ¿Qué es poco habitual y qué me está costando más?
+
+### Lo que NO me está costando (sorprendentemente bien)
+
+**1. DDD en sí mismo**
+Mis datos de entrenamiento en DDD (entidades, value objects, aggregates, repository pattern, domain events) vienen mayoritariamente de Java/C#/Spring, que es abundante en los datos. `Conference` con `ConferenceId`, `ConferenceName`, `CfpConfig` como value objects con constructor privado y `create()` estático — eso es DDD clásico y lo reconozco bien. No es lo difícil.
+
+**2. Monorepo con Turborepo**
+`apps/`, `packages/`, workspaces, `turbo.json` — es la estructura canónica de Turborepo/Nx. Muy bien representada.
+
+**3. CQRS (comandos y queries separados)**
+El patrón de Command/Query handlers con Mediator es conocido. No es el .NET MediatR pero la estructura es idéntica conceptualmente.
+
+---
+
+### Lo que SÍ me está costando (y por qué)
+
+**1. El punto más difícil: `apps/frontend` es el gateway de API**
+
+```
+Next.js route handler → container.createXxxController() → controller(request, handler, getAuthUser)
+```
+
+Esto es **invertido** comparado con el 95% de los patrones en mi entrenamiento:
+
+| Patrón común en datos | Patrón de SessioFlow |
+|---|---|
+| `apps/backend/` tiene el servidor Express/Fastify, `apps/frontend/` solo tiene UI | `apps/frontend/` tiene las route handlers de API + UI |
+| Next.js API routes son handlers simples que llaman a services | Next.js API routes delegan a `container.createXxxController()` |
+| El backend es el entrypoint HTTP | El frontend es el entrypoint HTTP |
+| Separación clara: `npm run dev` del backend y frontend por separado | Frontend hace doble papel (UI + API proxy) |
+
+Esto me confunde porque mi experiencia previa de "Next.js monorepo" siempre es: `apps/api/` o `apps/server/` con el backend. Aquí el "frontend" es el que expone los endpoints HTTP. Tengo que recordar constantemente **qué app es la que responde a peticiones HTTP**.
+
+**2. Value Objects en toda la parte pública de las entidades**
+
+```typescript
+// En mi entrenamiento TypeScript:
+interface User { id: string; name: string; email: string }
+
+// En SessioFlow:
+class Conference {
+  get id(): ConferenceId      // No es string
+  get name(): ConferenceName  // No es string
+  get status(): ConferenceStatus  // No es string
+}
+```
+
+No es que no conozca el patrón — es que en **la mayoría del TypeScript en entrenamiento**, las entidades usan strings/numbers/booleans directamente. Cuando veo un `ConferenceSlug` o `OrganizerId` necesito hacer un paso adicional de razonamiento: "esto es un VO, no puedo tratarlo como string". Eso no viene de forma natural.
+
+**3. Composition Root + Factory methods en lugar de DI framework**
+
+```typescript
+// Mi entrenamiento TS/Node:
+// - InversifyJS (decoradores @injectable)
+// - TypeDI
+// - o simplemente new Xxx() inline
+```
+
+Aquí es:
+```typescript
+// container.ts
+createCreateConferenceController(getAuthUser?) {
+  const handler = this.createCreateConferenceHandler();
+  return (request) => createConferenceController(request, handler, getAuthUser);
+}
+```
+
+Esto es **pure DI** (Mark Seemann) — manual, factory-based. No es un framework. Es correcto pero atípico para el ecosistema Node/TypeScript que domino. Me obliga a rastrear las factory methods del container en lugar de buscar un decorador @Inject.
+
+**4. `packages/modules/*/` en lugar de `apps/backend/src/modules/*/`**
+
+En mi entrenamiento:
+- Modules van **dentro** del app que los usa (`apps/backend/src/modules/`)
+- O bien están como packages independientes pero el app los importa desde `src/`
+
+Aquí:
+- Modules son packages independientes `@sessioflow/conference`
+- Se consumen vía `exports` que apuntan a `dist/`
+- Tienen que ser buildados con `tsc` separadamente
+
+Esto me confunde en el loop de desarrollo: "¿puedo probar el handler directamente o tiene que estar buildado el package?"
+
+**5. ts-archunit — esto es prácticamente único**
+
+Las reglas de arquitectura que escribimos (`functions(p)`, `modules(p)`, `satisfy(defineCondition(...))`) — ts-archunit es **muy poco conocido** en los datos de entrenamiento. No tengo referencias de "cómo se escriben reglas de ts-archunit". Tuve que aprenderlo de cero con los ejemplos que me diste. Es un patrón completamente personalizado.
+
+**6. El patrón de validación en dos capas: Zod en `api-definitions` → Command → Domain VO**
+
+```
+HTTP body → Zod (api-definitions/zod/conference.schema.ts)
+  → CreateConferenceCommand (application)
+    → VO factories (ConferenceName.create() dentro del domain)
+```
+
+En mi entrenamiento, la validación es generalmente **en una capa**: Zod en el controller O bien validación en el VO, no en tres capas sucesivas. Tengo que razonar sobre qué capa hace qué validación y qué pasa si fallan en diferente orden.
+
+---
+
+### Resumen: ranking de dificultad
+
+| Nivel | Qué | Por qué |
+|---|---|---|
+| 🔴 **Mayor dificultad** | `apps/frontend` como API gateway | Invierte el patrón "frontend=UI, backend=API" que es universal en entrenamiento |
+| 🟠 **Dificultad media-alta** | Composition Root factory-based sin DI framework | No es el patrón Node que conozco (InversifyJS, TypeDI) |
+| 🟠 **Dificultad media-alta** | Value Objects en propiedades públicas de aggregates | La mayoría de TS en entrenamiento usa primitivas directamente |
+| 🟡 **Dificultad media** | `packages/modules/` con `dist/` compilación separada | No es el patrón habitual de monorepo (src directo) |
+| 🟡 **Dificultad media** | Validación en 3 capas (Zod → Command → VO) | Patrún de validación escalonado inusual |
+| 🟢 **Baja dificultad** | DDD puro (entidades, repos, events) | Bien representado en datos Java/C# |
+| 🟢 **Baja dificultad** | CQRS (command/query handlers) | Patrón bien conocido a pesar de ser inusual en TS |
+| 🟢 **Baja dificultad** | Monorepo Turborepo | Estructura canónica bien cubierta |
+
+---
+
+### Conclusión honesta
+
+Lo que más me está frenando no es el DDD ni el CQRS ni los Value Objects. Es la **inversión del modelo mental "frontend vs backend"**: tener un `apps/frontend` que actúa como gateway HTTP delegando a DDD controllers en `packages/modules/` rompe el patrón que 99% del código TypeScript en mi entrenamiento tiene (donde `apps/backend` o `apps/api` son el servidor). Eso me fuerza a re-mapear constantemente "quién responde las peticiones HTTP".
+
+El segundo factor es la **combinación de patterns** (Composition Root + factory methods + packages compilados + doble papel de frontend). Individualmente cada patrón es conocido; pero su combinación específica es rara. Mi cerebro (el modelo) busca "cuál es el patrón habitual de Next.js monorepo con DDD" y la respuesta es... casi no existe en los datos de entrenamiento.
+
+¿Quieres que profundice en algún aspecto específico?
