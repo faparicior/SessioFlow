@@ -220,3 +220,122 @@ El ADR-018 es literalmente *"Observability for AI-Assisted Debugging"*: ya admit
 **Conclusión honesta:** el experimento natural ya ocurrió — elegisteis bien bajo vuestras restricciones visibles y pagasteis el impuesto invisible un mes antes de darte cuenta de que existía. Un prompt/criterio en el ADR no os habría llevado a otra arquitectura (no la había), pero habría convertido el descubrimiento empírico actual en una línea del template: *"toda decisión anti-prior nace con su regla ejecutable o nace bloqueada"*.
 
 Si quieres, te lo materializo: (a) añado la sección al template de ADRs del skill `adr-manager` (`templates/`), o (b) lo redacto como ADR-024 propio ("Agent-friction gate en decisiones de arquitectura") con su análisis de alternativas, que encaja con la línea 018/019. ¿Cuál de las dos prefieres, o ambas?
+
+Qwen 3.6
+
+Sí, definitivamente habría ayudado. Pero no con un "prompt" mágico — con **criterios de evaluación faltantes** en los ADRs clave. Déjate ver qué les faltó y cuándo se perdió la oportunidad.
+
+---
+
+## Dónde se perdió la alerta
+
+### ADR-009 (ADOPT DDD) — 2026-06-06
+
+Aquí se tomó la decisión base: DDD puro con `src/domain/`, `src/application/`, `src/interfaces/`. En ese momento **no existía aún el constraint de Vercel Free** que fuerza el doble-papel de `apps/frontend`. Por lo tanto, no se planteó nunca la pregunta:
+
+> *"¿Cómo va a acceder un agente de IA a estos módulos backend si el entrypoint HTTP vive en `apps/frontend/`?"*
+
+En los "AI-Assisted DDD Development" (la sección larga de ADR-009) se habla de que "AI tools understand DDD patterns from training data" y que "reduces DDD overhead by 60-70%". Eso es una **asunción peligrosa**: asume que el patrón de código es lo único que importa para el AI. No lo es. **La navegación del código es el 50% del problema**. Un agente que llega a `apps/frontend/src/app/api/v1/conferences/route.ts` no tiene ninguna pista de que tiene que mirar `packages/modules/conference/`.
+
+### ADR-009-01 (MONOREPO BACKEND/FRONTEND SEPARATION) — 2026-06-25
+
+Este es el ADR donde se decide el layout `apps/frontend` + `apps/backend`. Aquí sí era el momento de haber incluido:
+
+```
+## AI-Assisted Development Impact Assessment
+```
+
+En lugar de, en las "Positive consequences" se dice:
+
+> "✅ Clear ownership: Frontend team never touches backend code, vice versa"
+
+Pero **nunca se evaluó el costo cognitivo para un agente de IA**. El criterio que faltó fue:
+
+> **Criterio X: "Cognitive Navigability"** — ¿Puede un desarrollador (humano o agente) encontrar en <3 clics el código relevante dado un endpoint HTTP?
+
+| Estructura | Clics para encontrar el handler | Convencionalidad del patrón |
+|---|---|---|
+| `apps/api/` → `src/modules/` | 2 (normal) | ✅ Estándar |
+| `apps/frontend/api/v1/route.ts` → `packages/modules/` | 4+ (invertido) | ❌ Inusual |
+| `apps/backend/src/interfaces/` → `packages/modules/` | 2 (normal) | ✅ Estándar |
+
+### ADR-023 (COMPREHENSIVE MONOREPO STRUCTURE UPDATE) — 2026-07-25
+
+Aquí ya existía el constraint Vercel Free + DDD. Y aún así no se preguntó. Los "Risks" son:
+
+> "⚠️ Developers may accidentally import domain entities into frontend"
+> "⚠️ API schema drift"
+> "⚠️ API schema versioning required"
+
+Nada sobre: **"⚠️ Este patrón invierte la convención estándar de Next.js monorepo, lo que puede aumentar la fricción de onboarding y la tasa de errores de navegación en herramientas de IA"**.
+
+---
+
+## Qué se debería haber añadido
+
+### ADR "fantasma" que faltó: ADR-00X: AI-Assisted Navigation Model
+
+Habría tenido que ser un ADR específico que evalúe **cómo navega el desarrollador principal (humano o agente) el código**, no solo los atributos técnicos.
+
+```markdown
+## AI-Assisted Navigation Assessment
+
+### Critical Question
+When a developer (human or AI agent) sees a URL pattern `/api/v1/conferences`,
+can they find the handler code within 3 navigation actions?
+
+### Evaluation Matrix
+
+| Criterion | Score | Notes |
+|-----------|-------|-------|
+| Intuitive path (HTTP → handler) | ⚠️ MEDIUM | `apps/frontend/` is an unexpected location for API handlers |
+| Pattern conventionality (TS ecosystem) | 🔴 LOW | 99% of TS monorepos put API in `apps/backend/` or `apps/api/` |
+| AI agent training coverage | 🟡 MEDIUM | DDD patterns are well-trained; "frontend-as-gateway" is not |
+| Cognitive load for new developer | 🟠 HIGH | Must learn two maps: "app" layout AND "packages" DDD layout |
+
+### Decision
+Accept the cognitive cost IF:
+- [ ] The team has < 3 members and is self-sufficient in navigation
+- [ ] AGNOSIS (navigation index) is documented as a known constraint
+- [ ] AI agent guidelines explicitly cover the inverted structure
+```
+
+### Un criterio de evaluación genérico para TODOS los ADRs
+
+El problema de fondo es que **los ADRs no tienen una checklist de "costo cognitivo"**. Cada ADR evalúa:
+
+- ✅ Vendor lock-in
+- ✅ Migration cost  
+- ✅ Stack swappability
+- ✅ Developer onboarding (solo de forma superficial)
+- ✅ AI-assisted development (solo como "AI es rápido con DDD")
+
+Pero falta:
+
+- **"Conventional pattern matching"** — ¿Qué porcentaje del código en mi entrenamiento usa este patrón?
+- **"Inversion cost"** — ¿Cuánto me cuesta re-mapear mentalmente la convención X?
+- **"Navigation depth"** — ¿Cuántos saltos de código necesita un agente para llegar al handler?
+
+---
+
+## ¿Cambiaba esto la decisión técnica?
+
+**No.** Dada la constraint "Vercel Free + DDD estricto", `apps/frontend` como API gateway es **la única solución viable**. Si hubiera un ADR que dijera "⚠️ esto es cognitivamente caro", no cambiaría la decisión — la documentaría como un **trade-off aceptado con mitigación**:
+
+1. **AGENTS.md / AI guidelines** — documentar explícitamente la inversión: "⚠️ `apps/frontend` es el gateway HTTP, no solo la UI"
+2. **`apps/frontend/src/app/api/v1/`** — que los route handlers sean **tan delgados** que la lógica esté obvia en `packages/modules/` (ya lo son: 3 líneas de delegación)
+3. **Compostura del composition root** — que `container.createXxxController()` sea el único punto de entrada, así un agente que entienda el patrón de factory no se pierde
+
+La decisión era correcta. Lo que faltó fue **explicitar el costo cognitivo como un riesgo aceptado**, no como un defecto del diseño.
+
+---
+
+## Resumiendo
+
+| Qué faltó | Dónde debería haber ido | Por qué no se detectó |
+|---|---|---|
+| "Cognitive navigation" como criterio de evaluación | ADR-009-01 y ADR-023 | Los ADRs solo miden métricas técnicas (costo de migración, vendor lock-in), no costo cognitivo |
+| Un ADR específico sobre cómo navega el agente de IA el código | ADR intermedia (no existió) | Solo pensamos en humanos como desarrolladores, no en agentes como desarrolladores principales |
+| Explicitar "inversión de patrón" como trade-off | "Consequences" de cada ADR | Se asumía que "AI understands DDD" cubría todo. No cubre la navegación |
+
+El error no fue la decisión técnica. El error fue **no medir el costo cognitivo de la inversión estructural** y asumirlo implícitamente con "AI tools excel at DDD patterns". Los agentes de IA no solo necesitan entender DDD — necesitan encontrar dónde está el código. Y eso depende del layout del repositorio, que es lo que ningún ADR evaluó.
