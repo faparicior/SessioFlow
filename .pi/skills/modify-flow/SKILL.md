@@ -66,8 +66,8 @@ runs:
    a config toggle, an env var convention) before assuming a new one is needed.
 5. **Cross-repo dependencies:** read `CLAUDE.md` (or `AGENTS.md`) for a **Cross-Repo Dependencies** section. Note which other repos this change may touch, what changes there, and whether there is a required deploy order. This feeds Section 6 of the proposal and Section 0 of the implementation plan — discover it here, not later.
 6. **Existing modification-proposal precedent:** check whether the repo already has a "proposal" or
-   "change request" convention (an `openspec/`-style folder, an ADR process, a "working docs" folder) — if
-   so, prefer reusing that shape over this skill's templates; if not, use `templates/proposal.md` /
+   "change request" convention (an ADR process, a "working docs" folder) — if so, prefer reusing that
+   shape over this skill's templates; if not, use `templates/proposal.md` /
    `templates/implementation-plan.md` as-is.
 
 ---
