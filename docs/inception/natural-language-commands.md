@@ -20,10 +20,10 @@ This document lists all the natural language phrases that activate the Inception
 |------------------|--------------|
 | "Let's work on the personas" | Activates Step 3: Personas |
 | "Create the empathy map" | Activates Step 4: Empathy Map |
-| "Start user journey mapping" | Activates Step 6: User Journey |
+| "Start user journey mapping" | Activates Step 5: User Journey |
 | "Work on the product vision" | Activates Step 1: Product Vision |
 | "Do the tradeoffs analysis" | Activates Step 2: Tradeoffs |
-| "Brainstorm features" | Activates Step 5: Brainstorming |
+| "Brainstorm features" | Activates Step 6: Brainstorming |
 | "Plan the feature sequencing" | Activates Step 7: Features & Sequencing |
 | "Define the MVP canvas" | Activates Step 8: MVP Canvas |
 
@@ -42,7 +42,7 @@ This document lists all the natural language phrases that activate the Inception
 |------------------|--------------|
 | "Validate the product vision" | Validates Step 1 |
 | "Check if the personas are complete" | Validates Step 3 |
-| "Review the user journey" | Validates Step 6 |
+| "Review the user journey" | Validates Step 5 |
 | "Validate the MVP canvas" | Validates Step 8 |
 | "Check the tradeoffs" | Validates Step 2 |
 
@@ -58,9 +58,9 @@ This document lists all the natural language phrases that activate the Inception
 
 | Natural Language | What It Does |
 |------------------|--------------|
-| "Generate flows from the journey" | Creates flow specs from Step 6 |
-| "Create flow specifications" | Creates flow specs from Step 6 |
-| "Turn the journey into flows" | Creates flow specs from Step 6 |
+| "Generate flows from the journey" | Creates flow specs from Step 5 |
+| "Create flow specifications" | Creates flow specs from Step 5 |
+| "Turn the journey into flows" | Creates flow specs from Step 5 |
 
 ---
 
@@ -94,14 +94,14 @@ This document lists all the natural language phrases that activate the Inception
 - "What does the user think/feel?"
 - "Empathy blueprint"
 
-### Brainstorming (Step 5)
+### Brainstorming (Step 6)
 - "Brainstorm features"
 - "Generate feature ideas"
 - "What features should we build?"
 - "Idea generation"
 - "Feature discovery"
 
-### User Journey (Step 6)
+### User Journey (Step 5)
 - "Map the user journey"
 - "Create user flows"
 - "Walk through the customer journey"
@@ -133,7 +133,7 @@ The skill can also be activated with contextual phrases:
 | Starting fresh | "We need to define what we're building" → Step 1 |
 | Already have vision | "Who are we building this for?" → Step 3 |
 | Have personas | "What do they actually experience?" → Step 4 |
-| Have features | "How do users actually use these?" → Step 6 |
+| Have features | "How do users actually use these?" → Step 5 |
 | Have journey | "What should we build first?" → Step 7 |
 | Have sequencing | "What's our MVP?" → Step 8 |
 
@@ -156,7 +156,7 @@ For reference, here's how natural language maps to CLI commands:
 → pi skill inception-workshop --mode tradeoff-generator
 
 "Validate the user journey"
-→ pi skill inception-workshop --mode validate --step 6 --file docs/inception/6-user-journeys/
+→ pi skill inception-workshop --mode validate --step 5 --file docs/inception/5-user-journeys/
 
 "Generate all steps"
 → pi skill inception-workshop --mode batch --context "Your product description"

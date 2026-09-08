@@ -104,8 +104,8 @@ docs/inception/
 ├── 2-tradeoffs.md                      ✅ Generated
 ├── 3-personas/                         ✅ Generated
 ├── 4-empathy-map.md                      ✅ Generated
-├── 5-brainstorming.md                    ✅ Generated
-├── 6-user-journeys/                      ✅ Generated
+├── 6-brainstorming.md                    ✅ Generated
+├── 5-user-journeys/                      ✅ Generated
 ├── 7-features-and-sequencing.md        ✅ Generated
 └── 8-mvp-canvas.md                     ✅ Generated
 ```
@@ -159,8 +159,8 @@ After any mode, validate the outputs:
 ```bash
 # Validate Step 6 (User Journey)
 pi subagent << 'EOF'
-Read docs/inception/6-user-journeys/
-Read docs/commands/inception/6-user-journey-validator.md
+Read docs/inception/5-user-journeys/
+Read docs/commands/inception/5-user-journey-validator.md
 
 Evaluate the journey against the validator criteria and provide:
 1. Alignment score (1-10)
@@ -180,7 +180,7 @@ Once inception is complete, use the output to generate flow documentation:
 # From Journey Mapping to Flow Specs
 pi subagent << 'EOF'
 Read:
-- docs/inception/6-user-journey.md (contains journey stages)
+- docs/inception/5-user-journey.md (contains journey stages)
 - docs/inception/7-features-and-sequencing.md (contains MVP features)
 - docs/templates/product/flows.md (flow template)
 
