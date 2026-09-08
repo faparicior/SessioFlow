@@ -63,10 +63,11 @@ This wave addresses the "Middle" of the lifecycle. Once proposals are in, Fernan
 
 
 ### 🗑️ Parking Lot (Out of Scope for now)
-*Features that are not critical for the initial validation.*
 
-* [ ] **Collect Attendee Feedback**: Happens *after* the main problem (organizing) is solved.
-* [ ] **Detect Schedule Conflicts**: A "quality of life" feature. Small conferences can manage this manually.
+| Feature | Effort | Why parked | Unblock condition |
+| :--- | :---: | :--- | :--- |
+| Collect Attendee Feedback | E | Happens *after* the main problem (organizing) is solved | Post-event workflow becomes a stated user need |
+| Detect Schedule Conflicts | E | Quality-of-life feature; small conferences can manage this manually | Conflict reports become a recurring organizer pain point |
 
 ---
 
