@@ -36,8 +36,9 @@
 | [e.g., Public API] | EEE | $ | ♥ | TT | @TeamGreen |
 
 ### 🗑️ Parking Lot (Out of Scope for now)
-*Features that will not be pursued in the near term.*
 
-* [ ] [e.g., Integrated AI predictive modeling]
+| Feature | Effort | Why parked | Unblock condition |
+| :--- | :---: | :--- | :--- |
+| [e.g., Integrated AI predictive modeling] | EEE | [e.g., 🔴 confidence; unresolved design] | [e.g., Design spike completed] |
 
 ---
