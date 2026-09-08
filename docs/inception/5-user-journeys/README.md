@@ -1,7 +1,7 @@
-# Step 6: User Journey Mapping
+# Step 5: User Journey Mapping
 
 ## Goal
-Map the sequence of steps that users (personas) take to achieve their goals. This connects the **Features** identified in Step 5 to a coherent narrative, ensuring no step is missing and the flow is logical.
+Map the sequence of steps that users (personas) take to achieve their goals. This connects the **Features** identified in Step 6 to a coherent narrative, ensuring no step is missing and the flow is logical.
 
 ---
 
@@ -22,7 +22,7 @@ These interactions happen over time, separated by days or weeks. We manage this 
 
 ## Matrix: Feature Coverage Check
 
-*Ensure every "Must-have" feature from Step 5 is used in at least one journey.*
+*Ensure every "Must-have" feature from Step 6 is used in at least one journey.*
 
 | Feature Name | Priority | Used in Journey? |
 | :--- | :--- | :--- |

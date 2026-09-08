@@ -82,18 +82,18 @@ pi subagent --chain inception-workshop
       "agent": "inception-step5-brainstorm",
       "task": "Brainstorm features based on {previous} and empathy map",
       "reads": ["docs/inception/4-empathy-map.md"],
-      "output": "docs/inception/5-brainstorming.md"
+      "output": "docs/inception/6-brainstorming.md"
     },
     {
       "agent": "inception-step6-journey",
       "task": "Map features to user journey stages from {previous}",
-      "reads": ["docs/inception/5-brainstorming.md", "docs/inception/3-personas/"],
-      "output": "docs/inception/6-user-journeys/"
+      "reads": ["docs/inception/6-brainstorming.md", "docs/inception/3-personas/"],
+      "output": "docs/inception/5-user-journeys/"
     },
     {
       "agent": "inception-step7-sequencing",
       "task": "Sequence features into waves (MVP, Wave 2, etc.) from {previous}",
-      "reads": ["docs/inception/6-user-journeys/"],
+      "reads": ["docs/inception/5-user-journeys/"],
       "output": "docs/inception/7-features-and-sequencing.md"
     },
     {
@@ -166,9 +166,9 @@ Each step can have its own specialized agent:
 - Validates against: `docs/commands/inception/1-product-vision-boundary-validator.md`
 
 **Step 6 Agent:** `inception-step6-journey`
-- Reads: `docs/templates/inception/6-user-journey-mapping.md`, previous steps
-- Writes: `docs/inception/6-user-journeys/`
-- Validates against: `docs/commands/inception/6-user-journey-validator.md`
+- Reads: `docs/templates/inception/5-user-journey-mapping.md`, previous steps
+- Writes: `docs/inception/5-user-journeys/`
+- Validates against: `docs/commands/inception/5-user-journey-validator.md`
 
 ---
 

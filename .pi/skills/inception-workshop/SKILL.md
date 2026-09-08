@@ -93,7 +93,7 @@ This skill can be triggered using conversational phrases instead of command-line
 → pi skill inception-workshop --mode batch --context "SessioFlow"
 
 "Validate the user journey mapping"
-→ pi skill inception-workshop --mode validate --step 6 --file docs/inception/6-user-journeys/
+→ pi skill inception-workshop --mode validate --step 5 --file docs/inception/5-user-journeys/
 
 "Create flow specifications from the journey"
 → pi skill inception-workshop --mode generate-flows --from-step 6
@@ -109,8 +109,8 @@ The skill recognizes these step names in natural language:
 | 2 | "tradeoffs", "trade-off board", "understanding trade-offs", "priorities" |
 | 3 | "personas", "user personas", "primary persona", "define users" |
 | 4 | "empathy map", "empathy blueprint", "understand the user" |
-| 5 | "brainstorming", "feature brainstorm", "generate features", "idea generation" |
-| 6 | "user journey", "journey mapping", "user flows", "customer journey" |
+| 5 | "user journey", "journey mapping", "user flows", "customer journey" |
+| 6 | "brainstorming", "feature brainstorm", "generate features", "idea generation" |
 | 7 | "features & sequencing", "release planning", "roadmap", "feature sequencing" |
 | 8 | "MVP canvas", "MVP definition", "minimum viable product", "MVP scope" |
 
@@ -138,8 +138,8 @@ pi skill inception-workshop --mode facilitate --step [N]
 # Start from Step 1 (default)
 pi skill inception-workshop --mode facilitate
 
-# Start from Step 6 (Journey Mapping)
-pi skill inception-workshop --mode facilitate --step 6
+# Start from Step 5 (Journey Mapping)
+pi skill inception-workshop --mode facilitate --step 5
 
 # Generate all 8 steps automatically
 pi skill inception-workshop --mode batch --context "SessioFlow: Call-for-Papers platform"
@@ -247,10 +247,52 @@ pi skill inception-workshop --mode batch --context "SessioFlow: Call-for-Papers 
 | 2 | Tradeoffs | `templates/2-tradeoffs.md` | `docs/inception/2-tradeoffs.md` | `references/2.2-tradeoff-validator.md` | ✅ **Tradeoff Generator** |
 | 3 | Personas | `templates/3-personas.md` | `docs/inception/3-personas/` | `references/3-personas-validator.md` | - |
 | 4 | Empathy Map | `templates/4-empathy-map.md` | `docs/inception/4-empathy-map.md` | `references/4-empathy-map-validator.md` | - |
-| 5 | Brainstorming | `templates/5-brainstorming.md` | `docs/inception/5-brainstorming.md` | `references/5-brainstorming-validator.md` | - |
-| 6 | User Journey | `templates/6-user-journey-mapping.md` | `docs/inception/6-user-journeys/` | `references/6-user-journey-validator.md` | - |
+| 5 | User Journey | `templates/5-user-journey-mapping.md` | `docs/inception/5-user-journeys/` | `references/5-user-journey-validator.md` | - |
+| 6 | Brainstorming | `templates/6-brainstorming.md` | `docs/inception/6-brainstorming.md` | `references/6-brainstorming-validator.md` | - |
 | 7 | Features & Sequencing | `templates/7-features-and-sequencing.md` | `docs/inception/7-features-and-sequencing.md` | `references/7-features-and-sequencing-validator.md` | - |
 | 8 | MVP Canvas | `templates/8-mvp-canvas-definition.md` | `docs/inception/8-mvp-canvas.md` | `references/8-mvp-canvas-definition-validator.md` | - |
+
+## Step Ordering by Scenario
+
+The numbered step sequence (1–8) is the **canonical reference** — it keeps file names, cross-links, and tool output stable. Do not renumber steps. However, the **facilitation order** should adapt to whether you are discovering a new product or documenting an existing one.
+
+### Greenfield (discovering a new product from scratch)
+
+Run steps in sequential order — no swaps needed:
+
+| Run order | Step # | Name | Why here |
+|:---------:|:------:|------|----------|
+| 1 | 1 | Product Vision & Boundaries | Anchors everything — team must agree on what the product is before any other step |
+| 2 | 2 | Tradeoffs | Establishes shared priorities before discovery work begins |
+| 3 | 3 | Personas | Defines who we are building for |
+| 4 | 4 | Empathy Map | Deepens persona understanding before mapping experiences |
+| 5 | 5 | User Journey | Map the experience first — friction points drive the feature list |
+| 6 | 6 | Brainstorming | Features emerge from journey gaps, not from thin air |
+| 7 | 7 | Features & Sequencing | Sequence the features discovered through the journey |
+| 8 | 8 | MVP Canvas | Scope the MVP once sequencing is clear |
+
+### Brownfield (documenting or extending a live product)
+
+Run order diverges from step numbers — Brainstorming (Step 6) runs before User Journey (Step 5):
+
+| Run order | Step # | Name | Why here |
+|:---------:|:------:|------|----------|
+| 1 | 1 | Product Vision & Boundaries | Re-align the team on what the product is today |
+| 2 | 3 | Personas | Identify who the product actually serves |
+| 3 | **6** | **Brainstorming** | Reverse-engineer what is already built before mapping journeys |
+| 4 | **5** | **User Journey** | Map how existing features connect end-to-end; expose gaps |
+| 5 | 7 | Features & Sequencing | Order the next increment based on gaps found in the journey |
+| 6 | 2 | Tradeoffs | Retrospective alignment — useful once scope is clear, not before |
+| 7 | 4 | Empathy Map | Optional; only run if the team is misaligned on a persona |
+| 8 | 8 | MVP Canvas | Document the next increment as an MVP proposal |
+
+**Key differences from greenfield:** Tradeoffs and Empathy Map drop in priority because the product already exists. Brainstorming (Step 6) moves before User Journey (Step 5) because you need to know what is already built before you can map how it connects.
+
+### When running incremental additions (e.g. adding a new persona to an existing product)
+
+Steps 5 and 6 are tightly coupled — bounce between them freely. The distinction between the two scenarios above dissolves for small increments. Write the feature row in Step 5 first (it is faster), then let the journey in Step 6 validate and flesh it out.
+
+---
 
 ## Tradeoff Generator Mode (Step 2 Special)
 
@@ -329,11 +371,11 @@ docs/inception/
 │   ├── 01-[name].md                      # Individual persona file
 │   └── 02-[name].md                      # Individual persona file
 ├── 4-empathy-map.md                      # Step 4 output
-├── 5-brainstorming.md                    # Step 5 output
-├── 6-user-journeys/                      # Step 6 output folder
+├── 5-user-journeys/                      # Step 5 output folder
 │   ├── README.md                         # Composite View & Feature Coverage check
 │   ├── journey-01-[name].md              # Individual journey file
 │   └── journey-02-[name].md              # Individual journey file
+├── 6-brainstorming.md                    # Step 6 output
 ├── 7-features-and-sequencing.md          # Step 7 output
 └── 8-mvp-canvas.md                       # Step 8 output
 ```
@@ -380,8 +422,8 @@ This skill includes all required templates and validators as bundled assets:
 - `templates/2-tradeoffs.md`
 - `templates/3-personas.md`
 - `templates/4-empathy-map.md`
-- `templates/5-brainstorming.md`
-- `templates/6-user-journey-mapping.md`
+- `templates/6-brainstorming.md`
+- `templates/5-user-journey-mapping.md`
 - `templates/7-features-and-sequencing.md`
 - `templates/8-mvp-canvas-definition.md`
 
@@ -390,8 +432,8 @@ This skill includes all required templates and validators as bundled assets:
 - `references/2.2-tradeoff-validator.md`
 - `references/3-personas-validator.md`
 - `references/4-empathy-map-validator.md`
-- `references/5-brainstorming-validator.md`
-- `references/6-user-journey-validator.md`
+- `references/6-brainstorming-validator.md`
+- `references/5-user-journey-validator.md`
 - `references/7-features-and-sequencing-validator.md`
 - `references/8-mvp-canvas-definition-validator.md`
 
@@ -529,7 +571,7 @@ Average Score: 8.7/10
 
 Skill: Generating Flow Specifications
 
-Reading: docs/inception/6-user-journeys/
+Reading: docs/inception/5-user-journeys/
 Reading: docs/inception/7-features-and-sequencing.md
 
 Generating flows for MVP features:
@@ -560,8 +602,11 @@ All flows include:
 
 ---
 
-**Version:** 3.4.0  
-**Last Updated:** 2026-07-13  
+**Version:** 3.5.0  
+**Last Updated:** 2026-09-08  
+**Changes from v3.4:**
+- Swapped Step 5 and Step 6: User Journey is now Step 5, Brainstorming is now Step 6. Templates, validators, and output folders renamed accordingly (`5-user-journey-mapping.md`, `5-user-journeys/`, `6-brainstorming.md`). Greenfield facilitation now runs in sequential step order with no swaps. Brownfield is the scenario that diverges (Step 6 before Step 5).
+- Added "Step Ordering by Scenario" section documenting greenfield (sequential), brownfield (Step 6 before Step 5), and incremental additions (bounce freely).
 **Changes from v3.3:**
 - Step 5: no tech features rule — features must describe user-facing outcomes, not implementation mechanics (Kafka events, crons, webhooks are excluded). Borderline tech features must be reframed as user outcomes before inclusion
 **Changes from v3.2:**

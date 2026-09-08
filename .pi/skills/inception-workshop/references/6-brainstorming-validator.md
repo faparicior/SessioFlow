@@ -60,4 +60,4 @@ Analyze the brainstormed features against the following criteria derived from th
 4. Coach's Question: Ask one question to challenge the MVP scope (e.g., "If you could only build three features from the 'Core' list to validate your primary hypothesis, which would they be?").
 
 
-Eval the file `docs/inception/5-brainstorming.md` content and provide a compliance score for each section.
+Eval the file `docs/inception/6-brainstorming.md` content and provide a compliance score for each section.

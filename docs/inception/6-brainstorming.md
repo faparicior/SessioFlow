@@ -1,4 +1,4 @@
-# Step 5: Features Brainstorming
+# Step 6: Features Brainstorming
 
 ## Goal
 Brainstorm and identify potential features based on the personas and user journeys defined in previous steps. This is a divergent thinking exercise — quantity first, filtering second.
