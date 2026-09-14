@@ -65,9 +65,13 @@ List the positive and negative consequences of the amended approach compared to 
 
 Re-evaluate friction against LLM training corpora for the **amended** pattern — the original ADR's AX assessment may no longer apply after this change.
 
-* **LLM Corpus Alignment:** [High (>80%) | Medium (30-80%) | Atypical/Exotic (<10%) — for the amended pattern, not the original]
-* **Expected Agent Inercias / Biases:** [New deviations the amendment introduces, corpus defaults it restores, or biases it leaves unaddressed]
-* **Required Automated Guardrails:** [Arch tests, linters, AGENTS.md rules added or updated by this amendment; mark any that only exist as prose convention]
+* **LLM Corpus Alignment:** [High (>80%) | Medium (30-80%) | Atypical/Exotic (<30%) — for the amended pattern, not the original]
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| [New deviation the amendment introduces, or corpus default it restores] | [Arch test, linter or AGENTS.md rule added/updated by this amendment] |
+| [Bias with no automated countermeasure] | — (accepted manual-review risk — justify or close the gap) |
+
 * **Supervision & Guardrail Tax:** [Low | Medium | High — and whether it rises or falls compared to the original ADR]
 
 ---

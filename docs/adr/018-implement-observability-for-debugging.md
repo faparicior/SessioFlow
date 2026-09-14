@@ -128,8 +128,14 @@ src/shared/infrastructure/logging/
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — Pino alone is High, but OpenTelemetry wiring in a Next.js monorepo drops the combined pattern to Medium/Low; much corpus logging is still `console.log`.
-* **Expected Agent Inercias / Biases:** Agents sprinkle `console.log` debugging that survives merges, create per-module logger instances without `@sessioflow/shared-logging` request context, log unsanitized PII/secrets, or copy generic OTel setup that does not fit the monorepo.
-* **Required Automated Guardrails:** xo no-console rule; shared-logging AsyncLocalStorage request-context helpers; Pino redaction config; structured logs consumed by AI debugging workflows rather than ad-hoc prints.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| `console.log` debugging that survives merges | xo no-console rule |
+| Per-module loggers without request context | `@sessioflow/shared-logging` AsyncLocalStorage helpers |
+| Logging unsanitized PII/secrets | Pino redaction config; review |
+| Generic OTel setup copy-pasted from the corpus | — (manual review against the monorepo wiring) |
+
 * **Supervision & Guardrail Tax:** Low to Medium — mostly tooling-enforced; supervision targets secret leakage.
 
 ## Pros and Cons of the Options

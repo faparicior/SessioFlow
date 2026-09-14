@@ -73,8 +73,13 @@ Resend combined with Supabase Auth provides the optimal balance of features, cos
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** High (>80%) — Resend usage examples are abundant in the corpus.
-* **Expected Agent Inercias / Biases:** Agents call `resend.emails.send()` directly inside handlers and route handlers, send synchronously inside DB transactions, and inline template HTML — patterns this decision (and its amendment) explicitly discourages.
-* **Required Automated Guardrails:** Outbox-based async dispatch via domain events (`CfpOpenedEvent` → Outbox repository); email sends never in the request path; Supabase Auth owns magic-link mail.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Calling `resend.emails.send()` inside handlers/route handlers | Outbox event dispatch as the only sanctioned email path |
+| Sending synchronously inside DB transactions | Outbox pattern decouples sends from the request/transaction |
+| Inlined HTML email templates | — (manual review; templates consolidated when the optional abstraction lands) |
+
 * **Supervision & Guardrail Tax:** Medium — superseded by ADR-011-01; keep guardrail focus on the outbox invariant, not the provider.
 
 ### Pros and Cons of the Options

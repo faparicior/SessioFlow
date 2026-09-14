@@ -241,8 +241,12 @@ curl http://localhost:3000/api/v1/conferences
 ## 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** High (>80%) — pnpm/Turborepo monorepos with `apps/` split are mainstream. **Note:** this ADR is superseded by ADR-023; AX recorded for traceability only.
-* **Expected Agent Inercias / Biases:** Agents duplicate the backend as a separately deployed service, add cross-app imports bypassing workspace packages, or run `apps/backend` where AGENTS.md forbids it (E2E is served by frontend route handlers on port 3010).
-* **Required Automated Guardrails:** ADR-023 supersedes this layout; workspace package boundaries + AGENTS.md E2E contract prevent the stale structure from being re-implemented.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Re-implementing the backend as a separately deployed service | ADR-023 supersedes this layout; AGENTS.md E2E contract (frontend serves `/api/v1/*`) |
+| Cross-app imports bypassing workspace packages | Workspace package boundaries; turbo filters |
+
 * **Supervision & Guardrail Tax:** Low — historical document; active guardrails live in ADR-023.
 
 ## Links

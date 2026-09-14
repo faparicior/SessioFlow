@@ -168,6 +168,32 @@ This validator assesses the quality of Architecture Decision Records (ADRs) agai
 
 ---
 
+### Criteria 7: AI & Agentic Ergonomics (AX)
+
+**What to Check:**
+
+- [ ] `LLM Corpus Alignment` states an estimated training-corpus match (High >80% / Medium 30-80% / Atypical <30%)
+- [ ] A `Expected Agent Bias | Automated Guardrail` table pairs each expected agent deviation with a named automated countermeasure
+- [ ] Rows marked "—" are explicitly justified as accepted manual-review risks (unjustified gaps fail this criterion)
+- [ ] Guardrail tax / human oversight burden is acknowledged
+
+**Scoring:**
+
+- **High:** Corpus alignment quantified, every bias paired to an automated guardrail, tax assessed
+- **Medium:** Some AX analysis present but pairings incomplete or tax unaddressed
+- **Low:** AX section missing or descriptive only (no guardrails)
+
+**Assessment:**
+
+- [ ] High
+- [ ] Medium
+- [ ] Low
+
+**Notes:**
+[Document AX quality; list any unmitigated bias→guardrail gaps]
+
+---
+
 ## Overall Quality Assessment
 
 ### Quality Score Summary
@@ -176,10 +202,11 @@ This validator assesses the quality of Architecture Decision Records (ADRs) agai
 |----------|-------|--------|----------------|
 | Metadata & Formal Compliance | [H/M/L] | 10% | [X] |
 | Context & Problem Statement | [H/M/L] | 20% | [X] |
-| Options & Analysis | [H/M/L] | 25% | [X] |
-| Decision Outcome | [H/M/L] | 25% | [X] |
+| Options & Analysis | [H/M/L] | 20% | [X] |
+| Decision Outcome | [H/M/L] | 20% | [X] |
 | Consequences Documentation | [H/M/L] | 10% | [X] |
 | Traceability & References | [H/M/L] | 10% | [X] |
+| AI & Agentic Ergonomics (AX) | [H/M/L] | 10% | [X] |
 | **Total** | - | 100% | **[X]** |
 
 **Scoring Scale:**
@@ -284,11 +311,11 @@ This validator assesses the quality of Architecture Decision Records (ADRs) agai
 
 | Metric | Value |
 |--------|-------|
-| Total Criteria Assessed | 6 |
+| Total Criteria Assessed | 7 |
 | High Quality Criteria | [X] |
 | Medium Quality Criteria | [X] |
 | Low Quality Criteria | [X] |
-| Overall Score | [X]/6 |
+| Overall Score | [X]/7 |
 | Quality Rating | [High/Medium/Low] |
 
 ### Decision

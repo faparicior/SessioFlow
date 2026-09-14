@@ -74,8 +74,14 @@ CQRS is the optimal choice for SessioFlow because:
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — CQRS is well known conceptually, but CQRS-in-Next.js/TypeScript-with-DDD examples are sparse; most corpus handlers merge read and write concerns.
-* **Expected Agent Inercias / Biases:** Agents merge queries and commands into a single service/handler, skip the explicit command/query DTO classes, mutate state from query handlers, or place handlers outside `application/` (in controllers or repositories).
-* **Required Automated Guardrails:** ts-archunit CQRS rules over `application/`; DTO classes in `.command.ts`/`.query.ts` files; controllers instantiate DTOs; interface + unit tests per use case.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Merging commands and queries into a single service/handler | ts-archunit CQRS rules over `application/` |
+| Skipping explicit command/query DTO classes | DTO classes in `.command.ts`/`.query.ts`; controller instantiates DTO |
+| Mutating state from query handlers | Unit tests per use case; review |
+| Placing handlers in controllers or repositories | Arch-test folder predicates over `application/` |
+
 * **Supervision & Guardrail Tax:** Medium to High — structural discipline that agents routinely relax unless arch tests enforce it.
 
 ## Pros and Cons of the Options

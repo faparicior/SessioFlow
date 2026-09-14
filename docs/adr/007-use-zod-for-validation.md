@@ -71,8 +71,13 @@ Zod is the optimal choice because it provides the best balance of type safety, d
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** High (>80%) — Zod is the dominant TypeScript validation library in the corpus.
-* **Expected Agent Inercias / Biases:** Agents substitute class-validator/joi/yup idioms, write manual `if`-based validation instead of schemas, call `.parse()` in inconsistent places, or import Zod into the domain layer (fixed by ADR-007-01).
-* **Required Automated Guardrails:** Schemas centralized in `@sessioflow/api-definitions`; domain-purity arch rules (see ADR-007-01); typecheck; xo lint.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Manual `if`-based validation instead of schemas | Schemas centralized in `@sessioflow/api-definitions`; boundary validation |
+| Inconsistent `.parse()` placement | Validation lives at the API/command boundary; interface tests |
+| Reaching for class-validator/joi/yup idioms | Existing schema package as the only validation path (xo + typecheck) |
+
 * **Supervision & Guardrail Tax:** Low — mainstream choice with strong existing tooling.
 
 ### Pros and Cons of the Options

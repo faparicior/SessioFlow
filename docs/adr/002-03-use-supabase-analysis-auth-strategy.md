@@ -554,8 +554,13 @@ For SessioFlow's MVP goals (6-week timeline, $0 budget, vendor independence):
 ## 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — Auth0/NextAuth/Better Auth SDKs are individually well represented, but this document's specific mix (Auth0 magic links behind a DDD auth port) is atypical in the corpus (<30%).
-* **Expected Agent Inercias / Biases:** Agents instantiate Auth0/NextAuth clients directly in components or route handlers, implement ad-hoc session handling instead of using the auth port, or mix providers (Auth0 + NextAuth) in the same flow.
-* **Required Automated Guardrails:** Auth port interface in domain with adapters confined to `infrastructure/`; composition root as single provider swap point; controller/interface tests mocking the port; arch rules on vendor imports.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Instantiating Auth0/NextAuth clients in components or route handlers | Auth port in domain with adapters confined to `infrastructure/` (arch-enforced) |
+| Ad-hoc session handling instead of the auth port | Controller/unit tests mock the port, pinning the contract |
+| Mixing providers (Auth0 + NextAuth) in the same flow | Composition root as single provider swap point |
+
 * **Supervision & Guardrail Tax:** Medium — auth is high-impact and the hybrid setup invites corpus-driven deviations.
 
 ## Links

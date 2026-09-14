@@ -394,6 +394,11 @@ describe('LoginUseCase', () => {
 ## 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — ports/adapters for auth is documented in principle, rarely seen in this exact Supabase→Auth0 hybrid form in the corpus.
-* **Expected Agent Inercias / Biases:** Agents call Supabase Auth or Auth0 SDKs directly from UI/handlers bypassing the port, duplicate session logic across providers, or wire both providers simultaneously in the composition root.
-* **Required Automated Guardrails:** Auth port in domain, adapters only in `infrastructure/` (arch-enforced); single swap point in `container.ts`; unit tests against the port with provider mocks.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Calling Supabase Auth or Auth0 SDKs directly from UI/handlers | Auth port in domain, adapters only in `infrastructure/` (arch-enforced) |
+| Duplicating session logic across providers | Unit tests against the port with provider mocks |
+| Wiring both providers simultaneously in the composition root | Single swap point in `container.ts` |
+
 * **Supervision & Guardrail Tax:** Medium — hybrid auth requires enforcement that exactly one adapter is wired.

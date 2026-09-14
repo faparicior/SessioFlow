@@ -58,6 +58,11 @@ To satisfy both domain purity and robust input validation, we adopt the **Decoup
 ## 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Low/Atypical (<30%) — the decoupled boundary-validation pattern (Zod at the API/command boundary, never in domain) runs against the corpus default of validating inside entities with shared schemas.
-* **Expected Agent Inercias / Biases:** Agents import `zod` into domain entities/value objects, reuse a single schema for both the API DTO and the domain command, or convert the domain back to class-validator-style self-validation "to avoid duplication".
-* **Required Automated Guardrails:** `npm run check:arch` domain-isolation rule rejecting non-domain imports (incl. `zod`); ts-archunit `modules(p).notImportFrom()` checks; AGENTS.md invariant that handlers stay pure.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Importing `zod` into domain entities/value objects | `npm run check:arch` domain-isolation rule rejecting non-domain imports |
+| Reusing one schema for API DTO and domain command | ts-archunit `modules(p).notImportFrom()` checks; command DTOs in `application/` |
+| Reverting to entity self-validation "to avoid duplication" | Architecture tests treated as immutable for agents |
+
 * **Supervision & Guardrail Tax:** Medium — the rule is unidiomatic for LLMs and must stay machine-enforced, never convention-only.

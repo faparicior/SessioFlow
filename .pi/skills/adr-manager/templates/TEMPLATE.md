@@ -35,9 +35,14 @@
 
 ### 🤖 AI & Agentic Ergonomics (AX)
 
-* **LLM Corpus Alignment:** [High (>80%) | Medium (30-80%) | Atypical/Exotic (<10%)]
-* **Expected Agent Inercias / Biases:** [e.g., Agents will attempt to write CRUD logic in route handlers or use primitive types instead of Value Objects]
-* **Required Automated Guardrails:** [e.g., `check:arch`, ts-archunit rules, custom linters, explicit AGENTS.md rules]
+* **LLM Corpus Alignment:** [High (>80%) | Medium (30-80%) | Atypical/Exotic (<30%)]
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| [e.g., Agents write CRUD logic in route handlers] | [e.g., Controller-factory convention + ts-archunit rules over `interfaces/`] |
+| [e.g., Agents use primitive types instead of Value Objects] | [e.g., ts-archunit VO rules via `check:arch`] |
+| [Bias with no automated countermeasure] | — (accepted manual-review risk — justify or close the gap) |
+
 * **Supervision & Guardrail Tax:** [Low | Medium | High — human review and automated verification overhead]
 
 ## Pros and Cons of the Options

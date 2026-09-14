@@ -74,8 +74,13 @@ This testing stack provides the optimal balance of speed, coverage, and maintain
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** High (>80%) — Vitest + React Testing Library + Playwright is the current mainstream stack in the corpus.
-* **Expected Agent Inercias / Biases:** Agents mix in Jest/Cypress idioms (`jest.fn`, Cypress `cy.*`), mock the database in integration tests that require real PostgreSQL, place tests in wrong directories relative to the AGENTS.md layout, or use MSW where the real container is mandated.
-* **Required Automated Guardrails:** Fixed test directory conventions in AGENTS.md; `npm test` / `test:integration` / `test:e2e` split with container lifecycle owned by scripts; coverage gate ≥80%.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Mixing Jest/Cypress idioms into new tests | Framework pinned by npm scripts; review |
+| Mocking the database in integration tests | Integration suite requires the real PostgreSQL container |
+| Tests in wrong directories relative to the layout | AGENTS.md directory conventions; per-suite selection (`test:changed`, folder-scoped runs) |
+
 * **Supervision & Guardrail Tax:** Low — mainstream tooling; misplacements are caught by test selection and CI.
 
 ### Pros and Cons of the Options

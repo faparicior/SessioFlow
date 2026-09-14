@@ -81,8 +81,14 @@ ts-archunit is the only library that satisfies **all five** decision drivers:
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Atypical (<10%) — ts-archunit has minimal representation in the training corpus; agents confuse it with Java ArchUnit, dependency-cruiser, or eslint-plugin-boundaries.
-* **Expected Agent Inercias / Biases:** Agents hallucinate fluent APIs, use `classes(p)` for function exports (controllers), write vacuous rules that match zero files, try `.or()` between predicates (strictly ANDed), and — most dangerously — relax architecture tests to make failing code pass.
-* **Required Automated Guardrails:** AGENTS.md ts-archunit pattern cookbook (`functions(p)`, `modules(p)`, `satisfy()`, `addSourceFilesAtPaths`); policy that `tests/unit/architecture/` is immutable for agents; vacuousness probes (inject a violation, watch exactly one test fail).
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Hallucinated fluent APIs; `classes(p)` used for function exports | AGENTS.md ts-archunit pattern cookbook (`functions(p)`, `modules(p)`, `satisfy()`, `addSourceFilesAtPaths`) |
+| `.or()` between predicates (builder is AND-only) | AGENTS.md cookbook: separate test blocks for OR logic |
+| Vacuous rules matching zero files | Vacuousness probes: inject a violation, watch exactly one test fail |
+| Relaxing architecture tests to make failing code pass | Policy: `tests/unit/architecture/` immutable for agents; human review of arch-test changes |
+
 * **Supervision & Guardrail Tax:** High — exotic tool + guardrail-circumvention risk; human review of arch-test changes is mandatory.
 
 ## Pros and Cons of the Options

@@ -34,6 +34,7 @@ Evaluate the ADR against the following checklist:
 
 ### 6. AI & Agentic Ergonomics (AX)
 *   **Training & Corpus Alignment**: Does the ADR evaluate how common or atypical the proposed solution is for LLMs (% estimated training match)?
+* **Bias→Guardrail Pairing**: Does the `Expected Agent Bias | Automated Guardrail` table pair every expected deviation with a named automated countermeasure? Rows marked "—" must be justified as accepted manual-review risks; unjustified gaps are a validation failure.
 *   **Guardrails & Mitigations**: If the pattern is atypical (<30% corpus), are explicit automated guardrails (`check:arch`, arch tests, `AGENTS.md` rules, linters) defined?
 *   **Supervision Assessment**: Is the guardrail tax / human oversight burden acknowledged?
 

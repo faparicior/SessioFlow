@@ -72,8 +72,13 @@ The hybrid approach provides the optimal balance of usability, security, and imp
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — magic-link flows are common in the corpus, but this specific Auth0-magic-links + Supabase combination is atypical (<30%).
-* **Expected Agent Inercias / Biases:** Agents fall back to more common idioms: password-based flows, hand-rolled token/email-link generation, JWT signing in app code, storing tokens in `localStorage`, or wiring NextAuth because it dominates the corpus for Next.js auth.
-* **Required Automated Guardrails:** Auth abstraction port (ADR-004-01) keeping provider code out of domain/application layers; interface tests with mocked auth port; no hand-rolled crypto enforced by review + lint.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Falling back to password-based flows | Interface tests exercise the magic-link contract through the auth port |
+| Hand-rolled token/email-link generation or JWT signing in app code | Provider code behind the auth port (ADR-004-01); no hand-rolled crypto in review + lint |
+| Storing tokens in `localStorage` | Sessions stay behind the adapter; UI consumes the port contract only |
+
 * **Supervision & Guardrail Tax:** Medium — security-sensitive and corpus pulls toward competing auth patterns.
 
 ### Pros and Cons of the Options

@@ -470,8 +470,12 @@ export const emailProvider: EmailProvider = new ResendEmailAdapter();
 ## 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — provider-interface abstraction is common in principle; the deliberate *optional* (deferred) abstraction is counter-intuitive for agents that either over-engineer interfaces everywhere or call the SDK directly.
-* **Expected Agent Inercias / Biases:** Agents proactively build an `EmailProvider` port everywhere despite the ADR marking it optional (over-engineering), or — more often — call the Resend SDK from application code and send email synchronously instead of via the Outbox.
-* **Required Automated Guardrails:** Outbox event dispatch as the only sanctioned email path; AGENTS.md note that Resend is optional (ADR-011-01); arch rules keeping vendor SDKs out of domain/application.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Proactively building an `EmailProvider` port everywhere despite the ADR marking it optional | AGENTS.md/ADR note that Resend is optional; over-engineering check in review |
+| Calling the Resend SDK from application code / sending synchronously | Outbox invariant centralizes every send; arch keeps vendor SDKs out of domain/application |
+
 * **Supervision & Guardrail Tax:** Low to Medium — cheap to guard because the Outbox invariant centralizes every send.
 
 ## Links

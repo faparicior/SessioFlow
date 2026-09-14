@@ -62,8 +62,13 @@ The question is: **What dependency injection strategy should we adopt for our Ne
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Low/Atypical (<30% for this exact pattern) — manual factory-function DI with per-module `container.ts` composition roots is rare in the corpus, where InversifyJS/decorators or framework-provided DI dominate.
-* **Expected Agent Inercias / Biases:** Agents reach for `inversify`, `tsyringe`, decorators, React context, or module-level singletons (service-locator style); pass repositories directly into route handlers; introduce circular imports by wiring outside the container.
-* **Required Automated Guardrails:** `container.ts` as sole composition root per module (create-module skill scaffolds it); arch rules on `interfaces/` imports; typecheck; controller factory convention (ADR-016-01).
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Reaching for `inversify`, `tsyringe`, decorators or React context DI | New-dependency ask-first gate; factory-function convention in existing containers as reference |
+| Module-level singletons / service-locator style wiring | `container.ts` as sole composition root per module (create-module skill scaffolds it) |
+| Wiring outside the container, creating circular imports | Arch rules on `interfaces/` imports; typecheck |
+
 * **Supervision & Guardrail Tax:** Medium — the pattern is unidiomatic for LLMs and must stay the only visible wiring path.
 
 ## Pros and Cons of the Options

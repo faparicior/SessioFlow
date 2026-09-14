@@ -71,6 +71,11 @@ export async function POST(request: NextRequest) {
 ## 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Low/Atypical (<30%) — HTTP-controller factories exported from a module composition root have almost no corpus precedent; agents expect route files to do their own wiring.
-* **Expected Agent Inercias / Biases:** Route handlers build repositories/handlers inline instead of calling `create*Controller` from `container.ts`; controllers import domain directly; helper factories proliferate outside the container; naming drifts from the `*controller` convention arch tests look for.
-* **Required Automated Guardrails:** ts-archunit rules targeting `**/interfaces/**` `*controller.ts` (naming, no domain imports); route handlers reduced to delegation; interface tests calling the exported controller functions.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Route handlers building repositories/handlers inline | Controller-factory convention; interface tests call the exported controller functions |
+| Controllers importing domain directly | ts-archunit rules on `**/interfaces/**` `*controller.ts` |
+| Naming drift from the `*controller` convention | Arch-test name-matching predicate |
+
 * **Supervision & Guardrail Tax:** Medium — thin route files plus arch rules keep wiring deviations detectable.

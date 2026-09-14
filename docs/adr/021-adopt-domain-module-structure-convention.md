@@ -142,8 +142,13 @@ packages/modules/review/domain/
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Atypical (<10%) — this hybrid convention (entities/interfaces at module root, support objects grouped in subfolders) is project-specific; corpus defaults are either full `domain/` nesting or flat folders.
-* **Expected Agent Inercias / Biases:** Agents recreate a `domain/` subfolder for everything (or flatten everything to root), misname support folders (`dtos/`, `services/`), and place repository implementations in the wrong layer when following unfamiliar conventions.
-* **Required Automated Guardrails:** `create-module` skill scaffolding; `npm run check:arch` folder-based rules; ts-archunit folder predicates; existing modules as copyable reference layout.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Recreating a `domain/` subfolder for everything (or flattening everything to root) | `create-module` skill scaffolding; `check:arch` folder-based rules |
+| Misnamed support folders (`dtos/`, `services/`) | ts-archunit folder predicates; existing modules as copyable reference layout |
+| Repository implementations placed in the wrong layer | Arch layer rules (impls confined to `infrastructure/`) |
+
 * **Supervision & Guardrail Tax:** Medium — convention memory is weak across sessions; scaffolding skills are the mitigation.
 
 ## Pros and Cons of the Options

@@ -72,8 +72,13 @@ GitHub Actions is the optimal choice because it provides the best integration, c
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** High (>80%) — GitHub Actions YAML is extensively represented.
-* **Expected Agent Inercias / Biases:** Agents propose GitLab CI/CircleCI configs when asked for "CI", duplicate workflow logic across files, put secrets in workflow env literals, or omit the Definition-of-Done gates (lint, typecheck, format:check) from the pipeline.
-* **Required Automated Guardrails:** Workflows mirror the npm scripts that already constitute the DoD gates; review + branch protection; no ad-hoc second CI system.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Proposing GitLab CI/CircleCI configs for "CI" | Single CI system per AGENTS.md; workflows mirror the DoD npm scripts |
+| Duplicating workflow logic across files | Reusable workflows; review |
+| Secrets as literal env values | GitHub encrypted secrets; review gate |
+
 * **Supervision & Guardrail Tax:** Low — CI config risk is mostly visual and caught in PR review.
 
 ### Pros and Cons of the Options

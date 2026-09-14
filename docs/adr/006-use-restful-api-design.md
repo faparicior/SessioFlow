@@ -74,8 +74,14 @@ RESTful API design is the optimal choice because it best satisfies the MVP const
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** High (>80%) — REST conventions are among the most represented material in any code corpus.
-* **Expected Agent Inercias / Biases:** Agents drift toward tRPC or GraphQL patterns present in adjacent training data, invent inconsistent resource nesting and pluralization, return ad-hoc error bodies instead of the mapped `DomainError` responses, and skip Zod request validation.
-* **Required Automated Guardrails:** `tests/unit/architecture/response-conventions.test.ts`; Zod schemas in `@sessioflow/api-definitions`; interface tests asserting status codes and error mapping.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Drift toward tRPC or GraphQL idioms | Interface tests assert REST verbs, status codes, and error bodies |
+| Inconsistent resource nesting and pluralization | Resource-based URL contracts in `@sessioflow/api-definitions` |
+| Ad-hoc error bodies instead of mapped `DomainError` responses | `response-conventions` architecture test; controller error mapper |
+| Skipping Zod request validation | Schemas centralized in `@sessioflow/api-definitions` |
+
 * **Supervision & Guardrail Tax:** Low — deviations surface immediately in interface tests.
 
 ### Pros and Cons of the Options

@@ -86,8 +86,14 @@ DDD is the optimal choice because it provides long-term architectural stability 
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Low/Atypical (<10% effective) — DDD layered structure with Value Objects and strict layer isolation is rare in real-world Node/Next.js training data, where MVC and feature-colocated CRUD dominate.
-* **Expected Agent Inercias / Biases:** This is the repo's main friction source: agents write CRUD logic in route handlers, use primitive types (`string`, `Date`) instead of Value Objects, create anemic entities, import infrastructure from domain, and flatten `application/`/`infrastructure/` boundaries when under time pressure.
-* **Required Automated Guardrails:** `npm run check:arch` + ts-archunit layer-isolation and VO rules (private constructor, `create()`, `value`, `equals`), AGENTS.md invariants, controllers/handlers split with single try/catch in controller, architecture tests treated as immutable.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| CRUD logic written in route handlers | Controller factories + ts-archunit rules over `interfaces/` |
+| Primitive types (`string`, `Date`) instead of Value Objects | ts-archunit VO rules (private constructor, `create()`, `value`, `equals`) |
+| Anemic entities; domain importing infrastructure | `check:arch` domain-isolation; immutable architecture tests |
+| Flattening `application/`/`infrastructure/` boundaries under pressure | AGENTS.md invariants + sub-2s `npm run check:arch` loop |
+
 * **Supervision & Guardrail Tax:** High — every feature touches this decision; guardrails, not prose, keep the structure intact.
 
 ### Pros and Cons of the Options

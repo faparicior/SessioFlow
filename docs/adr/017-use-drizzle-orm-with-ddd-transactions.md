@@ -72,8 +72,14 @@ Drizzle ORM provides the best balance of:
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — Drizzle coverage in the corpus is growing but still well behind Prisma/TypeORM, and examples almost always manage transactions inside repositories, not at the application layer.
-* **Expected Agent Inercias / Biases:** Agents mix in Prisma/TypeORM API shapes (`prisma.*`, `getRepository()`), open transactions inside repository methods or the domain, leak `tx` objects into domain entities, or hand-write SQL migrations instead of `npm run db:generate`.
-* **Required Automated Guardrails:** Repository implementations confined to `infrastructure/` reconstituting entities via `.fromData(...)`; transaction handling at application layer per ADR; integration tests on real PostgreSQL; Drizzle schema as single source of truth for migrations.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Mixing in Prisma/TypeORM API shapes (`prisma.*`, `getRepository()`) | Typecheck + repository conventions; review |
+| Opening transactions inside repository methods or the domain | Application-layer transaction handling per ADR; integration tests on real PostgreSQL |
+| Leaking `tx` objects into domain entities | Domain-isolation arch rule (no infrastructure types in domain) |
+| Hand-writing SQL migrations | Drizzle schema as single source of truth; `npm run db:generate` only |
+
 * **Supervision & Guardrail Tax:** Medium — lower corpus density than Prisma makes API hallucination and transaction-placement errors common.
 
 ## Pros and Cons of the Options

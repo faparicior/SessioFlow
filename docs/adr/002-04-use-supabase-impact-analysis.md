@@ -275,6 +275,10 @@ With these amendments, SessioFlow will have a **consistent abstraction pattern**
 ## 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — the cross-cutting abstraction pattern is standard architecture literature, but its coordinated application across DB/auth/storage/email is uncommon in training examples.
-* **Expected Agent Inercias / Biases:** Agents implement the abstraction inconsistently: some services go through ports, others keep direct Supabase SDK calls; email/storage adapters get created eagerly even where this ADR marks them optional.
-* **Required Automated Guardrails:** Uniform vendor-import confinement rules in ts-archunit across auth/storage/db; the phase plan in `Implementation Priority` mirrored in CI-gated checks; `--mode index` tracking amendment completion.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Partial abstraction: some services through ports, others direct SDK | Uniform vendor-import confinement rules in ts-archunit across auth/storage/db |
+| Optional email/storage adapters created eagerly where this ADR marks them optional | `Implementation Priority` phase plan mirrored in CI-gated checks; `--mode index` tracks amendment completion |
+
 * **Supervision & Guardrail Tax:** Low to Medium — coordination risk rather than code-generation risk.

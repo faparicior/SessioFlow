@@ -72,8 +72,13 @@ TypeScript with strict mode is the optimal choice because it provides maximum ty
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** High (>80%) — TypeScript strict mode is mainstream in the corpus.
-* **Expected Agent Inercias / Biases:** Agents escape the type system to make errors disappear: `any`, `as unknown as X`, non-null assertions (`!`), `@ts-ignore`/`@ts-expect-error`, and loosening tsconfig flags instead of fixing call sites.
-* **Required Automated Guardrails:** Strict tsconfig across workspaces (`npm run typecheck` via turbo); xo `@typescript-eslint` rules discouraging `any`; AGENTS.md rule: no `any` without justification.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| `any`, `as unknown as X`, non-null assertions to silence errors | xo `@typescript-eslint` rules; AGENTS.md no-`any`-without-justification |
+| `@ts-ignore` / `@ts-expect-error` | xo rules + `npm run typecheck` as a DoD gate |
+| Loosening tsconfig flags instead of fixing call sites | Strict tsconfig as workspace baseline; tsconfig edits on the AGENTS.md ask-first list |
+
 * **Supervision & Guardrail Tax:** Low — the compiler itself is the guardrail; supervision targets escape-hatch abuse.
 
 ### Pros and Cons of the Options

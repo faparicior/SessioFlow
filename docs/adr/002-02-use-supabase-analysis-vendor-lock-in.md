@@ -458,8 +458,12 @@ class PostgresEventRepository implements EventRepository {
 ## 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — the analysis content (self-hosted Postgres, RLS tradeoffs) is well covered in the corpus; the risk is agents applying generic Supabase idioms that contradict this document's conclusion.
-* **Expected Agent Inercias / Biases:** When implementing from this analysis, agents may skip the Phase 1 abstraction layer and adopt Supabase-specific features (RLS, `auth.uid()` policies) that re-create the lock-in this document warns against.
-* **Required Automated Guardrails:** Architecture rules forbidding vendor imports outside `infrastructure/`; Drizzle-only schema management; periodic re-run of `--mode alternatives`.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Adopting Supabase-specific features (RLS, `auth.uid()` policies) that re-create the lock-in | Architecture rules forbidding vendor imports outside `infrastructure/`; Drizzle-only schema management |
+| Skipping the Phase 1 abstraction layer when implementing | Periodic `--mode alternatives` re-runs; phase plan tracked against this document |
+
 * **Supervision & Guardrail Tax:** Low — analysis document; the enforced decision lives in ADR-002/002-01 guardrails.
 
 ## Links

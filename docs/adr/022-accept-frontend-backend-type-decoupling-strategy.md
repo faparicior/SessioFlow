@@ -147,8 +147,13 @@ app.post('/api/conferences', validateRequest(ConferenceSchema), handler);
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — "exchange API contracts, don't share internal types" is a known principle, but most corpus Next.js monorepos share types directly (tRPC-style or workspace-wide type imports), pulling agents the other way.
-* **Expected Agent Inercias / Biases:** Agents import backend/internal types into the frontend, re-export Drizzle or domain types to UI components, add cross-workspace type dependencies "for convenience", or bypass `@sessioflow/api-definitions` with structural duplicates.
-* **Required Automated Guardrails:** Package `exports` boundaries + typecheck; xo relative-vs-alias import rules; review gate on new workspace dependencies in `package.json`/`tsconfig.json` (AGENTS.md ask-first list).
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Importing backend/internal types into the frontend | Package `exports` boundaries + typecheck |
+| Re-exporting Drizzle or domain types to UI components | xo relative-vs-alias import rules; review |
+| Adding cross-workspace type dependencies "for convenience" | Workspace-dep edits on the AGENTS.md ask-first list (`package.json`/`tsconfig.json`) |
+
 * **Supervision & Guardrail Tax:** Medium — convenience-driven type leaks keep reappearing; boundaries must stay machine-enforced.
 
 ## Pros and Cons of the Options

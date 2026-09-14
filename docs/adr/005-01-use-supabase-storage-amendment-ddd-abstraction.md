@@ -536,8 +536,13 @@ export const storageProvider: StorageProvider = new SupabaseStorageAdapter();
 ## 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — the storage port/adapter pattern is standard hexagonal practice but underrepresented in Supabase-heavy training examples.
-* **Expected Agent Inercias / Biases:** Agents bypass the port and reach for the Supabase SDK in new features, place adapters in application/domain layers, or add provider-specific config (bucket names, signed-URL params) outside the composition root.
-* **Required Automated Guardrails:** ts-archunit vendor-import rules; adapter unit tests with mock provider (see Appendix testing strategy); composition root wiring.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Bypassing the port and reaching for the Supabase SDK in new features | ts-archunit vendor-import rules |
+| Placing adapters in application/domain layers | Arch layer rules; composition root wiring |
+| Provider-specific config (buckets, signed-URL params) outside the composition root | Composition root as sole wiring point; adapter tests with mock provider |
+
 * **Supervision & Guardrail Tax:** Low to Medium — guardrails identical to ADR-002-01 make deviations mechanically detectable.
 
 ## Links

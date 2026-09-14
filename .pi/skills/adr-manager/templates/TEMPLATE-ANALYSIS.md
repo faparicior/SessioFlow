@@ -64,9 +64,13 @@ Describe the specific question this analysis answers (e.g., vendor lock-in expos
 
 Evaluate the friction of the pattern this analysis recommends (the validator audits this section).
 
-* **LLM Corpus Alignment:** [High (>80%) | Medium (30-80%) | Atypical/Exotic (<10%) for the recommended pattern]
-* **Expected Agent Inercias / Biases:** [Corpus defaults that would pull agents away from this analysis' conclusion, e.g., generic vendor SDK idioms that re-create the lock-in this document warns against]
-* **Required Automated Guardrails:** [Rules that keep the recommendation from being silently eroded: arch tests, vendor-import confinement, linters, AGENTS.md rules]
+* **LLM Corpus Alignment:** [High (>80%) | Medium (30-80%) | Atypical/Exotic (<30%) for the recommended pattern]
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| [e.g., Generic vendor SDK idioms that re-create the lock-in this document warns against] | [Rule that keeps the recommendation from being silently eroded: arch test, vendor-import confinement, AGENTS.md rule] |
+| [Bias with no automated countermeasure] | — (accepted manual-review risk — justify or close the gap) |
+
 * **Supervision & Guardrail Tax:** [Low | Medium | High]
 
 ---

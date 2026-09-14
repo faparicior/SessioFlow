@@ -66,8 +66,13 @@ Next.js is the only option that simultaneously satisfies all critical constraint
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** High (>80%) — Next.js App Router is one of the most represented frameworks in LLM training corpora.
-* **Expected Agent Inercias / Biases:** Agents default to the Pages Router (`getServerSideProps`), mix `pages/` and `app/` patterns, add unnecessary `"use client"` directives, and put business/CRUD logic directly in Server Components or route handlers instead of delegating to module controllers.
-* **Required Automated Guardrails:** Thin route handlers that only delegate to `create*Controller` factories from `container.ts`; AGENTS.md rules; `npm run typecheck` and E2E suite; xo lint over `apps/frontend`.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Pages Router idioms (`getServerSideProps`), mixing `pages/` and `app/` | Typechecked App Router components; E2E covers rendering paths |
+| Unnecessary `"use client"` directives | xo lint over `apps/frontend`; review |
+| Business/CRUD logic in Server Components or route handlers | Thin route handlers delegating to `create*Controller` factories from `container.ts` |
+
 * **Supervision & Guardrail Tax:** Low — idiomatic framework choice; deviations are caught quickly by typecheck and E2E.
 
 ### Pros and Cons of the Options

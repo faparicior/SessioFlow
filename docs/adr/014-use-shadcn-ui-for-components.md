@@ -75,8 +75,13 @@ shadcn/ui is the optimal choice because it uniquely balances development speed, 
 ### 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** High (>80%) — shadcn/ui copy-in components are heavily represented, including their source, which agents frequently memorize.
-* **Expected Agent Inercias / Biases:** Agents hand-roll new primitives duplicating existing shadcn components, import from `@radix-ui/*` directly instead of the local `components/ui` wrappers, or hallucinate slightly wrong prop names from memory of the upstream registry.
-* **Required Automated Guardrails:** Single `components/ui` folder as the only component source; xo react rules + Prettier; typecheck against Radix prop types catches hallucinated props.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Hand-rolling primitives that duplicate existing shadcn components | Single `components/ui` folder as the only component source |
+| Importing from `@radix-ui/*` directly instead of local wrappers | Import convention via `components/ui` (xo + review) |
+| Hallucinated prop names from memorized upstream registry | Typecheck against Radix prop types |
+
 * **Supervision & Guardrail Tax:** Low — hallucinated props fail typecheck; duplication is the only persistent drift.
 
 ### Pros and Cons of the Options

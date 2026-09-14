@@ -298,8 +298,14 @@ See `MIGRATION_TO_NEW_ARCHITECTURE.md` for detailed guidance.
 ## 🤖 AI & Agentic Ergonomics (AX)
 
 * **LLM Corpus Alignment:** Medium (30-80%) — Turborepo/pnpm tooling is High in the corpus, but this specific packages/modules + container.ts layout is project-specific.
-* **Expected Agent Inercias / Biases:** Agents add folders under `packages/modules/` without workspace wiring (`package.json`/`tsconfig.json`/`container.ts`), import between packages via relative paths instead of `@sessioflow/*` workspace names, reuse stale `dist/`/`tsconfig.tsbuildinfo` artifacts, or put module code in `apps/`.
-* **Required Automated Guardrails:** `create-module` skill for scaffolding; `npx turbo typecheck --filter=...` per-package loops; AGENTS.md rebuild/`dist` hygiene rules; `npm run check:arch` per-module scans.
+
+| Expected Agent Bias | Automated Guardrail |
+| --- | --- |
+| Adding folders under `packages/modules/` without workspace wiring | `create-module` skill scaffolding (`package.json`/`tsconfig.json`/`container.ts`) |
+| Cross-package imports via relative paths instead of `@sessioflow/*` names | Workspace-name convention; per-package `npx turbo typecheck --filter=...` loops |
+| Reusing stale `dist/`/`tsconfig.tsbuildinfo` artifacts | AGENTS.md rebuild/hygiene rules (delete sibling `tsbuildinfo` with stale `dist/`) |
+| Putting module code in `apps/` | `check:arch` per-module scans; AGENTS.md layout |
+
 * **Supervision & Guardrail Tax:** Medium — structure is enforced partly by tooling (turbo filters) and partly by skills that must be kept current.
 
 ## Links
