@@ -70,6 +70,17 @@ Identify the appropriate category and add the ADR:
 | **Authentication** | Auth methods, security, identity |
 | **Development Practices** | Testing, code quality, workflows |
 
+### Step 2b: Update the Agentic Ergonomics (AX) Columns
+
+The Quick Reference table carries two AX columns (`LLM Corpus` and `Guardrail Tax`) that are a **generated view** of each ADR's AX section. For every new or amended ADR, extract the two enumerable bullet fields and fill (or update) its row:
+
+- `**LLM Corpus Alignment:**` → map High → 🟢, Medium → 🟡, Atypical/Low (<30%) → 🟠
+- `**Supervision & Guardrail Tax:**` → map Low → 🟢, Low-Medium → ⚪, Medium → 🟡, Medium-High → 🟠, High → 🔴
+
+Keep the legend table (emoji → meaning per scale) printed **directly above** the Quick Reference table (never below it).
+
+Regenerate the "🔥 High-Friction Hot Spots" list under "🤖 AI & Agentic Ergonomics (AX)": include every ADR with Tax High or Corpus Atypical, one line each (decision, both ratings, dominant guardrail). If the ADR's AX section is missing, flag it in the run report instead of guessing ratings.
+
 ### Step 3: Update Statistics
 
 Update the Statistics section at the bottom:
@@ -78,6 +89,8 @@ Update the Statistics section at the bottom:
 ## Statistics
 
 - **Total ADRs**: 15  ← Update count
+- **AX Coverage**: 15 / 33  ← ADRs with an AI & Agentic Ergonomics section
+- **Corpus Distribution** / **Guardrail Tax Distribution**: recount from the Quick Reference AX columns
 - **Date Range**: 2026-06-05 to 2026-06-XX  ← Update range if needed
 - **Most Active Category**: Core Technology Stack (5 decisions)  ← Update if needed
 ```

@@ -76,7 +76,7 @@ Supabase is the optimal choice because it uniquely satisfies all critical constr
 
 ### 🤖 AI & Agentic Ergonomics (AX)
 
-* **LLM Corpus Alignment:** High (>80%) for Supabase/PostgreSQL generally, but Medium for this usage: the corpus is saturated with `supabase-js` client-side and RLS-heavy patterns that this ADR explicitly rejects.
+* **LLM Corpus Alignment:** Medium (30-80%) — Supabase/PostgreSQL usage is High (>80%) overall, but the patterns this ADR rejects (client-side `supabase-js`, RLS-heavy validation) are exactly what dominates the training data.
 * **Expected Agent Inercias / Biases:** Agents call `supabase-js`/`@supabase/supabase-js` directly from handlers or UI, push validation into RLS policies instead of the domain layer, use `supabase.from(...)` instead of Drizzle repositories, and generate migrations via Supabase dashboard assumptions rather than `npm run db:generate`.
 * **Required Automated Guardrails:** Repository interfaces in `domain/`, Drizzle implementations only in `infrastructure/`; `npm run check:arch` domain-isolation rules; integration tests against the real PostgreSQL container.
 * **Supervision & Guardrail Tax:** Medium — high corpus pull toward the vendor SDK requires constant guardrail enforcement.

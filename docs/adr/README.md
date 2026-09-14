@@ -6,41 +6,63 @@ This directory contains Architecture Decision Records (ADRs) for SessioFlow. Eac
 
 ## Quick Reference
 
-| # | Decision | Status | Date |
-|---|----------|--------|------|
-| [001](001-use-nextjs-as-frontend-framework.md) | Use Next.js as Frontend Framework | ✅ Approved | 2026-06-05 |
-| [002-00](002-00-use-supabase-for-backend-and-database.md) | Use Supabase for Backend and Database | ⚠️ Superseded | 2026-06-05 |
-| [002-01](002-01-use-supabase-amendment-ddd-abstraction.md) | **Amendment: DDD Abstraction Layer** | ✅ **Approved** | 2026-06-11 |
-| [002-02](002-02-use-supabase-analysis-vendor-lock-in.md) | Vendor Lock-in Alternatives Analysis | ✅ **Accepted** | 2026-06-09 |
-| [002-03](002-03-use-supabase-analysis-auth-strategy.md) | Authentication Strategy with DDD | ✅ **Accepted** | 2026-06-11 |
-| [002-04](002-04-use-supabase-impact-analysis.md) | Impact Analysis on Other ADRs | ✅ **Completed** | 2026-06-11 |
-| [003](003-use-docker-compose-for-deployment.md) | Use Docker Compose for Deployment | ✅ Approved | 2026-06-05 |
-| [004-00](004-00-implement-magic-link-authentication.md) | Implement Magic Link Authentication | ⚠️ Superseded | 2026-06-05 |
-| [004-01](004-01-implement-magic-link-authentication-amendment-ddd-abstraction.md) | **Amendment: Auth with DDD Abstraction** | ✅ **Approved** | 2026-06-11 |
-| [005-00](005-00-use-supabase-storage-for-files.md) | Use Supabase Storage for Files | ⚠️ Superseded | 2026-06-05 |
-| [005-01](005-01-use-supabase-storage-amendment-ddd-abstraction.md) | **Amendment: Storage with DDD Abstraction** | ✅ **Approved** | 2026-06-11 |
-| [006](006-use-restful-api-design.md) | Use RESTful API Design | ✅ Approved | 2026-06-05 |
-| [007](007-use-zod-for-validation.md) | Use Zod for Validation | ✅ Approved | 2026-06-05 |
-| [007-01](007-01-use-zod-validation-amendment-domain-purity.md) | **Amendment: Validation & Domain Purity** | ✅ **Approved** | 2026-07-18 |
-| [008](008-implement-comprehensive-testing-strategy.md) | Implement Comprehensive Testing Strategy | ✅ Approved | 2026-06-05 |
-| [009](009-adopt-domain-driven-design-structure.md) | Adopt Domain-Driven Design Structure | ✅ **Approved** | 2026-06-06 |
-| [009-01](009-01-monorepo-backend-frontend-separation.md) | Monorepo with Backend/Frontend Separation | ❌ **Superseded** | 2026-06-25 |
-| [010](010-use-tailwind-css-for-styling.md) | Use Tailwind CSS for Styling | ✅ Approved | 2026-06-05 |
-| [011-00](011-00-use-resend-for-email-communications.md) | Use Resend for Email Communications | ⚠️ Superseded | 2026-06-05 |
-| [011-01](011-01-use-resend-email-amendment-optional-abstraction.md) | **Amendment: Optional Email Abstraction** | ✅ **Approved (Optional)** | 2026-06-11 |
-| [012](012-implement-ci-cd-with-github-actions.md) | Implement CI/CD with GitHub Actions | ✅ Approved | 2026-06-05 |
-| [013](013-adopt-typescript-with-strict-mode.md) | Adopt TypeScript with Strict Mode | ✅ Approved | 2026-06-05 |
-| [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | ✅ Approved | 2026-06-05 |
-| [015](015-adopt-cqrs-pattern.md) | Adopt CQRS Pattern for Application Layer | ✅ **Approved** | 2026-06-29 |
-| [016](016-dependency-injection-strategy-for-nextjs.md) | Dependency Injection Strategy for Next.js | ✅ Approved | 2026-07-01 |
-| [016-01](016-01-controller-factory-di-amendment.md) | **Amendment: Controller Factory DI Pattern** | ✅ **Approved** | 2026-07-22 |
-| [017](017-use-drizzle-orm-with-ddd-transactions.md) | Use Drizzle ORM with Transaction Support at Application Layer | ✅ Approved | 2026-07-01 |
-| [018](018-implement-observability-for-debugging.md) | Implement Observability for AI-Assisted Debugging | ✅ Approved | 2026-07-04 |
-| [019](019-use-ts-archunit-for-architecture-testing.md) | Use ts-archunit for Architecture Testing | ✅ Approved | 2026-07-10 |
-| [020](020-use-api-schema-package-pattern-for-contract-definition.md) | Use API Schema Package Pattern for Contract Definition | ✅ **Accepted** | 2026-07-25 |
-| [021](021-adopt-domain-module-structure-convention.md) | Adopt Domain Module Structure Convention | ✅ **Accepted** | 2026-07-25 |
-| [022](022-accept-frontend-backend-type-decoupling-strategy.md) | Accept Frontend-Backend Type Decoupling Strategy | ✅ **Accepted** | 2026-07-25 |
-| [023](023-comprehensive-monorepo-structure-update.md) | Comprehensive Monorepo Structure Update | ✅ **Accepted** | 2026-07-25 |
+| Legend | LLM Corpus | Guardrail Tax |
+| --- | --- | --- |
+| 🟢 | High (>80%) | Low |
+| ⚪ | — | Low-Med |
+| 🟡 | Medium (30-80%) | Medium |
+| 🟠 | Atypical (<30%, hallucination-prone) | Med-High |
+| 🔴 | — | High |
+
+| # | Decision | Status | Date | LLM Corpus | Guardrail Tax |
+| --- | --- | --- | --- | --- | --- |
+| [001](001-use-nextjs-as-frontend-framework.md) | Use Next.js as Frontend Framework | ✅ Approved | 2026-06-05 | 🟢 | 🟢 |
+| [002-00](002-00-use-supabase-for-backend-and-database.md) | Use Supabase for Backend and Database | ⚠️ Superseded | 2026-06-05 | 🟡 | 🟡 |
+| [002-01](002-01-use-supabase-amendment-ddd-abstraction.md) | **Amendment: DDD Abstraction Layer** | ✅ **Approved** | 2026-06-11 | 🟡 | 🟡 |
+| [002-02](002-02-use-supabase-analysis-vendor-lock-in.md) | Vendor Lock-in Alternatives Analysis | ✅ **Accepted** | 2026-06-09 | 🟡 | 🟢 |
+| [002-03](002-03-use-supabase-analysis-auth-strategy.md) | Authentication Strategy with DDD | ✅ **Accepted** | 2026-06-11 | 🟡 | 🟡 |
+| [002-04](002-04-use-supabase-impact-analysis.md) | Impact Analysis on Other ADRs | ✅ **Completed** | 2026-06-11 | 🟡 | ⚪ |
+| [003](003-use-docker-compose-for-deployment.md) | Use Docker Compose for Deployment | ✅ Approved | 2026-06-05 | 🟢 | 🟢 |
+| [004-00](004-00-implement-magic-link-authentication.md) | Implement Magic Link Authentication | ⚠️ Superseded | 2026-06-05 | 🟡 | 🟡 |
+| [004-01](004-01-implement-magic-link-authentication-amendment-ddd-abstraction.md) | **Amendment: Auth with DDD Abstraction** | ✅ **Approved** | 2026-06-11 | 🟡 | 🟡 |
+| [005-00](005-00-use-supabase-storage-for-files.md) | Use Supabase Storage for Files | ⚠️ Superseded | 2026-06-05 | 🟢 | ⚪ |
+| [005-01](005-01-use-supabase-storage-amendment-ddd-abstraction.md) | **Amendment: Storage with DDD Abstraction** | ✅ **Approved** | 2026-06-11 | 🟡 | ⚪ |
+| [006](006-use-restful-api-design.md) | Use RESTful API Design | ✅ Approved | 2026-06-05 | 🟢 | 🟢 |
+| [007](007-use-zod-for-validation.md) | Use Zod for Validation | ✅ Approved | 2026-06-05 | 🟢 | 🟢 |
+| [007-01](007-01-use-zod-validation-amendment-domain-purity.md) | **Amendment: Validation & Domain Purity** | ✅ **Approved** | 2026-07-18 | 🟠 | 🟡 |
+| [008](008-implement-comprehensive-testing-strategy.md) | Implement Comprehensive Testing Strategy | ✅ Approved | 2026-06-05 | 🟢 | 🟢 |
+| [009](009-adopt-domain-driven-design-structure.md) | Adopt Domain-Driven Design Structure | ✅ **Approved** | 2026-06-06 | 🟠 | 🔴 |
+| [009-01](009-01-monorepo-backend-frontend-separation.md) | Monorepo with Backend/Frontend Separation | ❌ **Superseded** | 2026-06-25 | 🟢 | 🟢 |
+| [010](010-use-tailwind-css-for-styling.md) | Use Tailwind CSS for Styling | ✅ Approved | 2026-06-05 | 🟢 | 🟢 |
+| [011-00](011-00-use-resend-for-email-communications.md) | Use Resend for Email Communications | ⚠️ Superseded | 2026-06-05 | 🟢 | 🟡 |
+| [011-01](011-01-use-resend-email-amendment-optional-abstraction.md) | **Amendment: Optional Email Abstraction** | ✅ **Approved (Optional)** | 2026-06-11 | 🟡 | ⚪ |
+| [012](012-implement-ci-cd-with-github-actions.md) | Implement CI/CD with GitHub Actions | ✅ Approved | 2026-06-05 | 🟢 | 🟢 |
+| [013](013-adopt-typescript-with-strict-mode.md) | Adopt TypeScript with Strict Mode | ✅ Approved | 2026-06-05 | 🟢 | 🟢 |
+| [014](014-use-shadcn-ui-for-components.md) | Use shadcn-ui for Components | ✅ Approved | 2026-06-05 | 🟢 | 🟢 |
+| [015](015-adopt-cqrs-pattern.md) | Adopt CQRS Pattern for Application Layer | ✅ **Approved** | 2026-06-29 | 🟡 | 🟠 |
+| [016](016-dependency-injection-strategy-for-nextjs.md) | Dependency Injection Strategy for Next.js | ✅ Approved | 2026-07-01 | 🟠 | 🟡 |
+| [016-01](016-01-controller-factory-di-amendment.md) | **Amendment: Controller Factory DI Pattern** | ✅ **Approved** | 2026-07-22 | 🟠 | 🟡 |
+| [017](017-use-drizzle-orm-with-ddd-transactions.md) | Use Drizzle ORM with Transaction Support at Application Layer | ✅ Approved | 2026-07-01 | 🟡 | 🟡 |
+| [018](018-implement-observability-for-debugging.md) | Implement Observability for AI-Assisted Debugging | ✅ Approved | 2026-07-04 | 🟡 | ⚪ |
+| [019](019-use-ts-archunit-for-architecture-testing.md) | Use ts-archunit for Architecture Testing | ✅ Approved | 2026-07-10 | 🟠 | 🔴 |
+| [020](020-use-api-schema-package-pattern-for-contract-definition.md) | Use API Schema Package Pattern for Contract Definition | ✅ **Accepted** | 2026-07-25 | 🟡 | 🟡 |
+| [021](021-adopt-domain-module-structure-convention.md) | Adopt Domain Module Structure Convention | ✅ **Accepted** | 2026-07-25 | 🟠 | 🟡 |
+| [022](022-accept-frontend-backend-type-decoupling-strategy.md) | Accept Frontend-Backend Type Decoupling Strategy | ✅ **Accepted** | 2026-07-25 | 🟡 | 🟡 |
+| [023](023-comprehensive-monorepo-structure-update.md) | Comprehensive Monorepo Structure Update | ✅ **Accepted** | 2026-07-25 | 🟡 | 🟡 |
+
+---
+
+## 🤖 AI & Agentic Ergonomics (AX)
+
+Each ADR documents the **LLM friction** of its decision (see the `🤖 AI & Agentic Ergonomics` section in each file). The `LLM Corpus` and `Guardrail Tax` columns in the Quick Reference above are a generated view of its two enumerable fields: `LLM Corpus Alignment` (how common the pattern is in LLM training data) and `Guardrail Tax` (automated + human supervision overhead to keep agents on-plan). The legend table is printed directly above the Quick Reference table.
+
+### 🔥 High-Friction Hot Spots (agent deviations concentrate here)
+
+- **009 — DDD Structure** (Atypical / 🔴): corpus default is MVC/CRUD; Value Objects, layer isolation and pure handlers only survive via `check:arch` + ts-archunit.
+- **019 — ts-archunit** (Atypical / 🔴): exotic tool → hallucinated APIs, vacuous rules, and guardrail-circumvention risk; arch tests are immutable for agents.
+- **015 — CQRS** (Medium / 🟠): merged command/query handlers and missing DTOs are the typical relaxation; enforced by arch rules.
+- **007-01 — Zod outside domain** (Atypical / 🟡): "validate inside the entity" is the corpus default; domain purity must stay machine-enforced.
+- **016 / 016-01 — Factory-function DI & controller factories** (Atypical / 🟡): no corpus precedent; `container.ts` must be the only visible wiring path.
 
 ---
 
@@ -277,6 +299,7 @@ Each ADR follows this structure:
 - **Options** - Alternatives considered
 - **Decision** - Chosen option and justification
 - **Consequences** - Positive and negative outcomes
+- **AI & Agentic Ergonomics (AX)** - LLM corpus alignment, expected agent biases, required guardrails, supervision/guardrail tax
 - **Links** - Related documentation
 
 ---
@@ -286,6 +309,9 @@ Each ADR follows this structure:
 | Metric | Count |
 |--------|-------|
 | **Total ADR Documents** | 33 (including amendments, analyses, and superseded decisions) |
+| **AX Coverage** | 33 / 33 (LLM corpus alignment documented in every ADR) |
+| **Corpus Distribution** | 🟢 High: 12 · 🟡 Medium: 15 · 🟠 Atypical: 6 |
+| **Guardrail Tax Distribution** | 🟢 Low: 11 · ⚪ Low-Med: 5 · 🟡 Medium: 14 · 🟠 Med-High: 1 · 🔴 High: 2 |
 | **Approved / Active** | 21 (including 1 Optional) |
 | **Accepted** | 6 |
 | **Completed Analyses** | 1 |
@@ -295,5 +321,5 @@ Each ADR follows this structure:
 
 ---
 
-**Last Updated**: 2026-08-15
+**Last Updated**: 2026-09-14
 **Maintained By**: Technical Team

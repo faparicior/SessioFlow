@@ -110,7 +110,7 @@ const validated = ConferenceSchema.parse(input);  // Data only
 
 ### 🤖 AI & Agentic Ergonomics (AX)
 
-* **LLM Corpus Alignment:** Medium/Low — shared-contract-package patterns (Zod DTOs in a dedicated workspace) appear in enterprise corpora but are uncommon in the Next.js examples that dominate training data.
+* **LLM Corpus Alignment:** Medium (30-80%) — shared contract packages with Zod DTOs appear in enterprise corpora, but are uncommon in the Next.js examples that dominate training data.
 * **Expected Agent Inercias / Biases:** Agents define ad-hoc Zod schemas inside route handlers, duplicate schemas between `@sessioflow/api-definitions` and module `.command.ts` DTOs, import internal module types instead of contract types, or forget `dist/` rebuilds after schema changes.
 * **Required Automated Guardrails:** Schemas centralized in `@sessioflow/api-definitions`; interface/controller tests validate against contract schemas; `npx turbo build --filter=@sessioflow/<package>` rebuild discipline; xo import checks.
 * **Supervision & Guardrail Tax:** Medium — drift between contract package and module DTOs is the recurring failure mode.
