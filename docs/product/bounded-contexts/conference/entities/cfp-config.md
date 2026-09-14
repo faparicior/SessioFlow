@@ -140,9 +140,9 @@ export interface ConferenceRepository {
 *Relative links to the User Stories/Flows that interact with or trigger mutations on this entity.*
 
 * [journey-01-setup-conference.md](../flows/journey-01-setup-conference.md): Creates `CfpConfig` with `ACTIVE` state
-* [journey-02-submit-proposal.md](../../submission/flows/journey-02-submit-proposal.md): Submissions only accepted when `ACTIVE`
-* [journey-03-review-sessions.md](../../review/flows/journey-03-review-sessions.md): Review only possible when `CLOSED`
-* [journey-04-acceptance-logistics.md](../../scheduling/flows/journey-04-acceptance-logistics.md): Archives when conference completes
+* [journey-02-submit-proposal.md](../../../../inception/5-user-journeys/journey-02-submitting-talk.md): Submissions only accepted when `ACTIVE`
+* [journey-03-review-sessions.md](../../../../inception/5-user-journeys/journey-03-selection-and-program.md): Review only possible when `CLOSED`
+* [journey-04-acceptance-logistics.md](../../../../inception/5-user-journeys/journey-04-acceptance-and-logistics.md): Archives when conference completes
 
 ---
 

@@ -39,7 +39,7 @@
 | Entity / Use Case | Usage |
 |-------------------|-------|
 | [conference.md](../entities/conference.md) | Core property of Conference aggregate |
-| [create-conference.ts](../../../../../src/application/conference/use-cases/create-conference.ts) | Initial status validation |
+| [create-conference.handler.ts](../../../../../packages/modules/conference/src/application/commands/create-conference/create-conference.handler.ts) | Initial status validation |
 | `submit-proposal.ts` (planned) | Check if submissions allowed |
 
 ---

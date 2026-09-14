@@ -36,7 +36,7 @@
 | Entity / Use Case | Usage |
 |-------------------|-------|
 | [conference.md](../entities/conference.md) | Property of Conference aggregate |
-| [create-conference.ts](../../../../../src/application/conference/use-cases/create-conference.ts) | Auto-generated from conference name |
+| [create-conference.handler.ts](../../../../../packages/modules/conference/src/application/commands/create-conference/create-conference.handler.ts) | Auto-generated from conference name |
 | `cfp-page.tsx` (planned) | Used in public CfP route |
 
 ---

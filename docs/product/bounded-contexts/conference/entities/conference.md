@@ -188,8 +188,8 @@ export interface ConferenceRepository {
 *Relative links to the User Stories/Flows that interact with or trigger mutations on this entity.*
 
 * [journey-01-setup-conference.md](../flows/journey-01-setup-conference.md): Triggers `Conference.create()` → `Conference.publishCfp()`
-* [journey-03-review-sessions.md](../../review/flows/journey-03-review-sessions.md): Triggers `Conference.closeCfp()` → `Conference.startReview()` → `Conference.completeSelection()`
-* [journey-04-acceptance-logistics.md](../../scheduling/flows/journey-04-acceptance-logistics.md): Triggers `Conference.publishSchedule()` → `Conference.complete()`
+* [journey-03-review-sessions.md](../../../../inception/5-user-journeys/journey-03-selection-and-program.md): Triggers `Conference.closeCfp()` → `Conference.startReview()` → `Conference.completeSelection()`
+* [journey-04-acceptance-logistics.md](../../../../inception/5-user-journeys/journey-04-acceptance-and-logistics.md): Triggers `Conference.publishSchedule()` → `Conference.complete()`
 
 ---
 

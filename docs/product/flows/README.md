@@ -9,9 +9,9 @@ Each flow represents a complete user story from start to finish, spanning one or
 | ID | Journey Name | Primary Bounded Context | Related Contexts | Status |
 |:---|:-------------|:----------------------|:-----------------|:-------|
 | **J01** | [Setup Conference (CfP Configuration)](../bounded-contexts/conference/flows/journey-01-setup-conference.md) | Conference | — | ✅ Complete |
-| **J02** | [Submit Proposal](../bounded-contexts/submission/flows/journey-02-submit-proposal.md) | Submission | Conference | ⏳ Pending |
-| **J03** | [Review Sessions](../bounded-contexts/review/flows/journey-03-review-sessions.md) | Review | Submission | ⏳ Pending |
-| **J04** | [Acceptance & Logistics](../bounded-contexts/scheduling/flows/journey-04-acceptance-logistics.md) | Scheduling | Conference, Submission | ⏳ Pending |
+| **J02** | [Submit Proposal](../../inception/5-user-journeys/journey-02-submitting-talk.md) | Submission | Conference | ⏳ Pending |
+| **J03** | [Review Sessions](../../inception/5-user-journeys/journey-03-selection-and-program.md) | Review | Submission | ⏳ Pending |
+| **J04** | [Acceptance & Logistics](../../inception/5-user-journeys/journey-04-acceptance-and-logistics.md) | Scheduling | Conference, Submission | ⏳ Pending |
 
 ---
 
@@ -58,7 +58,7 @@ Each journey's complete documentation is in a **single file** that includes:
 **So that** I can be considered for the conference program
 
 **📄 Detailed Documentation (when created, will include):**  
-→ [Flow Spec Location](../bounded-contexts/submission/flows/journey-02-submit-proposal.md) *(not yet created)*
+→ [Journey doc](../../inception/5-user-journeys/journey-02-submitting-talk.md) *(flow spec not yet created)*
 
 **Should include:**
 - Sequence diagram with error paths
@@ -78,7 +78,7 @@ Each journey's complete documentation is in a **single file** that includes:
 **So that** I can select the best talks for the conference
 
 **📄 Detailed Documentation (when created, will include):**  
-→ [Flow Spec Location](../bounded-contexts/review/flows/journey-03-review-sessions.md) *(not yet created)*
+→ [Journey doc](../../inception/5-user-journeys/journey-03-selection-and-program.md) *(flow spec not yet created)*
 
 **Should include:**
 - Sequence diagram with error paths
@@ -98,7 +98,7 @@ Each journey's complete documentation is in a **single file** that includes:
 **So that** speakers know their acceptance status and time slots
 
 **📄 Detailed Documentation (when created, will include):**  
-→ [Flow Spec Location](../bounded-contexts/scheduling/flows/journey-04-acceptance-logistics.md) *(not yet created)*
+→ [Journey doc](../../inception/5-user-journeys/journey-04-acceptance-and-logistics.md) *(flow spec not yet created)*
 
 **Should include:**
 - Sequence diagram with error paths

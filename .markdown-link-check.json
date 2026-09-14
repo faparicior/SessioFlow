@@ -95,6 +95,9 @@
     },
     {
       "pattern": "path/to/flow"
+    },
+    {
+      "pattern": "sessioflow\\.app/cfp/tech-conference"
     }
   ]
 }

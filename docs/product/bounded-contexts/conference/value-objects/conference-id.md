@@ -35,8 +35,8 @@
 | Entity / Use Case | Usage |
 |-------------------|-------|
 | [conference.md](../entities/conference.md) | Primary key for Conference aggregate |
-| [create-conference.ts](../../../../../src/application/conference/use-cases/create-conference.ts) | Input parameter for conference creation |
-| [conference-repository.ts](../../../../../src/infrastructure/database/conference-repository.ts) | Query parameter for repository methods |
+| [create-conference.handler.ts](../../../../../packages/modules/conference/src/application/commands/create-conference/create-conference.handler.ts) | Input parameter for conference creation |
+| [conference.repository.ts](../../../../../packages/modules/conference/src/infrastructure/database/conference.repository.ts) | Query parameter for repository methods |
 
 ---
 
