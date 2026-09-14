@@ -67,3 +67,10 @@ export async function POST(request: NextRequest) {
 
 ### Negative
 - `container.ts` has additional helper factory methods for controllers.
+
+## 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** Low/Atypical (<30%) — HTTP-controller factories exported from a module composition root have almost no corpus precedent; agents expect route files to do their own wiring.
+* **Expected Agent Inercias / Biases:** Route handlers build repositories/handlers inline instead of calling `create*Controller` from `container.ts`; controllers import domain directly; helper factories proliferate outside the container; naming drifts from the `*controller` convention arch tests look for.
+* **Required Automated Guardrails:** ts-archunit rules targeting `**/interfaces/**` `*controller.ts` (naming, no domain imports); route handlers reduced to delegation; interface tests calling the exported controller functions.
+* **Supervision & Guardrail Tax:** Medium — thin route files plus arch rules keep wiring deviations detectable.

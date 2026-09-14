@@ -78,6 +78,13 @@ ts-archunit is the only library that satisfies **all five** decision drivers:
   * **Rule flakiness** — AST-level matching can break on code reformatting. Mitigation: baseline mode + exclusion comments give us escape hatches.
   * **Team adoption** — Developers need to understand the DSL to write rules. Mitigation: start with a small set of core rules; expand iteratively.
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** Atypical (<10%) — ts-archunit has minimal representation in the training corpus; agents confuse it with Java ArchUnit, dependency-cruiser, or eslint-plugin-boundaries.
+* **Expected Agent Inercias / Biases:** Agents hallucinate fluent APIs, use `classes(p)` for function exports (controllers), write vacuous rules that match zero files, try `.or()` between predicates (strictly ANDed), and — most dangerously — relax architecture tests to make failing code pass.
+* **Required Automated Guardrails:** AGENTS.md ts-archunit pattern cookbook (`functions(p)`, `modules(p)`, `satisfy()`, `addSourceFilesAtPaths`); policy that `tests/unit/architecture/` is immutable for agents; vacuousness probes (inject a violation, watch exactly one test fail).
+* **Supervision & Guardrail Tax:** High — exotic tool + guardrail-circumvention risk; human review of arch-test changes is mandatory.
+
 ## Pros and Cons of the Options
 
 ### ts-archunit

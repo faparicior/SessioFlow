@@ -71,6 +71,13 @@ RESTful API design is the optimal choice because it best satisfies the MVP const
   - Real-time features (if added later) require WebSocket or Server-Sent Events alongside REST
   - May require additional endpoints for complex business operations (e.g., bulk updates)
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** High (>80%) — REST conventions are among the most represented material in any code corpus.
+* **Expected Agent Inercias / Biases:** Agents drift toward tRPC or GraphQL patterns present in adjacent training data, invent inconsistent resource nesting and pluralization, return ad-hoc error bodies instead of the mapped `DomainError` responses, and skip Zod request validation.
+* **Required Automated Guardrails:** `tests/unit/architecture/response-conventions.test.ts`; Zod schemas in `@sessioflow/api-definitions`; interface tests asserting status codes and error mapping.
+* **Supervision & Guardrail Tax:** Low — deviations surface immediately in interface tests.
+
 ### Pros and Cons of the Options
 
 #### Option 1: RESTful API (HTTP verbs, resource-based URLs)

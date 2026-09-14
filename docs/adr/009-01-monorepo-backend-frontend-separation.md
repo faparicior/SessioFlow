@@ -238,6 +238,13 @@ curl http://localhost:3000/api/v1/conferences
 | Frontend React → Vue | Touch all `src/` folders, especially `interfaces/web/` | Move `apps/frontend/`, keep `apps/backend/` untouched |
 | **Full Stack Swap** | 156-336 hours (ADR-002-01) | 24-42 hours (8-14 hours per layer) |
 
+## 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** High (>80%) — pnpm/Turborepo monorepos with `apps/` split are mainstream. **Note:** this ADR is superseded by ADR-023; AX recorded for traceability only.
+* **Expected Agent Inercias / Biases:** Agents duplicate the backend as a separately deployed service, add cross-app imports bypassing workspace packages, or run `apps/backend` where AGENTS.md forbids it (E2E is served by frontend route handlers on port 3010).
+* **Required Automated Guardrails:** ADR-023 supersedes this layout; workspace package boundaries + AGENTS.md E2E contract prevent the stale structure from being re-implemented.
+* **Supervision & Guardrail Tax:** Low — historical document; active guardrails live in ADR-023.
+
 ## Links
 
 * [ADR-009: Domain-Driven Design Structure](./009-adopt-domain-driven-design-structure.md)

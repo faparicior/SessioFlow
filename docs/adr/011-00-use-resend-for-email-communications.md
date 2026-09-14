@@ -70,6 +70,13 @@ Resend combined with Supabase Auth provides the optimal balance of features, cos
   - Template changes require code deployment (no visual editor)
   - Dependency on external service for critical authentication flow
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** High (>80%) — Resend usage examples are abundant in the corpus.
+* **Expected Agent Inercias / Biases:** Agents call `resend.emails.send()` directly inside handlers and route handlers, send synchronously inside DB transactions, and inline template HTML — patterns this decision (and its amendment) explicitly discourages.
+* **Required Automated Guardrails:** Outbox-based async dispatch via domain events (`CfpOpenedEvent` → Outbox repository); email sends never in the request path; Supabase Auth owns magic-link mail.
+* **Supervision & Guardrail Tax:** Medium — superseded by ADR-011-01; keep guardrail focus on the outbox invariant, not the provider.
+
 ### Pros and Cons of the Options
 
 #### Option 1: Resend (Modern Email API for Developers)

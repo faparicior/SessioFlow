@@ -295,6 +295,13 @@ See `MIGRATION_TO_NEW_ARCHITECTURE.md` for detailed guidance.
 * [ADR-021: Domain Module Structure Convention](./021-adopt-domain-module-structure-convention.md)
 * [ADR-022: Frontend-Backend Type Decoupling Strategy](./022-accept-frontend-backend-type-decoupling-strategy.md)
 
+## 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** Medium (30-80%) — Turborepo/pnpm tooling is High in the corpus, but this specific packages/modules + container.ts layout is project-specific.
+* **Expected Agent Inercias / Biases:** Agents add folders under `packages/modules/` without workspace wiring (`package.json`/`tsconfig.json`/`container.ts`), import between packages via relative paths instead of `@sessioflow/*` workspace names, reuse stale `dist/`/`tsconfig.tsbuildinfo` artifacts, or put module code in `apps/`.
+* **Required Automated Guardrails:** `create-module` skill for scaffolding; `npx turbo typecheck --filter=...` per-package loops; AGENTS.md rebuild/`dist` hygiene rules; `npm run check:arch` per-module scans.
+* **Supervision & Guardrail Tax:** Medium — structure is enforced partly by tooling (turbo filters) and partly by skills that must be kept current.
+
 ## Links
 
 * [Migration Guide](../../MIGRATION_TO_NEW_ARCHITECTURE.md)

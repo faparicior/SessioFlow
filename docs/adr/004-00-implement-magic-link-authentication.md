@@ -69,6 +69,13 @@ The hybrid approach provides the optimal balance of usability, security, and imp
   - GDPR requires explicit consent for data processing via email
   - Magic links sent to compromised email accounts create security vulnerability
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** Medium (30-80%) — magic-link flows are common in the corpus, but this specific Auth0-magic-links + Supabase combination is atypical (<30%).
+* **Expected Agent Inercias / Biases:** Agents fall back to more common idioms: password-based flows, hand-rolled token/email-link generation, JWT signing in app code, storing tokens in `localStorage`, or wiring NextAuth because it dominates the corpus for Next.js auth.
+* **Required Automated Guardrails:** Auth abstraction port (ADR-004-01) keeping provider code out of domain/application layers; interface tests with mocked auth port; no hand-rolled crypto enforced by review + lint.
+* **Supervision & Guardrail Tax:** Medium — security-sensitive and corpus pulls toward competing auth patterns.
+
 ### Pros and Cons of the Options
 
 #### Option 1: Magic Link Authentication (Passwordless Email Links)

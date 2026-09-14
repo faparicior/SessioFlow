@@ -69,6 +69,13 @@ TypeScript with strict mode is the optimal choice because it provides maximum ty
   - Migration cost: Converting JavaScript to TypeScript requires significant effort
   - Dependency compatibility: Some libraries may have poor TypeScript support
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** High (>80%) — TypeScript strict mode is mainstream in the corpus.
+* **Expected Agent Inercias / Biases:** Agents escape the type system to make errors disappear: `any`, `as unknown as X`, non-null assertions (`!`), `@ts-ignore`/`@ts-expect-error`, and loosening tsconfig flags instead of fixing call sites.
+* **Required Automated Guardrails:** Strict tsconfig across workspaces (`npm run typecheck` via turbo); xo `@typescript-eslint` rules discouraging `any`; AGENTS.md rule: no `any` without justification.
+* **Supervision & Guardrail Tax:** Low — the compiler itself is the guardrail; supervision targets escape-hatch abuse.
+
 ### Pros and Cons of the Options
 
 #### Option 1: TypeScript with Strict Mode

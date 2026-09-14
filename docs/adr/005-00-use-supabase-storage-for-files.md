@@ -70,6 +70,13 @@ Supabase Storage is the optimal choice because it provides seamless integration 
   - No automatic image optimization may impact page load performance
   - Storage deletion policies must be carefully configured for GDPR compliance
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** High (>80%) for Supabase Storage usage in general; the corpus again skews toward direct `upload()` calls from client components, which this architecture disallows.
+* **Expected Agent Inercias / Biases:** Agents call `@supabase/storage-js` directly in components or route handlers, ignore the image-optimization strategy, build public bucket URLs by string concatenation, or bypass the storage abstraction.
+* **Required Automated Guardrails:** Storage port with Supabase adapter confined to `infrastructure/`; upload validation via Zod; interface tests mocking the storage port.
+* **Supervision & Guardrail Tax:** Low to Medium — common pattern, main risk is corpus-driven direct SDK usage.
+
 ### Pros and Cons of the Options
 
 #### Option 1: Supabase Storage (Integrated with Supabase Backend)

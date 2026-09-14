@@ -74,6 +74,13 @@ Supabase is the optimal choice because it uniquely satisfies all critical constr
   - Self-hosting Supabase is complex and may exceed volunteer DevOps capabilities
   - Data residency concerns for international events (GDPR data location requirements)
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** High (>80%) for Supabase/PostgreSQL generally, but Medium for this usage: the corpus is saturated with `supabase-js` client-side and RLS-heavy patterns that this ADR explicitly rejects.
+* **Expected Agent Inercias / Biases:** Agents call `supabase-js`/`@supabase/supabase-js` directly from handlers or UI, push validation into RLS policies instead of the domain layer, use `supabase.from(...)` instead of Drizzle repositories, and generate migrations via Supabase dashboard assumptions rather than `npm run db:generate`.
+* **Required Automated Guardrails:** Repository interfaces in `domain/`, Drizzle implementations only in `infrastructure/`; `npm run check:arch` domain-isolation rules; integration tests against the real PostgreSQL container.
+* **Supervision & Guardrail Tax:** Medium — high corpus pull toward the vendor SDK requires constant guardrail enforcement.
+
 ### Pros and Cons of the Options
 
 #### Option 1: Supabase (PostgreSQL + Auth + Storage + RLS)

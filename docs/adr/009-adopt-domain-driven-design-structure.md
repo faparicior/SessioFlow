@@ -83,6 +83,13 @@ DDD is the optimal choice because it provides long-term architectural stability 
   - May feel slow for simple MVP features without AI assistance
   - Requires discipline to maintain separation of concerns
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** Low/Atypical (<10% effective) — DDD layered structure with Value Objects and strict layer isolation is rare in real-world Node/Next.js training data, where MVC and feature-colocated CRUD dominate.
+* **Expected Agent Inercias / Biases:** This is the repo's main friction source: agents write CRUD logic in route handlers, use primitive types (`string`, `Date`) instead of Value Objects, create anemic entities, import infrastructure from domain, and flatten `application/`/`infrastructure/` boundaries when under time pressure.
+* **Required Automated Guardrails:** `npm run check:arch` + ts-archunit layer-isolation and VO rules (private constructor, `create()`, `value`, `equals`), AGENTS.md invariants, controllers/handlers split with single try/catch in controller, architecture tests treated as immutable.
+* **Supervision & Guardrail Tax:** High — every feature touches this decision; guardrails, not prose, keep the structure intact.
+
 ### Pros and Cons of the Options
 
 #### Option 1: Domain-Driven Design (DDD) Structure

@@ -208,6 +208,13 @@ With corrected pricing and DDD abstraction, a **hybrid approach** is now fully v
 
 ---
 
+## 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** Medium (30-80%) — hexagonal ports/adapters is well documented conceptually, but far less often implemented this way in Supabase sample code that dominates the corpus.
+* **Expected Agent Inercias / Biases:** Agents revert to direct vendor SDK calls in route handlers despite the port, implement adapters in the wrong layer, or wire providers at import time instead of through the composition root (`container.ts`), destroying the single swap point.
+* **Required Automated Guardrails:** ts-archunit import-restriction rules (vendor SDK only in `infrastructure/`); composition root as sole wiring point; xo import checks; integration tests pin the repository contract.
+* **Supervision & Guardrail Tax:** Medium — the abstraction is only as strong as the automated import rules enforcing it.
+
 ## Updated Links
 
 * [Supabase Documentation](https://supabase.com/docs)

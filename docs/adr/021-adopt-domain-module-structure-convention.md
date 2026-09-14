@@ -139,6 +139,13 @@ packages/modules/review/domain/
 - ⚠️ Grouping may become too nested (keep subfolders shallow, e.g., `value-objects/` only)
 - ⚠️ Developers may put entities in subfolders anyway (enforce with lint rules)
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** Atypical (<10%) — this hybrid convention (entities/interfaces at module root, support objects grouped in subfolders) is project-specific; corpus defaults are either full `domain/` nesting or flat folders.
+* **Expected Agent Inercias / Biases:** Agents recreate a `domain/` subfolder for everything (or flatten everything to root), misname support folders (`dtos/`, `services/`), and place repository implementations in the wrong layer when following unfamiliar conventions.
+* **Required Automated Guardrails:** `create-module` skill scaffolding; `npm run check:arch` folder-based rules; ts-archunit folder predicates; existing modules as copyable reference layout.
+* **Supervision & Guardrail Tax:** Medium — convention memory is weak across sessions; scaffolding skills are the mitigation.
+
 ## Pros and Cons of the Options
 
 ### Entities/Interfaces at Root + Grouped Support Objects

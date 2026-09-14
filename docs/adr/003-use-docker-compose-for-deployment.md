@@ -67,6 +67,13 @@ Docker Compose is the only option that satisfies all constraints simultaneously:
   - Data persistence requires careful volume management to prevent loss
   - Limited load balancing capabilities for high-traffic events
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** High (>80%) — docker-compose for local PostgreSQL is ubiquitous in training data.
+* **Expected Agent Inercias / Biases:** Agents assume a managed database (Supabase cloud) is always reachable and skip `docker compose up -d`; hardcode connection strings; add ad-hoc `docker compose` calls in test hooks instead of letting scripts own the container lifecycle; write a root compose file despite only `apps/backend/docker-compose.yml` existing.
+* **Required Automated Guardrails:** Lifecycle owned by npm scripts (`test:e2e`, `dev`) with up/trap-down pattern; Playwright global setup polls PostgreSQL and applies migrations; AGENTS.md documentation of the contract.
+* **Supervision & Guardrail Tax:** Low — simple, well-known pattern; failures are immediate and obvious.
+
 ### Pros and Cons of the Options
 
 #### Option 1: Docker Compose (Single-Host Deployment)

@@ -75,6 +75,13 @@ Tailwind CSS with shadcn/ui is the optimal choice because it provides the best b
   - Design system decisions must be made early to ensure consistency
   - Accessibility requires careful attention (mitigated by using shadcn/ui components)
 
+### 🤖 AI & Agentic Ergonomics (AX)
+
+* **LLM Corpus Alignment:** High (>80%) — Tailwind + shadcn/ui is one of the most represented styling stacks in recent front-end corpora.
+* **Expected Agent Inercias / Biases:** Agents emit inline `style` props, CSS modules, or styled-components alongside Tailwind; use arbitrary values (`w-[327px]`) instead of design tokens; duplicate existing shadcn primitives instead of reusing `components/ui`.
+* **Required Automated Guardrails:** shadcn/ui components centralized in the UI folder; xo + Prettier formatting gate; typecheck on Radix prop types.
+* **Supervision & Guardrail Tax:** Low — mainstream; visual review is the remaining human check.
+
 ### Pros and Cons of the Options
 
 #### Option 1: Tailwind CSS with shadcn/ui Components
