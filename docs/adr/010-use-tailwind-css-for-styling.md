@@ -186,6 +186,6 @@ For features not covered by shadcn/ui, build custom components using:
 ## Links
 
 * [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-* [MVP Canvas - UX Enablers](../inception/8-mvp-canvas-definition.md#6-technical--ux-enablers)
+* [MVP Canvas - UX Enablers](../inception/8-mvp-canvas-definition.md#5-technical--ux-enablers)
 * [Persona: Andrea - Mobile Access Need](../inception/3-personas/03-andrea-speaker.md)
 * [Trade-offs - Usability Priority](../inception/2-tradeoffs.md#2-final-consensus-trade-off-board)

@@ -159,7 +159,7 @@ classes(p)
 ## References
 
 * [ADR-009](009-adopt-domain-driven-design-structure.md) — DDD Architecture Pattern
-* [DEV-RULES.md](../../DEV-RULES.md) — Coding rules requiring DDD compliance
+* [AGENTS.md](../../AGENTS.md) — Coding rules requiring DDD compliance (successor of the removed DEV-RULES.md)
 * [ts-archunit Documentation](https://nielspeter.github.io/ts-archunit/)
 * [ArchUnitTS Documentation](https://lukasniessen.github.io/ArchUnitTS/)
 * [dependency-cruiser Documentation](https://github.com/sverweij/dependency-cruiser)

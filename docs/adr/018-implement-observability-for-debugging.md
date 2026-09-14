@@ -360,7 +360,7 @@ Logs should include:
 
 - [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
 - [Pino Logger](https://github.com/pinojs/pino)
-- [Observability Best Practices](https://opentelemetry.io/docs/semantic-conventions/)
+- [OpenTelemetry Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/)
 
 ---
 

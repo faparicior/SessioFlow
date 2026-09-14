@@ -144,8 +144,8 @@ This skill is **language- and framework-agnostic**. File paths and class convent
 
 ## 🔗 Related Documentation
 
-- [User Journey Mapping](../../../docs/inception/6-user-journey-mapping.md)
-- [Bounded Contexts & Flows](../../../docs/product/bounded-contexts/README.md)
+- [User Journey Mapping](../../../docs/inception/5-user-journeys/README.md)
+- [Bounded Contexts & Flows](../../../docs/product/README.md)
 
 ---
 

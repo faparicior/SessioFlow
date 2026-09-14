@@ -121,6 +121,6 @@ Docker Compose is the only option that satisfies all constraints simultaneously:
 ## Links
 
 * [Docker Compose Documentation](https://docs.docker.com/compose/)
-* [Feature: Deploy with Standard Tools](../inception/5-brainstorming.md#differentiating-features)
-* [User Journey 5: Deployment](../inception/6-user-journeys/journey-05-deployment.md)
+* [Feature: Deploy with Standard Tools](../inception/6-brainstorming.md#-differentiating-features)
+* [User Journey 5: Deployment](../inception/5-user-journeys/journey-05-deployment.md)
 * [Trade-offs - Simplicity Constraint](../inception/2-tradeoffs.md#3-consensus-reasoning)

@@ -127,8 +127,7 @@ sessioflow/
 │       └── ...
 │
 ├── turbo.json
-├── package.json (workspaces)
-└── MIGRATION_TO_NEW_ARCHITECTURE.md
+└── package.json (workspaces)
 ```
 
 ### Key Components Explained
@@ -277,7 +276,7 @@ packages/modules/conference/domain/
 
 ## Migration Plan
 
-See `MIGRATION_TO_NEW_ARCHITECTURE.md` for detailed guidance.
+The standalone `MIGRATION_TO_NEW_ARCHITECTURE.md` guide was removed (commit `6621cdc`); the phased plan below is now the source of truth.
 
 ### Summary
 1. **Phase 1:** Scaffolding (`packages/`, `turbo.json`, workspaces)
@@ -310,7 +309,7 @@ See `MIGRATION_TO_NEW_ARCHITECTURE.md` for detailed guidance.
 
 ## Links
 
-* [Migration Guide](../../MIGRATION_TO_NEW_ARCHITECTURE.md)
+* [AGENTS.md](../../AGENTS.md) — repository layout and commands (replaces the removed migration guide)
 * [ADR-015: CQRS Pattern](./015-adopt-cqrs-pattern.md)
 * [ADR-007: Use Zod for Validation](./007-use-zod-for-validation.md)
 
@@ -322,4 +321,4 @@ See `MIGRATION_TO_NEW_ARCHITECTURE.md` for detailed guidance.
 
 **Implementation Date:** Upon approval
 **Owner:** Technical Team
-**Migration Guide:** MIGRATION_TO_NEW_ARCHITECTURE.md
+**Migration Guide:** Migration Plan section of this document (standalone guide removed in `6621cdc`)

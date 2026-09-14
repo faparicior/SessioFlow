@@ -159,5 +159,5 @@ TypeScript with strict mode is the optimal choice because it provides maximum ty
 
 * [TypeScript Strict Mode Documentation](https://www.typescriptlang.org/tsconfig#strict)
 * [AGENTS.md - TypeScript Guidelines](../../AGENTS.md#typescript)
-* [Zod TypeScript Integration](https://zod.dev/TYPESCRIPT)
-* [Next.js TypeScript Guide](https://nextjs.org/docs/pages/building-your-application/typescript)
+* [Zod Documentation (TypeScript-first)](https://zod.dev/)
+* [Next.js TypeScript Guide](https://nextjs.org/docs/pages/building-your-application/configuring/typescript)

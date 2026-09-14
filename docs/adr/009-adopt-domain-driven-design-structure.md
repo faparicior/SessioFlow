@@ -444,6 +444,6 @@ export class SubmitProposal {
 ## Links
 
 * [Domain-Driven Design Distilled (Book)](https://www.amazon.com/Domain-Driven-Design-Distilled-Vaughn-Vernon/dp/0134434420)
-* [DDD Starter Guide](https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/domain-driven-design-ddd)
+* [DDD — Bounded Contexts (Martin Fowler)](https://martinfowler.com/bliki/BoundedContext.html)
 * [Pretalx Architecture](https://docs.pretalx.org/developer/architecture/)
-* [Next.js + DDD Pattern](https://nextjs.org/docs/app/building-your-application/structure)
+* [Next.js Project Structure](https://nextjs.org/docs/app/getting-started/project-structure)

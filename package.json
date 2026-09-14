@@ -20,7 +20,7 @@
     "lint:md": "markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
     "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\"",
     "check:links": "markdown-link-check --config .markdown-link-check.json README.md",
-    "check:links:all": "npx find-up-glob '**/*.md' | xargs -n 1 markdown-link-check --config .markdown-link-check.json",
+    "check:links:all": "git ls-files '*.md' | xargs -n 1 markdown-link-check --config .markdown-link-check.json",
     "validate:md": "npm run lint:md && npm run check:links",
     "typecheck": "npx turbo typecheck && tsc --noEmit",
     "test": "vitest run",

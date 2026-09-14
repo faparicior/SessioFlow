@@ -61,24 +61,24 @@ This document details the refactoring and clean-up work carried out from commit 
 ## 📁 File-by-File Changes Reference
 
 ### 🏗️ Domain Layer (`src/modules/conference/domain`)
-- [CFP Config Entity](file:///home/fernando/src/sessioflow/src/modules/conference/domain/entities/cfp-config.ts) & [Conference Entity](file:///home/fernando/src/sessioflow/src/modules/conference/domain/entities/conference.ts): Cleaned up aggregate getter patterns and private identifiers.
-- Value Objects ([CfpEndDate](file:///home/fernando/src/sessioflow/src/modules/conference/domain/value-objects/cfp-end-date.ts), [CfpStartDate](file:///home/fernando/src/sessioflow/src/modules/conference/domain/value-objects/cfp-start-date.ts), [ConferenceId](file:///home/fernando/src/sessioflow/src/modules/conference/domain/value-objects/conference-id.ts), [ConferenceStatus](file:///home/fernando/src/sessioflow/src/modules/conference/domain/value-objects/conference-status.ts)): Added strict validation and parsing helpers (e.g. `ConferenceStatusFromString`) rather than raw typecasting.
+- `src/modules/conference/domain/entities/cfp-config.ts` & `src/modules/conference/domain/entities/conference.ts`: Cleaned up aggregate getter patterns and private identifiers.
+- Value Objects (`src/modules/conference/domain/value-objects/cfp-end-date.ts`, `src/modules/conference/domain/value-objects/cfp-start-date.ts`, `src/modules/conference/domain/value-objects/conference-id.ts`, `src/modules/conference/domain/value-objects/conference-status.ts`): Added strict validation and parsing helpers (e.g. `ConferenceStatusFromString`) rather than raw typecasting.
 
 ### ⚙️ Application Layer (`src/modules/conference/application`)
-- [CreateConferenceHandler](file:///home/fernando/src/sessioflow/src/modules/conference/application/commands/create-conference/create-conference.handler.ts): Refactored catch blocks to check `error instanceof Error` before logging/handling details. Added explicit types to constructors.
+- `src/modules/conference/application/commands/create-conference/create-conference.handler.ts`: Refactored catch blocks to check `error instanceof Error` before logging/handling details. Added explicit types to constructors.
 
 ### 🔌 Infrastructure & Database (`src/modules/conference/infrastructure`)
-- [SupabaseConferenceRepository](file:///home/fernando/src/sessioflow/src/modules/conference/infrastructure/database/conference-repository.ts): Refactored data mapping to map raw database strings to `ConferenceStatus` using validated type guards.
-- [migrate.mts](file:///home/fernando/src/sessioflow/drizzle/migrate.mts): Renamed to enforce ESM module boundary for top-level await database migrations.
+- `src/modules/conference/infrastructure/database/conference-repository.ts`: Refactored data mapping to map raw database strings to `ConferenceStatus` using validated type guards.
+- `drizzle/migrate.mts`: Renamed to enforce ESM module boundary for top-level await database migrations.
 
 ### 🖥️ Interface Layer (API and Web UI)
-- [create-conference route.ts](file:///home/fernando/src/sessioflow/src/app/api/v1/conferences/route.ts): Refactored JSON body parsing, wrapped request body debug logging, and cleaned up caught errors.
-- [create page.tsx](file:///home/fernando/src/sessioflow/src/app/conferences/create/page.tsx): Updated `handleSuccess` parameter signature to safely extract fields using type guards (`'id' in data`) instead of using type assertions.
-- [ConferenceForm component](file:///home/fernando/src/sessioflow/src/modules/conference/interfaces/web/components/conference-form.tsx): Refactored event handler assignments with arrow functions and `void` wraps.
-- [Button component](file:///home/fernando/src/sessioflow/src/components/ui/button.tsx): Cleaned up React 19 `defaultProps` deprecated assignments.
+- `src/app/api/v1/conferences/route.ts`: Refactored JSON body parsing, wrapped request body debug logging, and cleaned up caught errors.
+- `src/app/conferences/create/page.tsx`: Updated `handleSuccess` parameter signature to safely extract fields using type guards (`'id' in data`) instead of using type assertions.
+- `src/modules/conference/interfaces/web/components/conference-form.tsx`: Refactored event handler assignments with arrow functions and `void` wraps.
+- `src/components/ui/button.tsx`: Cleaned up React 19 `defaultProps` deprecated assignments.
 
 ### ⚙️ Configuration Files
-- [xo.config.ts](file:///home/fernando/src/sessioflow/xo.config.ts): Added support for `.mts` files, and turned off the outdated `react/require-default-props` rule.
+- `xo.config.ts`: Added support for `.mts` files, and turned off the outdated `react/require-default-props` rule.
 
 ---
 

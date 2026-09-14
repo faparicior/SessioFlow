@@ -124,6 +124,6 @@ The hybrid approach provides the optimal balance of usability, security, and imp
 ## Links
 
 * [Supabase Authentication Documentation](https://supabase.com/docs/guides/auth)
-* [User Journey 2: Submitting a Talk](../inception/6-user-journeys/journey-02-submitting-talk.md)
+* [User Journey 2: Submitting a Talk](../inception/5-user-journeys/journey-02-submitting-talk.md)
 * [Trade-offs: Usability as Priority #1](../inception/2-tradeoffs.md#2-final-consensus-trade-off-board)
 * [Persona: Andrea - Pain Points](../inception/3-personas/03-andrea-speaker.md)

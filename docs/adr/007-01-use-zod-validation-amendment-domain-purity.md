@@ -3,8 +3,8 @@
 * **Status:** ✅ **APPROVED**
 * **Date:** 2026-07-18
 * **Decision Makers:** Technical Lead, Fernando
-* **Amends:** [ADR-007 (Use Zod for Validation)](file:///home/fernando/src/sessioflow/docs/adr/007-use-zod-for-validation.md)
-* **Related:** [ADR-009 (Adopt Domain-Driven Design Structure)](file:///home/fernando/src/sessioflow/docs/adr/009-adopt-domain-driven-design-structure.md)
+* **Amends:** [ADR-007 (Use Zod for Validation)](007-use-zod-for-validation.md)
+* **Related:** [ADR-009 (Adopt Domain-Driven Design Structure)](009-adopt-domain-driven-design-structure.md)
 
 ---
 

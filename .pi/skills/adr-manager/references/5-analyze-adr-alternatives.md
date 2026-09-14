@@ -507,7 +507,7 @@ Run this analysis when:
 
 - **Web Search**: Use web_search tool with multiple queries per ADR
 - **Documentation**: Official docs for each technology
-- **Benchmark Sites**: Sites like http://js-framework-benchmark.org
+- **Benchmark Sites**: Sites like https://krausest.github.io/js-framework-benchmark/current.html
 - **Surveys**: Stack Overflow Survey, State of JS, State of CSS
 - **GitHub**: Check repository activity and issues
 

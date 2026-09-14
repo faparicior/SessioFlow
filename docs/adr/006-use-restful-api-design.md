@@ -149,5 +149,5 @@ The RESTful API will follow these conventions:
 
 * [Next.js API Routes Documentation](https://nextjs.org/docs/pages/building-your-application/routing/api-routes)
 * [REST API Best Practices](https://restfulapi.net/)
-* [Feature: Expose Public API](../inception/5-brainstorming.md#differentiating-features)
-* [MVP Canvas - Public API Requirement](../inception/8-mvp-canvas-definition.md#2-mvp-scope---wave-1-features)
+* [Feature: Expose Public API](../inception/6-brainstorming.md#-differentiating-features)
+* [MVP Canvas - Public API Requirement](../inception/8-mvp-canvas-definition.md#3-mvp-scope---wave-1-features)

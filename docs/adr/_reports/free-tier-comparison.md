@@ -494,7 +494,7 @@ Given your requirement for **local development and testing**, I recommend:
 - [Auth0 Pricing](https://auth0.com/pricing)
 - [Cloudflare R2 Pricing](https://developers.cloudflare.com/r2/pricing/)
 - [NextAuth.js Documentation](https://authjs.dev)
-- [MinIO Docker Quickstart](https://hub.docker.com/r/minio/minio)
+- [MinIO Docker Quickstart](https://github.com/minio/minio)
 - [Inbucket GitHub](https://github.com/inbucket/inbucket)
 
 ---

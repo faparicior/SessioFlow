@@ -173,7 +173,7 @@ The generated flow document should be a **single, comprehensive document** that 
 
 ## 🔗 External Documentation (Optional)
 
-- [User Journey Mapping](../../../docs/inception/6-user-journey-mapping.md)
+- [User Journey Mapping](../../../docs/inception/5-user-journeys/README.md)
 
 ---
 

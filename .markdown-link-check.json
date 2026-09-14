@@ -1,0 +1,100 @@
+{
+  "retryCount": 2,
+  "fallbackRetryDelay": "3s",
+  "timeout": "15s",
+  "aliveStatusCodes": [
+    200,
+    203,
+    206,
+    429
+  ],
+  "ignorePatterns": [
+    {
+      "pattern": "^#"
+    },
+    {
+      "pattern": "0XX-original-filename\\.md"
+    },
+    {
+      "pattern": "^link$"
+    },
+    {
+      "pattern": "%5B"
+    },
+    {
+      "pattern": "entity-name"
+    },
+    {
+      "pattern": "EntityName\\.md"
+    },
+    {
+      "pattern": "VoName\\.md"
+    },
+    {
+      "pattern": "value-object-name"
+    },
+    {
+      "pattern": "US-101-example-flow"
+    },
+    {
+      "pattern": "US-202-example-payment"
+    },
+    {
+      "pattern": "flow-0*1?-?name"
+    },
+    {
+      "pattern": "XXX-xxx-xxx"
+    },
+    {
+      "pattern": "persona-[0-9]\\.md"
+    },
+    {
+      "pattern": "persona-1\\.md"
+    },
+    {
+      "pattern": "persona-2\\.md"
+    },
+    {
+      "pattern": "journey-name\\.md"
+    },
+    {
+      "pattern": "^path/to/"
+    },
+    {
+      "pattern": "^bounded-context/"
+    },
+    {
+      "pattern": "theeditorial\\.news"
+    },
+    {
+      "pattern": "youngju\\.dev"
+    },
+    {
+      "pattern": "flow-XX-name"
+    },
+    {
+      "pattern": "BR-001-rule-name"
+    },
+    {
+      "pattern": "INV-001-invariant-name"
+    },
+    {
+      "pattern": "flow-01-name"
+    },
+    {
+      "pattern": "inception/5-brainstorming"
+    },
+    {
+      "pattern": "inception/6-user-journeys"
+    },
+    {
+      "pattern": "inception/7-features-and-sequencing"
+    },
+    {
+      "pattern": "inception/3-personas"
+    },
+    {
+      "pattern": "path/to/flow"
+    }
+  ]
+}

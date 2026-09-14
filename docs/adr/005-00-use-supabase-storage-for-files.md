@@ -134,6 +134,6 @@ Given Supabase Storage's lack of built-in image optimization, the following appr
 ## Links
 
 * [Supabase Storage Documentation](https://supabase.com/docs/guides/storage)
-* [User Journey 2: Photo Upload](../inception/6-user-journeys/journey-02-submitting-talk.md)
+* [User Journey 2: Photo Upload](../inception/5-user-journeys/journey-02-submitting-talk.md)
 * [Trade-offs - Simplicity & Cost](../inception/2-tradeoffs.md#2-final-consensus-trade-off-board)
 * [Persona: Andrea - Profile Photo Need](../inception/3-personas/03-andrea-speaker.md)
