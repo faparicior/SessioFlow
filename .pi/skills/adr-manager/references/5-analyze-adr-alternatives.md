@@ -208,7 +208,7 @@ Create actionable recommendations based on your analysis.
 #### Required Output Documents
 
 **1. Main Analysis Document:**
-- **Template:** `_templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`
+- **Template:** `templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`
 - **Save as:** `_reports/ADR_ALTERNATIVES_ANALYSIS.md`
 - **IMPORTANT**: **DO NOT OVERWRITE** the entire document. Instead:
   - **If the file exists**: Read it first, then **append new ADR analysis sections** to the existing content
@@ -218,14 +218,10 @@ Create actionable recommendations based on your analysis.
 - **Contents**: Complete analysis of all ADRs with alternatives comparison
 
 **2. Executive Summary:**
-- **Template:** `_templates/TEMPLATE-EXECUTIVE_SUMMARY.md`
+- **Template:** `templates/TEMPLATE-EXECUTIVE_SUMMARY.md`
 - **Save as:** `_reports/EXECUTIVE_SUMMARY.md`
 - **Note**: This file is **always regenerated** (not appended)
 - **Contents**: High-level findings and recommendations for stakeholders
-
-**See also:**
-- `_templates/README_TEMPLATES.md` - Template reference guide
-- `_templates/ADR_TEMPLATE_SYSTEM_SUMMARY.md` - Complete system overview
 
 #### Recommendation Categories
 
@@ -256,11 +252,11 @@ Create actionable recommendations based on your analysis.
 Follow the structure defined in the templates:
 
 **Deliverable 1:** `_reports/ADR_ALTERNATIVES_ANALYSIS.md`
-- Use the complete structure from `_templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`
+- Use the complete structure from `templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`
 - Includes: Executive Summary, Summary Table, Detailed Analysis, Cross-Cutting Themes, Recommendations, Emerging Technologies
 
 **Deliverable 2:** `_reports/EXECUTIVE_SUMMARY.md`
-- Use the complete structure from `_templates/TEMPLATE-EXECUTIVE_SUMMARY.md`
+- Use the complete structure from `templates/TEMPLATE-EXECUTIVE_SUMMARY.md`
 - Includes: Overview, Overall Assessment, Key Findings, Top 5 Recommendations, Risk Assessment, Next Steps
 
 See the templates for complete section details and formatting requirements.

@@ -113,8 +113,8 @@ pi skill adr-manager --mode [generate|validate|summary|traceability|alternatives
 *   **Purpose**: Create analysis documents for an ADR.
 *   **Process**:
     1. Read `references/8-adr-naming-convention.md`.
-    2. Identify the target ADR and create a new file named `{num}-02-{topic}-analysis-{subtype}.md`.
-    3. Copy the template from `templates/TEMPLATE-ANALYSIS.md` and complete it.
+    2. Identify the target ADR and create a new file named `{num}-{seq}-{topic}-analysis-{subtype}.md`, where `{seq}` is the next available analysis sequence (`02`, `03`, `05+`; `04` is reserved for impact analyses).
+    3. Copy the template from `templates/TEMPLATE-ANALYSIS.md` and complete it (includes the mandatory AI & Agentic Ergonomics section audited by the validator).
     4. Run `--mode index` to record the new analysis.
 
 ---
@@ -185,7 +185,8 @@ This skill includes all required templates and validators as bundled assets:
 *   `templates/TEMPLATE-TRACEABILITY_MATRIX.md` - Goal traceability matrix
 *   `templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md` - Technology alternative analysis
 *   `templates/TEMPLATE-EXECUTIVE_SUMMARY.md` - Stakeholder presentation
-*   `templates/TEMPLATE-AMENDMENT.md` - ADR Amendment structure
+*   `templates/TEMPLATE-AMENDMENT.md` - ADR Amendment structure (includes the AI & Agentic Ergonomics section)
+*   `templates/TEMPLATE-ANALYSIS.md` - Analysis document structure (vendor comparisons, alternative evaluations, technical deep dives)
 
 ### References (in `references/` directory)
 *   `references/0-ADR-WORKFLOW.md` - General lifecycle overview

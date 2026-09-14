@@ -121,7 +121,7 @@ Review MVP Canvas risks:
 
 ### Phase 4: Validate ADR Quality
 
-Apply the validator criteria from `docs/commands/adr/2-ADR-validator.md` to each ADR:
+Apply the validator criteria from `references/2-ADR-validator.md` to each ADR:
 
 | Criteria | Description | Pass/Fail |
 |----------|-------------|-----------|
@@ -181,7 +181,7 @@ Based on the analysis, provide actionable next steps:
 
 ## Output Format
 
-Generate a markdown document following the template in `_templates/TEMPLATE-ADR_GENERATION_SUMMARY.md` with these sections:
+Generate a markdown document following the template in `templates/TEMPLATE-ADR_GENERATION_SUMMARY.md` with these sections:
 
 ### 1. Header
 ```markdown
@@ -189,9 +189,9 @@ Generate a markdown document following the template in `_templates/TEMPLATE-ADR_
 
 **Generated:** [YYYY-MM-DD]
 **Source:** [Inception Artifacts Location]
-**Template:** _templates/TEMPLATE.md
-**Validator:** docs/commands/adr/2-ADR-validator.md
-**Summary Template:** _templates/TEMPLATE-ADR_GENERATION_SUMMARY.md
+**Template:** templates/TEMPLATE.md
+**Validator:** references/2-ADR-validator.md
+**Summary Template:** templates/TEMPLATE-ADR_GENERATION_SUMMARY.md
 ```
 
 ### 2. Executive Summary
@@ -276,9 +276,9 @@ Before finalizing the summary:
 
 **Generated:** 2026-06-05
 **Source:** Lean Inception Workshop Artifacts (docs/inception/)
-**Template:** _templates/TEMPLATE.md
-**Validator:** docs/commands/adr/2-ADR-validator.md
-**Summary Template:** _templates/TEMPLATE-ADR_GENERATION_SUMMARY.md
+**Template:** templates/TEMPLATE.md
+**Validator:** references/2-ADR-validator.md
+**Summary Template:** templates/TEMPLATE-ADR_GENERATION_SUMMARY.md
 
 ---
 

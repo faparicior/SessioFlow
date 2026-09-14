@@ -3,7 +3,7 @@
 **Generated:** [YYYY-MM-DD]  
 **Source:** [Lean Inception Workshop Artifacts / Other Source]  
 **Template:** [docs/adr/TEMPLATE.md]  
-**Validator:** [docs/commands/adr/2-ADR-validator.md]
+**Validator:** [references/2-ADR-validator.md]
 
 ---
 

@@ -35,7 +35,7 @@ Review the **original ADR** in `docs/adr/` and the new **decision drivers** or *
 Create a new markdown file under `docs/adr/` named `0XX-original-adr-name-amendment-description.md` where `0XX` is the prefix number matching the original ADR (e.g., `002-database-amendment-replication.md`).
 
 Format the file by copying and completing the template stored in:
-`docs/adr/_templates/TEMPLATE-AMENDMENT.md` (relative path: `../_templates/TEMPLATE-AMENDMENT.md`).
+the bundled asset `templates/TEMPLATE-AMENDMENT.md` (in this skill directory).
 
 
 ### Phase 3: Link the Original ADR
