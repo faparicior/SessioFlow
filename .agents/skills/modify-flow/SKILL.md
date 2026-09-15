@@ -10,6 +10,7 @@ description: >-
   (product rationale + current vs desired behaviour + real-code scope), an implementation-plan.md (phased,
   grounded in whatever layering this specific codebase actually uses), then updates the original
   flow/entity/business-rule docs in place once implemented.
+disable-model-invocation: true
 ---
 
 # Modify Flow Skill

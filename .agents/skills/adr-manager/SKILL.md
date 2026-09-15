@@ -8,6 +8,7 @@ description: >-
   amend adr, update adr, adr workflow.
   Executes generation, validation, summarization, traceability matrix,
   alternatives analysis, and amendment workflows.
+disable-model-invocation: true
 ---
 
 # ADR Manager Skill

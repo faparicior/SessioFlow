@@ -8,6 +8,7 @@ description: >-
   MVP canvas, product discovery, validate MVP, validate tradeoffs, validate personas,
   check inception step, review product vision, or validate inception.
   Executes facilitation, batch generation, tradeoff analysis, and validation modes.
+disable-model-invocation: true
 ---
 
 # Inception Workshop Skill

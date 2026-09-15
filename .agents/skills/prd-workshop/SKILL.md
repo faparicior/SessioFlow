@@ -5,6 +5,7 @@ description: >-
   USE THIS SKILL when user mentions: prd, product requirements document,
   create prd, draft prd, write prd, validate prd, review prd, or critique prd.
   Supports PRD generation from requirements and critical quality validation.
+disable-model-invocation: true
 ---
 
 # PRD Workshop & Review Skill

@@ -9,6 +9,7 @@ description: >-
   question seeking to understand existing behaviour without changing it.
   Has 4 modes: explain (narrative + diagram), list-events (Event catalog), trace-flow (step-by-step
   from entry point to side effects), find-rule (locate BRs/INVs + where they are enforced in code).
+disable-model-invocation: true
 ---
 
 # Explore Domain Skill

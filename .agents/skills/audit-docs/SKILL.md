@@ -8,6 +8,7 @@ description: >-
   review, check if docs match, stale docs, or any request to verify whether existing documentation
   matches the implementation. Produces a drift report per bounded context:
   ✅ confirmed / ⚠️ stale / ❌ missing / ➕ undocumented — without modifying any file.
+disable-model-invocation: true
 ---
 
 # Audit Docs Skill

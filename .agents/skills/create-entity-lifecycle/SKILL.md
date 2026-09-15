@@ -7,6 +7,7 @@ description: >-
   technical documentation for a domain entity including state machine, transitions, and domain behavior.
   This skill creates complete entity specs with state diagrams, transition matrices, domain methods,
   and extracts business rules and invariants.
+disable-model-invocation: true
 ---
 
 # Create Entity Lifecycle Skill

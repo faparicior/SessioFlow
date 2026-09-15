@@ -7,6 +7,7 @@ description: >-
   agent optimization, agent instructions, coding standards for agents, 
   audit agents.md, update agent guidelines, or validate agent rules.
   Executes audit, update, validate, generate, and compare modes.
+disable-model-invocation: true
 ---
 
 # Agents.md Maintainer Skill

@@ -7,6 +7,7 @@ description: >-
   slice release strategy, walking skeleton, INVEST stories, learning strategy,
   development strategy, opening game, or convert inception to user story mapping.
   Executes from-inception, standalone, and validation modes.
+disable-model-invocation: true
 ---
 
 # User Story Mapping Skill

@@ -9,6 +9,7 @@ description: >-
   Creates package.json, tsconfig.json, .gitignore, and container.ts.
   Domain content (entities, value objects, CQRS handlers) is handled by
   create-entity-lifecycle and implement-flow skills.
+disable-model-invocation: true
 ---
 
 # Create Module Skill

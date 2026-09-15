@@ -7,6 +7,7 @@ description: >-
   flow diagram, sequence diagram flow, or any request to turn a user journey into detailed flow documentation.
   This skill creates complete flow specs with 3 Mermaid diagrams (sequence, flowchart, state),
   step-by-step walkthroughs, acceptance criteria, edge cases, and technical notes following DDD patterns.
+disable-model-invocation: true
 ---
 
 # Create Flow Documentation Skill

@@ -29,6 +29,44 @@ At any time:
 
 ---
 
+## How you invoke these skills (command-only by default)
+
+Every SDLC skill carries `disable-model-invocation: true` in its `SKILL.md` frontmatter. The agent
+therefore never sees them in its skill listing and cannot load one on its own — you invoke them
+explicitly, and the full instructions load at that moment:
+
+| Harness | Invoke with |
+| ------- | ------------- |
+| pi | `/skill:inception-workshop validate the vision` |
+| Claude Code | `/inception-workshop validate the vision` |
+
+Arguments after the command are appended to the skill body, so a phase, a bounded context, or a target
+document can be passed in one line (`/skill:audit-docs the conference context`).
+
+Two skills stay **auto-discoverable**, because their value is the agent noticing them:
+
+| Skill | Why it stays automatic |
+| ----- | ---------------------- |
+| `reverse-engineer-domain` | you describe legacy code, you rarely say "reverse engineer" |
+| `skill-creator` | you ask for a new skill, not for `/skill-creator` |
+
+Flip either way by adding or removing that one frontmatter line, then check what the loader will
+advertise (no dependencies, no build step):
+
+```bash
+# command-only skills (hidden from the model)
+grep -l  "disable-model-invocation: true" .agents/skills/*/SKILL.md | xargs -n1 dirname | xargs -n1 basename
+# still auto-discoverable
+grep -L  "disable-model-invocation: true" .agents/skills/*/SKILL.md | xargs -n1 dirname | xargs -n1 basename
+```
+
+> **Portability caveat.** `disable-model-invocation` is honored by pi, Claude Code and Cursor. Codex
+> ignores it (open request: [openai/codex#29989](https://github.com/openai/codex/issues/29989); its own
+> switch is `agents/openai.yaml` → `policy.allow_implicit_invocation: false`), and the Gemini CLI parser
+> reads only `name` and `description`, so those two harnesses keep advertising these skills.
+
+---
+
 ## Phase 1a — `/inception-workshop`
 
 **Purpose:** Run the 8-step Lean Inception workshop to align business goals and define the MVP.
@@ -307,12 +345,20 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 .agents/skills/ (canonical source, symlinked to .pi/skills/ and .claude/skills/)
 ├── inception-workshop/        # Phase 1a — Lean Inception discovery
 ├── user-story-mapping/        # Phase 1b — User Story Mapping
+├── prd-workshop/              # Optional — draft and validate formal PRDs
+├── adr-manager/               # Any time — ADRs, amendments, traceability matrix
 ├── create-flow-documentation/ # Phase 2 — flow specs
 ├── create-entity-lifecycle/   # Phase 3 — domain model
+├── create-module/             # Phase 4 — scaffold a workspace package
 ├── implement-flow/            # Phase 4 — code
 ├── modify-flow/               # Phase 5+ — changes
 ├── explore-domain/            # Any time — understand existing system
 ├── audit-docs/                # Any time — verify docs vs. code
-├── reverse-engineer-domain/   # Brownfield — extract rules from legacy code
-└── prd-workshop/              # Optional — draft and validate formal PRDs
+├── agents-maintainer/         # Any time — keep AGENTS.md accurate
+├── reverse-engineer-domain/   # Brownfield — extract rules from legacy code (auto-discoverable)
+└── skill-creator/             # Authoring new skills (auto-discoverable)
 ```
+
+All of these are kept flat, one directory per skill: the Gemini CLI discovery glob is
+`['SKILL.md', '*/SKILL.md']`, so a grouping folder (`skills/<group>/<skill>/SKILL.md`) would make them
+invisible there.

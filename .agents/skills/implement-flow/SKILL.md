@@ -6,6 +6,7 @@ description: >-
   develop feature, build feature, implement [feature name], add [feature name], 
   implement flow, develop flow, flow journey, or any feature/flow implementation task. 
   Executes feature analysis, spec & plan document review, step-by-step DDD implementation, testing, and development plan updates.
+disable-model-invocation: true
 ---
 
 # Implement Flow Skill
