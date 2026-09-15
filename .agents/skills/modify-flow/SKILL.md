@@ -105,11 +105,13 @@ runs:
    data backfill scripts, or API contract versioning for backward compatibility with clients.
 9. **Read the rule/invariant document's own traceability section before grepping.** If this repo links
    rules to the artifacts that enforce them (a `Traceability` / `Enforced by` / `Verified by` section —
-   SessioFlow's convention: `docs/product/guidelines/traceability.md`), that section *is* the pre-computed
-   blast radius: one row per enforcing layer with a file + guard, plus the tests that pin it. Start there,
-   then grep the ID to catch enforcement nobody linked. Read the row statuses honestly: ✅ Verified means
-   somebody saw the guard, ⚠️ Unverified means it is a lead to confirm by opening the file, ⏳ Planned means
-   it does not exist yet — promote nothing silently, and put every ⚠️ you confirm or reject into the proposal.
+   convention bundled with this skill: [guidelines/traceability.md](guidelines/traceability.md);
+   canonical in this repo at `docs/product/guidelines/traceability.md`), that section *is* the
+   pre-computed blast radius: one row per enforcing layer with a file + guard, plus the tests that pin it.
+   Start there, then grep the ID to catch enforcement nobody linked. Read the row statuses honestly:
+   ✅ Verified means somebody saw the guard, ⚠️ Unverified means it is a lead to confirm by opening the
+   file, ⏳ Planned means it does not exist yet — promote nothing silently, and put every ⚠️ you confirm or
+   reject into the proposal.
 10. **Check the tests, not just the code.** For each `Verified by` test, confirm the file and the test title
     still exist (`grep -n "<title>" <test-file>`); those tests are what fails when a guard is deleted, so
     they are the change's real safety net and the tests you will have to rewrite.
@@ -251,7 +253,8 @@ document structure and, where applicable, invoke them directly to regenerate an 
 hand-editing it.
 
 If this repo has a traceability convention document (SessioFlow:
-`docs/product/guidelines/traceability.md`), it is binding for Step 1.9 and Step 5.4 — the markdown links are
+`docs/product/guidelines/traceability.md`; a mirror is bundled with this skill at
+`guidelines/traceability.md`), it is binding for Step 1.9 and Step 5.4 — the markdown links are
 the record; code comments that cite rule IDs are optional corroboration, never a substitute.
 
 ---

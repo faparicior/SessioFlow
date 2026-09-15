@@ -1,5 +1,15 @@
 # Traceability: Linking Rules to Flows, Entities and Code
 
+> **This file is mirrored, byte-for-byte, into the skills that apply it**: `create-entity-lifecycle`,
+> `create-flow-documentation`, `modify-flow` and `audit-docs` each bundle it as
+> `guidelines/traceability.md`, so a skill carries the whole convention when it moves to another
+> repository. Two rules keep the mirrors honest: this file holds **no relative links outside its fenced
+> examples** (paths are `code` spans, so it reads the same anywhere), and only the canonical copy —
+> `docs/product/guidelines/traceability.md` — is edited; propagate with `cp`. `/audit-docs` diffs each
+> mirror and reports any difference as ⚠️ Stale. The examples below are SessioFlow-shaped
+> (`packages/modules/**`, `docs/product/bounded-contexts/**`): map them onto your own layering when using
+> the convention in another repository, and keep the edge vocabulary and the status legend unchanged.
+
 A business rule or invariant is only useful if you can answer two questions in one hop:
 
 - **Up (`⬆️`)** — why does this rule exist? Which journey, flow and feature realize it?
@@ -164,8 +174,14 @@ else to maintain.
 
 ## Related
 
-- [Business Rules vs Invariants](business-rules-vs-invariants.md)
-- [Flow Documentation Structure](flow-documentation-structure.md)
-- Templates: [business-rules](../templates/business-rules.md),
-  [invariants](../templates/invariants.md),
-  [flows](../templates/flows.md)
+Read alongside this convention (paths relative to the repository root, deliberately not links so the
+mirrors stay byte-identical):
+
+- `docs/product/guidelines/business-rules-vs-invariants.md` — deciding whether a constraint is a `BR-*`
+  or an `INV-*`
+- `docs/product/guidelines/flow-documentation-structure.md` — the shape of a flow document
+- Templates that emit the sections defined here: `docs/templates/product/business-rules.md`,
+  `docs/templates/product/invariants.md`, `docs/templates/product/entity-lifecycle.md`,
+  `docs/templates/product/flows.md` — each skill bundles its own copies under `templates/`
+- Where the convention is applied: `create-entity-lifecycle` Step 5 and Step 6.3, `create-flow-documentation`
+  Step 6, `modify-flow` Step 1.9–1.10 and Step 5.4, `audit-docs` Traceability check table
