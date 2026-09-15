@@ -9,9 +9,10 @@ navigation.
 ## Sequence Overview
 
 ```text
-/inception-workshop          Phase 1a — Lean Inception (vision, scope, MVP canvas)
-        ↓ (or direct)
-/user-story-mapping          Phase 1b — Story Mapping (backbone, INVEST cards, slices)
+Phase 1 — Product Discovery & Slicing (Equal Entry Points):
+  ├─ Option A: /inception-workshop ──> docs/inception/
+  └─ Option B: /user-story-mapping ──> docs/user-story-mapping/
+  (Optional Bridge: Inception can feed directly into Story Mapping)
         ↓
 /create-flow-documentation   Phase 2 — Flow Specs (how each feature works)
         ↓

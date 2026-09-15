@@ -54,50 +54,30 @@ Templates provide structure for output documents, while mapping guides provide e
 
 ## Natural Language Activation
 
-This skill automatically detects user intent from conversational requests:
+This skill is designed to be triggered through plain, natural conversation. The AI agent automatically infers the intended workflow from your prompt:
 
-| Intent | Natural Language Examples | Mode Activated |
+| Intent | Natural Language Examples | Action Executed |
 | --- | --- | --- |
-| **Convert Inception** | "Generate user story map from inception", "Convert inception to story map" | `--mode from-inception` |
-| **Start Workshop** | "Start a user story mapping workshop", "Let's do story mapping" | `--mode standalone --step 1` |
-| **Specific Step** | "Let's map the big picture", "Explore the body of the story map", "Slice release" | `--mode standalone --step [N]` |
-| **Batch Generation** | "Generate full user story map for...", "Auto-generate USM documents" | `--mode standalone --batch` |
-| **Validate Output** | "Validate story map step 3", "Check if stories meet INVEST", "Audit story map" | `--mode validate --step [N]` |
+| **Convert Inception** | "Generate user story map from inception", "Convert inception to story map", "Pasa inception a story map" | Reads `docs/inception/` and synthesizes Steps 1–6 into `docs/user-story-mapping/`. |
+| **Start Workshop** | "Start a user story mapping workshop", "Let's do story mapping", "Quiero hacer un story map" | Initiates interactive facilitation starting at Step 1 (Frame the Problem). |
+| **Specific Step** | "Let's map the big picture", "Explore the body of the story map", "Slice release", "Mapea el backbone" | Jumps directly to facilitate the specified step (1–6). |
+| **Batch Generation** | "Generate full user story map for...", "Auto-generate USM documents" | Generates all 6 steps in a single automated pass from prompt context. |
+| **Validate Output** | "Validate story map step 3", "Check if stories meet INVEST", "Audit story map" | Executes the corresponding step validator rubric to audit quality and compliance. |
 
 ---
 
-## Command-Line Interface
+## Supported Workflows
 
-### Syntax
+1. **Synthesize from Inception (Bridge):**
+   - Automatically triggered when `docs/inception/` exists and the user asks to create or derive a story map.
+   - Translates high-level vision, journeys, and MVP canvas into structured backbone activities and INVEST story cards.
+2. **Standalone Facilitation (From Scratch):**
+   - Interactive step-by-step guidance through the 6 steps when starting without prior Inception documents.
+   - Can also be run in automated batch mode for rapid drafting.
+3. **Quality & INVEST Validation:**
+   - Evaluates documents against the 6 evaluation rubrics (`references/*-validator.md`) to catch fake technical stories, check vertical slicing, and verify acceptance criteria.
 
-```bash
-pi skill user-story-mapping [--mode <mode>] [--step <1-6>] [--file <path>]
-```
-
-### Modes
-
-- `--mode from-inception`: Synthesizes USM artifacts from `docs/inception/` using mapping definitions.
-- `--mode standalone`: Facilitates step-by-step or batch generation from prompt context.
-- `--mode validate`: Audits an existing step document against its validator rubric.
-
-### Examples
-
-```bash
-# Convert existing Lean Inception artifacts to User Story Mapping (Step 1 to 6)
-pi skill user-story-mapping --mode from-inception
-
-# Synthesize a specific step from Inception (e.g., Step 2 Backbone)
-pi skill user-story-mapping --mode from-inception --step 2
-
-# Start interactive facilitation from Step 1 (Standalone)
-pi skill user-story-mapping --mode standalone --step 1
-
-# Generate all 6 steps in batch mode from user context
-pi skill user-story-mapping --mode standalone --batch --context "SessioFlow"
-
-# Validate Step 3 (Story cards, INVEST criteria, fake stories)
-pi skill user-story-mapping --mode validate --step 3 --file docs/user-story-mapping/3-explore-to-fill-the-body.md
-```
+*(Note: For users running via the `pi` terminal CLI tool, the equivalent flags `--mode from-inception`, `--mode standalone`, and `--mode validate` are also supported).*
 
 ---
 

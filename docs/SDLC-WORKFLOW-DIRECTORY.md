@@ -10,15 +10,25 @@ The workflow progresses from initial product discovery and story mapping through
 
 ```mermaid
 flowchart TD
-    subgraph Discovery ["Phase 1: Product Discovery & Slicing (Equal Entry Points)"]
-        direction TB
-        P1["Lean Inception\n(/inception-workshop)"] --> D1["docs/inception/"]
-        P1b["User Story Mapping\n(/user-story-mapping)"] --> D1b["docs/user-story-mapping/"]
-        D1 -. Optional Synthesis Bridge .-> P1b
+    subgraph Discovery ["Phase 1: Product Discovery (Equal Entry Points)"]
+        direction LR
+
+        subgraph PathA ["Path A: Lean Inception"]
+            direction TB
+            P1["Lean Inception\n(/inception-workshop)"] --> D1["docs/inception/"]
+        end
+
+        subgraph PathB ["Path B: User Story Mapping"]
+            direction TB
+            P1b["User Story Mapping\n(/user-story-mapping)"] --> D1b["docs/user-story-mapping/"]
+        end
+
+        D1 <-.->|"Optional Bridge"| D1b
     end
 
     subgraph Specs ["Phase 2: Technical Flow Specs"]
-        D1 & D1b --> P2["/create-flow-documentation"]
+        D1 --> P2["/create-flow-documentation"]
+        D1b --> P2
         P2 --> D2["docs/product/bounded-contexts/[context]/flows/"]
     end
 
