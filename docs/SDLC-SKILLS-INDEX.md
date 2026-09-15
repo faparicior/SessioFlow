@@ -301,7 +301,7 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 ## Skill Files Location
 
 ```text
-.pi/skills/ (also referenced in .claude/skills/)
+.agents/skills/ (canonical source, symlinked to .pi/skills/ and .claude/skills/)
 ├── inception-workshop/        # Phase 1a — Lean Inception discovery
 ├── user-story-mapping/        # Phase 1b — User Story Mapping
 ├── create-flow-documentation/ # Phase 2 — flow specs

@@ -10,11 +10,11 @@ The workflow progresses from initial product discovery and story mapping through
 
 ```mermaid
 flowchart TD
-    subgraph Discovery ["Phase 1: Product Discovery & Story Mapping"]
-        P1["/inception-workshop\n(Lean Inception)"] --> D1["docs/inception/"]
-        D1 -. Optional Bridge .-> P1b["/user-story-mapping\n(--mode from-inception)"]
-        P1b --> D1b["docs/user-story-mapping/"]
-        P1c["/user-story-mapping\n(--mode standalone)"] --> D1b
+    subgraph Discovery ["Phase 1: Product Discovery & Slicing (Equal Entry Points)"]
+        direction TB
+        P1["Lean Inception\n(/inception-workshop)"] --> D1["docs/inception/"]
+        P1b["User Story Mapping\n(/user-story-mapping)"] --> D1b["docs/user-story-mapping/"]
+        D1 -. Optional Synthesis Bridge .-> P1b
     end
 
     subgraph Specs ["Phase 2: Technical Flow Specs"]
@@ -47,22 +47,22 @@ flowchart TD
 
 ---
 
-## 2. SDLC Process & Skill Definitions (`.pi/skills/`)
+## 2. SDLC Process & Skill Definitions (`.agents/skills/`)
 
-The automation skills that drive each step of the SDLC are defined as self-contained executable packages containing prompt workflows, rubrics, and templates:
+The automation skills that drive each step of the SDLC are defined as self-contained executable packages containing prompt workflows, rubrics, and templates in the canonical `.agents/skills/` directory (symlinked to `.pi/skills/` and `.claude/skills/` for seamless cross-agent compatibility):
 
 | Skill | Directory | Primary Output | Trigger Condition |
 | --- | --- | --- | --- |
-| **`/inception-workshop`** | `.pi/skills/inception-workshop/` | `docs/inception/` | Starting a new product, initiative, or MVP from scratch (8-step Lean Inception). |
-| **`/user-story-mapping`** | `.pi/skills/user-story-mapping/` | `docs/user-story-mapping/` | Slicing user journeys into horizontal backbone, INVEST story cards, and release waves. |
-| **`/create-flow-documentation`** | `.pi/skills/create-flow-documentation/` | `docs/product/bounded-contexts/[context]/flows/` | User journeys (Inception) or story cards (USM) defined; technical specs needed. |
-| **`/create-entity-lifecycle`** | `.pi/skills/create-entity-lifecycle/` | `docs/product/bounded-contexts/[context]/entities/` | Domain entities with distinct states, transitions, and rules emerge from flows. |
-| **`/implement-flow`** | `.pi/skills/implement-flow/` | `packages/modules/[context]/`<br>`tests/` | Flow specification is complete and ready for TDD / DDD implementation. |
-| **`/modify-flow`** | `.pi/skills/modify-flow/` | `docs/product/working-on/[change-name]/` | Existing, documented behavior needs modification or refactoring. |
-| **`/explore-domain`** | `.pi/skills/explore-domain/` | *Read-only responses & diagrams* | Explaining behavior, querying business rules, cataloging domain events. |
-| **`/audit-docs`** | `.pi/skills/audit-docs/` | *Drift analysis reports* | Health checks verifying alignment between living documentation and actual code. |
-| **`/adr-manager`** | `.pi/skills/adr-manager/` | `docs/adr/` | Recording, amending, or superseding Architectural Decision Records. |
-| **`/create-module`** | `.pi/skills/create-module/` | `packages/modules/[context]/` | Scaffolding a new DDD bounded context workspace package. |
+| **`/inception-workshop`** | `.agents/skills/inception-workshop/` | `docs/inception/` | Starting a new product, initiative, or MVP from scratch (8-step Lean Inception). |
+| **`/user-story-mapping`** | `.agents/skills/user-story-mapping/` | `docs/user-story-mapping/` | Slicing user journeys into horizontal backbone, INVEST story cards, and release waves. |
+| **`/create-flow-documentation`** | `.agents/skills/create-flow-documentation/` | `docs/product/bounded-contexts/[context]/flows/` | User journeys (Inception) or story cards (USM) defined; technical specs needed. |
+| **`/create-entity-lifecycle`** | `.agents/skills/create-entity-lifecycle/` | `docs/product/bounded-contexts/[context]/entities/` | Domain entities with distinct states, transitions, and rules emerge from flows. |
+| **`/implement-flow`** | `.agents/skills/implement-flow/` | `packages/modules/[context]/`<br>`tests/` | Flow specification is complete and ready for TDD / DDD implementation. |
+| **`/modify-flow`** | `.agents/skills/modify-flow/` | `docs/product/working-on/[change-name]/` | Existing, documented behavior needs modification or refactoring. |
+| **`/explore-domain`** | `.agents/skills/explore-domain/` | *Read-only responses & diagrams* | Explaining behavior, querying business rules, cataloging domain events. |
+| **`/audit-docs`** | `.agents/skills/audit-docs/` | *Drift analysis reports* | Health checks verifying alignment between living documentation and actual code. |
+| **`/adr-manager`** | `.agents/skills/adr-manager/` | `docs/adr/` | Recording, amending, or superseding Architectural Decision Records. |
+| **`/create-module`** | `.agents/skills/create-module/` | `packages/modules/[context]/` | Scaffolding a new DDD bounded context workspace package. |
 
 ---
 
@@ -144,8 +144,7 @@ docs/
 │
 ├── commands/                              # ─── Structured Prompt Commands & Validators ───
 │   ├── prd/                               # PRD generation prompts and validators
-│   ├── product/                           # Business rule and invariant extraction prompts
-│   └── user-story-mapping/                # 6-step USM prompts and validators
+│   └── product/                           # Business rule and invariant extraction prompts
 │
 ├── ARCHITECTURE.md                        # High-level architecture & monorepo structure
 ├── ARCHITECTURE-RULES.md                  # Architectural invariants (enforced by ts-archunit)
