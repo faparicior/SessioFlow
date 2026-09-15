@@ -26,10 +26,10 @@ flowchart TD
         D1 <-.->|"Optional Bridge"| D1b
     end
 
+    Discovery --> P2
+
     subgraph Specs ["Phase 2: Technical Flow Specs"]
-        D1 --> P2["/create-flow-documentation"]
-        D1b --> P2
-        P2 --> D2["docs/product/bounded-contexts/[context]/flows/"]
+        P2["/create-flow-documentation"] --> D2["docs/product/bounded-contexts/[context]/flows/"]
     end
 
     subgraph DomainModel ["Phase 3: Domain Modeling"]
