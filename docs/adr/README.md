@@ -256,10 +256,10 @@ sessioflow/
 ## Related Documentation
 
 ### Command Documents & Skill
-The ADR workflow is managed via the `adr-manager` Pi Skill. The skill assets are located in:
-- **Skill Configuration & Guide**: [.pi/skills/adr-manager/](../../.pi/skills/adr-manager/)
-- **Command Guides (References)**: [.pi/skills/adr-manager/references/](../../.pi/skills/adr-manager/references/)
-- **Templates**: [.pi/skills/adr-manager/templates/](../../.pi/skills/adr-manager/templates/)
+The ADR workflow is managed via the `adr-manager` Skill. The skill assets are located in:
+- **Skill Configuration & Guide**: [.agents/skills/sessioflow-sdlc/adr-manager/](../../.agents/skills/sessioflow-sdlc/adr-manager/)
+- **Command Guides (References)**: [.agents/skills/sessioflow-sdlc/adr-manager/references/](../../.agents/skills/sessioflow-sdlc/adr-manager/references/)
+- **Templates**: [.agents/skills/sessioflow-sdlc/adr-manager/templates/](../../.agents/skills/sessioflow-sdlc/adr-manager/templates/)
 
 ### Supporting Documents
 - [ADR Structure Guide](STRUCTURE.md)

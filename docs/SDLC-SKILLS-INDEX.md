@@ -54,10 +54,11 @@ Flip either way by adding or removing that one frontmatter line, then check what
 advertise (no dependencies, no build step):
 
 ```bash
+shopt -s globstar
 # command-only skills (hidden from the model)
-grep -l  "disable-model-invocation: true" .agents/skills/*/SKILL.md | xargs -n1 dirname | xargs -n1 basename
+grep -l  "disable-model-invocation: true" .agents/skills/**/SKILL.md | xargs -n1 dirname | xargs -n1 basename
 # still auto-discoverable
-grep -L  "disable-model-invocation: true" .agents/skills/*/SKILL.md | xargs -n1 dirname | xargs -n1 basename
+grep -L  "disable-model-invocation: true" .agents/skills/**/SKILL.md | xargs -n1 dirname | xargs -n1 basename
 ```
 
 > **Portability caveat.** `disable-model-invocation` is honored by pi, Claude Code and Cursor. Codex
@@ -343,22 +344,26 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 
 ```text
 .agents/skills/ (canonical source, symlinked to .pi/skills/ and .claude/skills/)
-├── inception-workshop/        # Phase 1a — Lean Inception discovery
-├── user-story-mapping/        # Phase 1b — User Story Mapping
-├── prd-workshop/              # Optional — draft and validate formal PRDs
-├── adr-manager/               # Any time — ADRs, amendments, traceability matrix
-├── create-flow-documentation/ # Phase 2 — flow specs
-├── create-entity-lifecycle/   # Phase 3 — domain model
-├── create-module/             # Phase 4 — scaffold a workspace package
-├── implement-flow/            # Phase 4 — code
-├── modify-flow/               # Phase 5+ — changes
-├── explore-domain/            # Any time — understand existing system
-├── audit-docs/                # Any time — verify docs vs. code
-├── agents-maintainer/         # Any time — keep AGENTS.md accurate
-├── reverse-engineer-domain/   # Brownfield — extract rules from legacy code (auto-discoverable)
-└── skill-creator/             # Authoring new skills (auto-discoverable)
+├── sessioflow-sdlc/             # the SDLC pack — a grouping folder, no SKILL.md at this level
+│   ├── guidelines/                # Shared SDLC conventions (traceability, rules, structures)
+│   ├── inception-workshop/        # Phase 1a — Lean Inception discovery
+│   ├── user-story-mapping/        # Phase 1b — User Story Mapping
+│   ├── prd-workshop/              # Optional — draft and validate formal PRDs
+│   ├── adr-manager/               # Any time — ADRs, amendments, traceability matrix
+│   ├── create-flow-documentation/ # Phase 2 — flow specs (symlinks guidelines/ -> ../guidelines)
+│   ├── create-entity-lifecycle/   # Phase 3 — domain model (symlinks guidelines/ -> ../guidelines)
+│   ├── create-module/             # Phase 4 — scaffold a workspace package
+│   ├── implement-flow/            # Phase 4 — code
+│   ├── modify-flow/               # Phase 5+ — changes (symlinks guidelines/ -> ../guidelines)
+│   ├── explore-domain/            # Any time — understand existing system
+│   ├── audit-docs/                # Any time — verify docs vs. code (symlinks guidelines/ -> ../guidelines)
+│   ├── agents-maintainer/         # Any time — keep AGENTS.md accurate
+│   └── reverse-engineer-domain/   # Brownfield — extract rules from legacy code (auto-discoverable)
+└── skill-creator/               # Authoring new skills (auto-discoverable)
 ```
 
-All of these are kept flat, one directory per skill: the Gemini CLI discovery glob is
-`['SKILL.md', '*/SKILL.md']`, so a grouping folder (`skills/<group>/<skill>/SKILL.md`) would make them
-invisible there.
+The pack folder holds no `SKILL.md` of its own — a directory that contains one stops the recursive
+scan, which would hide every skill inside it. Discovery of the grouped skills is verified in pi
+(recursive) and Codex (recursive walk). Claude Code documents only `.claude/skills/<skill-name>/SKILL.md`,
+so after moving a skill in or out, confirm with `/skills` that it still appears. The Gemini CLI glob is
+`['SKILL.md', '*/SKILL.md']`, so it cannot see skills one level deeper than the skills root.

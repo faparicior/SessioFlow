@@ -45,7 +45,7 @@ flowchart TD
 ## Directory Structure of the Skill
 
 ```text
-.agents/skills/reverse-engineer-domain/
+.agents/skills/sessioflow-sdlc/reverse-engineer-domain/
 ├── SKILL.md                                          # Skill definition, triage engine, and instructions
 ├── README.md                                         # This guide
 └── templates/                                        # Standardized extraction templates

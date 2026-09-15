@@ -200,4 +200,4 @@ When these words appear in context with product discovery activities, the skill 
 
 **Version:** 1.1.0  
 **Last Updated:** 2026-06-13  
-**Skill File:** `.pi/skills/inception-workshop/SKILL.md`
+**Skill File:** `.pi/skills/sessioflow-sdlc/inception-workshop/SKILL.md`

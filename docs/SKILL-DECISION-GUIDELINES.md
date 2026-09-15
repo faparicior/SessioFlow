@@ -20,18 +20,18 @@ While asking is appropriate for high-risk, destructive actions, excessive questi
 
 ## 2. Established Repository Standard: The "Lack of Information Log"
 
-This pattern is already standard in this repository across `.pi/skills/` and lived-in feature documents:
+This pattern is already standard in this repository across `.agents/skills/` and lived-in feature documents:
 
 ### Active Skills & Templates
 
-1. **[.pi/skills/implement-flow/SKILL.md](../.pi/skills/implement-flow/SKILL.md)**:
+1. **[.agents/skills/sessioflow-sdlc/implement-flow/SKILL.md](../.agents/skills/sessioflow-sdlc/implement-flow/SKILL.md)**:
    - **Step 2 (Feature Specs)**: Mandates logging all judgment calls, fallback ports, error code mappings, or tie-breakers in the `🧠 Agent Design Decisions & Assumptions` section.
    - **Step 3 (Flow Plan)**: Consolidates all architectural choices and runtime configurations into the same log.
-2. **[templates/feature-specification.md](../.pi/skills/implement-flow/templates/feature-specification.md)**:
+2. **[templates/feature-specification.md](../.agents/skills/sessioflow-sdlc/implement-flow/templates/feature-specification.md)**:
    - Standardizes the table format for per-feature decision logging.
-3. **[templates/flow-development-plan.md](../.pi/skills/implement-flow/templates/flow-development-plan.md)**:
+3. **[templates/flow-development-plan.md](../.agents/skills/sessioflow-sdlc/implement-flow/templates/flow-development-plan.md)**:
    - Standardizes the table format for flow-level decision tracking.
-4. **[.pi/skills/modify-flow/templates/proposal.md](../.pi/skills/modify-flow/templates/proposal.md)**:
+4. **[.agents/skills/sessioflow-sdlc/modify-flow/templates/proposal.md](../.agents/skills/sessioflow-sdlc/modify-flow/templates/proposal.md)**:
    - Uses `Scope of Change` with explicit `Out — needs decision` tags and an `Open Questions` section for intentional escalations.
 
 ### Real Codebase Example

@@ -38,7 +38,7 @@ docs/adr/
     └── TRACEABILITY_MATRIX.md
 ```
 
-*Note: Templates and automation scripts are stored centrally inside the Pi Skill directory at `.pi/skills/adr-manager/`.*
+*Note: Templates and automation scripts are stored centrally inside the Skill directory at `.agents/skills/sessioflow-sdlc/adr-manager/`.*
 
 ---
 
@@ -63,10 +63,10 @@ Generated reports from ADR analysis and tracing workflows.
 
 ---
 
-### 3. Skill & Templates Directory (`.pi/skills/adr-manager/`)
-All templates and command guides are bundled inside the `adr-manager` Pi Skill directory to keep the codebase clean and avoid duplication.
+### 3. Skill & Templates Directory (`.agents/skills/sessioflow-sdlc/adr-manager/`)
+All templates and command guides are bundled inside the `adr-manager` Skill directory to keep the codebase clean and avoid duplication.
 
-*   **Templates Location**: `.pi/skills/adr-manager/templates/`
+*   **Templates Location**: `.agents/skills/sessioflow-sdlc/adr-manager/templates/`
 
 | Template | Use For |
 | :--- | :--- |
@@ -104,29 +104,29 @@ All templates and command guides are bundled inside the `adr-manager` Pi Skill d
 
 ## References
 
-### Command Guides (within Pi Skill)
-*   **Workflow**: `.pi/skills/adr-manager/references/0-ADR-WORKFLOW.md`
-*   **Generate ADRs**: `.pi/skills/adr-manager/references/1-generate-adrs-from-inception.md`
-*   **Validate**: `.pi/skills/adr-manager/references/2-ADR-validator.md`
-*   **Summary**: `.pi/skills/adr-manager/references/3-generate-adr-summary.md`
-*   **Traceability**: `.pi/skills/adr-manager/references/4-generate-traceability-matrix.md`
-*   **Alternatives**: `.pi/skills/adr-manager/references/5-analyze-adr-alternatives.md`
-*   **Amendments**: `.pi/skills/adr-manager/references/7-generate-adr-amendment.md`
+### Command Guides (within Skill)
+*   **Workflow**: `.agents/skills/sessioflow-sdlc/adr-manager/references/0-ADR-WORKFLOW.md`
+*   **Generate ADRs**: `.agents/skills/sessioflow-sdlc/adr-manager/references/1-generate-adrs-from-inception.md`
+*   **Validate**: `.agents/skills/sessioflow-sdlc/adr-manager/references/2-ADR-validator.md`
+*   **Summary**: `.agents/skills/sessioflow-sdlc/adr-manager/references/3-generate-adr-summary.md`
+*   **Traceability**: `.agents/skills/sessioflow-sdlc/adr-manager/references/4-generate-traceability-matrix.md`
+*   **Alternatives**: `.agents/skills/sessioflow-sdlc/adr-manager/references/5-analyze-adr-alternatives.md`
+*   **Amendments**: `.agents/skills/sessioflow-sdlc/adr-manager/references/7-generate-adr-amendment.md`
 
 ### Quick References
-*   **Skill README**: `.pi/skills/adr-manager/README.md`
+*   **Skill README**: `.agents/skills/sessioflow-sdlc/adr-manager/README.md`
 
 ---
 
 ## Best Practices
 
 ✅ **DO:**
-- Run the `adr-manager` Pi Skill to perform all operations.
-- Reference templates stored inside `.pi/skills/adr-manager/templates/`.
+- Run the `adr-manager` Skill to perform all operations.
+- Reference templates stored inside `.agents/skills/sessioflow-sdlc/adr-manager/templates/`.
 - Maintain two-way linking when creating an Amendment.
 
 ❌ **DON'T:**
-- Create ad-hoc template directories outside the Pi Skill.
+- Create ad-hoc template directories outside the Skill.
 - Modify active decisions without documenting them as Amendments or new ADRs.
 
 ---
@@ -136,9 +136,9 @@ All templates and command guides are bundled inside the `adr-manager` Pi Skill d
 | To Find... | Go To... |
 | :--- | :--- |
 | Individual ADRs & Amendments | `docs/adr/0XX-*.md` |
-| Skill Configuration & Guide | `.pi/skills/adr-manager/` |
-| Templates | `.pi/skills/adr-manager/templates/` |
-| Command Guides | `.pi/skills/adr-manager/references/` |
+| Skill Configuration & Guide | `.agents/skills/sessioflow-sdlc/adr-manager/` |
+| Templates | `.agents/skills/sessioflow-sdlc/adr-manager/templates/` |
+| Command Guides | `.agents/skills/sessioflow-sdlc/adr-manager/references/` |
 | Analysis Reports | `docs/adr/_reports/` |
 
 ---

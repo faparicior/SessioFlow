@@ -339,8 +339,8 @@ Step 8: 8-mvp-canvas.md... ✓
 ## Related Documentation
 
 - [Inception Workshop Guide](./references/0-inception-workshop.md)
-- [Flow Documentation Structure](../../../docs/product/guidelines/flow-documentation-structure.md)
-- [Templates](../../../docs/templates/inception/)
+- [Flow Documentation Structure](../../../../docs/product/guidelines/flow-documentation-structure.md)
+- [Templates](../../../../docs/templates/inception/)
 - [Validators](./references/)
 
 ---

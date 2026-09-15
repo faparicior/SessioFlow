@@ -1,8 +1,8 @@
 # Traceability: Linking Rules to Flows, Entities and Code
 
 > **This file is mirrored, byte-for-byte, into the skills that apply it**: `create-entity-lifecycle`,
-> `create-flow-documentation`, `modify-flow` and `audit-docs` each bundle it as
-> `guidelines/traceability.md`, so a skill carries the whole convention when it moves to another
+> `create-flow-documentation`, `modify-flow` and `audit-docs` — all under
+> `.agents/skills/sessioflow-sdlc/` — each bundle it as `guidelines/traceability.md`, so a skill carries the whole convention when it moves to another
 > repository. Two rules keep the mirrors honest: this file holds **no relative links outside its fenced
 > examples** (paths are `code` spans, so it reads the same anywhere), and only the canonical copy —
 > `docs/product/guidelines/traceability.md` — is edited; propagate with `cp`. `/audit-docs` diffs each

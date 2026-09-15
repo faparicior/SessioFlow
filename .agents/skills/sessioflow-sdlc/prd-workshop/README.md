@@ -23,7 +23,7 @@ A platform-agnostic AI agent skill for drafting and validating formal **Product 
 ## Directory Structure
 
 ```text
-.agents/skills/prd-workshop/
+.agents/skills/sessioflow-sdlc/prd-workshop/
 ├── SKILL.md                                          # Skill definition and instructions
 ├── README.md                                         # This guide
 ├── templates/

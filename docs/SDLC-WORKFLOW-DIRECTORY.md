@@ -63,18 +63,20 @@ The automation skills that drive each step of the SDLC are defined as self-conta
 
 | Skill | Directory | Primary Output | Trigger Condition |
 | --- | --- | --- | --- |
-| **`/inception-workshop`** | `.agents/skills/inception-workshop/` | `docs/inception/` | Starting a new product, initiative, or MVP from scratch (8-step Lean Inception). |
-| **`/user-story-mapping`** | `.agents/skills/user-story-mapping/` | `docs/user-story-mapping/` | Slicing user journeys into horizontal backbone, INVEST story cards, and release waves. |
-| **`/create-flow-documentation`** | `.agents/skills/create-flow-documentation/` | `docs/product/bounded-contexts/[context]/flows/` | User journeys (Inception) or story cards (USM) defined; technical specs needed. |
-| **`/create-entity-lifecycle`** | `.agents/skills/create-entity-lifecycle/` | `docs/product/bounded-contexts/[context]/entities/` | Domain entities with distinct states, transitions, and rules emerge from flows. |
-| **`/implement-flow`** | `.agents/skills/implement-flow/` | `packages/modules/[context]/`<br>`tests/` | Flow specification is complete and ready for TDD / DDD implementation. |
-| **`/modify-flow`** | `.agents/skills/modify-flow/` | `docs/product/working-on/[change-name]/` | Existing, documented behavior needs modification or refactoring. |
-| **`/explore-domain`** | `.agents/skills/explore-domain/` | *Read-only responses & diagrams* | Explaining behavior, querying business rules, cataloging domain events. |
-| **`/audit-docs`** | `.agents/skills/audit-docs/` | *Drift analysis reports* | Health checks verifying alignment between living documentation and actual code. |
-| **`/adr-manager`** | `.agents/skills/adr-manager/` | `docs/adr/` | Recording, amending, or superseding Architectural Decision Records. |
-| **`/create-module`** | `.agents/skills/create-module/` | `packages/modules/[context]/` | Scaffolding a new DDD bounded context workspace package. |
-| **`/reverse-engineer-domain`** | `.agents/skills/reverse-engineer-domain/` | `docs/product/discovered/`<br>`docs/product/bounded-contexts/` | Bottom-up software archeology extracting business rules and invariants from legacy code. |
-| **`/prd-workshop`** | `.agents/skills/prd-workshop/` | `docs/product/prd/` *(or draft)* | *[Optional / Under Evaluation]* Drafting and validating formal Product Requirements Documents. |
+| **`/inception-workshop`** | `.agents/skills/sessioflow-sdlc/inception-workshop/` | `docs/inception/` | Starting a new product, initiative, or MVP from scratch (8-step Lean Inception). |
+| **`/user-story-mapping`** | `.agents/skills/sessioflow-sdlc/user-story-mapping/` | `docs/user-story-mapping/` | Slicing user journeys into horizontal backbone, INVEST story cards, and release waves. |
+| **`/create-flow-documentation`** | `.agents/skills/sessioflow-sdlc/create-flow-documentation/` | `docs/product/bounded-contexts/[context]/flows/` | User journeys (Inception) or story cards (USM) defined; technical specs needed. |
+| **`/create-entity-lifecycle`** | `.agents/skills/sessioflow-sdlc/create-entity-lifecycle/` | `docs/product/bounded-contexts/[context]/entities/` | Domain entities with distinct states, transitions, and rules emerge from flows. |
+| **`/implement-flow`** | `.agents/skills/sessioflow-sdlc/implement-flow/` | `packages/modules/[context]/`<br>`tests/` | Flow specification is complete and ready for TDD / DDD implementation. |
+| **`/modify-flow`** | `.agents/skills/sessioflow-sdlc/modify-flow/` | `docs/product/working-on/[change-name]/` | Existing, documented behavior needs modification or refactoring. |
+| **`/explore-domain`** | `.agents/skills/sessioflow-sdlc/explore-domain/` | *Read-only responses & diagrams* | Explaining behavior, querying business rules, cataloging domain events. |
+| **`/audit-docs`** | `.agents/skills/sessioflow-sdlc/audit-docs/` | *Drift analysis reports* | Health checks verifying alignment between living documentation and actual code. |
+| **`/adr-manager`** | `.agents/skills/sessioflow-sdlc/adr-manager/` | `docs/adr/` | Recording, amending, or superseding Architectural Decision Records. |
+| **`/create-module`** | `.agents/skills/sessioflow-sdlc/create-module/` | `packages/modules/[context]/` | Scaffolding a new DDD bounded context workspace package. |
+| **`/reverse-engineer-domain`** | `.agents/skills/sessioflow-sdlc/reverse-engineer-domain/` | `docs/product/discovered/`<br>`docs/product/bounded-contexts/` | Bottom-up software archeology extracting business rules and invariants from legacy code. |
+| **`/prd-workshop`** | `.agents/skills/sessioflow-sdlc/prd-workshop/` | `docs/product/prd/` *(or draft)* | *[Optional / Under Evaluation]* Drafting and validating formal Product Requirements Documents. |
+
+> **Shared Conventions**: Cross-cutting specifications (`guidelines/traceability.md`, `guidelines/business-rules-vs-invariants.md`, `guidelines/flow-documentation-structure.md`) are consolidated in `.agents/skills/sessioflow-sdlc/guidelines/` and shared with each skill via symlink (`guidelines -> ../guidelines`).
 
 ---
 
