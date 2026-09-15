@@ -8,8 +8,10 @@ navigation.
 
 ## Sequence Overview
 
-```
-/inception-workshop          Phase 1 — Product Discovery (what to build)
+```text
+/inception-workshop          Phase 1a — Lean Inception (vision, scope, MVP canvas)
+        ↓ (or direct)
+/user-story-mapping          Phase 1b — Story Mapping (backbone, INVEST cards, slices)
         ↓
 /create-flow-documentation   Phase 2 — Flow Specs (how each feature works)
         ↓
@@ -26,7 +28,7 @@ At any time:
 
 ---
 
-## Phase 1 — `/inception-workshop`
+## Phase 1a — `/inception-workshop`
 
 **Purpose:** Run the 8-step Lean Inception workshop to align business goals and define the MVP.
 
@@ -60,22 +62,51 @@ At any time:
 | 6–7.9 | Needs work | Revise, then type `ready` |
 | < 6 | Poor | Critical edits required |
 
-### Move to Phase 2 when
+### Move to Phase 1b or Phase 2 when
 
 Steps 6 (User Journey) and 7 (Features & Sequencing) are complete.
 
 ---
 
+## Phase 1b — `/user-story-mapping`
+
+**Purpose:** Create a detailed, horizontal-to-vertical User Story Map (Jeff Patton methodology) with Backbone activities, INVEST story cards, and release slices.
+
+**Trigger:** Either converting Lean Inception outputs into granular story maps, or running a story mapping workshop directly from scratch.
+
+### Steps
+
+| # | Step | Output file |
+|---|------|-------------|
+| 1 | Frame the Problem | `docs/user-story-mapping/1-frame-the-problem.md` |
+| 2 | Map the Big Picture | `docs/user-story-mapping/2-map-the-big-picture.md` |
+| 3 | Explore to Fill the Body | `docs/user-story-mapping/3-explore-to-fill-the-body.md` |
+| 4 | Slice out a Release Strategy | `docs/user-story-mapping/4-slice-out-a-release-strategy.md` |
+| 5 | Slice out a Learning Strategy | `docs/user-story-mapping/5-slice-out-a-learning-strategy.md` |
+| 6 | Slice out a Development Strategy | `docs/user-story-mapping/6-slice-out-a-development-strategy.md` |
+
+### Modes
+
+- **`from-inception`** (bridge): Synthesize USM documents directly from `docs/inception/` artifacts using structured mapping rules.
+- **`standalone`**: Facilitate the 6 steps step-by-step or in batch mode directly from user requirements.
+- **`validate`**: Audit story depth, INVEST compliance, "fake" technical stories, and release slicing using validator rubrics.
+
+### Move to Phase 2 when
+
+Step 2 (Map Big Picture / Backbone) and Step 3 (Explore Body / Story Cards) are complete.
+
+---
+
 ## Phase 2 — `/create-flow-documentation`
 
-**Purpose:** Turn each user journey into a complete technical flow specification.
+**Purpose:** Turn user journeys (from Inception) or story cards (from USM) into complete technical flow specifications.
 
-**Trigger:** Steps 6 and 7 of the inception are done.
+**Trigger:** Inception Journeys / Sequencing are done, or USM Backbone / Story Cards are defined.
 
 ### Inputs
 
-- `docs/inception/6-user-journeys/*.md`
-- `docs/inception/7-features-and-sequencing.md`
+- `docs/inception/6-user-journeys/*.md` OR `docs/user-story-mapping/2-map-the-big-picture.md`
+- `docs/inception/7-features-and-sequencing.md` OR `docs/user-story-mapping/3-explore-to-fill-the-body.md`
 
 ### Output location
 
@@ -257,7 +288,8 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 | Skill | When to use |
 |-------|-------------|
 | `/inception-workshop` | Starting a new product or epic — need to define vision, users, features, MVP |
-| `/create-flow-documentation` | Journeys are defined — need technical flow specs with diagrams and acceptance criteria |
+| `/user-story-mapping` | Need granular horizontal backbone, INVEST story cards, and release slices (standalone or from inception) |
+| `/create-flow-documentation` | Journeys / story cards are defined — need technical flow specs with diagrams and acceptance criteria |
 | `/create-entity-lifecycle` | A domain entity with clear states/transitions has emerged — need its full lifecycle spec |
 | `/implement-flow` | A flow doc is ready — need to write production code for it, layer by layer |
 | `/modify-flow` | Changing existing behaviour — need a proposal, plan, and doc updates |
@@ -268,9 +300,10 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 
 ## Skill Files Location
 
-```
-.claude/skills/
-├── inception-workshop/        # Phase 1 — discovery
+```text
+.pi/skills/ (also referenced in .claude/skills/)
+├── inception-workshop/        # Phase 1a — Lean Inception discovery
+├── user-story-mapping/        # Phase 1b — User Story Mapping
 ├── create-flow-documentation/ # Phase 2 — flow specs
 ├── create-entity-lifecycle/   # Phase 3 — domain model
 ├── implement-flow/            # Phase 4 — code

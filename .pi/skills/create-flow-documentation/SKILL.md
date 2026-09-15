@@ -19,12 +19,26 @@ Use the exact Markdown layout provided in `templates/flows.md`. Do not add any c
 
 ## 📋 Input Context
 
-- **Journey Reference:** [Journey source document and number]
-- **Persona:** [Persona Name] ([Role])
+This skill accepts inputs from either **Lean Inception** OR **User Story Mapping**:
+
+### Source A: Lean Inception
+
+- **Journey Reference:** `docs/inception/5-user-journeys/*.md` (document and step number)
+- **Persona:** `docs/inception/3-personas/` ([Persona Name] / [Role])
 - **Goal:** [What the persona wants to accomplish]
-- **Active Event Status:** [e.g., Draft → CFP_OPEN]
+- **Feature to Document:** `docs/inception/7-features-and-sequencing.md` (Specific feature & wave)
 - **Journey Steps:** [Copy the relevant journey table from source document]
-- **Feature to Document:** [Specific feature from the journey]
+
+### Source B: User Story Mapping
+
+- **Backbone Reference:** `docs/user-story-mapping/2-map-the-big-picture.md` (User Activity & Steps)
+- **Story Cards:** `docs/user-story-mapping/3-explore-to-fill-the-body.md` (Title, Narrative, Acceptance Criteria, Tech Notes)
+- **Release Slice:** `docs/user-story-mapping/4-slice-out-a-release-strategy.md` (Wave 1 MVP vs Wave 2)
+- **Persona:** Extracted from Step 1 (`docs/user-story-mapping/1-frame-the-problem.md`) or Story Narrative
+
+### Common Metadata
+
+- **Active Event Status:** [e.g., Draft → CFP_OPEN]
 - **Impacted Entities:** [List the entities affected]
 - **Bounded Context:** [Identify the bounded context for this journey]
 

@@ -6,16 +6,19 @@ This document serves as the authoritative directory of all files, folders, skill
 
 ## 1. High-Level Lifecycle Flow
 
-The workflow progresses from initial product discovery through technical specification, domain modeling, layered implementation, and continuous evolution:
+The workflow progresses from initial product discovery and story mapping through technical specification, domain modeling, layered implementation, and continuous evolution:
 
 ```mermaid
 flowchart TD
-    subgraph Discovery ["Phase 1: Product Discovery"]
-        P1["/inception-workshop"] --> D1["docs/inception/"]
+    subgraph Discovery ["Phase 1: Product Discovery & Story Mapping"]
+        P1["/inception-workshop\n(Lean Inception)"] --> D1["docs/inception/"]
+        D1 -. Optional Bridge .-> P1b["/user-story-mapping\n(--mode from-inception)"]
+        P1b --> D1b["docs/user-story-mapping/"]
+        P1c["/user-story-mapping\n(--mode standalone)"] --> D1b
     end
 
     subgraph Specs ["Phase 2: Technical Flow Specs"]
-        D1 --> P2["/create-flow-documentation"]
+        D1 & D1b --> P2["/create-flow-documentation"]
         P2 --> D2["docs/product/bounded-contexts/[context]/flows/"]
     end
 
@@ -50,8 +53,9 @@ The automation skills that drive each step of the SDLC are defined as self-conta
 
 | Skill | Directory | Primary Output | Trigger Condition |
 | --- | --- | --- | --- |
-| **`/inception-workshop`** | `.pi/skills/inception-workshop/` | `docs/inception/` | Starting a new product, initiative, or MVP from scratch. |
-| **`/create-flow-documentation`** | `.pi/skills/create-flow-documentation/` | `docs/product/bounded-contexts/[context]/flows/` | User journeys and sequenced features are defined; technical specs needed. |
+| **`/inception-workshop`** | `.pi/skills/inception-workshop/` | `docs/inception/` | Starting a new product, initiative, or MVP from scratch (8-step Lean Inception). |
+| **`/user-story-mapping`** | `.pi/skills/user-story-mapping/` | `docs/user-story-mapping/` | Slicing user journeys into horizontal backbone, INVEST story cards, and release waves. |
+| **`/create-flow-documentation`** | `.pi/skills/create-flow-documentation/` | `docs/product/bounded-contexts/[context]/flows/` | User journeys (Inception) or story cards (USM) defined; technical specs needed. |
 | **`/create-entity-lifecycle`** | `.pi/skills/create-entity-lifecycle/` | `docs/product/bounded-contexts/[context]/entities/` | Domain entities with distinct states, transitions, and rules emerge from flows. |
 | **`/implement-flow`** | `.pi/skills/implement-flow/` | `packages/modules/[context]/`<br>`tests/` | Flow specification is complete and ready for TDD / DDD implementation. |
 | **`/modify-flow`** | `.pi/skills/modify-flow/` | `docs/product/working-on/[change-name]/` | Existing, documented behavior needs modification or refactoring. |
@@ -70,7 +74,7 @@ docs/
 ├── SKILL-DECISION-GUIDELINES.md           # Heuristics for autonomous decisions & ambiguity resolution
 ├── SDLC-WORKFLOW-DIRECTORY.md             # This document (comprehensive filesystem directory)
 │
-├── inception/                             # ─── PHASE 1: Lean Inception & Discovery ───
+├── inception/                             # ─── PHASE 1a: Lean Inception & Discovery ───
 │   ├── 1-product-vision-and-boundaries.md # Vision statement, Is / Is Not / Does / Does Not
 │   ├── 2-tradeoffs.md                     # Tradeoff matrix across speed, quality, scope, cost
 │   ├── 3-personas/                        # User persona dossiers (roles, pain points, motivations)
@@ -79,6 +83,14 @@ docs/
 │   ├── 6-brainstorming.md                 # Feature brainstorming and ideation
 │   ├── 7-features-and-sequencing.md       # Feature prioritization waves (Wave 1 MVP, Wave 2, etc.)
 │   └── 8-mvp-canvas-definition.md         # Final MVP canvas definition
+│
+├── user-story-mapping/                    # ─── PHASE 1b: User Story Mapping ───
+│   ├── 1-frame-the-problem.md             # Strategic framing, problem space, and boundaries
+│   ├── 2-map-the-big-picture.md           # Horizontal backbone activities and walking skeleton
+│   ├── 3-explore-to-fill-the-body.md      # INVEST story cards, acceptance criteria, tech notes
+│   ├── 4-slice-out-a-release-strategy.md  # Horizontal release slices (Wave 1 MVP vs Wave 2+)
+│   ├── 5-slice-out-a-learning-strategy.md # Risk assumptions, validation spikes, and metrics
+│   └── 6-slice-out-a-development-strategy.md # Opening Game, Mid Game, End Game delivery plan
 │
 ├── product/                               # ─── PHASES 2, 3 & 5: Living Domain & Flow Specs ───
 │   ├── README.md                          # Domain model overview and bounded context catalog
