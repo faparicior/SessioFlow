@@ -350,13 +350,13 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 │   ├── user-story-mapping/        # Phase 1b — User Story Mapping
 │   ├── prd-workshop/              # Optional — draft and validate formal PRDs
 │   ├── adr-manager/               # Any time — ADRs, amendments, traceability matrix
-│   ├── create-flow-documentation/ # Phase 2 — flow specs (symlinks guidelines/ -> ../guidelines)
-│   ├── create-entity-lifecycle/   # Phase 3 — domain model (symlinks guidelines/ -> ../guidelines)
+│   ├── create-flow-documentation/ # Phase 2 — flow specs
+│   ├── create-entity-lifecycle/   # Phase 3 — domain model
 │   ├── create-module/             # Phase 4 — scaffold a workspace package
 │   ├── implement-flow/            # Phase 4 — code
-│   ├── modify-flow/               # Phase 5+ — changes (symlinks guidelines/ -> ../guidelines)
+│   ├── modify-flow/               # Phase 5+ — changes
 │   ├── explore-domain/            # Any time — understand existing system
-│   ├── audit-docs/                # Any time — verify docs vs. code (symlinks guidelines/ -> ../guidelines)
+│   ├── audit-docs/                # Any time — verify docs vs. code
 │   ├── agents-maintainer/         # Any time — keep AGENTS.md accurate
 │   └── reverse-engineer-domain/   # Brownfield — extract rules from legacy code (auto-discoverable)
 └── skill-creator/               # Authoring new skills (auto-discoverable)

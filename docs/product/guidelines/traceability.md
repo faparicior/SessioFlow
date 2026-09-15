@@ -2,7 +2,7 @@
 
 > **This file is mirrored, byte-for-byte, into the SDLC skills pack**: it is stored centrally at
 > `.agents/skills/sessioflow-sdlc/guidelines/traceability.md` (shared across `create-entity-lifecycle`,
-> `create-flow-documentation`, `modify-flow` and `audit-docs` via symlink `guidelines -> ../guidelines`),
+> `create-flow-documentation`, `modify-flow` and `audit-docs` via `../guidelines/traceability.md`),
 > so the skill pack carries the whole convention when it moves to another repository. Two rules keep the
 > mirror honest: this file holds **no relative links outside its fenced examples** (paths are `code` spans,
 > so it reads the same anywhere), and only the canonical copy — `docs/product/guidelines/traceability.md` —

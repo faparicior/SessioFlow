@@ -153,8 +153,8 @@ stateDiagram-v2
 
 ## 📚 Related Documentation
 
-- [Flow Template](../../templates/product/flows.md)
-- [Create Flow Command](../../../.agents/skills/sessioflow-sdlc/create-flow-documentation/SKILL.md)
+- [Flow Template](../../../../docs/templates/product/flows.md)
+- [Create Flow Command](../create-flow-documentation/SKILL.md)
 - [Business Rules Guide](./business-rules-vs-invariants.md)
 
 ---

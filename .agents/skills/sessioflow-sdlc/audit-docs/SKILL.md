@@ -97,8 +97,8 @@ Same checks as BRs, plus:
 ### Traceability (applies to every doc type)
 
 Rules and invariants are only findable if their links exist at **both ends**. These checks are
-mechanical — run them before judging content quality. Full convention (bundled with this skill):
-[guidelines/traceability.md](guidelines/traceability.md) — canonical in this repo at
+mechanical — run them before judging content quality. Full convention (shared across SDLC skills):
+[../guidelines/traceability.md](../guidelines/traceability.md) — canonical in this repo at
 `docs/product/guidelines/traceability.md`.
 
 | Check | How to run it | Verdict when it fails |
@@ -108,7 +108,7 @@ mechanical — run them before judging content quality. Full convention (bundled
 | **Existence** | Every path and `Symbol.method` in `Enforced by` / `Verified by` still resolves — `test -f` the path, `grep` the symbol in it | ❌ Missing (doc cites code that is gone) |
 | **Test anchor** | Rule has ≥1 `Verified by` test whose title actually appears in that file (`grep -n "<title>" <file>`) | ⚠️ Stale — unverifiable rule |
 | **Status honesty** | ✅ Verified rows are confirmed by opening the file; anything believed goes ⚠️ Unverified; not-yet-built goes ⏳ Planned with no test claim | ⚠️ Stale — unearned ✅ |
-| **Convention mirror** | The shared SDLC mirror is byte-identical to the canonical convention — `cmp -s docs/product/guidelines/traceability.md .agents/skills/sessioflow-sdlc/guidelines/traceability.md` (the file carries no relative links outside its fenced examples, so equality is the requirement; all SDLC skills share this via `guidelines -> ../guidelines`) | ⚠️ Stale — skill teaches outdated rules; re-sync with `cp` |
+| **Convention mirror** | The shared SDLC mirror is byte-identical to the canonical convention — `cmp -s docs/product/guidelines/traceability.md .agents/skills/sessioflow-sdlc/guidelines/traceability.md` (the file carries no relative links outside its fenced examples, so equality is the requirement; shared across SDLC skills) | ⚠️ Stale — skill teaches outdated rules; re-sync with `cp` |
 | **Untagged enforcement** | A rule has flow coverage but no enforcement row that a grep can find | ⚠️ Unverified — record the site by hand |
 
 Report a rule with an empty `Enforced by` table **and** an active flow as the highest-risk finding in

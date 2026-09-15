@@ -117,7 +117,7 @@ During flow creation, you MUST identify all business rules and invariants that g
    per layer, naming the file and the guard, each marked ✅ Verified / ⚠️ Unverified / ⏳ Planned by what you
    actually read) and `Verified by` (test file **and** test title). Listing a rule in the flow without the
    matching link back from the rule doc is a half-edge: fix it before finishing. Convention:
-   `guidelines/traceability.md`
+   `../guidelines/traceability.md`
 
 ---
 
@@ -189,9 +189,9 @@ The generated flow document should be a **single, comprehensive document** that 
 ### Guidelines
 | Guideline | Purpose |
 |-----------|---------|
-| `guidelines/flow-documentation-structure.md` | Flow documentation standards and best practices |
-| `guidelines/business-rules-vs-invariants.md` | When to use BR vs INV, differences and enforcement |
-| `guidelines/traceability.md` | Linking rules to flows, entities, code and tests — both ends of every edge |
+| `../guidelines/flow-documentation-structure.md` | Flow documentation standards and best practices |
+| `../guidelines/business-rules-vs-invariants.md` | When to use BR vs INV, differences and enforcement |
+| `../guidelines/traceability.md` | Linking rules to flows, entities, code and tests — both ends of every edge |
 
 ## 🔗 External Documentation (Optional)
 

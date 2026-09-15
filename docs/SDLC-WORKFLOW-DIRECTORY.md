@@ -76,7 +76,7 @@ The automation skills that drive each step of the SDLC are defined as self-conta
 | **`/reverse-engineer-domain`** | `.agents/skills/sessioflow-sdlc/reverse-engineer-domain/` | `docs/product/discovered/`<br>`docs/product/bounded-contexts/` | Bottom-up software archeology extracting business rules and invariants from legacy code. |
 | **`/prd-workshop`** | `.agents/skills/sessioflow-sdlc/prd-workshop/` | `docs/product/prd/` *(or draft)* | *[Optional / Under Evaluation]* Drafting and validating formal Product Requirements Documents. |
 
-> **Shared Conventions**: Cross-cutting specifications (`guidelines/traceability.md`, `guidelines/business-rules-vs-invariants.md`, `guidelines/flow-documentation-structure.md`) are consolidated in `.agents/skills/sessioflow-sdlc/guidelines/` and shared with each skill via symlink (`guidelines -> ../guidelines`).
+> **Shared Conventions**: Cross-cutting specifications (`guidelines/traceability.md`, `guidelines/business-rules-vs-invariants.md`, `guidelines/flow-documentation-structure.md`) are consolidated in `.agents/skills/sessioflow-sdlc/guidelines/` and referenced directly by SDLC skills via relative path (`../guidelines/`).
 
 ---
 

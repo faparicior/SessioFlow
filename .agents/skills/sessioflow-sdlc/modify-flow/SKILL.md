@@ -106,7 +106,7 @@ runs:
    data backfill scripts, or API contract versioning for backward compatibility with clients.
 9. **Read the rule/invariant document's own traceability section before grepping.** If this repo links
    rules to the artifacts that enforce them (a `Traceability` / `Enforced by` / `Verified by` section —
-   convention bundled with this skill: [guidelines/traceability.md](guidelines/traceability.md);
+   convention shared with this skill: [../guidelines/traceability.md](../guidelines/traceability.md);
    canonical in this repo at `docs/product/guidelines/traceability.md`), that section *is* the
    pre-computed blast radius: one row per enforcing layer with a file + guard, plus the tests that pin it.
    Start there, then grep the ID to catch enforcement nobody linked. Read the row statuses honestly:
@@ -254,8 +254,8 @@ document structure and, where applicable, invoke them directly to regenerate an 
 hand-editing it.
 
 If this repo has a traceability convention document (SessioFlow:
-`docs/product/guidelines/traceability.md`; a mirror is bundled with this skill at
-`guidelines/traceability.md`), it is binding for Step 1.9 and Step 5.4 — the markdown links are
+`docs/product/guidelines/traceability.md`; shared across SDLC skills at
+`../guidelines/traceability.md`), it is binding for Step 1.9 and Step 5.4 — the markdown links are
 the record; code comments that cite rule IDs are optional corroboration, never a substitute.
 
 ---
