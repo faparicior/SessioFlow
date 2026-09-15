@@ -74,6 +74,7 @@ The automation skills that drive each step of the SDLC are defined as self-conta
 | **`/adr-manager`** | `.agents/skills/adr-manager/` | `docs/adr/` | Recording, amending, or superseding Architectural Decision Records. |
 | **`/create-module`** | `.agents/skills/create-module/` | `packages/modules/[context]/` | Scaffolding a new DDD bounded context workspace package. |
 | **`/reverse-engineer-domain`** | `.agents/skills/reverse-engineer-domain/` | `docs/product/discovered/`<br>`docs/product/bounded-contexts/` | Bottom-up software archeology extracting business rules and invariants from legacy code. |
+| **`/prd-workshop`** | `.agents/skills/prd-workshop/` | `docs/product/prd/` *(or draft)* | *[Optional / Under Evaluation]* Drafting and validating formal Product Requirements Documents. |
 
 ---
 
@@ -155,9 +156,6 @@ docs/
 │   ├── STRUCTURE.md                       # Format and lifecycle guidelines for ADRs
 │   ├── 001-xxx.md ... 023-xxx.md          # Architecture decisions (DDD, Next.js, Drizzle, etc.)
 │   └── _reports/                          # Comparative analyses and executive summaries
-│
-├── commands/                              # ─── Structured Prompt Commands & Validators ───
-│   └── prd/                               # PRD generation prompts and validators
 │
 ├── ARCHITECTURE.md                        # High-level architecture & monorepo structure
 ├── ARCHITECTURE-RULES.md                  # Architectural invariants (enforced by ts-archunit)
