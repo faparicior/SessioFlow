@@ -73,6 +73,7 @@ The automation skills that drive each step of the SDLC are defined as self-conta
 | **`/audit-docs`** | `.agents/skills/audit-docs/` | *Drift analysis reports* | Health checks verifying alignment between living documentation and actual code. |
 | **`/adr-manager`** | `.agents/skills/adr-manager/` | `docs/adr/` | Recording, amending, or superseding Architectural Decision Records. |
 | **`/create-module`** | `.agents/skills/create-module/` | `packages/modules/[context]/` | Scaffolding a new DDD bounded context workspace package. |
+| **`/reverse-engineer-domain`** | `.agents/skills/reverse-engineer-domain/` | `docs/product/discovered/`<br>`docs/product/bounded-contexts/` | Bottom-up software archeology extracting business rules and invariants from legacy code. |
 
 ---
 
@@ -106,7 +107,10 @@ docs/
 │   ├── README.md                          # Domain model overview and bounded context catalog
 │   ├── guidelines/                        # Specification standards and conventions
 │   │   ├── flow-documentation-structure.md# Standards for journey documentation & Mermaid diagrams
-│   │   └── business-rules-vs-invariants.md# Distinction between validation, invariants, and BRs
+│   ├── discovered/                        # Brownfield Staging Buffer (reverse-engineered rules)
+│   │   ├── README.md                      # Staging buffer guide and graduation rules
+│   │   ├── business-rules/                # Discovered rules pending context assignment (BR-RAW-XXX)
+│   │   └── invariants/                    # Discovered invariants pending context assignment (INV-RAW-XXX)
 │   ├── flows/                             # Cross-cutting user flow catalog
 │   │   └── README.md
 │   ├── bounded-contexts/
@@ -153,8 +157,7 @@ docs/
 │   └── _reports/                          # Comparative analyses and executive summaries
 │
 ├── commands/                              # ─── Structured Prompt Commands & Validators ───
-│   ├── prd/                               # PRD generation prompts and validators
-│   └── product/                           # Business rule and invariant extraction prompts
+│   └── prd/                               # PRD generation prompts and validators
 │
 ├── ARCHITECTURE.md                        # High-level architecture & monorepo structure
 ├── ARCHITECTURE-RULES.md                  # Architectural invariants (enforced by ts-archunit)

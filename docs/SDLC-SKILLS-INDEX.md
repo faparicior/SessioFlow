@@ -296,6 +296,7 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 | `/modify-flow` | Changing existing behaviour — need a proposal, plan, and doc updates |
 | `/explore-domain` | Understanding what the system does — PO questions, onboarding, tracing an event, finding a rule |
 | `/audit-docs` | Checking whether docs still match code — periodic health check, pre-release sweep, post-refactor |
+| `/reverse-engineer-domain` | Extracting business rules and invariants from brownfield legacy code into docs/staging |
 
 ---
 
@@ -310,5 +311,6 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 ├── implement-flow/            # Phase 4 — code
 ├── modify-flow/               # Phase 5+ — changes
 ├── explore-domain/            # Any time — understand existing system
-└── audit-docs/                # Any time — verify docs vs. code
+├── audit-docs/                # Any time — verify docs vs. code
+└── reverse-engineer-domain/   # Brownfield — extract rules from legacy code
 ```
