@@ -29,7 +29,7 @@
 Scenario: Attempting invalid state transition
   Given an Conference with status DRAFT
   When a command attempts to transition directly to REVIEWING
-  Then the system throws InvalidStateTransitionError
+  Then the system throws InvalidStatusTransitionError
   And the Conference status remains DRAFT
   And no state changes are persisted
 ```
@@ -42,7 +42,7 @@ Scenario: Attempting invalid state transition
 ## 4. Failure Response (Exception Handling)
 *What happens when this invariant is violated? Invariants always result in a rejected transaction and a domain exception.*
 
-* **Domain Exception:** `InvalidStateTransitionError`
+* **Domain Exception:** `InvalidStatusTransitionError`
 * **HTTP/API Mapping:** `409 Conflict` or `422 Unprocessable Entity`
 * **Rollback Behavior:** Complete database transaction rollback. No state is persisted.
 
@@ -64,14 +64,58 @@ Scenario: Valid state transition following state machine
 Scenario: Attempted invalid state transition
   Given an Conference with status DRAFT
   When a command attempts to transition directly to REVIEWING
-  Then the system throws InvalidStateTransitionError
+  Then the system throws InvalidStatusTransitionError
   And HTTP response is 422 Unprocessable Entity
   And database transaction is rolled back
   And no state changes are persisted
   And user receives error message "Invalid state transition from DRAFT to REVIEWING"
 ```
 
-## 6. History & Evolution
+## 6. Traceability
+
+*Every edge is a relative link with two ends: adding one here means adding the reciprocal link in
+that document, in the same commit. Convention: [Traceability](../../../guidelines/traceability.md).*
+
+### Traces up to
+
+* Journey: [Journey 01 — Setup Conference](../../../../inception/5-user-journeys/journey-01-setup-conference.md)
+* Flow: [Journey 01 — Setup Conference & Open CfP](../flows/journey-01-setup-conference.md)
+* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/feature-01-conference-creation-with-cfp.md) (`F1-R5`)
+* Related rules: [BR-004 — Free Tier Conference Limit](../business-rules/BR-004-free-tier-conference-limit.md)
+  (`DELETED` is what keeps a conference out of the free-tier count)
+
+### Enforced by
+
+the transition table is the single source of truth; mutators never assign a status
+directly.
+
+| Layer | Where | Guard | Status |
+| ----- | ----- | ----- | ------ |
+| Domain — value object | `packages/modules/conference/src/domain/value-objects/conference-status.ts` | `TRANSITIONS` table + `ConferenceStatus.canTransitionTo()` | ✅ Verified |
+| Domain — aggregate root | `packages/modules/conference/src/domain/conference.ts` | `Conference.publishCfp()` (only `DRAFT → CFP_OPEN`; Wave 1 ships this mutator only) | ✅ Verified |
+| Domain — exception | `packages/modules/conference/src/domain/exceptions/invalid-status-transition-error.ts` | `InvalidStatusTransitionError` | ✅ Verified |
+| Domain — aggregate (later mutators) | `packages/modules/conference/src/domain/conference.ts` | `closeCfp()` / `publishSchedule()` / `delete()` | ⏳ Planned |
+
+Enforcing entity: [Conference](../entities/conference.md)
+Value object: [ConferenceStatus](../value-objects/conference-status.md)
+
+### Verified by
+
+* `tests/unit/modules/conference/domain/value-objects/conference-status.test.ts` — "allows the full lifecycle transition path (INV-001)", "rejects skipped or reversed transitions", "rejects transitions out of terminal states"
+* `tests/unit/modules/conference/domain/conference.test.ts` — "transitions DRAFT -> CFP_OPEN (INV-001) and records CfpOpenedEvent", "rejects publishCfp() from non-DRAFT states"
+* `tests/unit/modules/conference/domain/value-objects/cfp-status.test.ts` — CfP-side transitions
+
+### In flight
+
+none.
+
+---
+
+## 7. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
 * **2026-06-09:** Invariant defined alongside Conference entity lifecycle documentation.
+* **2026-09-15:** Traceability section (§6) added; §2/§4 corrected to the name actually thrown
+  (`InvalidStatusTransitionError` — there is no `InvalidStateTransitionError`). The transition table is
+  now named as the single source of truth (`TRANSITIONS` + `ConferenceStatus.canTransitionTo()`), and the
+  Wave 2 mutators listed in §1 are recorded as ⏳ Planned: only `publishCfp()` exists today.

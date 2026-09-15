@@ -41,6 +41,16 @@
 
 ---
 
+## 🔒 Invariants & Business Rules
+
+*The `Enforces` edge — every rule below must list this value object back in its `Enforced by` table.
+Convention: [Traceability](../../../guidelines/traceability.md).*
+
+| Rule | Enforced by | Test |
+| ---- | ----------- | ---- |
+| [BR-003](../business-rules/BR-003-slug-uniqueness.md) | `ConferenceSlug.create()` — normalizes; `EmptySlugError` when nothing is slug-able | `tests/unit/modules/conference/domain/value-objects/conference-slug.test.ts` |
+| [INV-003](../invariants/INV-003-slug-uniqueness.md) | `ConferenceSlug.create()` normalization + `findBySlug()` pre-check + `conferences_slug_unique` index | `tests/integration/modules/conference/conference-repository.integration.test.ts` |
+
 ## 📚 DDD Principles Applied
 
 1. **Encapsulation**: Private constructor prevents invalid slugs

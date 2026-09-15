@@ -111,6 +111,12 @@ During flow creation, you MUST identify all business rules and invariants that g
 4. Extract each identified invariant to:
    - `docs/product/bounded-contexts/{owning-bounded-context}/invariants/INV-[XXX]-[invariant-name].md`
 5. Ensure the generated user flow document links to these extracted files under its **Technical Notes & Validation Rules** section using relative markdown links. Use cross-context relative paths when the rule belongs to a different bounded context (e.g., `../../[other-context]/business-rules/BR-[XXX]-[rule-name].md`)
+6. **Complete the `Traceability` section of every rule/invariant you create** (`templates/business-rules.md`
+   §5, `templates/invariants.md` §6) — `Traces up to` (journey, this flow, feature), `Enforced by` (one row
+   per layer, naming the file and the guard, each marked ✅ Verified / ⚠️ Unverified / ⏳ Planned by what you
+   actually read) and `Verified by` (test file **and** test title). Listing a rule in the flow without the
+   matching link back from the rule doc is a half-edge: fix it before finishing. Convention:
+   `guidelines/traceability.md`
 
 ---
 
@@ -184,6 +190,7 @@ The generated flow document should be a **single, comprehensive document** that 
 |-----------|---------|
 | `guidelines/flow-documentation-structure.md` | Flow documentation standards and best practices |
 | `guidelines/business-rules-vs-invariants.md` | When to use BR vs INV, differences and enforcement |
+| `guidelines/traceability.md` | Linking rules to flows, entities, code and tests — both ends of every edge |
 
 ## 🔗 External Documentation (Optional)
 

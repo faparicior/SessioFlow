@@ -80,7 +80,51 @@ Scenario: Attempting to publish schedule with unassigned sessions
   And user receives error message "2 accepted sessions remain unassigned. Please assign all sessions before publishing schedule."
 ```
 
-## 6. History & Evolution
+## 6. Traceability
+
+*Every edge is a relative link with two ends: adding one here means adding the reciprocal link in
+that document, in the same commit. Convention: [Traceability](../../../guidelines/traceability.md).*
+
+### Traces up to
+
+* Journey: [Journey 03 — Selection and Program](../../../../inception/5-user-journeys/journey-03-selection-and-program.md)
+* Flow: **none yet** — no flow document exists under `../flows/` for selection & program (⚠️ gap: the
+  journey is the only up-link until `journey-03-*` is documented)
+* Feature: **none yet** — `../flows/features/` currently holds Feature 01 and 02 only
+* Related rules: [INV-004 — All Sessions Must Be Scored Before Scheduling](INV-004-session-scoring-before-scheduling.md)
+  (runs first) · [INV-001 — Valid Conference Status Transitions](INV-001-state-transition-validity.md)
+  (publishing is a status transition, so both gates apply)
+
+### Enforced by
+
+**not implemented**: scheduling and publishing are outside Wave 1, so every row here
+is a specification, not a claim about current code.
+
+| Layer | Where | Guard | Status |
+| ----- | ----- | ----- | ------ |
+| Domain — aggregate root | `packages/modules/conference/src/domain/conference.ts` | `Conference.publishSchedule()` — reject when any scheduled session lacks a speaker or room | ⏳ Planned |
+| Domain — value object | `packages/modules/conference/src/domain/value-objects/` *(file to be created)* | `SpeakerAssignment` / room assignment VO | ⏳ Planned |
+| Domain — exception | `packages/modules/conference/src/domain/exceptions/` *(file to be created)* | `UnassignedSessionsError` | ⏳ Planned |
+| Database | `packages/shared/database/src/schema.ts` | intended `NOT NULL` on scheduled session assignment columns | ⏳ Planned |
+
+Enforcing entity: *none yet* — no `Session` entity exists in code
+
+### Verified by
+
+* none yet — the Gherkin cases in section 5 are the acceptance criteria the future test suite must
+  reproduce
+
+### In flight
+
+none. Same rule as INV-004: when `publishSchedule()` ships, flip the `⏳ Planned` rows
+to `✅ Verified` with the real file and method, and record the tests here.
+
+---
+
+## 7. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
 * **2026-06-09:** Invariant defined alongside Conference entity lifecycle documentation.
+* **2026-09-15:** Traceability section (§6) added with every enforcement and test row marked ⏳ Planned:
+  scheduling and `publishSchedule()` do not exist in Wave 1, so the document is now explicit that this
+  invariant is specified rather than enforced.

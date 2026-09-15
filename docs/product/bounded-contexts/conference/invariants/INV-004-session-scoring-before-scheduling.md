@@ -78,7 +78,50 @@ Scenario: Attempting to complete selection with unscored sessions
   And user receives error message "3 sessions remain unscored. Please score all sessions before completing selection."
 ```
 
-## 6. History & Evolution
+## 6. Traceability
+
+*Every edge is a relative link with two ends: adding one here means adding the reciprocal link in
+that document, in the same commit. Convention: [Traceability](../../../guidelines/traceability.md).*
+
+### Traces up to
+
+* Journey: [Journey 03 — Selection and Program](../../../../inception/5-user-journeys/journey-03-selection-and-program.md)
+* Flow: **none yet** — no flow document exists under `../flows/` for selection & program (⚠️ gap: the
+  journey is the only up-link until `journey-03-*` is documented)
+* Feature: **none yet** — `../flows/features/` currently holds Feature 01 and 02 only
+* Related rules: [INV-005 — No Publishing with Unassigned Sessions](INV-005-session-assignment-before-publishing.md)
+  (the next gate on the same aggregate operation)
+
+### Enforced by
+
+**not implemented**: sessions and reviews are outside Wave 1, so every row here is a
+specification, not a claim about current code.
+
+| Layer | Where | Guard | Status |
+| ----- | ----- | ----- | ------ |
+| Domain — aggregate root | `packages/modules/conference/src/domain/conference.ts` | `Conference.completeSelection()` — reject when any session lacks a final score | ⏳ Planned |
+| Domain — value object | `packages/modules/conference/src/domain/value-objects/` *(file to be created)* | `SessionScore` VO | ⏳ Planned |
+| Domain — exception | `packages/modules/conference/src/domain/exceptions/` *(file to be created)* | `UnscoredSessionsError` | ⏳ Planned |
+
+Enforcing entity: *none yet* — no `Session` entity exists in code
+
+### Verified by
+
+* none yet — the Gherkin cases in section 5 are the acceptance criteria the future test suite must
+  reproduce
+
+### In flight
+
+none. When `completeSelection()` ships, the `⏳ Planned` rows above must become
+`✅ Verified` rows naming the real file and method, and the tests must appear here — otherwise this
+invariant is unenforced while reading as if it were enforced.
+
+---
+
+## 7. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
 * **2026-06-09:** Invariant defined alongside Conference entity lifecycle documentation.
+* **2026-09-15:** Traceability section (§6) added with every enforcement and test row marked ⏳ Planned:
+  sessions, reviews and `completeSelection()` do not exist in Wave 1, so the document is now explicit that
+  this invariant is specified rather than enforced.

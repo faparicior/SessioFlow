@@ -241,11 +241,27 @@ Response: 201 Created
 
 ### Enforced Business Rules
 
+*The `Enforces` edge. Both ends or it didn't ship: listing a rule here means that rule's
+`Traces up to` list must link back to this flow.
+Convention: [Traceability](../guidelines/traceability.md).*
+
 * [BR-[XXX]](../business-rules/BR-[XXX]-[rule-name].md): [Short business rule active title]
 
 ### Enforced Invariants
 
 * [INV-[XXX]](../invariants/INV-[XXX]-[invariant-name].md): [Short invariant strict title]
+
+### Implementation & tests
+
+*Concrete entry points, so a reader changing a rule above can find what to edit.*
+
+| Concern | Where |
+| ------- | ----- |
+| Entry point | `apps/frontend/src/app/api/v1/[endpoint]/route.ts` |
+| Application | `packages/modules/[context]/src/application/commands/[name].handler.ts` |
+| Domain | `packages/modules/[context]/src/domain/[entity].ts` |
+| Tests (unit) | `tests/unit/modules/[context]/application/commands/[name].test.ts` |
+| Tests (E2E) | `tests/e2e/[feature].spec.ts` |
 
 ### Domain Events Published
 

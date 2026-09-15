@@ -39,6 +39,15 @@
 
 ---
 
+## 🔒 Invariants & Business Rules
+
+*The `Enforces` edge — every rule below must list this value object back in its `Enforced by` table.
+Convention: [Traceability](../../../guidelines/traceability.md).*
+
+| Rule | Enforced by | Test |
+| ---- | ----------- | ---- |
+| [BR-005](../business-rules/BR-005-cfp-submission-when-active.md) | `CfpStatus` `ACTIVE`/`CLOSED` transitions; illegal moves throw `InvalidCfpStatusError` | `tests/unit/modules/conference/domain/value-objects/cfp-status.test.ts` |
+
 ## 📚 DDD Principles Applied
 
 1. **Encapsulation**: Status is a strong type, not raw string

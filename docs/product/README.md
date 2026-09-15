@@ -109,6 +109,7 @@ User journeys span multiple bounded contexts. See [flows/README.md](./flows/READ
 |-------|---------|----------|
 | [Flow Documentation Structure](./guidelines/flow-documentation-structure.md) | How to create comprehensive flow specs | `guidelines/` |
 | [Business Rules vs Invariants](./guidelines/business-rules-vs-invariants.md) | When to use BR vs INV | `guidelines/` |
+| [Traceability](./guidelines/traceability.md) | Linking rules to flows, entities, code and tests — both ends of every edge | `guidelines/` |
 
 ## 🎯 DDD Principles Applied
 

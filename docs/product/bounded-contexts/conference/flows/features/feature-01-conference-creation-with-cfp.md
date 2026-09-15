@@ -137,7 +137,7 @@ All codes above already exist in the `@sessioflow/shared-http/error-mapper` swit
 | Type | Location | Scope |
 |------|----------|-------|
 | Unit (domain) | `tests/unit/modules/conference/domain/...` | Per-VO tests, `CfpConfig` composite, `Conference` aggregate (state machine, events), exceptions |
-| Unit (application) | `tests/unit/modules/conference/application/commands/create-conference.test.ts` | Handler with mocked repository/outbox: happy path, BR-003/004, domain error propagation, transaction invocation |
+| Unit (application) | `tests/unit/modules/conference/application/commands/create-conference/create-conference.test.ts` | Handler with mocked repository/outbox: happy path, BR-003/004, domain error propagation, transaction invocation |
 | Interface | `tests/backend/modules/conference/interfaces/api/v1/conferences/conferences.test.ts` | Controller with mocked handler: 201 shape, Zod 400, 401, each DomainError mapping |
 | Integration | `tests/integration/modules/conference/...` | `DrizzleConferenceRepository` against real PostgreSQL (docker compose); outbox persistence inside transaction |
 | E2E | `tests/e2e/conference-setup.spec.ts` | **Existing** — creation scenarios (happy path, invalid dates, duplicate slug, free tier, past date) |

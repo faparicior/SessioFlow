@@ -40,7 +40,53 @@
 * **Handling Violations/Exceptions:** *What happens if the rule conditions aren't met? (e.g., If a coupon is expired, do we block the checkout, or just remove the coupon and log a warning?)*
   * [e.g., If the automated discount calculation fails, fallback to standard catalog pricing and log a telemetry error; do not block the user purchase.]
 
-## 5. History & Evolution
+## 5. Traceability
+
+*Every edge is a relative link, and every edge has two ends: adding one here means adding the reciprocal link in that document, in the same commit. Convention: [Traceability](../guidelines/traceability.md).*
+
+### Traces up to
+
+Why this rule exists.
+
+* Journey: [Journey XX — Title](../../../../inception/5-user-journeys/[journey-XX]-[name].md)
+* Flow: [Flow — Journey XX](../flows/[journey-XX]-[name].md)
+* Feature: [Feature XX — Title](../flows/features/[feature-XX]-[name].md)
+
+### Related rules
+
+Rules it depends on, overlaps or contradicts.
+
+* [INV-XXX](../invariants/INV-XXX-[name].md): [Short title]
+
+### Enforced by
+
+Every layer where the policy actually lives. Business rules are usually split
+(contract validation + application check + domain guard + DB constraint + UI feedback); list them
+all. Name the file **and** the guard. Status: ✅ Verified (you read the guard) · ⚠️ Unverified
+(believed, not confirmed — legacy/brownfield) · ⏳ Planned (documented, not built).
+
+| Layer | Where | Guard | Status |
+| ----- | ----- | ----- | ------ |
+| Contract (shared schema) | `packages/api-definitions/src/zod/[file].ts` | `[Schema]` refinement | ✅ Verified |
+| Application | `packages/modules/[context]/src/application/commands/[name].handler.ts` | `[Handler].execute()` | ✅ Verified |
+| Domain | `packages/modules/[context]/src/domain/[entity].ts` | `[Entity].[method]()` | ✅ Verified |
+| Infrastructure | `packages/modules/[context]/src/infrastructure/[file].ts` | `[repository].[method]()` | ✅ Verified |
+| Database | `packages/shared/database/src/schema.ts` | `[unique index / constraint name]` | ⚠️ Unverified |
+| UI | `apps/frontend/src/modules/[context]/[form].tsx` | [what it does with the failure] | ✅ Verified |
+
+### Verified by
+
+Tests that fail when this policy changes.
+
+* `tests/unit/modules/[context]/application/commands/[name].test.ts` — "[exact test title]"
+
+### In flight
+
+Active proposals touching it under `docs/product/working-on/`, else *none*.
+
+---
+
+## 6. History & Evolution
 *Business rules change frequently based on market conditions. Track changes to this rule here.*
 
 * **YYYY-MM-DD:** Rule created (Initial 10% discount policy).

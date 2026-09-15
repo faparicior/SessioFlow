@@ -29,7 +29,7 @@
 Scenario: Attempting to set invalid date order
   Given an Conference with CfpConfig start date of 2026-07-01
   When the organizer attempts to set end date to 2026-06-15
-  Then the system throws InvalidCfpConfigError
+  Then the system throws CfpDatesInvalidError
   And the CfpConfig dates remain unchanged
   And no state changes are persisted
 ```
@@ -42,7 +42,7 @@ Scenario: Attempting to set invalid date order
 ## 4. Failure Response (Exception Handling)
 *What happens when this invariant is violated? Invariants always result in a rejected transaction and a domain exception.*
 
-* **Domain Exception:** `InvalidCfpConfigError`
+* **Domain Exception:** `CfpDatesInvalidError`
 * **HTTP/API Mapping:** `422 Unprocessable Entity`
 * **Rollback Behavior:** Complete database transaction rollback. No state is persisted.
 
@@ -66,18 +66,61 @@ Scenario: Attempted invalid date order
   Given organizer enters start date 2026-08-31
   And end date 2026-07-01
   When they submit the CfP configuration
-  Then the system throws InvalidCfpConfigError
+  Then the system throws CfpDatesInvalidError
   And HTTP response is 422 Unprocessable Entity
   And database transaction is rolled back
   And no state changes are persisted
   And user receives error message "End date must be after start date"
 ```
 
-## 5. Related Business Rules
-* **[BR-001: CfP Dates Must Be Valid](../business-rules/BR-001-cfp-dates-validation.md)**
+## 6. Traceability
 
-## 6. History & Evolution
+*Every edge is a relative link with two ends: adding one here means adding the reciprocal link in
+that document, in the same commit. Convention: [Traceability](../../../guidelines/traceability.md).*
+
+### Traces up to
+
+* Journey: [Journey 01 — Setup Conference](../../../../inception/5-user-journeys/journey-01-setup-conference.md)
+* Flow: [Journey 01 — Setup Conference & Open CfP](../flows/journey-01-setup-conference.md)
+* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/feature-01-conference-creation-with-cfp.md) (`F1-R3`)
+
+### Related rules
+
+* [BR-001 — CfP Dates Must Be Valid](../business-rules/BR-001-cfp-dates-validation.md): the
+  organizer-facing policy (which dates are *acceptable*). This invariant is the narrower structural
+  guarantee (`endDate > startDate`, never reversible). Both live in the same guard, so a change here
+  is a change there.
+
+### Enforced by
+
+one guard, deliberately in the value object rather than the repository, so no
+persisted state can bypass it:
+
+| Layer | Where | Guard | Status |
+| ----- | ----- | ----- | ------ |
+| Domain — composite VO | `packages/modules/conference/src/domain/value-objects/cfp-config.ts` | `CfpConfig.create()` — throws `CfpDatesInvalidError` when `endDate <= startDate`; also enforces the ≤ 180-day window | ✅ Verified |
+| Domain — value object | `packages/modules/conference/src/domain/value-objects/cfp-end-date.ts` | `CfpEndDate.isAfter(other)` | ✅ Verified |
+| Contract (shared Zod) | `packages/api-definitions/src/zod/conference.ts` | `ConferenceCreateSchema` `.refine()` — early rejection, not the guarantee | ✅ Verified |
+| Reconstitution path | `packages/modules/conference/src/domain/value-objects/cfp-config.ts` | `CfpConfig.fromData()` — intentionally skips the check so historical rows load | ✅ Verified |
+
+Enforcing entity: [CfpConfig](../entities/cfp-config.md)
+Value objects: [CfpStartDate](../value-objects/cfp-start-date.md) · [CfpEndDate](../value-objects/cfp-end-date.md) · [CfpConfig](../value-objects/cfp-config.md)
+
+### Verified by
+
+* `tests/unit/modules/conference/domain/cfp-config.test.ts` — "rejects end dates equal to start dates (INV-002)", "rejects end dates before start dates (INV-002)", "accepts the 180-day window boundary", "reconstitutes historical configurations via fromData (past dates allowed)"
+
+### In flight
+
+none.
+
+---
+
+## 7. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
 * **2026-07-18:** Linked to BR-001 business rule documentation.
+* **2026-09-15:** Traceability section (§6) added, folding in the former "Related Business Rules" section
+  and the `fromData()` reconstitution exemption. Exception name corrected to `CfpDatesInvalidError`
+  (`InvalidCfpConfigError` never existed).
 * **2026-06-09:** Invariant defined alongside CfpConfig entity documentation.

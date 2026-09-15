@@ -103,6 +103,16 @@ runs:
    unique indexes, optimistic locking versioning, aggregate consistency boundaries, transactional outbox atomicity, or transaction isolation).
 8. **Evaluate Migration & Backward Compatibility** — determine if modifying data schemas, contracts, or business rules requires database column defaults,
    data backfill scripts, or API contract versioning for backward compatibility with clients.
+9. **Read the rule/invariant document's own traceability section before grepping.** If this repo links
+   rules to the artifacts that enforce them (a `Traceability` / `Enforced by` / `Verified by` section —
+   SessioFlow's convention: `docs/product/guidelines/traceability.md`), that section *is* the pre-computed
+   blast radius: one row per enforcing layer with a file + guard, plus the tests that pin it. Start there,
+   then grep the ID to catch enforcement nobody linked. Read the row statuses honestly: ✅ Verified means
+   somebody saw the guard, ⚠️ Unverified means it is a lead to confirm by opening the file, ⏳ Planned means
+   it does not exist yet — promote nothing silently, and put every ⚠️ you confirm or reject into the proposal.
+10. **Check the tests, not just the code.** For each `Verified by` test, confirm the file and the test title
+    still exist (`grep -n "<title>" <test-file>`); those tests are what fails when a guard is deleted, so
+    they are the change's real safety net and the tests you will have to rewrite.
 
 ---
 
@@ -212,9 +222,17 @@ Once the change is implemented and verified:
    present-tense fact. Updating only the derived layer and leaving a stale journey/persona doc behind is an
    incomplete change. Leave frozen brainstorming/feature-scoping artifacts untouched, as decided in the
    proposal — do not retroactively edit history.
-4. Update this repo's flow/documentation index only if the change makes an existing summary/status/table
+4. **Close every edge at both ends.** For each link the change adds or removes — rule ↔ entity, flow,
+   feature, journey, test — write the counterpart in the same commit and then verify it from the other
+   side (grep the rule ID across the docs tree and check both directions). A `Enforces` bullet added to an
+   entity without the matching `Traces up to` / `Enforced by` row in the rule doc is exactly the half-edge
+   that makes rules undiscoverable later. Where the rule doc has an `Enforced by` table, keep it complete:
+   one row per layer that can reject the policy (contract, application, domain, database, UI), each naming
+   the file and the guard, with the status you earned by reading it — ⚠️ Unverified is an acceptable row,
+   an unearned ✅ is not.
+5. Update this repo's flow/documentation index only if the change makes an existing summary/status/table
    row inaccurate.
-5. Mark the implementation plan's Documentation Update table complete.
+6. Mark the implementation plan's Documentation Update table complete.
 
 ---
 
@@ -231,6 +249,10 @@ If this repo has skills for first-time flow/entity documentation (any name — e
 `create-flow-documentation`, `create-entity-lifecycle`), treat them as the authority for Step 5: reuse their
 document structure and, where applicable, invoke them directly to regenerate an existing doc rather than
 hand-editing it.
+
+If this repo has a traceability convention document (SessioFlow:
+`docs/product/guidelines/traceability.md`), it is binding for Step 1.9 and Step 5.4 — the markdown links are
+the record; code comments that cite rule IDs are optional corroboration, never a substitute.
 
 ---
 

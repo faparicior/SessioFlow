@@ -43,13 +43,25 @@ stateDiagram-v2
 * **`[STATE_NAME_4]`**: The entity is dead/archived and can no longer transition. (e.g., `CANCELLED`).
 
 ## 🔒 Invariants & Business Rules
-*Relative links to the business rules and invariants enforced by this entity.*
+
+*The `Enforces` edge: every rule this entity is responsible for upholding. Both ends or it didn't
+ship — each rule listed here must link back to this entity in its `Enforced by` table.
+Convention: [Traceability](../guidelines/traceability.md).*
 
 * **Invariants:**
   * [INV-[XXX]](../invariants/INV-[XXX]-[invariant-name].md): [Short invariant strict title]
 
 * **Business Rules:**
   * [BR-[XXX]](../business-rules/BR-[XXX]-[rule-name].md): [Short business rule active title]
+
+### Enforcement & tests
+
+Where each guard lives and what pins it.
+
+| Rule | Enforcing member | Test |
+| ---- | ---------------- | ---- |
+| [INV-[XXX]](../invariants/INV-[XXX]-[invariant-name].md) | `[Entity].[mutator]()` | `tests/unit/modules/[context]/domain/[entity].test.ts` |
+| [BR-[XXX]](../business-rules/BR-[XXX]-[rule-name].md) | `[Entity].[method]()` / `[ValueObject].create()` | `tests/unit/modules/[context]/domain/value-objects/[vo].test.ts` |
 
 ---
 

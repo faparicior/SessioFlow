@@ -41,6 +41,15 @@
 
 ---
 
+## 🔒 Invariants & Business Rules
+
+*The `Enforces` edge — every rule below must list this value object back in its `Enforced by` table.
+Convention: [Traceability](../../../guidelines/traceability.md).*
+
+| Rule | Enforced by | Test |
+| ---- | ----------- | ---- |
+| [BR-002](../business-rules/BR-002-conference-name-validation.md) | `ConferenceName.create()` — trims, then `ConferenceNameTooShortError` / `ConferenceNameTooLongError` (no sanitizing, no truncation) | `tests/unit/modules/conference/domain/value-objects/conference-name.test.ts` |
+
 ## 📚 DDD Principles Applied
 
 1. **Encapsulation**: Private constructor prevents invalid states

@@ -77,7 +77,50 @@ Scenario: Attempted violation of the invariant
   And [user receives clear error message explaining the violation]
 ```
 
-## 6. History & Evolution
+## 6. Traceability
+
+*Every edge is a relative link, and every edge has two ends: adding one here means adding the reciprocal link in that document, in the same commit. Convention: [Traceability](../../product/guidelines/traceability.md).*
+
+### Traces up to
+
+Why this invariant exists.
+
+* Journey: [Journey XX — Title](../../../../inception/5-user-journeys/[journey-XX]-[name].md)
+* Flow: [Flow — Journey XX](../flows/[journey-XX]-[name].md)
+* Feature: [Feature XX — Title](../flows/features/[feature-XX]-[name].md)
+
+### Related rules
+
+Rules or invariants it depends on, overlaps or contradicts.
+
+* [BR-XXX](../business-rules/BR-XXX-[name].md): [Short title]
+
+### Enforced by
+
+Every layer that upholds this invariant. A rule is commonly split across layers;
+name the file **and** the guard, because "enforced in the domain" is not actionable. Status:
+✅ Verified (you read the guard) · ⚠️ Unverified (believed, not confirmed — legacy/brownfield)
+· ⏳ Planned (documented, not built).
+
+| Layer | Where | Guard | Status |
+| ----- | ----- | ----- | ------ |
+| Domain — aggregate root | `packages/modules/[context]/src/domain/[entity].ts` | `[Entity].[mutator]()` | ✅ Verified |
+| Domain — value object | `packages/modules/[context]/src/domain/value-objects/[vo].ts` | `[ValueObject].create()` | ✅ Verified |
+| Database | `packages/shared/database/src/schema.ts` | `[unique index / constraint name]` | ⚠️ Unverified |
+
+### Verified by
+
+Tests that fail when this invariant stops holding.
+
+* `tests/unit/modules/[context]/domain/[entity].test.ts` — "[exact test title]"
+
+### In flight
+
+Active proposals touching it under `docs/product/working-on/`, else *none*.
+
+---
+
+## 7. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
 * **YYYY-MM-DD:** Invariant defined alongside [related feature/entity introduction].

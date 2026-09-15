@@ -35,13 +35,13 @@ Understanding the difference between **Business Rules** and **Invariants** is cr
 
 **INV-001: Conference State Transitions Must Follow State Machine**
 - **Invariant:** Conference state transitions must follow the defined state machine
-- **Violation Handling:** Throw `InvalidStateTransitionError`, rollback transaction
+- **Violation Handling:** Throw `InvalidStatusTransitionError`, rollback transaction
 - **Enforcement:** Inside `Conference` Aggregate Root methods
 - **Fallback:** None - operation must fail completely
 
 **INV-002: Cfp End Date Must Be After Start Date**
 - **Invariant:** The `cfpEndDate` must always be strictly greater than `cfpStartDate`
-- **Violation Handling:** Throw `InvalidCfpConfigError`, rollback transaction
+- **Violation Handling:** Throw `CfpDatesInvalidError`, rollback transaction
 - **Enforcement:** Inside `CfpConfig` child entity within Conference Aggregate
 - **Fallback:** None - data would be in illegal state
 
@@ -125,7 +125,7 @@ class Conference {
 class Conference {
   closeCfp(): void {
     if (this.status !== ConferenceStatus.CFP_OPEN) {
-      throw new InvalidStateTransitionError(
+      throw new InvalidStatusTransitionError(
         this.id, 
         ConferenceStatus.CFP_OPEN, 
         ConferenceStatus.CFP_CLOSED
@@ -157,5 +157,6 @@ If you're unsure whether something is a business rule or invariant:
 
 - [Business Rules Template](../../templates/product/business-rules.md)
 - [Invariants Template](../../templates/product/invariants.md)
-- [Extract Business Rules Command](../../commands/product/extract-business-rules.md)
-- [Extract Invariants Command](../../commands/product/extract-invariants.md)
+- [Entity Lifecycle Template](../../templates/product/entity-lifecycle.md)
+- [Traceability](traceability.md) — how to link rules to the flows, entities and code that enforce them
+- Extracting rules and invariants from existing code: the `reverse-engineer-domain` skill

@@ -44,6 +44,15 @@
 
 ---
 
+## 🔒 Invariants & Business Rules
+
+*The `Enforces` edge — every rule below must list this value object back in its `Enforced by` table.
+Convention: [Traceability](../../../guidelines/traceability.md).*
+
+| Rule | Enforced by | Test |
+| ---- | ----------- | ---- |
+| [INV-001](../invariants/INV-001-state-transition-validity.md) | `TRANSITIONS` table + `ConferenceStatus.canTransitionTo()`; illegal moves throw `InvalidStatusTransitionError` | `tests/unit/modules/conference/domain/value-objects/conference-status.test.ts` |
+
 ## 📚 DDD Principles Applied
 
 1. **Encapsulation**: Status is a strong type, not raw string

@@ -52,6 +52,17 @@
 
 ---
 
+## 🔒 Invariants & Business Rules
+
+*The `Enforces` edge — every rule below must list this value object back in its `Enforced by` table.
+Convention: [Traceability](../../../guidelines/traceability.md).*
+
+| Rule | Enforced by | Test |
+| ---- | ----------- | ---- |
+| [BR-001](../business-rules/BR-001-cfp-dates-validation.md) | `CfpConfig.create()` — window + order checks | `tests/unit/modules/conference/domain/cfp-config.test.ts` |
+| [BR-005](../business-rules/BR-005-cfp-submission-when-active.md) | `CfpConfig.isActive()` / `.isWithinWindow(date)` — submission use case ⏳ Planned | `tests/unit/modules/conference/domain/cfp-config.test.ts` |
+| [INV-002](../invariants/INV-002-cfp-date-order.md) | `CfpConfig.create()` → `CfpDatesInvalidError`; `fromData()` exempts reconstitution | `tests/unit/modules/conference/domain/cfp-config.test.ts` |
+
 ## 📚 DDD Principles Applied
 
 1. **Encapsulation**: Private constructor prevents invalid configurations
@@ -77,10 +88,10 @@
 
 | Error | Trigger |
 |-------|---------|
-| `InvalidCfpConfigError` | General configuration validation failure |
-| `InvalidCfpDateError` | Start or end date is invalid |
-| `EndDateBeforeStartDateError` | `endDate` is before `startDate` |
-| `StartDateInPastError` | `startDate` is in the past |
+| `CfpDatesInvalidError` | `endDate` not after `startDate`, or the window exceeds 180 days ([INV-002](../invariants/INV-002-cfp-date-order.md)) |
+| `InvalidCfpStartDateError` | `startDate` malformed or in the past (creation path) |
+| `InvalidCfpEndDateError` | `endDate` malformed |
+| `InvalidCfpStatusError` | `close()` called from a status that is not `ACTIVE` |
 | `MaxSubmissionsInvalidError` | `maxSubmissions` is not a positive integer |
 
 ---

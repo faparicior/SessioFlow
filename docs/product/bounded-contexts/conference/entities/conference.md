@@ -182,6 +182,21 @@ export interface ConferenceRepository {
 * [BR-003](../business-rules/BR-003-slug-uniqueness.md): Conference Slug Must Be Unique
 * [BR-004](../business-rules/BR-004-free-tier-conference-limit.md): Free Tier Conference Creation Limit
 
+### Enforcement & tests
+
+*Where each rule above is actually enforced, so changing one starts here. Convention:
+[Traceability](../../../guidelines/traceability.md).*
+
+| Rule | Enforcing member | Test |
+| ---- | ---------------- | ---- |
+| [BR-001](../business-rules/BR-001-cfp-dates-validation.md) | `CfpConfig.create()` via `Conference.create()` | `tests/unit/modules/conference/domain/cfp-config.test.ts` |
+| [BR-002](../business-rules/BR-002-conference-name-validation.md) | `ConferenceName.create()` via `Conference.create()` | `tests/unit/modules/conference/domain/value-objects/conference-name.test.ts` |
+| [BR-003](../business-rules/BR-003-slug-uniqueness.md) | `ConferenceSlug.create()` + application pre-check + `conferences_slug_unique` | `tests/unit/modules/conference/domain/value-objects/conference-slug.test.ts` |
+| [BR-004](../business-rules/BR-004-free-tier-conference-limit.md) | `CreateConferenceHandler.execute()` + `countActiveByOrganizerId()` | `tests/unit/modules/conference/application/commands/create-conference/create-conference.test.ts` |
+| [INV-001](../invariants/INV-001-state-transition-validity.md) | `Conference.publishCfp()` + `ConferenceStatus.canTransitionTo()` | `tests/unit/modules/conference/domain/conference.test.ts` |
+| [INV-002](../invariants/INV-002-cfp-date-order.md) | `CfpConfig.create()` | `tests/unit/modules/conference/domain/cfp-config.test.ts` |
+| [INV-003](../invariants/INV-003-slug-uniqueness.md) | `ConferenceSlug.create()` + unique index | `tests/integration/modules/conference/conference-repository.integration.test.ts` |
+
 ---
 
 ## 🔗 Linked User Stories & Flows

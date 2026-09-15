@@ -80,7 +80,7 @@
 ### Test Scope
 | Type | Location | Scope |
 |------|----------|-------|
-| Unit (application) | `tests/unit/modules/conference/application/queries/get-conference.test.ts` | Handler: 200 mapping, 404 on missing, response shape |
+| Unit (application) | `tests/unit/modules/conference/application/queries/get-conference/get-conference.test.ts` | Handler: 200 mapping, 404 on missing, response shape |
 | Interface | `tests/backend/modules/conference/interfaces/api/v1/conferences/conferences.test.ts` (extended) | Controller: 200, 404, 400 malformed id |
 | Integration | `tests/integration/modules/conference/conference-repository.integration.test.ts` (extended) | `findById` reconstitution round-trip vs real PostgreSQL |
 | E2E | `tests/e2e/conference-setup.spec.ts` | **Existing** — redirect + slug-in-`<code>` assertions (happy path) |

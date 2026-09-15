@@ -138,8 +138,8 @@
 ### Phase 2: Application Layer (Inside-Out) — F1 command + F2 query
 
 #### 2.1 Tests First (Application)
-- [x] `tests/unit/modules/conference/application/commands/create-conference.test.ts` (mocked repository/outbox, typed `vi.fn<T>` mocks): happy path (VOs → aggregate → `publishCfp` → transactional save + outbox, events `CONFERENCE_CREATED` + `CFP_OPENED`, tx handle received by both), BR-003 ordering (slug before free-tier) + duplicate slug → `SLUG_EXISTS`, BR-004 → `FREE_TIER_LIMIT`, domain error propagation (past date `CFP_START_DATE_NOT_IN_FUTURE`, name `NAME_TOO_SHORT`, dates order + >180d window `CFP_DATES_INVALID`), slug derivation from name, unlimited maxSubmissions, empty description — 11 tests
-- [x] `tests/unit/modules/conference/application/queries/get-conference.test.ts` (mocked repository): found → response mapping (API shape), unlimited variant, missing → `ConferenceNotFoundError` (NOT_FOUND), malformed id → `INVALID_CONFERENCE_ID` (drives the D14 `ConferenceId` → `DomainInvariantError` change)
+- [x] `tests/unit/modules/conference/application/commands/create-conference/create-conference.test.ts` (mocked repository/outbox, typed `vi.fn<T>` mocks): happy path (VOs → aggregate → `publishCfp` → transactional save + outbox, events `CONFERENCE_CREATED` + `CFP_OPENED`, tx handle received by both), BR-003 ordering (slug before free-tier) + duplicate slug → `SLUG_EXISTS`, BR-004 → `FREE_TIER_LIMIT`, domain error propagation (past date `CFP_START_DATE_NOT_IN_FUTURE`, name `NAME_TOO_SHORT`, dates order + >180d window `CFP_DATES_INVALID`), slug derivation from name, unlimited maxSubmissions, empty description — 11 tests
+- [x] `tests/unit/modules/conference/application/queries/get-conference/get-conference.test.ts` (mocked repository): found → response mapping (API shape), unlimited variant, missing → `ConferenceNotFoundError` (NOT_FOUND), malformed id → `INVALID_CONFERENCE_ID` (drives the D14 `ConferenceId` → `DomainInvariantError` change)
 - [x] Verify application tests **FAIL** initially — ✅ both suites failed (module missing)
 
 #### 2.2 Implement Code (Application)

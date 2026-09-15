@@ -39,6 +39,15 @@
 
 ---
 
+## 🔒 Invariants & Business Rules
+
+*The `Enforces` edge — every rule below must list this value object back in its `Enforced by` table.
+Convention: [Traceability](../../../guidelines/traceability.md).*
+
+| Rule | Enforced by | Test |
+| ---- | ----------- | ---- |
+| [BR-001](../business-rules/BR-001-cfp-dates-validation.md) | `CfpStartDate.create()` — today or future, ≤ 365 days (`InvalidCfpStartDateError`) | `tests/unit/modules/conference/domain/value-objects/cfp-start-date.test.ts` |
+
 ## 📚 DDD Principles Applied
 
 1. **Encapsulation**: Private constructor prevents invalid dates

@@ -41,8 +41,9 @@ Scenario: Attempting to create conference with duplicate slug
 ## 4. Failure Response (Exception Handling)
 *What happens when this invariant is violated? Invariants always result in a rejected transaction and a domain exception.*
 
-* **Domain Exception:** `SlugGenerationError` or `DatabaseUniqueViolationError`
-* **HTTP/API Mapping:** `500 Internal Server Error` (rare) or `409 Conflict`
+* **Domain Exception:** `SlugExistsError` (duplicate slug → `409 SLUG_EXISTS`) or `EmptySlugError`
+  (nothing to build a slug from → `422 VALIDATION_ERROR`)
+* **HTTP/API Mapping:** `409 Conflict` (duplicate) or `422 Unprocessable Entity` (unusable name)
 * **Rollback Behavior:** Complete database transaction rollback. No state is persisted.
 
 ## 5. Test Cases
@@ -60,18 +61,68 @@ Scenario: Creating conference with unique slug
 
 ### Negative Test (Invariant Violation Blocked)
 ```gherkin
-Scenario: Slug collision after multiple retry attempts
-  Given conferences with slugs "my-conference", "my-conference-2", "my-conference-3" exist
+Scenario: Slug collision blocked
+  Given a conference with slug "my-conference" exists
   When organizer creates another conference named "My Conference"
-  Then the system throws SlugGenerationError after 3 attempts
-  And HTTP response is 500 Internal Server Error
+  Then the system throws SlugExistsError
+  And HTTP response is 409 Conflict with code SLUG_EXISTS
   And database transaction is rolled back
   And no state changes are persisted
-  And user receives error message "Unable to create conference. Please try again."
+  And organizer receives an inline form error asking for a different conference name
 ```
 
-## 6. History & Evolution
+## 6. Traceability
+
+*Every edge is a relative link with two ends: adding one here means adding the reciprocal link in
+that document, in the same commit. Convention: [Traceability](../../../guidelines/traceability.md).*
+
+### Traces up to
+
+* Journey: [Journey 01 — Setup Conference](../../../../inception/5-user-journeys/journey-01-setup-conference.md)
+* Flow: [Journey 01 — Setup Conference & Open CfP](../flows/journey-01-setup-conference.md)
+* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/feature-01-conference-creation-with-cfp.md) (`F1-R4`)
+
+### Related rules
+
+* [BR-003 — Conference Slug Must Be Unique](../business-rules/BR-003-slug-uniqueness.md): the same
+  constraint seen as an organizer-facing policy. If only one of the two gets updated, they become
+  contradictory — update both, in one commit.
+
+### Enforced by
+
+application check plus database constraint: the check gives a good error, the
+constraint is what actually guarantees uniqueness under concurrent inserts.
+
+| Layer | Where | Guard | Status |
+| ----- | ----- | ----- | ------ |
+| Application | `packages/modules/conference/src/application/commands/create-conference/create-conference.handler.ts` | `CreateConferenceHandler.execute()` — `findBySlug()` pre-check | ✅ Verified |
+| Domain — value object | `packages/modules/conference/src/domain/value-objects/conference-slug.ts` | `ConferenceSlug.create()` — lowercase normalization, `EmptySlugError` | ✅ Verified |
+| Domain (repository port) | `packages/modules/conference/src/domain/conference-repository.interface.ts` | `findBySlug()` contract | ✅ Verified |
+| Infrastructure | `packages/modules/conference/src/infrastructure/database/conference.repository.ts` | `findBySlug()` implementation | ✅ Verified |
+| Database | `packages/shared/database/src/schema.ts` | `conferences_slug_unique` unique index | ✅ Verified |
+
+Enforcing entity: [Conference](../entities/conference.md)
+Value object: [ConferenceSlug](../value-objects/conference-slug.md)
+
+### Verified by
+
+* `tests/unit/modules/conference/application/commands/create-conference/create-conference.test.ts` — "rejects a duplicate slug with SLUG_EXISTS (409) and persists nothing", "derives the slug from the conference name (slug is not an input)"
+* `tests/unit/modules/conference/domain/value-objects/conference-slug.test.ts` — normalization cases
+* `tests/integration/modules/conference/conference-repository.integration.test.ts` — "save + findBySlug round-trip", "returns null for an unknown id or slug"
+* `tests/e2e/conference-setup.spec.ts` — "should reject conference with duplicate slug"
+
+### In flight
+
+none.
+
+---
+
+## 7. History & Evolution
 *While invariants rarely change (as they define the core truth of the domain model), track any structural adjustments here.*
 
 * **2026-06-09:** Invariant defined alongside Conference entity documentation.
+* **2026-09-15:** Traceability section (§6) added. §4/§5 corrected: `SlugGenerationError` and
+  `DatabaseUniqueViolationError` do not exist and the auto-suffix retry was never implemented — shipped
+  behavior is `SlugExistsError` → `409 SLUG_EXISTS`, guaranteed by the `conferences_slug_unique` index in
+  `packages/shared/database/src/schema.ts`.
 * **Database Constraint:** UNIQUE index on `conferences.slug` column provides additional enforcement layer.

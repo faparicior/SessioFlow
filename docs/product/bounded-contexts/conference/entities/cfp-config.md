@@ -134,6 +134,17 @@ export interface ConferenceRepository {
 * [BR-001](../business-rules/BR-001-cfp-dates-validation.md): CfP Dates Must Be Valid
 * [BR-005](../business-rules/BR-005-cfp-submission-when-active.md): Submissions Only Accepted When CfP Is Active
 
+### Enforcement & tests
+
+*Where each rule above is actually enforced, so changing one starts here. Convention:
+[Traceability](../../../guidelines/traceability.md).*
+
+| Rule | Enforcing member | Test |
+| ---- | ---------------- | ---- |
+| [BR-001](../business-rules/BR-001-cfp-dates-validation.md) | `CfpConfig.create()` — window + order | `tests/unit/modules/conference/domain/cfp-config.test.ts` |
+| [BR-005](../business-rules/BR-005-cfp-submission-when-active.md) | `CfpConfig.isActive()` / `.isWithinWindow()` (submission use case ⏳ Planned) | `tests/unit/modules/conference/domain/cfp-config.test.ts` |
+| [INV-002](../invariants/INV-002-cfp-date-order.md) | `CfpConfig.create()` → `CfpDatesInvalidError` | `tests/unit/modules/conference/domain/cfp-config.test.ts` |
+
 ---
 
 ## 🔗 Linked User Stories & Flows

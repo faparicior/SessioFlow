@@ -93,6 +93,25 @@ Same checks as BRs, plus:
 | Transactional Outbox atomicity | Domain events are persisted atomically via Outbox repository / transaction boundary rather than uncommitted dispatch |
 | Idempotency & replay | Message consumers / mutating endpoints implement documented idempotency keys or deduplication checks |
 
+### Traceability (applies to every doc type)
+
+Rules and invariants are only findable if their links exist at **both ends**. These checks are
+mechanical — run them before judging content quality. Convention:
+[docs/product/guidelines/traceability.md](../../../docs/product/guidelines/traceability.md).
+
+| Check | How to run it | Verdict when it fails |
+| --- | --- | --- |
+| **Reciprocity** | For each `BR-*`/`INV-*` in a flow/entity/value-object `Enforces` list, confirm the rule doc lists that flow/entity back (in `Traces up to` / `Enforced by`); and vice versa | ⚠️ Stale — half an edge |
+| **Completeness of `Enforced by`** | Every layer that can reject this policy is a row: contract/Zod, application, domain, infrastructure, database, UI. Grep the module for the rule's error class and the guard message; each hit is a missing row | ⚠️ Stale (thin) or ❌ Missing |
+| **Existence** | Every path and `Symbol.method` in `Enforced by` / `Verified by` still resolves — `test -f` the path, `grep` the symbol in it | ❌ Missing (doc cites code that is gone) |
+| **Test anchor** | Rule has ≥1 `Verified by` test whose title actually appears in that file (`grep -n "<title>" <file>`) | ⚠️ Stale — unverifiable rule |
+| **Status honesty** | ✅ Verified rows are confirmed by opening the file; anything believed goes ⚠️ Unverified; not-yet-built goes ⏳ Planned with no test claim | ⚠️ Stale — unearned ✅ |
+| **Untagged enforcement** | A rule has flow coverage but no enforcement row that a grep can find | ⚠️ Unverified — record the site by hand |
+
+Report a rule with an empty `Enforced by` table **and** an active flow as the highest-risk finding in
+the audit: either the code is unlinked or the policy is unimplemented, and the doc cannot tell them
+apart.
+
 ---
 
 ## Verdict Levels
@@ -201,6 +220,8 @@ When you cannot confidently verify a claim (complex logic, ambiguous mapping), m
 - **Be specific.** Every finding must cite the exact file path and line (or range) that confirms or
   contradicts the doc.
 - **No false positives.** If you cannot verify, mark ⚠️ with "needs manual review" — not ❌.
+- **An edge exists at both ends.** A link found on only one side is a finding, even when the content
+  it points at is perfectly accurate.
 - **Complete the summary table** before listing findings — it gives the user a quick health score.
 
 ---

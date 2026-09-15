@@ -147,8 +147,8 @@ sequenceDiagram
 
 | What If | System Handling | Domain / Application Method | Entity Impact |
 |---------|-----------------|-----------------------------|---------------|
-| User selects CfP end date before start date | Display inline validation error *"End date must be after start date"*, prevent form submission | `CfpConfig.validateDates()` throws `InvalidCfpConfigError` | No lifecycle change; no entities created |
-| Conference name contains special characters or is too long | Sanitize input, truncate to max 100 characters, display warning | `ConferenceName.create()` validates and sanitizes | `Conference` created with sanitized name |
+| User selects CfP end date before start date | Display inline validation error *"End date must be after start date"*, prevent form submission | `CfpConfig.create()` throws `CfpDatesInvalidError` ([BR-001](../business-rules/BR-001-cfp-dates-validation.md), [INV-002](../invariants/INV-002-cfp-date-order.md)) | No lifecycle change; no entities created |
+| Conference name contains special characters or is too long | Reject with `ConferenceNameTooLongError` (no truncation — organizer must shorten the name) | `ConferenceName.create()` validates and trims | `Conference` not created |
 | User tries to create more than 5 active conferences (free tier limit) | Display upgrade prompt with pricing information | `CreateConferenceHandler.execute()` evaluates `countActiveByOrganizerId(organizerId) >= 5` | No lifecycle change; `Conference` not created |
 | Slug already exists in database | Display error *"Conference name already taken, try a different name"* | `ConferenceRepository.findBySlug()` returns existing conference | No lifecycle change; `Conference` not created |
 
@@ -157,7 +157,7 @@ sequenceDiagram
 | What If | System Handling | Domain Impact |
 |---------|-----------------|---------------|
 | Database connection fails during Conference creation | Rollback any partial writes, display generic error message *"Unable to create conference. Please try again."*, log error to monitoring service | No entities created; transaction aborted |
-| Slug generation produces a duplicate (two conferences with same name) | Append numeric suffix (e.g., `my-conference-2`), retry up to 3 times | `Conference` created with unique slug |
+| Slug generation produces a duplicate (two conferences with same name) | Reject with `409 SLUG_EXISTS` and show an inline form error; **no** numeric-suffix retry (decision D1) | `Conference` not created |
 | Welcome email fails to send | Log error, continue with successful response (email is best-effort) | `Conference` and `CfpConfig` persisted; email queued for retry |
 
 ### 3. Validation Boundary Conditions
@@ -257,6 +257,23 @@ WITH CHECK (organizer_id = auth.uid());
 
 * [INV-002](../invariants/INV-002-cfp-date-order.md): Cfp End Date Must Be After Start Date
 * [INV-003](../invariants/INV-003-slug-uniqueness.md): Conference Slug Must Be Unique Across All Conferences
+
+### Implementation & tests
+
+*Where this flow actually lives, so changing a rule above starts here. Convention:
+[Traceability](../../../guidelines/traceability.md).*
+
+| Concern | Where |
+| ------- | ----- |
+| Entry point | `apps/frontend/src/app/api/v1/conferences/route.ts` |
+| Controller | `packages/modules/conference/src/interfaces/http/create-conference.controller.ts` |
+| Application | `packages/modules/conference/src/application/commands/create-conference/create-conference.handler.ts` |
+| Domain | `packages/modules/conference/src/domain/conference.ts` + `value-objects/` |
+| Infrastructure | `packages/modules/conference/src/infrastructure/database/conference.repository.ts` |
+| Tests | `tests/unit/modules/conference/`, `tests/backend/modules/conference/`, `tests/integration/modules/conference/`, `tests/e2e/conference-setup.spec.ts` |
+
+> **Both ends or it didn't ship:** every rule and invariant listed in the two sections above links
+> back to this flow in its own `Traces up to` list. Adding a rule here means adding that link too.
 
 ### Domain Events Published
 

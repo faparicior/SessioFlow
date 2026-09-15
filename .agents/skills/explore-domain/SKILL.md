@@ -207,9 +207,13 @@ they are enforced in code.
 ### Steps
 
 1. Search the docs tree for BRs and INVs whose title or description matches the topic.
-2. Read each matching doc.
-3. Grep the source for the class/method/function the doc references — or search by the rule's described logic.
-4. Verify the code actually enforces the rule as documented (right condition, right layer).
+2. Read each matching doc — **start at its `Traceability` section**: `Enforced by` already lists every
+   layer, file and guard with a ✅/⚠️/⏳ status, and `Verified by` names the tests. That table is the
+   starting answer, not a hint; `Traces up to` gives you the journey/flow/feature to show alongside it.
+3. Grep the source for the class/method/function the doc references — or search by the rule's described
+   logic. Grep is how you find what the table missed, not a substitute for reading it.
+4. Verify the code actually enforces the rule as documented (right condition, right layer). A ✅ row you
+   did not confirm by opening the file is reported as ⚠️, not ✅.
 
 ### Output
 

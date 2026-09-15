@@ -90,6 +90,15 @@ During entity lifecycle creation, you MUST identify all business rules and invar
 3. Extract each identified invariant to:
    - `docs/product/bounded-contexts/{bounded-context-name}/invariants/INV-[XXX]-[invariant-name].md`
 4. Ensure the generated entity lifecycle document links to these extracted files under its **Invariants & Business Rules** section using relative markdown links (e.g., `../business-rules/BR-[XXX]-[rule-name].md`)
+5. **Complete the `Traceability` section of every rule/invariant you create** (`templates/business-rules.md`
+   §5, `templates/invariants.md` §6) — `Traces up to` (journey, flow, feature), `Enforced by` (one row per
+   layer that can reject the policy, naming the file **and** the guard, each marked ✅ Verified /
+   ⚠️ Unverified / ⏳ Planned according to what you read in the code) and `Verified by` (test file **and**
+   test title). A rule with an empty `Enforced by` table is not finished; a ✅ you did not earn by opening
+   the file is worse than ⚠️. Convention: `guidelines/traceability.md`
+6. Complete the **`Enforcement & tests`** table in the entity/value-object document you are generating, so
+   each rule listed under **Invariants & Business Rules** also names its enforcing member and test file —
+   that table is the reverse edge of item 5, and both must be written in the same change
 
 ---
 
@@ -139,6 +148,7 @@ This skill is **language- and framework-agnostic**. File paths and class convent
 |-----------|---------|
 | `guidelines/flow-documentation-structure.md` | Flow documentation standards (reference) |
 | `guidelines/business-rules-vs-invariants.md` | When to use BR vs INV, differences and enforcement |
+| `guidelines/traceability.md` | Linking rules to flows, entities, code and tests — both ends of every edge |
 
 ---
 
