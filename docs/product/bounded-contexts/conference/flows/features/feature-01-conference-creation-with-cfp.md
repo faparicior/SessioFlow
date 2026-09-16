@@ -4,7 +4,7 @@
 * **Specification File:** `docs/product/bounded-contexts/conference/flows/features/feature-01-conference-creation-with-cfp.md`
 * **Parent Flow:** [journey-01-setup-conference.md](../journey-01-setup-conference.md)
 * **Bounded Context:** `conference`
-* **Status:** 📋 Planned
+* **Status:** ✅ Implemented — shipped in Wave 1; re-verified against code 2026-09-16 (docs audit)
 * **Priority:** High
 
 > **Architecture Reference**: See `AGENTS.md` and `docs/ARCHITECTURE.md` for project folder layout, layer conventions, and verification commands.
@@ -26,22 +26,22 @@
 ## 📋 Requirements
 
 ### Functional Requirements
-- [ ] **F1-R1** `POST /api/v1/conferences` accepts the `ConferenceCreateSchema` payload (`@sessioflow/api-definitions/zod/conference`) and returns `201` with the created conference data on success.
-- [ ] **F1-R2** Name validation (BR-002): 3–100 characters after trim; invalid names rejected with `400` + specific message.
-- [ ] **F1-R3** CfP date validation (BR-001, INV-002): start date must be today or future; end date must be after start date; violations rejected with `400` + specific messages.
-- [ ] **F1-R4** Slug generation & uniqueness (BR-003, INV-003): slug derived from the name (lowercase, hyphenated, ≤ 100 chars); if the slug already exists, reject with `409 Conflict` + "Conference slug already exists".
-- [ ] **F1-R5** Free tier limit (BR-004): organizers default to FREE tier; if they already have ≥ 5 active conferences (`status != 'DELETED'`), reject with `403` + upgrade prompt message.
-- [ ] **F1-R6** Aggregate lifecycle: `Conference.create()` → `DRAFT`, then `Conference.publishCfp()` → `CFP_OPEN` (INV-001 state machine); `CfpConfig` created with `ACTIVE` status.
-- [ ] **F1-R7** Domain events `ConferenceCreated` and `CfpOpened` are recorded on the aggregate and persisted to `outbox_messages` (status `PENDING`) atomically with the aggregate (single DB transaction, ADR-017).
-- [ ] **F1-R8** UI: `/conferences/create` form with labels `Conference Name`, `Description`, `CfP Start Date`, `CfP End Date`, live slug preview, client-side Zod validation, inline server error display, and redirect to `/conferences/{id}` on success.
-- [ ] **F1-R9** Error contract: all domain failures return the standard `{ "error": { code, message } }` shape with the HTTP status from `@sessioflow/shared-http/error-mapper` (see table below).
+- [x] **F1-R1** `POST /api/v1/conferences` accepts the `ConferenceCreateSchema` payload (`@sessioflow/api-definitions/zod/conference`) and returns `201` with the created conference data on success.
+- [x] **F1-R2** Name validation (BR-002): 3–100 characters after trim; invalid names rejected with `400` + specific message.
+- [x] **F1-R3** CfP date validation (BR-001, INV-002): start date must be today or future; end date must be after start date; violations rejected with `400` + specific messages.
+- [x] **F1-R4** Slug generation & uniqueness (BR-003, INV-003): slug derived from the name (lowercase, hyphenated, ≤ 100 chars); if the slug already exists, reject with `409 Conflict` + "Conference slug already exists".
+- [x] **F1-R5** Free tier limit (BR-004): organizers default to FREE tier; if they already have ≥ 5 active conferences (`status != 'DELETED'`), reject with `403` + upgrade prompt message.
+- [x] **F1-R6** Aggregate lifecycle: `Conference.create()` → `DRAFT`, then `Conference.publishCfp()` → `CFP_OPEN` (INV-001 state machine); `CfpConfig` created with `ACTIVE` status.
+- [x] **F1-R7** Domain events `ConferenceCreated` and `CfpOpened` are recorded on the aggregate and persisted to `outbox_messages` (status `PENDING`) atomically with the aggregate (single DB transaction, ADR-017).
+- [x] **F1-R8** UI: `/conferences/create` form with labels `Conference Name`, `Description`, `CfP Start Date`, `CfP End Date`, live slug preview, client-side Zod validation, inline server error display, and redirect to `/conferences/{id}` on success.
+- [x] **F1-R9** Error contract: all domain failures return the standard `{ "error": { code, message } }` shape with the HTTP status from `@sessioflow/shared-http/error-mapper` (see table below).
 
 ### Non-Functional Requirements
-- [ ] **Security:** organizer identity resolved via `getAuthUser()` (mocked `mock-user-id` for Wave 1 — no auth-strategy change).
-- [ ] **Architecture:** strict DDD layer boundaries per `docs/ARCHITECTURE-RULES.md` (domain purity, CQRS co-located folders, controller factory DI per ADR-016-01, transaction in application layer per ADR-017).
-- [ ] **Architecture Tests:** `npm run check:arch` and `tests/unit/architecture/*` pass with 0 violations (VO conventions, entity factory conventions, CQRS naming, response DTO purity, container/Mediator rules).
-- [ ] **Deploy-Safety (additive only):** no new npm runtime dependencies; no DB schema/migration changes (tables `conferences` + `outbox_messages` already migrated); no modifications to existing routes/pages (`/`, `/dashboard`, `auth/me`); shared-package edits limited to backward-compatible optional parameters.
-- [ ] **Performance:** single write path (1 insert + outbox insert) in one transaction; no N+1 queries.
+- [x] **Security:** organizer identity resolved via `getAuthUser()` (mocked `mock-user-id` for Wave 1 — no auth-strategy change).
+- [x] **Architecture:** strict DDD layer boundaries per `docs/ARCHITECTURE-RULES.md` (domain purity, CQRS co-located folders, controller factory DI per ADR-016-01, transaction in application layer per ADR-017).
+- [x] **Architecture Tests:** `npm run check:arch` and `tests/unit/architecture/*` pass with 0 violations (VO conventions, entity factory conventions, CQRS naming, response DTO purity, container/Mediator rules).
+- [x] **Deploy-Safety (additive only):** no new npm runtime dependencies; no DB schema/migration changes (tables `conferences` + `outbox_messages` already migrated); no modifications to existing routes/pages (`/`, `/dashboard`, `auth/me`); shared-package edits limited to backward-compatible optional parameters.
+- [x] **Performance:** single write path (1 insert + outbox insert) in one transaction; no N+1 queries.
 
 ### HTTP Error Contract (E2E-visible messages)
 
@@ -69,19 +69,19 @@ All codes above already exist in the `@sessioflow/shared-http/error-mapper` swit
 
 | # | Topic / Area | Documentation State / Gap | Decision / Judgment Made | Status |
 |---|--------------|---------------------------|--------------------------|--------|
-| D1 | Slug collision policy | Conflict: BR-003 doc says "append numeric suffix, retry up to 3"; the flow doc error path and the executable E2E contract expect a `409` + "Conference slug already exists" | Hard-fail with `SlugExistsError` (409), **no auto-suffixing** — the E2E contract (executable acceptance criteria) wins | 📋 Proposed |
-| D2 | Error transport (`Result` vs exceptions) | `ARCHITECTURE-RULES.md` templates reference a `Result` type from `@sessioflow/shared-domain`, but that package only exports exceptions | Domain VOs/entities **throw** `DomainError` subclasses; handlers are pure (no try/catch) and return response DTOs; controllers translate via `mapDomainErrorToResponse` (per AGENTS.md Error Handling section) | 📋 Proposed |
-| D3 | CfP start date boundary | VO doc says "must be in the future"; flow doc says `>= today`; E2E message says "in the future **or today**" | Start date may be **today** (`startDate >= today`), matching flow doc + E2E message | 📋 Proposed |
-| D4 | Max duration caps | VO docs list caps (start ≤ +365d; end ≤ start+180d) as hard rules; flow doc treats the 180-day window as a soft warning | Enforce **both caps as hard domain validation** (400) — MVP simplification; E2E windows are ≤ 60 days so no contract impact | 📋 Proposed |
-| D5 | Transaction boundary | ADR-017 mandates the transaction at the application layer, but domain repository interfaces cannot reference Drizzle types | `ConferenceRepository.save(conference, tx?)` and shared `OutboxRepository.saveAll(events, type, id, tx?)` accept an opaque `TransactionClient` (type = `unknown`) defined in the domain interface; the handler wraps both calls in `db.transaction` | 📋 Proposed |
-| D6 | Shared package edit | Shared `DrizzleOutboxRepository.saveAll` has no transaction parameter | Add a **backward-compatible optional `tx?: unknown`** parameter (existing callers unaffected) — the only shared-package change in this flow | 📋 Proposed |
-| D7 | Welcome email / Outbox worker | Flow doc shows an async Resend welcome email; ADR-011-01 makes email optional | **Out of scope:** persist outbox events with `PENDING` status; no worker/email in this flow (deploy-safe, zero new infrastructure) | 📋 Proposed |
-| D8 | `logoUrl` field | Flow doc request body includes optional `logoUrl`; current `ConferenceCreateSchema` and `conferences` table have no logo field | **Excluded** — follow the existing api-definitions contract and DB schema (no schema change → deploy-safe) | 📋 Proposed |
-| D9 | `cfpUrl` in API response | Flow doc 201 body includes `cfpUrl`; current `ConferenceApiResponse` type has no `cfpUrl` field | Server returns `ConferenceApiResponse` as-is; the **frontend derives** the CfP link as `/cfp/{slug}` (E2E only asserts the slug appears in a `<code>` element) | 📋 Proposed |
-| D10 | Client/server validation split | Flow doc shows client + server Zod | Client and server **share** `ConferenceCreateSchema` (single source, ADR-020); a date-order refinement (`End date must be after start date`) is added to the shared schema (additive); domain VOs re-validate as the final authority (defense in depth, BR-001/BR-002) | 📋 Proposed |
-| D11 | Free tier definition | BR-004: no billing module in Wave 1 | All organizers default to `FREE`; "active" = `status != 'DELETED'`; limit constant `FREE_TIER_LIMIT = 5`; check runs **before** aggregate creation via `countActiveByOrganizerId` | 📋 Proposed |
-| D12 | Mocked auth | Flow doc assumes real auth; repo currently mocks auth everywhere (`auth/me` returns `mock-user-id`) | `getAuthUser()` factory defaults to `async () => ({ id: 'mock-user-id' })` (matches E2E setup/cleanup); no auth strategy change | 📋 Proposed |
-| D13 | Module `DomainEvent` type | `ARCHITECTURE-RULES.md` imports `DomainEvent` from `@sessioflow/shared-domain`, which doesn't export it | Define `DomainEvent` interface locally at `domain/events/domain-event.interface.ts` (module-local, per the template's alternative import path) | 📋 Proposed |
+| D1 | Slug collision policy | Conflict: BR-003 doc says "append numeric suffix, retry up to 3"; the flow doc error path and the executable E2E contract expect a `409` + "Conference slug already exists" | Hard-fail with `SlugExistsError` (409), **no auto-suffixing** — the E2E contract (executable acceptance criteria) wins | ✅ Shipped |
+| D2 | Error transport (`Result` vs exceptions) | `ARCHITECTURE-RULES.md` templates reference a `Result` type from `@sessioflow/shared-domain`, but that package only exports exceptions | Domain VOs/entities **throw** `DomainError` subclasses; handlers are pure (no try/catch) and return response DTOs; controllers translate via `mapDomainErrorToResponse` (per AGENTS.md Error Handling section) | ✅ Shipped |
+| D3 | CfP start date boundary | VO doc says "must be in the future"; flow doc says `>= today`; E2E message says "in the future **or today**" | Start date may be **today** (`startDate >= today`), matching flow doc + E2E message | ✅ Shipped |
+| D4 | Max duration caps | VO docs list caps (start ≤ +365d; end ≤ start+180d) as hard rules; flow doc treats the 180-day window as a soft warning | Enforce **both caps as hard domain validation** (400) — MVP simplification; E2E windows are ≤ 60 days so no contract impact | ✅ Shipped |
+| D5 | Transaction boundary | ADR-017 mandates the transaction at the application layer, but domain repository interfaces cannot reference Drizzle types | `ConferenceRepository.save(conference, tx?)` and shared `OutboxRepository.saveAll(events, type, id, tx?)` accept an opaque `TransactionClient` (type = `unknown`) defined in the domain interface; the handler wraps both calls in `db.transaction` | ✅ Shipped |
+| D6 | Shared package edit | Shared `DrizzleOutboxRepository.saveAll` has no transaction parameter | Add a **backward-compatible optional `tx?: unknown`** parameter (existing callers unaffected) — the only shared-package change in this flow | ✅ Shipped |
+| D7 | Welcome email / Outbox worker | Flow doc shows an async Resend welcome email; ADR-011-01 makes email optional | **Out of scope:** persist outbox events with `PENDING` status; no worker/email in this flow (deploy-safe, zero new infrastructure) | ✅ Shipped |
+| D8 | `logoUrl` field | Flow doc request body includes optional `logoUrl`; current `ConferenceCreateSchema` and `conferences` table have no logo field | **Excluded** — follow the existing api-definitions contract and DB schema (no schema change → deploy-safe) | ✅ Shipped |
+| D9 | `cfpUrl` in API response | Flow doc 201 body includes `cfpUrl`; current `ConferenceApiResponse` type has no `cfpUrl` field | Server returns `ConferenceApiResponse` as-is; the **frontend derives** the CfP link as `/cfp/{slug}` (E2E only asserts the slug appears in a `<code>` element) | ✅ Shipped |
+| D10 | Client/server validation split | Flow doc shows client + server Zod | Client and server **share** `ConferenceCreateSchema` (single source, ADR-020); a date-order refinement (`End date must be after start date`) is added to the shared schema (additive); domain VOs re-validate as the final authority (defense in depth, BR-001/BR-002) | ✅ Shipped |
+| D11 | Free tier definition | BR-004: no billing module in Wave 1 | All organizers default to `FREE`; "active" = `status != 'DELETED'`; limit constant `FREE_TIER_LIMIT = 5`; check runs **before** aggregate creation via `countActiveByOrganizerId` | ✅ Shipped |
+| D12 | Mocked auth | Flow doc assumes real auth; repo currently mocks auth everywhere (`auth/me` returns `mock-user-id`) | `getAuthUser()` factory defaults to `async () => ({ id: 'mock-user-id' })` (matches E2E setup/cleanup); no auth strategy change | ✅ Shipped |
+| D13 | Module `DomainEvent` type | `ARCHITECTURE-RULES.md` imports `DomainEvent` from `@sessioflow/shared-domain`, which doesn't export it | Define `DomainEvent` interface locally at `domain/events/domain-event.interface.ts` (module-local, per the template's alternative import path) | ✅ Shipped |
 
 ---
 
@@ -148,17 +148,17 @@ All codes above already exist in the `@sessioflow/shared-http/error-mapper` swit
 
 Follow the 4-step cycle: **1. First Test → 2. After Code → 3. After Architecture Tests → 4. Linter & Types**
 
-- [ ] **0. Scaffold**: create `@sessioflow/conference` package (create-module skill), `npm install`, typecheck green
-- [ ] **1. Test First (Domain)**: write VO / aggregate / event / exception unit tests (Expect FAIL)
-- [ ] **2. Implement Code (Domain)**: implement VOs, `Conference`, events, exceptions, repository interface (Expect PASS)
-- [ ] **3. Architecture Check**: `npm run check:arch packages/modules/conference` + `npm run test:architecture` (0 errors)
-- [ ] **4. Test First (Application)**: write `CreateConferenceHandler` tests with mocks (Expect FAIL)
-- [ ] **5. Implement Code (Application)**: command DTO, handler, response DTO + shared outbox `tx` parameter (Expect PASS)
-- [ ] **6. Architecture Check**: `npm run check:arch` (0 errors)
-- [ ] **7. Infrastructure & Container**: repository implementation + integration tests (real DB); container wiring
-- [ ] **8. Interface Tests + Code**: controller tests (mocked handler), controller + route handler
-- [ ] **9. Frontend UI**: create page + form (driven by the E2E contract)
-- [ ] **10. Linter & Types**: `npm run lint:fix` + `npm run typecheck` (0 errors)
+- [x] **0. Scaffold**: create `@sessioflow/conference` package (create-module skill), `npm install`, typecheck green
+- [x] **1. Test First (Domain)**: write VO / aggregate / event / exception unit tests (Expect FAIL)
+- [x] **2. Implement Code (Domain)**: implement VOs, `Conference`, events, exceptions, repository interface (Expect PASS)
+- [x] **3. Architecture Check**: `npm run check:arch packages/modules/conference` + `npm run test:architecture` (0 errors)
+- [x] **4. Test First (Application)**: write `CreateConferenceHandler` tests with mocks (Expect FAIL)
+- [x] **5. Implement Code (Application)**: command DTO, handler, response DTO + shared outbox `tx` parameter (Expect PASS)
+- [x] **6. Architecture Check**: `npm run check:arch` (0 errors)
+- [x] **7. Infrastructure & Container**: repository implementation + integration tests (real DB); container wiring
+- [x] **8. Interface Tests + Code**: controller tests (mocked handler), controller + route handler
+- [x] **9. Frontend UI**: create page + form (driven by the E2E contract)
+- [x] **10. Linter & Types**: `npm run lint:fix` + `npm run typecheck` (0 errors)
 
 ---
 
@@ -204,10 +204,10 @@ Follow the 4-step cycle: **1. First Test → 2. After Code → 3. After Architec
 
 | Layer | Status | Notes |
 |-------|--------|-------|
-| Module scaffold | 📋 | Package created, typecheck green |
-| Domain Models & Tests | 📋 | VO/entity invariants enforced; arch rules pass |
-| Application Handlers | 📋 | CQRS command + BR-003/004 + transactional outbox |
-| Infrastructure & Wiring | 📋 | Drizzle repository + container (Mediator) |
-| Interface & Routes | 📋 | Controller + thin route delegate |
-| Frontend UI | 📋 | Create form per E2E contract |
-| Lint & Typecheck | 📋 | 0 errors |
+| Module scaffold | ✅ | Package created, typecheck green |
+| Domain Models & Tests | ✅ | VO/entity invariants enforced; arch rules pass |
+| Application Handlers | ✅ | CQRS command + BR-003/004 + transactional outbox |
+| Infrastructure & Wiring | ✅ | Drizzle repository + container (Mediator) |
+| Interface & Routes | ✅ | Controller + thin route delegate |
+| Frontend UI | ✅ | Create form per E2E contract |
+| Lint & Typecheck | ✅ | 0 errors |

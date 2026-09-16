@@ -4,7 +4,7 @@
 * **Specification File:** `docs/product/bounded-contexts/conference/flows/features/feature-02-conference-dashboard-cfp-link.md`
 * **Parent Flow:** [journey-01-setup-conference.md](../journey-01-setup-conference.md)
 * **Bounded Context:** `conference`
-* **Status:** 📋 Planned
+* **Status:** ✅ Implemented — shipped in Wave 1; re-verified against code 2026-09-16 (docs audit)
 * **Priority:** High
 * **Depends On:** [Feature F1](./feature-01-conference-creation-with-cfp.md) (conference must exist in `CFP_OPEN` state)
 
@@ -27,16 +27,16 @@
 ## 📋 Requirements
 
 ### Functional Requirements
-- [ ] **F2-R1** `GET /api/v1/conferences/{id}` returns `200` with the conference data (`ConferenceApiResponse` shape: `id`, `name`, `description`, `slug`, `status`, `organizerId`, `cfp: { isOpen, startDate, endDate, maxSubmissions?, requiresApproval }`, `createdAt`, `updatedAt`) wrapped in `{ "data": ... }`.
-- [ ] **F2-R2** Unknown or malformed conference id → `404` `NOT_FOUND` (`ConferenceNotFoundError`, extends `EntityNotFoundError`); malformed UUID → `400` `INVALID_CONFERENCE_ID`.
-- [ ] **F2-R3** Query path is read-only CQRS: `GetConferenceQuery` DTO + `GetConferenceHandler` (no `save`/`delete` calls) + `GetConferenceResponse` (private constructor, readonly primitives, single static `from(entity)`).
-- [ ] **F2-R4** UI: `/conferences/{id}` page fetches the conference client-side, shows name + status, and renders the CfP link containing the slug inside a `<code>` element (e.g. `https://<base>/cfp/{slug}` or `/cfp/{slug}`).
-- [ ] **F2-R5** Error contract: `404` for missing conference; `400` for malformed id — both using the standard `{ "error": { code, message } }` shape via `mapDomainErrorToResponse`.
+- [x] **F2-R1** `GET /api/v1/conferences/{id}` returns `200` with the conference data (`ConferenceApiResponse` shape: `id`, `name`, `description`, `slug`, `status`, `organizerId`, `cfp: { isOpen, startDate, endDate, maxSubmissions?, requiresApproval }`, `createdAt`, `updatedAt`) wrapped in `{ "data": ... }`.
+- [x] **F2-R2** Unknown or malformed conference id → `404` `NOT_FOUND` (`ConferenceNotFoundError`, extends `EntityNotFoundError`); malformed UUID → `400` `INVALID_CONFERENCE_ID`.
+- [x] **F2-R3** Query path is read-only CQRS: `GetConferenceQuery` DTO + `GetConferenceHandler` (no `save`/`delete` calls) + `GetConferenceResponse` (private constructor, readonly primitives, single static `from(entity)`).
+- [x] **F2-R4** UI: `/conferences/{id}` page fetches the conference client-side, shows name + status, and renders the CfP link containing the slug inside a `<code>` element (e.g. `https://<base>/cfp/{slug}` or `/cfp/{slug}`).
+- [x] **F2-R5** Error contract: `404` for missing conference; `400` for malformed id — both using the standard `{ "error": { code, message } }` shape via `mapDomainErrorToResponse`.
 
 ### Non-Functional Requirements
-- [ ] **Architecture:** layer boundaries per `docs/ARCHITECTURE-RULES.md`; `npm run check:arch` + architecture test suite pass with 0 violations.
-- [ ] **Deploy-Safety (additive only):** no new routes in `apps/backend`; no DB changes; no new npm dependencies; no edits to existing pages; the dashboard page is a new route that 404s cleanly if the id doesn't exist (no impact on `/` or `/dashboard`).
-- [ ] **Performance:** single indexed lookup (`conferences.pkey`); no joins.
+- [x] **Architecture:** layer boundaries per `docs/ARCHITECTURE-RULES.md`; `npm run check:arch` + architecture test suite pass with 0 violations.
+- [x] **Deploy-Safety (additive only):** no new routes in `apps/backend`; no DB changes; no new npm dependencies; no edits to existing pages; the dashboard page is a new route that 404s cleanly if the id doesn't exist (no impact on `/` or `/dashboard`).
+- [x] **Performance:** single indexed lookup (`conferences.pkey`); no joins.
 
 ---
 
@@ -44,10 +44,10 @@
 
 | # | Topic / Area | Documentation State / Gap | Decision / Judgment Made | Status |
 |---|--------------|---------------------------|--------------------------|--------|
-| D1 | Id validation layering | Docs don't specify where UUID format is validated | Controller validates format with `ConferenceId.create()` **before** dispatch (`400 INVALID_CONFERENCE_ID`); handler re-validates defensively; repository `findById` returns `null` for unknown ids → `ConferenceNotFoundError` (`404`) | 📋 Proposed |
-| D2 | Dashboard data fetching strategy | Docs don't specify RSC vs client fetching; E2E architecture serves everything through one Next.js dev server | Dashboard page is a **client component** fetching `/api/v1/conferences/{id}` in the browser (simplest under the single-server E2E architecture; no server-side data-access wiring) | 📋 Proposed |
-| D3 | CfP link base URL | Flow doc shows `https://sessioflow.app/cfp/{slug}`; no base-URL env exists in the repo yet | Frontend renders a **relative** link `/cfp/{slug}` (E2E asserts only that the slug text appears in a `<code>` element); full absolute URL can be introduced later via an env var without API changes (see F1 decision D9) | 📋 Proposed |
-| D4 | Scope of dashboard content | Flow doc only requires the CfP link at this stage | Minimal dashboard: name, status badge, CfP link. No sessions/submissions UI (out of flow scope) | 📋 Proposed |
+| D1 | Id validation layering | Docs don't specify where UUID format is validated | Controller validates format with `ConferenceId.create()` **before** dispatch (`400 INVALID_CONFERENCE_ID`); handler re-validates defensively; repository `findById` returns `null` for unknown ids → `ConferenceNotFoundError` (`404`) | ✅ Shipped |
+| D2 | Dashboard data fetching strategy | Docs don't specify RSC vs client fetching; E2E architecture serves everything through one Next.js dev server | Dashboard page is a **client component** fetching `/api/v1/conferences/{id}` in the browser (simplest under the single-server E2E architecture; no server-side data-access wiring) | ✅ Shipped |
+| D3 | CfP link base URL | Flow doc shows `https://sessioflow.app/cfp/{slug}`; no base-URL env exists in the repo yet | Frontend renders a **relative** link `/cfp/{slug}` (E2E asserts only that the slug text appears in a `<code>` element); full absolute URL can be introduced later via an env var without API changes (see F1 decision D9) | ✅ Shipped |
+| D4 | Scope of dashboard content | Flow doc only requires the CfP link at this stage | Minimal dashboard: name, status badge, CfP link. No sessions/submissions UI (out of flow scope) | ✅ Shipped |
 
 ---
 
@@ -91,15 +91,15 @@
 
 Follow the 4-step cycle: **1. First Test → 2. After Code → 3. After Architecture Tests → 4. Linter & Types**
 
-- [ ] **1. Test First (Application)**: `GetConferenceHandler` unit tests with mocked repository (Expect FAIL)
-- [ ] **2. Implement Code (Application)**: query DTO, handler, response DTO (Expect PASS)
-- [ ] **3. Architecture Check**: `npm run check:arch packages/modules/conference` (0 errors)
-- [ ] **4. Integration**: `findById` round-trip test against real DB (Expect FAIL → implement → PASS)
-- [ ] **5. Test First (Interface)**: controller tests for 200/404/400 (Expect FAIL)
-- [ ] **6. Implement Code (Interface)**: `getConferenceController` + route delegate + container query wiring (Expect PASS)
-- [ ] **7. Architecture Check**: `npm run check:arch` (0 errors)
-- [ ] **8. Frontend UI**: `/conferences/[id]` dashboard page
-- [ ] **9. Linter & Types**: `npm run lint:fix` + `npm run typecheck` (0 errors)
+- [x] **1. Test First (Application)**: `GetConferenceHandler` unit tests with mocked repository (Expect FAIL)
+- [x] **2. Implement Code (Application)**: query DTO, handler, response DTO (Expect PASS)
+- [x] **3. Architecture Check**: `npm run check:arch packages/modules/conference` (0 errors)
+- [x] **4. Integration**: `findById` round-trip test against real DB (Expect FAIL → implement → PASS)
+- [x] **5. Test First (Interface)**: controller tests for 200/404/400 (Expect FAIL)
+- [x] **6. Implement Code (Interface)**: `getConferenceController` + route delegate + container query wiring (Expect PASS)
+- [x] **7. Architecture Check**: `npm run check:arch` (0 errors)
+- [x] **8. Frontend UI**: `/conferences/[id]` dashboard page
+- [x] **9. Linter & Types**: `npm run lint:fix` + `npm run typecheck` (0 errors)
 
 ---
 
@@ -132,8 +132,8 @@ Follow the 4-step cycle: **1. First Test → 2. After Code → 3. After Architec
 
 | Layer | Status | Notes |
 |-------|--------|-------|
-| Application Query | 📋 | Read-only CQRS handler + response |
-| Integration (repo `findById`) | 📋 | Reconstitution round-trip vs real DB |
-| Interface & Route | 📋 | Controller + thin GET delegate |
-| Frontend Dashboard | 📋 | CfP link per E2E contract |
-| Lint & Typecheck | 📋 | 0 errors |
+| Application Query | ✅ | Read-only CQRS handler + response |
+| Integration (repo `findById`) | ✅ | Reconstitution round-trip vs real DB |
+| Interface & Route | ✅ | Controller + thin GET delegate |
+| Frontend Dashboard | ✅ | CfP link per E2E contract |
+| Lint & Typecheck | ✅ | 0 errors |

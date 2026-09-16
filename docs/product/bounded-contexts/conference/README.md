@@ -29,14 +29,11 @@ The Conference Bounded Context manages the lifecycle of Call for Papers (CfP) co
 | `CfpEndDate` | CfP window end date |
 | `CfpStatus` | CfP state enum (ACTIVE, CLOSED, ARCHIVED) |
 | `MaxSubmissions` | Maximum submission limit |
-| `ConferenceDescription` | Optional description (≤ 1000 chars, default `''`) — ➕ no doc yet |
-| `OrganizerId` | Organizer / tenant key (BR-004 subject) — ➕ no doc yet |
-| `RequiresApproval` | Auto-approve flag, defaults `true` — ➕ no doc yet |
+| `ConferenceDescription` | Optional description (≤ 1000 chars, default `''`) — [doc](value-objects/conference-description.md) |
+| `OrganizerId` | Organizer / tenant key (BR-004 subject) — [doc](value-objects/organizer-id.md) |
+| `RequiresApproval` | Auto-approve flag, defaults `true` — [doc](value-objects/requires-approval.md) |
 
-The three "➕ no doc yet" value objects exist in
-`packages/modules/conference/src/domain/value-objects/` with tests — the missing entry is
-documentation only (same list is self-flagged in
-[entities/conference.md](entities/conference.md)).
+All twelve value objects in `packages/modules/conference/src/domain/value-objects/` now have a doc.
 
 ## 🔄 Conference Lifecycle
 

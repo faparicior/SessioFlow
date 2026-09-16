@@ -12,9 +12,9 @@
 
 | Rule | Description |
 |------|-------------|
-| **Format** | Must be valid UUIDv4 format |
-| **Case** | Case-insensitive comparison |
-| **Uniqueness** | Must be unique across all Conference aggregates |
+| **Format** | Must be a valid UUIDv4 (version/variant bits checked, case-insensitive input, stored lowercase) |
+| **Case** | Normalized to lowercase on creation → case-insensitive comparison |
+| **Uniqueness** | Minted by `generate()` (`crypto.randomUUID()`); the DB primary key is the final guard — no duplicate-specific domain exception exists |
 | **Immutability** | Cannot be modified after creation |
 
 ---
@@ -23,10 +23,11 @@
 
 | Method | Purpose |
 |--------|---------|
-| `create(id: string)` | Create from validated string (throws on invalid format) |
-| `generate()` | Generate new UUIDv4 identifier |
+| `create(id: string)` | Create from validated string (trim + lowercase; throws on invalid format) |
+| `generate()` | Generate new UUIDv4 identifier (`crypto.randomUUID()`) |
+| `fromData(id: string)` | Reconstitute a persisted id (same format validation as `create()`) |
+| `get value(): string` | Plain-string projection (there is no `toString()`) |
 | `equals(other: ConferenceId)` | Compare two ConferenceId instances for equality |
-| `toString()` | Convert to string representation |
 
 ---
 
@@ -54,10 +55,10 @@
 
 | Scenario | Description |
 |----------|-------------|
-| **Generation** | `ConferenceId.generate()` creates new UUIDv4 |
+| **Generation** | `ConferenceId.generate()` creates new UUIDv4 (called inside `Conference.create()`) |
 | **Creation** | `ConferenceId.create('123e...')` validates and wraps string |
 | **Comparison** | `conferenceId.equals(otherId)` checks value equality |
-| **Serialization** | `conferenceId.toString()` converts to string for storage/transmission |
+| **Serialization** | `conferenceId.value` is used for storage/transmission |
 
 ---
 
@@ -65,5 +66,9 @@
 
 | Error | Trigger |
 |-------|---------|
-| `InvalidConferenceIdError` | Invalid UUIDv4 format provided |
-| `DuplicateConferenceIdError` | ID already exists in database (repository level) |
+| `DomainInvariantError('INVALID_CONFERENCE_ID')` | Invalid UUID format provided to `create()`/`fromData()` (→ `400 INVALID_CONFERENCE_ID` on the GET-by-id controller) |
+
+> There is no `InvalidConferenceIdError` or `DuplicateConferenceIdError` class in
+> `domain/exceptions/` — rejections use the shared `DomainInvariantError` with the code above.
+> Duplicate ids cannot reach the DB anyway: `Conference.create()` mints the id and `save()`
+> upserts by primary key.

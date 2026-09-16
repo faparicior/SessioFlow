@@ -73,16 +73,16 @@ CfpConfig (embedded, domain/value-objects/cfp-config.ts)
 |--------------|---------|----------------|
 | `ConferenceId` | Unique identifier | [conference-id.md](../value-objects/conference-id.md) |
 | `ConferenceName` | Title with length constraints | [conference-name.md](../value-objects/conference-name.md) |
-| `ConferenceDescription` | Optional description | ➕ no doc yet |
+| `ConferenceDescription` | Optional description | [conference-description.md](../value-objects/conference-description.md) |
 | `ConferenceSlug` | URL-safe identifier | [conference-slug.md](../value-objects/conference-slug.md) |
 | `ConferenceStatus` | Lifecycle state + transition table | [conference-status.md](../value-objects/conference-status.md) |
-| `OrganizerId` | Organizer / tenant key (BR-004 subject) | ➕ no doc yet |
+| `OrganizerId` | Organizer / tenant key (BR-004 subject) | [organizer-id.md](../value-objects/organizer-id.md) |
 | `CfpConfig` | Submission window configuration | [cfp-config.md](../value-objects/cfp-config.md) |
 | `CfpStartDate` | Window start, temporal bounds | [cfp-start-date.md](../value-objects/cfp-start-date.md) |
 | `CfpEndDate` | Window end | [cfp-end-date.md](../value-objects/cfp-end-date.md) |
 | `CfpStatus` | CfP state enum | [cfp-status.md](../value-objects/cfp-status.md) |
 | `MaxSubmissions` | Submission cap | [max-submissions.md](../value-objects/max-submissions.md) |
-| `RequiresApproval` | Auto-approve flag, defaults true | ➕ no doc yet |
+| `RequiresApproval` | Auto-approve flag, defaults true | [requires-approval.md](../value-objects/requires-approval.md) |
 
 ---
 

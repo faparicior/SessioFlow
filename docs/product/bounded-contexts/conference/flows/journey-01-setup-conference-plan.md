@@ -1,7 +1,7 @@
 # Journey 01: Setup Conference - Development Plan
 
 * **Date:** 2026-08-17
-* **Status:** 📋 Planning
+* **Status:** ✅ Implemented — F1/F2 shipped and verified 2026-09-16 (docs audit); kept as the design record
 * **Flow File:** `docs/product/bounded-contexts/conference/flows/journey-01-setup-conference.md`
 * **Bounded Context:** `conference`
 
@@ -21,8 +21,8 @@
 ### Associated Features (Sequentially Ordered)
 | # | Feature | Specification File | Status |
 |---|---------|---------------------|--------|
-| F1 | Conference Creation with CfP Configuration | [`features/feature-01-conference-creation-with-cfp.md`](./features/feature-01-conference-creation-with-cfp.md) | 📋 Planned |
-| F2 | Conference Dashboard with CfP Link | [`features/feature-02-conference-dashboard-cfp-link.md`](./features/feature-02-conference-dashboard-cfp-link.md) | 📋 Planned |
+| F1 | Conference Creation with CfP Configuration | [`features/feature-01-conference-creation-with-cfp.md`](./features/feature-01-conference-creation-with-cfp.md) | ✅ Implemented |
+| F2 | Conference Dashboard with CfP Link | [`features/feature-02-conference-dashboard-cfp-link.md`](./features/feature-02-conference-dashboard-cfp-link.md) | ✅ Implemented |
 
 ---
 
@@ -51,23 +51,23 @@
 
 | # | Topic / Area | Documentation State / Gap | Decision / Judgment Made | Status |
 |---|--------------|---------------------------|--------------------------|--------|
-| D1 | Slug collision policy (F1) | BR-003 says "auto-suffix + retry"; flow doc error path + E2E expect `409` | Hard-fail `SlugExistsError` → `409 SLUG_EXISTS` "Conference slug already exists"; no auto-suffix (E2E contract wins) | 📋 Proposed |
-| D2 | Error transport (F1) | `Result` type referenced in templates but absent from `@sessioflow/shared-domain` | Domain throws `DomainError` subclasses; pure handlers return DTOs; controllers map via `mapDomainErrorToResponse` (per AGENTS.md) | 📋 Proposed |
-| D3 | CfP start boundary (F1) | VO doc "future"; flow doc `>= today`; E2E "future or today" | Start date may be today (`>= today`) | 📋 Proposed |
-| D4 | Duration caps (F1) | VO docs: hard caps; flow doc: 180d = soft warning | Hard domain validation: start ≤ +365d, end ≤ start+180d → `400` | 📋 Proposed |
-| D5 | Transaction typing (F1) | Domain interfaces cannot import Drizzle types | Opaque `TransactionClient` (`unknown`) in domain interface; handler drives `db.transaction` | 📋 Proposed |
-| D6 | Shared outbox edit (F1) | `saveAll` has no `tx` parameter | Add backward-compatible optional `tx?: unknown` to `DrizzleOutboxRepository.saveAll` — only shared-package change | 📋 Proposed |
-| D7 | Email worker (F1) | Flow shows async Resend worker; ADR-011-01 optional | Out of scope — outbox events persisted `PENDING`, no worker (deploy-safe) | 📋 Proposed |
-| D8 | `logoUrl` (F1) | In flow doc request body, absent from schema + DB | Excluded — no schema change (deploy-safe) | 📋 Proposed |
-| D9 | `cfpUrl` field (F1) | Flow doc 201 body has `cfpUrl`; `ConferenceApiResponse` doesn't | Server returns `ConferenceApiResponse` unchanged; frontend derives `/cfp/{slug}` | 📋 Proposed |
-| D10 | Validation split (F1) | — | Additive `.refine(end > start)` to shared `ConferenceCreateSchema`; client + controller use it; domain VOs re-validate | 📋 Proposed |
-| D11 | Free tier (F1) | No billing module in Wave 1 | All organizers `FREE`; active = `status != 'DELETED'`; limit 5; checked pre-creation via `countActiveByOrganizerId` | 📋 Proposed |
-| D12 | Auth (F1) | Repo mocks auth everywhere | `getAuthUser()` defaults to `mock-user-id` (matches E2E setup/cleanup) | 📋 Proposed |
-| D13 | `DomainEvent` interface (F1) | Not exported by `@sessioflow/shared-domain` | Module-local `domain/events/domain-event.interface.ts` | 📋 Proposed |
-| D14 | Conference id validation (F2) | Layer not specified | Controller: `ConferenceId.create()` → `400 INVALID_CONFERENCE_ID` for malformed; handler: `null` from repo → `404 NOT_FOUND` | 📋 Proposed |
-| D15 | Dashboard fetching (F2) | RSC vs client unspecified | Client component fetches `/api/v1/conferences/{id}` (single-server E2E architecture) | 📋 Proposed |
-| D16 | CfP link base URL (F2) | No base-URL env exists | Relative `/cfp/{slug}` rendered in `<code>` (E2E asserts slug text only) | 📋 Proposed |
-| D17 | Dashboard scope (F2) | Flow requires CfP link only | Minimal page: name + status + CfP link; no sessions/submissions UI | 📋 Proposed |
+| D1 | Slug collision policy (F1) | BR-003 says "auto-suffix + retry"; flow doc error path + E2E expect `409` | Hard-fail `SlugExistsError` → `409 SLUG_EXISTS` "Conference slug already exists"; no auto-suffix (E2E contract wins) | ✅ Shipped |
+| D2 | Error transport (F1) | `Result` type referenced in templates but absent from `@sessioflow/shared-domain` | Domain throws `DomainError` subclasses; pure handlers return DTOs; controllers map via `mapDomainErrorToResponse` (per AGENTS.md) | ✅ Shipped |
+| D3 | CfP start boundary (F1) | VO doc "future"; flow doc `>= today`; E2E "future or today" | Start date may be today (`>= today`) | ✅ Shipped |
+| D4 | Duration caps (F1) | VO docs: hard caps; flow doc: 180d = soft warning | Hard domain validation: start ≤ +365d, end ≤ start+180d → `400` | ✅ Shipped |
+| D5 | Transaction typing (F1) | Domain interfaces cannot import Drizzle types | Opaque `TransactionClient` (`unknown`) in domain interface; handler drives `db.transaction` | ✅ Shipped |
+| D6 | Shared outbox edit (F1) | `saveAll` has no `tx` parameter | Add backward-compatible optional `tx?: unknown` to `DrizzleOutboxRepository.saveAll` — only shared-package change | ✅ Shipped |
+| D7 | Email worker (F1) | Flow shows async Resend worker; ADR-011-01 optional | Out of scope — outbox events persisted `PENDING`, no worker (deploy-safe) | ✅ Shipped |
+| D8 | `logoUrl` (F1) | In flow doc request body, absent from schema + DB | Excluded — no schema change (deploy-safe) | ✅ Shipped |
+| D9 | `cfpUrl` field (F1) | Flow doc 201 body has `cfpUrl`; `ConferenceApiResponse` doesn't | Server returns `ConferenceApiResponse` unchanged; frontend derives `/cfp/{slug}` | ✅ Shipped |
+| D10 | Validation split (F1) | — | Additive `.refine(end > start)` to shared `ConferenceCreateSchema`; client + controller use it; domain VOs re-validate | ✅ Shipped |
+| D11 | Free tier (F1) | No billing module in Wave 1 | All organizers `FREE`; active = `status != 'DELETED'`; limit 5; checked pre-creation via `countActiveByOrganizerId` | ✅ Shipped |
+| D12 | Auth (F1) | Repo mocks auth everywhere | `getAuthUser()` defaults to `mock-user-id` (matches E2E setup/cleanup) | ✅ Shipped |
+| D13 | `DomainEvent` interface (F1) | Not exported by `@sessioflow/shared-domain` | Module-local `domain/events/domain-event.interface.ts` | ✅ Shipped |
+| D14 | Conference id validation (F2) | Layer not specified | Controller: `ConferenceId.create()` → `400 INVALID_CONFERENCE_ID` for malformed; handler: `null` from repo → `404 NOT_FOUND` | ✅ Shipped |
+| D15 | Dashboard fetching (F2) | RSC vs client unspecified | Client component fetches `/api/v1/conferences/{id}` (single-server E2E architecture) | ✅ Shipped |
+| D16 | CfP link base URL (F2) | No base-URL env exists | Relative `/cfp/{slug}` rendered in `<code>` (E2E asserts slug text only) | ✅ Shipped |
+| D17 | Dashboard scope (F2) | Flow requires CfP link only | Minimal page: name + status + CfP link; no sessions/submissions UI | ✅ Shipped |
 | D18 | JSONB `maxSubmissions` shape (Phase 3) | Shared `conferencesTable` annotates the JSONB as `maxSubmissions?: number`; domain `CfpConfigData` uses `number \| null` | Repository-local `toCfpConfigJson`/`fromCfpConfigJson` mappers — the shared schema `$type` is left untouched (still additive-safe); an unlimited CfP round-trips as a dropped JSON key | ✅ Applied (Phase 3) |
 | D19 | Integration test isolation (Phase 3) | Integration tests share the local PostgreSQL tables with per-test cleanup, but Vitest ran test *files* in parallel → cross-file flakiness | `fileParallelism: false` in root `vitest.config.ts` (only shared-config edit; E2E runs under Playwright, unit tests are DB-free). Full suite stays fast (~28s) | ✅ Applied (Phase 3) |
 | D20 | Container controller factories (Phase 3) | Plan lists them under 3.2, but the controllers they delegate to are Phase 4 artifacts | Container ships mediator + handler factories now; `create*Controller` factories stay stubbed and land with the controllers in Phase 4 (ADR-016-01) | ✅ Applied (Phase 3) |
@@ -100,7 +100,7 @@
 
 ### Phase 0: Define E2E Contract (Outside-In)
 - [x] **0.1 Write E2E Journey Test**: `tests/e2e/conference-setup.spec.ts` already exists in the current repository (5 scenarios: happy path, invalid dates, duplicate slug, free tier limit, past date) — kept as-is; it is the North Star contract
-- [ ] **0.2 Run E2E (Must Fail)**: `npm run test:e2e` → all scenarios fail (no `/conferences/*` routes, no module) — confirm and record failures
+- [x] **0.2 Run E2E (Must Fail)**: `npm run test:e2e` → all scenarios fail (no `/conferences/*` routes, no module) — confirm and record failures
 - 🛑 **Checkpoint 0**: report failing E2E baseline to user
 
 ---
@@ -214,13 +214,13 @@
 
 ### Phase 5: E2E Validation & Definition of Done
 
-- [ ] **5.1 Execute E2E Suite**: `npm run test:e2e` — **ALL 5 scenarios MUST PASS** (happy path + redirect, invalid dates, duplicate slug, free tier limit, past date)
-- [ ] **5.2 Fast Architecture Verification**: `npm run check:arch` → 0 errors
-- [ ] **5.3 Architecture Test Suite**: `npm run test:architecture` → 0 errors
-- [ ] **5.4 Unit & Integration Test Suites**: `npx vitest run` (full suite) → 0 errors; coverage ≥ 80% for new code
-- [ ] **5.5 TypeScript Typecheck**: `npm run typecheck` → 0 errors
-- [ ] **5.6 Linting & Formatting**: `npm run lint` → 0 errors
-- [ ] **5.7 Mark Plan Complete**: update this plan's status to `✅ Complete`, flip feature spec statuses to `✅ Complete`, commit with conventional commit format
+- [x] **5.1 Execute E2E Suite**: `npm run test:e2e` — **ALL 5 scenarios MUST PASS** (happy path + redirect, invalid dates, duplicate slug, free tier limit, past date)
+- [x] **5.2 Fast Architecture Verification**: `npm run check:arch` → 0 errors
+- [x] **5.3 Architecture Test Suite**: `npm run test:architecture` → 0 errors
+- [x] **5.4 Unit & Integration Test Suites**: `npx vitest run` (full suite) → 0 errors; coverage ≥ 80% for new code
+- [x] **5.5 TypeScript Typecheck**: `npm run typecheck` → 0 errors
+- [x] **5.6 Linting & Formatting**: `npm run lint` → 0 errors
+- [x] **5.7 Mark Plan Complete**: update this plan's status to `✅ Complete`, flip feature spec statuses to `✅ Complete`, commit with conventional commit format
 - 🛑 **Final Gate**: present full verification results; user approval closes the flow
 
 ---
