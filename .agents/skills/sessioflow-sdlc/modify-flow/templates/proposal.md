@@ -1,6 +1,7 @@
 # Proposal: [Change Title]
 
-* **Status:** 📋 Draft | 🔄 In Review | ✅ Approved | 🚀 Implemented
+* **Status:** 📋 Draft | 🔄 In Review | ✅ Approved | 🚀 Implemented (Grace Period) | 🧹 Ready to Purge
+* **Shipped Date:** [YYYY-MM-DD or Pending]
 * **Branch:** `[git-branch-name]`
 * **Bounded Context:** [Context]
 * **Affects:** [BR-XXX-name.md](../../bounded-contexts/[context]/business-rules/BR-XXX-name.md), [EntityName.md](../../bounded-contexts/[context]/entities/EntityName.md), [flow-NN-name.md](../../bounded-contexts/[context]/flows/flow-NN-name.md)

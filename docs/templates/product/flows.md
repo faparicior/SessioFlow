@@ -22,6 +22,20 @@ After generating the flow document, review the project's Architecture Decision R
 
 ---
 
+## 📜 Governing Business Rules & Domain Invariants (PM Summary)
+
+> **Business Context**: These are the operational policies and integrity guardrails that constrain this flow.
+
+### Enforced Business Rules (BR)
+* [BR-[XXX]](../business-rules/BR-[XXX]-[rule-name].md): [Short business rule active title — e.g., Free tier conference limit]
+* [BR-[YYY]](../business-rules/BR-[YYY]-[rule-name].md): [Short business rule active title — e.g., CfP window validation]
+
+### Enforced Domain Invariants (INV)
+* [INV-[XXX]](../invariants/INV-[XXX]-[invariant-name].md): [Short invariant strict constraint — e.g., End date strictly after start date]
+* [INV-[YYY]](../invariants/INV-[YYY]-[invariant-name].md): [Short invariant strict constraint — e.g., Global slug uniqueness]
+
+---
+
 ## 🗺️ Visual Flow & Sequence
 *Maps the sequence of user actions, domain behavior, and system reactions for this journey. Follows DDD patterns per ADR-009. **Must include error paths and alternative flows**, not just happy path.*
 

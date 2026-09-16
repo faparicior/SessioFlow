@@ -106,37 +106,32 @@ During flow creation, you MUST identify all business rules and invariants that g
 1. Use the templates provided at:
    - `templates/business-rules.md`
    - `templates/invariants.md`
-2. **Classify each rule by bounded context** — a rule belongs to the context that owns and enforces it, not necessarily the context where it has visible effects. Rules enforced by crons or domain services in context A but triggered by context B belong to A.
+2. **Classify each rule by bounded context** — a rule belongs to the context that owns and enforces it, not necessarily the context where it has visible effects.
 3. Extract each identified business rule to:
    - `docs/product/bounded-contexts/{owning-bounded-context}/business-rules/BR-[XXX]-[rule-name].md`
 4. Extract each identified invariant to:
    - `docs/product/bounded-contexts/{owning-bounded-context}/invariants/INV-[XXX]-[invariant-name].md`
-5. Ensure the generated user flow document links to these extracted files under its **Technical Notes & Validation Rules** section using relative markdown links. Use cross-context relative paths when the rule belongs to a different bounded context (e.g., `../../[other-context]/business-rules/BR-[XXX]-[rule-name].md`)
+5. **Prominent Placement for PMs**: In the generated flow specification, place the extracted rules prominently in **Section 2 (`## 📜 Governing Business Rules & Domain Invariants (PM Summary)`)** right after Overview, as well as in the traceability table at the bottom.
 6. **Complete the `Traceability` section of every rule/invariant you create** (`templates/business-rules.md`
    §5, `templates/invariants.md` §6) — `Traces up to` (journey, this flow, feature), `Enforced by` (one row
    per layer, naming the file and the guard, each marked ✅ Verified / ⚠️ Unverified / ⏳ Planned by what you
-   actually read) and `Verified by` (test file **and** test title). Listing a rule in the flow without the
-   matching link back from the rule doc is a half-edge: fix it before finishing. Convention:
-   `../guidelines/traceability.md`
+   actually read) and `Verified by` (test file **and** test title). Convention: `../guidelines/traceability.md`.
 
 ---
 
-## 📑 Flow Index (README.md)
+## 📑 Flow Index (`docs/product/flows/README.md`)
 
-After creating or updating a flow, you MUST update the flow index at:
+After creating or updating a flow, you MUST update the master flow catalog and index at:
 
 ```
-docs/product/bounded-contexts/README.md
+docs/product/flows/README.md
 ```
-
-If the file does not exist, create it from `templates/bounded-contexts-readme.md`. If it exists, add or update the entry for the new flow.
 
 **Rules for updating the index:**
-- If `docs/product/bounded-contexts/README.md` does not exist, create it from `templates/bounded-contexts-readme.md`
-- Add the new flow to the Flow Catalog table
-- Add a Flow Details section for it
-- Update the Cross-Context Flow Diagram to include any new entities or relationships
-- Add any new BRs/INVs to the Business Rules & Invariants table
+- Add the new flow to the **Master Flow Catalog** table (including Journey, Context, BR links, INV links, Entities, Status)
+- Add or update the **Master Index: Business Rules & Domain Invariants** tables
+- Add a Flow Details summary section for the journey
+- Update the Cross-Context Flow Diagram if new entities or contexts are involved
 - Update the Last Updated date and Total Flows count
 
 ---

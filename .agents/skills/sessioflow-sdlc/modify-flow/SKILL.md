@@ -239,6 +239,27 @@ Once the change is implemented and verified:
 
 ---
 
+## Step 6: Grace Period & Purge Lifecycle (`working-on/`)
+
+Once Step 5 is complete and living documentation is updated:
+
+1. **Enter Grace Period**: Do not delete the proposal immediately upon shipping. Set status in `proposal.md`:
+   ```markdown
+   * **Status:** 🚀 Implemented (Grace Period)
+   * **Shipped Date:** YYYY-MM-DD
+   ```
+   Keep the directory during staging/production verification so the team can reference rationale or make quick hotfixes if regressions occur.
+2. **Mark Ready to Purge**: Once verified stable in production (or at the start of the next sprint/feature cycle), mark status:
+   ```markdown
+   * **Status:** 🧹 Ready to Purge
+   ```
+3. **Safe Purge**: Because living documentation (`bounded-contexts/`, `flows/README.md`) was already updated in Step 5, deleting the `docs/product/working-on/[change-name]/` directory loses zero context:
+   ```bash
+   rm -rf docs/product/working-on/[change-name]
+   ```
+
+---
+
 ## 📚 Bundled Resources
 
 | Template | Purpose |
