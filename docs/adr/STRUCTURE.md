@@ -29,6 +29,7 @@ docs/adr/
 │
 ├── STRUCTURE.md                                    # This document
 ├── README.md                                       # Main ADR reference catalog
+├── ADR-WORKFLOW.md                                 # Lifecycle, SDLC integration & rules
 │
 └── _reports/                                       # Generated Reports
     ├── README.md                                   # Reports guide
@@ -136,6 +137,7 @@ All templates and command guides are bundled inside the `adr-manager` Skill dire
 | To Find... | Go To... |
 | :--- | :--- |
 | Individual ADRs & Amendments | `docs/adr/0XX-*.md` |
+| ADR Lifecycle & SDLC Workflow | `docs/adr/ADR-WORKFLOW.md` |
 | Skill Configuration & Guide | `.agents/skills/sessioflow-sdlc/adr-manager/` |
 | Templates | `.agents/skills/sessioflow-sdlc/adr-manager/templates/` |
 | Command Guides | `.agents/skills/sessioflow-sdlc/adr-manager/references/` |
