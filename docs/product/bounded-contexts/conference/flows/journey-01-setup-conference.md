@@ -33,13 +33,11 @@ sequenceDiagram
     participant API as Application Service
     participant Domain as Conference Aggregate
     participant DB as Repository & Outbox
-    participant Worker as Outbox Worker (Async)
 
-    Note over Organizer, Worker: Journey 01: Setup Conference Flow
+    Note over Organizer, DB: Journey 01: Setup Conference Flow
 
     Organizer->>UI: Click "Create New Conference"
-    UI->>API: GET /auth/me
-    API-->>UI: Return organizerId
+    Note over UI: Wave 1 auth: the organizer is resolved on submit by the injected<br/>getAuthUser() port (default mock-user-id — there is no /auth/me route, F1-D12)
 
     Organizer->>UI: Fill conference form<br/>(name, dates, description)
     UI->>UI: Client-side Zod validation
@@ -49,10 +47,10 @@ sequenceDiagram
         Organizer->>UI: Click "Create Conference"
         UI->>API: POST /api/v1/conferences
         API->>API: Validate payload with Zod
-        API->>DB: Check slug uniqueness & active count (BR-004)
+        API->>DB: Handler: findBySlug() (BR-003) before countActiveByOrganizerId() (BR-004)
         DB-->>API: Valid & within free tier limit
         
-        API->>Domain: Conference.create(id, data)
+        API->>Domain: Conference.create({name, description, slug, organizerId, cfpConfig})
         Note over Domain: Conference state: DRAFT
         API->>Domain: Conference.publishCfp()
         Note over Domain: Conference state: CFP_OPEN<br/>CfpConfig created: ACTIVE
@@ -61,11 +59,10 @@ sequenceDiagram
         API->>DB: Save Aggregate & Outbox Events (Transaction)
         DB-->>API: Persisted
         
-        API-->>UI: 201 Created + CfP URL
+        API-->>UI: 201 Created ({ data } — CreateConferenceResponse;<br/>frontend derives /cfp/{slug}, F1-D9)
         UI-->>Organizer: Redirect to Dashboard<br/>with CfP link
 
-        Worker->>DB: Poll Outbox (CfpOpened)
-        Worker->>Worker: Send welcome email via Resend (async)
+        Note over DB: outbox_messages rows persist as PENDING inside the same transaction —<br/>no consumer/worker is shipped (ADR-011-01, F1-D7)
     end
 
     rect rgb(255, 235, 238)
@@ -82,7 +79,7 @@ sequenceDiagram
         API->>DB: Check slug uniqueness
         DB-->>API: Slug exists
         API-->>UI: 409 Conflict
-        UI-->>Organizer: Suggest alternative slug
+        UI-->>Organizer: Inline error: pick a different name (D1 — no auto-suffix)
     end
 
     rect rgb(255, 235, 238)
@@ -92,8 +89,8 @@ sequenceDiagram
         API-->>UI: 403 Forbidden + upgrade prompt
     end
 
-    Note over Organizer, Worker: Domain Events Published
-    Note right of Domain: ConferenceCreated → Analytics / Outbox<br/>CfpOpened → Welcome Email Worker / Outbox
+    Note over Organizer, DB: Domain Events Recorded & Persisted
+    Note right of Domain: CONFERENCE_CREATED / CFP_OPENED → outbox_messages (PENDING) via the ADR-017<br/>transaction — analytics / welcome-email consumers are ⏳ not built (ADR-011-01)
 ```
 
 ---
@@ -103,21 +100,21 @@ sequenceDiagram
 | Step | User Action | System Reaction | Domain/Entity Impact |
 | :--- | :--- | :--- | :--- |
 | **1** | Clicks "Create New Conference" button in dashboard | Loads conference creation form with validation schema | None (UI Level) |
-| **2** | — | GET /auth/me - Verify authentication | None (Security) |
-| **3** | — | Returns user session with organizerId | None (Security) |
-| **4** | Enters conference name, description, and logo URL | Client-side validates using Zod schema in real-time | None (UI Level) |
+| **2** | — | Controller resolves the organizer via the injected `getAuthUser()` auth port (`401 UNAUTHORIZED` when absent) | None (Security) |
+| **3** | — | Wave 1 default auth is the mocked `mock-user-id` (ADR-004-01, F1-D12) | None (Security) |
+| **4** | Enters conference name, description, and CfP dates (no logo field — excluded by F1-D8) | Client-side validates using the shared Zod schema in real-time | None (UI Level) |
 | **5** | Selects CfP start and end dates via date picker | Validates end date is after start date, prevents past dates | None (UI Level) |
 | **6** | Clicks "Create Conference" submit button | Shows loading state, sends POST request with payload | None (UI Level) |
 | **7** | — | **Application Service:** Validates all fields against Zod schema | None (Validation) |
 | **8** | — | **Repository:** Check slug uniqueness (`findBySlug`) and free tier limit (`countActiveByOrganizerId`) | None (Validation) |
-| **9** | — | **Domain Layer:** `ConferenceId.generate()` creates UUIDv4 | New ConferenceId |
-| **10** | — | **Domain Layer:** `Conference.create(id, validatedData)` creates Conference in `DRAFT` state | `Conference` → `DRAFT` |
+| **9** | — | **Domain Layer:** `Conference.create()` mints the id via `ConferenceId.generate()` (UUIDv4) | New ConferenceId |
+| **10** | — | **Domain Layer:** `Conference.create({name, description, slug, organizerId, cfpConfig})` creates Conference in `DRAFT` state | `Conference` → `DRAFT` |
 | **11** | — | **Domain Layer:** `Conference.publishCfp()` transitions Conference to `CFP_OPEN` | `Conference` → `CFP_OPEN` |
 | **12** | — | **Domain Layer:** `CfpConfig` child entity created with validated dates | `CfpConfig` → `ACTIVE` |
 | **13** | — | **Domain Layer:** Records `ConferenceCreated` and `CfpOpened` domain events on Aggregate | Domain Events Recorded |
 | **14** | — | **Repository:** `ConferenceRepository.save()` persists Aggregate & Outbox Events in a single DB transaction | Database Persisted |
-| **15** | — | **Outbox Worker (Async):** Polls/processes `CfpOpened` event and dispatches welcome email via Resend (best-effort) | External Async Worker |
-| **16** | — | Returns 201 Created with Conference and CfP URL | Response Sent |
+| **15** | — | Outbox rows (`CONFERENCE_CREATED`, `CFP_OPENED`) remain `PENDING` — **no worker/consumer is shipped** (ADR-011-01, F1-D7) | None (async consumers ⏳ Planned) |
+| **16** | — | Returns 201 Created with `{ data }` (`CreateConferenceResponse`); the UI derives the `/cfp/{slug}` link client-side (F1-D9) | Response Sent |
 | **17** | Views success notification | Redirects to Conference Dashboard with pre-populated CfP link | None (UI Level) |
 
 ---
@@ -158,15 +155,15 @@ sequenceDiagram
 |---------|-----------------|---------------|
 | Database connection fails during Conference creation | Rollback any partial writes, display generic error message *"Unable to create conference. Please try again."*, log error to monitoring service | No entities created; transaction aborted |
 | Slug generation produces a duplicate (two conferences with same name) | Reject with `409 SLUG_EXISTS` and show an inline form error; **no** numeric-suffix retry (decision D1) | `Conference` not created |
-| Welcome email fails to send | Log error, continue with successful response (email is best-effort) | `Conference` and `CfpConfig` persisted; email queued for retry |
+| Welcome email is never sent | By design in Wave 1: outbox rows persist as `PENDING` but nothing calls `OutboxProcessor.processPending()` — an append-only log (ADR-011-01, F1-D7) | `Conference` and `CfpConfig` persisted; no external side effect fires |
 
 ### 3. Validation Boundary Conditions
 
 | What If | System Handling | Domain Method | Entity Impact |
 |---------|-----------------|---------------|---------------|
-| CfP window is set for more than 180 days | Warn user that extended windows may reduce submission quality, require confirmation | `CfpConfig.validateDates()` checks duration | `CfpConfig` created with extended dates after confirmation |
-| User tries to create conference with a date in the past | Block submission with error *"Conference dates must be in the future"* | `CfpStartDate.create()` validates future date | No lifecycle change; no entities created |
-| User is not authorized (organizerId mismatch) | Return 403 Forbidden, log security violation | RLS policy prevents access | No entities created |
+| CfP window is set for more than 180 days | Reject with `400 CFP_DATES_INVALID` — "Cfp window cannot be more than 180 days" (hard cap, F1-D4) | `CfpConfig.create()` window check | No lifecycle change; no entities created |
+| User tries to create conference with a date in the past | Block submission with error *"CfpStartDate must be in the future or today"* | `CfpStartDate.create()` throws `CfpStartDateNotInFutureError` | No lifecycle change; no entities created |
+| No authenticated user | Controller returns `401 UNAUTHORIZED` (`unauthorizedResponse()`) | `getAuthUser()` auth port — mocked `mock-user-id` in Wave 1 (F1-D12) | No entities created |
 
 ---
 
@@ -182,57 +179,81 @@ Authorization: Bearer {jwt}
 Request Body:
 {
   "name": "string (required, 3-100 characters)",
-  "description": "string (optional, max 1000 characters)",
-  "logoUrl": "string (optional, valid URL)",
-  "cfpStartDate": "ISO 8601 date (required, must be >= today)",
-  "cfpEndDate": "ISO 8601 date (required, must be > cfpStartDate)",
-  "maxSubmissions": "integer (optional, default: unlimited)",
+  "description": "string (optional, max 1000 characters, default '')",
+  "cfpStartDate": "ISO 8601 date (required, must be >= today, <= today + 365d)",
+  "cfpEndDate": "ISO 8601 date (required, must be > cfpStartDate, window <= 180 days)",
+  "maxSubmissions": "integer (optional, positive, default: unlimited)",
   "requiresApproval": "boolean (optional, default: true)"
 }
 
+> No `logoUrl` field (F1-D8 — not in the contract nor the DB schema). `organizerId` is **not**
+> accepted from the body; it comes from the auth port.
+
 Response: 201 Created
 {
-  "id": "uuid",
-  "name": "string",
-  "slug": "string",
-  "status": "CFP_OPEN",
-  "cfpConfig": {
-    "startDate": "ISO 8601 date",
-    "endDate": "ISO 8601 date",
-    "status": "ACTIVE"
-  },
-  "cfpUrl": "https://sessioflow.app/cfp/{slug}"
+  "data": {
+    "id": "uuid",
+    "name": "string",
+    "description": "string",
+    "slug": "string",
+    "status": "CFP_OPEN",
+    "organizerId": "string",
+    "cfp": {
+      "isOpen": true,
+      "startDate": "ISO 8601",
+      "endDate": "ISO 8601",
+      "maxSubmissions": "number | undefined",
+      "requiresApproval": true
+    },
+    "createdAt": "ISO 8601",
+    "updatedAt": "ISO 8601"
+  }
 }
+
+> The response is `CreateConferenceResponse` wrapped in `{ data }` — there is **no `cfpUrl`** field
+> (F1-D9: the dashboard derives `/cfp/{slug}` client-side) and no `cfpConfig.status` (the DTO
+> exposes `cfp.isOpen` instead).
 ```
 
 ### Zod Validation Schema (ADR-007)
 
 ```typescript
-const conferenceCreateSchema = z.object({
-  name: z.string().min(3).max(100),
-  description: z.string().max(1000).optional(),
-  logoUrl: z.string().url().optional().or(z.literal('')),
-  cfpStartDate: z.coerce.date(),
-  cfpEndDate: z.coerce.date(),
-  maxSubmissions: z.number().int().positive().optional(),
-  requiresApproval: z.boolean().default(true)
-}).refine(data => data.cfpEndDate > data.cfpStartDate, {
-  message: "End date must be after start date"
-});
+// packages/api-definitions/src/zod/conference.ts (as shipped)
+export const ConferenceCreateSchema = z
+  .object({
+    name: z.string().min(3, {message: 'Name must be at least 3 characters'}).max(100),
+    description: z.string().max(1000).optional().default(''),
+    cfpStartDate: z.iso.date({message: 'Start date must be a valid date'}),
+    cfpEndDate: z.iso.date({message: 'End date must be a valid date'}),
+    maxSubmissions: z.number().int().positive().optional(),
+    requiresApproval: z.boolean().optional().default(true),
+  })
+  .refine((data) => data.cfpEndDate > data.cfpStartDate, {
+    message: 'End date must be after start date',
+  });
 ```
+
+> Dates are validated as ISO date **strings** (`z.iso.date()`), not coerced `Date`s; the domain
+> VOs (`CfpStartDate`/`CfpEndDate`/`CfpConfig.create()`) remain the final authority (F1-D10).
 
 ### Database Constraints (ADR-002 - Supabase)
 
 | Constraint | Description |
 |------------|-------------|
-| `conferences.slug` | UNIQUE across all conferences |
-| `conferences.organizerId` | FOREIGN KEY to `users.id` with RLS policy |
-| `cfp_configs.conferenceId` | FOREIGN KEY to `conferences.id` with CASCADE delete |
+| `conferences.slug` | `conferences_slug_unique` — UNIQUE across all conferences (`schema.ts:36`) |
+| `conferences.organizer_id` | Indexed (`idx_conferences_organizer_id`); **no FK to a `users` table in Wave 1** — auth is mocked (F1-D12) |
+| `conferences.cfp_config` | JSONB column **embedded in `conferences`** — there is no separate `cfp_configs` table |
+| `outbox_messages` | Append-only event log written in the same transaction (ADR-017) |
 
-### Row-Level Security (ADR-002)
+### Row-Level Security (ADR-002 — ⏳ Planned, not shipped)
+
+No `CREATE POLICY` / RLS statement exists in migrations `0000`/`0001`. Wave 1 access control lives
+in the application layer: the controller calls `getAuthUser()` and answers
+`401 UNAUTHORIZED` when no user is present; `organizerId` is taken from the auth port, never from
+the request body. The Supabase RLS policy below is the **target state**, not shipped SQL:
 
 ```sql
--- RLS Policy: Organizer can only create conferences for their own account
+-- ⏳ Planned (ADR-002): Organizer can only create conferences for their own account
 CREATE POLICY "Organizers can create conferences"
 ON conferences FOR INSERT
 WITH CHECK (organizer_id = auth.uid());
@@ -243,7 +264,7 @@ WITH CHECK (organizer_id = auth.uid());
 | Field | Value |
 |-------|-------|
 | `slug` | URL-safe version of conference name (e.g., "My Conference 2026" → "my-conference-2026") |
-| `cfpUrl` | `{baseUrl}/cfp/{slug}` (e.g., `https://sessioflow.app/cfp/my-conference-2026`) |
+| `cfpUrl` | *(not returned by the API — the frontend derives `{baseUrl}/cfp/{slug}` from `data.slug`, F1-D9)* |
 | `status` | `CFP_OPEN` upon creation (after `publishCfp()` call) |
 
 ### Enforced Business Rules
@@ -255,6 +276,7 @@ WITH CHECK (organizer_id = auth.uid());
 
 ### Enforced Invariants
 
+* [INV-001](../invariants/INV-001-state-transition-validity.md): Conference State Transitions Must Follow State Machine (this flow exercises `DRAFT → CFP_OPEN` via `publishCfp()`)
 * [INV-002](../invariants/INV-002-cfp-date-order.md): Cfp End Date Must Be After Start Date
 * [INV-003](../invariants/INV-003-slug-uniqueness.md): Conference Slug Must Be Unique Across All Conferences
 
@@ -279,8 +301,8 @@ WITH CHECK (organizer_id = auth.uid());
 
 | Domain Event | Triggered By | Side Effects |
 |-------|--------------|--------------|
-| `ConferenceCreated` | `Conference.create()` | Log conference creation, initialize analytics |
-| `CfpOpened` | `Conference.publishCfp()` | Send welcome email to organizer, notify subscribers |
+| `ConferenceCreatedEvent` (`CONFERENCE_CREATED`) | `Conference.create()` | Persisted to `outbox_messages` (PENDING) in the ADR-017 transaction. Analytics/logging consumers ⏳ not built |
+| `CfpOpenedEvent` (`CFP_OPENED`) | `Conference.publishCfp()` | Same outbox write. Welcome-email worker is ⏳ out of scope (ADR-011-01, F1-D7) — **nothing dispatches the outbox yet** |
 
 ---
 
@@ -319,16 +341,11 @@ flowchart TB
     SaveDB --> Success[Return 201 + Redirect to Dashboard]
     Success --> EndSuccess([CfP Link Generated])
     
-    SaveDB -.->|Async Outbox Poll| OutboxWorker[Outbox Worker]
-    OutboxWorker -.-> SendEmail[Send Welcome Email via Resend]
-    
     style CreateConference fill:#e1f5fe
     style PublishCfp fill:#e8f5e9
     style RecordEvents fill:#fff3e0
     style SaveDB fill:#e8f5e9
     style Success fill:#c8e6c9
-    style OutboxWorker fill:#f3e5f5
-    style SendEmail fill:#f3e5f5
     style Error1 fill:#ffcdd2
     style Error2 fill:#ffcdd2
     style Error3 fill:#ffcdd2
@@ -339,38 +356,27 @@ flowchart TB
 
 ## 📊 Entity State Diagram
 
-Shows the Conference entity lifecycle:
+Shows the Conference entity lifecycle **as shipped**. Unbuilt states/mutators are specified in
+[entities/conference.md](../entities/conference.md) (built vs ⏳ Planned split), not drawn here as
+reachable behaviour:
 
 ```mermaid
 stateDiagram-v2
-    [*] --> NotCreated
-    NotCreated --> Draft: Create Conference
-    Draft --> CfpOpen: publishCfp()
-    CfpOpen --> CfpClosed: closeCfp()
-    CfpClosed --> CfpOpen: reopenCfp()
-    CfpOpen --> Published: publishSchedule()
-    CfpClosed --> Published: publishSchedule()
-    Published --> Completed: conferenceDatePassed
-    
+    [*] --> Draft: Conference.create() ✅
+    Draft --> CfpOpen: Conference.publishCfp() ✅
+
     note right of Draft
         Conference created with
         basic details
     end note
-    
+
     note right of CfpOpen
         CfP active, accepting
         submissions
     end note
-    
-    note right of Published
-        Schedule published,
-        speakers notified
-    end note
-    
+
     style Draft fill:#e3f2fd
     style CfpOpen fill:#c8e6c9
-    style CfpClosed fill:#fff9c4
-    style Published fill:#e1bee7
 ```
 
 ---
@@ -400,3 +406,21 @@ This flow document follows the consistency guidelines:
 | [ADR-011-01: Optional Email Abstraction](../../../../adr/011-01-use-resend-email-amendment-optional-abstraction.md) | Asynchronous email sending |
 | [ADR-017: Drizzle ORM](../../../../adr/017-use-drizzle-orm-with-ddd-transactions.md) | Drizzle ORM and transactional outbox |
 | [ADR-023: Comprehensive Monorepo Structure](../../../../adr/023-comprehensive-monorepo-structure-update.md) | Monorepo module and app boundaries |
+
+---
+
+## 📜 History
+
+* **2026-09-16:** Docs audit alignment with shipped code and the Feature 01/02 decision log
+  (F1/D1, D4, D7, D8, D9, D12): removed the Outbox-Worker/Resend welcome-email elements (no
+  consumer calls `processPending()`), `logoUrl` (never in the contract or schema), and `cfpUrl`
+  from the 201 body (frontend derives `/cfp/{slug}`); response corrected to
+  `{ data: CreateConferenceResponse }`; Zod block replaced with the shipped
+  `ConferenceCreateSchema` (`z.iso.date()`); `CfpConfig.validateDates()` references removed
+  (checks live in `CfpConfig.create()`); the 180-day window is a hard `400` reject, not a
+  soft warning; unauthorized path corrected to `401` via `getAuthUser()` and the RLS block
+  marked ⏳ Planned (no policy exists in migrations `0000`/`0001`); `GET /auth/me` replaced
+  by the auth-port description; entity state diagram reduced to shipped transitions
+  (`create()` → `publishCfp()`), with planned states deferred to the built/⏳ split in
+  [entities/conference.md](../entities/conference.md); INV-001 added to Enforced Invariants
+  (reciprocity with the invariant doc).
