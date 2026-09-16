@@ -478,9 +478,25 @@ All AI agents working on this project must follow these 6 core principles:
 
 See `docs/adr/README.md` for full decision history.
 
+## 🎯 Invoke-only skills
+
+All skills under `.agents/skills/` run with `disable-model-invocation: true`: they are
+**hidden from my context by design** and must be invoked explicitly by the user as
+`/skill:<name>` (the frontmatter `name`, not the folder name — e.g. folder `skill-creator/`
+→ `/skill:skill-creator-claude`).
+
+**SDLC skills** (`sessioflow-sdlc/`): `adr-manager`, `agents-maintainer`, `audit-docs`,
+`create-entity-lifecycle`, `create-flow-documentation`, `create-module`, `explore-domain`,
+`implement-flow`, `inception-workshop`, `modify-flow`, `prd-workshop`,
+`reverse-engineer-domain`, `user-story-mapping`. Plus `skill-creator-claude`.
+
+When a task matches one of these, I must **not** hand-roll the equivalent or read the
+`SKILL.md` off disk on my own. I stop and tell the user which `/skill:` to run and why.
+Only proceed manually if the user explicitly says to do it without the skill.
+
 ## 📦 New Module Package
 
-Before scaffolding, **always check if `packages/modules/{context}/` already exists**. If creating a truly new bounded context, create it under `packages/modules/{context}/` using the `create-module` skill (`create-module`). It scaffolds `package.json`, `tsconfig.json`, `.gitignore`, and `container.ts` — the minimum wiring to make the folder a buildable workspace package.
+Before scaffolding, **always check if `packages/modules/{context}/` already exists**. If creating a truly new bounded context, create it under `packages/modules/{context}/` using the `create-module` skill — ask the user to run `/skill:create-module` (see [🎯 Invoke-only skills](#-invoke-only-skills)). It scaffolds `package.json`, `tsconfig.json`, `.gitignore`, and `container.ts` — the minimum wiring to make the folder a buildable workspace package.
 
 ---
 

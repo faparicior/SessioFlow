@@ -6,6 +6,7 @@ description: >-
   extract invariants, analyze legacy, software archeology, brownfield extraction,
   discover rules, find invariants in code, or extract domain logic from existing code.
   Automatically triages outputs to bounded contexts or the staging buffer docs/product/discovered/.
+disable-model-invocation: true
 ---
 
 # Reverse Engineer Domain Skill
