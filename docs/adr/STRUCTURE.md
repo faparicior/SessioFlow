@@ -64,71 +64,58 @@ Generated reports from ADR analysis and tracing workflows.
 
 ---
 
-### 3. Skill & Templates Directory (`.agents/skills/sessioflow-sdlc/adr-manager/`)
-All templates and command guides are bundled inside the `adr-manager` Skill directory to keep the codebase clean and avoid duplication.
+### 3. Dedicated ADR Skills (`.agents/skills/sessioflow-sdlc/`)
+Templates and operational logic are distributed into dedicated skills by intention:
 
-*   **Templates Location**: `.agents/skills/sessioflow-sdlc/adr-manager/templates/`
-
-| Template | Use For |
-| :--- | :--- |
-| `TEMPLATE.md` | Creating new individual ADRs |
-| `TEMPLATE-ADR_VALIDATOR.md` | Validating ADR quality |
-| `TEMPLATE-ADR_GENERATION_SUMMARY.md` | Summarizing ADR generation |
-| `TEMPLATE-TRACEABILITY_MATRIX.md` | Creating traceability matrix |
-| `TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md` | Analyzing alternatives |
-| `TEMPLATE-EXECUTIVE_SUMMARY.md` | Creating executive summary |
-| `TEMPLATE-AMENDMENT.md` | Proposing an ADR amendment |
+| Skill | Path | Primary Role |
+| :--- | :--- | :--- |
+| `/create-adr` | `.agents/skills/sessioflow-sdlc/create-adr/` | Draft and catalog a new ADR |
+| `/amend-adr` | `.agents/skills/sessioflow-sdlc/amend-adr/` | Propose an amendment or technical analysis |
+| `/review-adr-alternatives` | `.agents/skills/sessioflow-sdlc/review-adr-alternatives/` | Web research & Tech Radar ecosystem review |
+| `/validate-adr` | `.agents/skills/sessioflow-sdlc/validate-adr/` | Quality audit against compliance rubric |
 
 ---
 
 ## Usage Patterns
 
 ### Creating a New ADR
-1. **Trigger the generator mode via Pi CLI**:
+1. **Trigger the skill**:
    ```bash
-   pi skill adr-manager --mode generate
+   /create-adr
    ```
-2. **Edit and fill in the newly created ADR**.
-3. **Validate using the validator mode**:
+   Or conversational: *"Create a new ADR for Redis caching"*.
+2. **Review & validate**:
    ```bash
-   pi skill adr-manager --mode validate --file docs/adr/0XX-your-decision.md
+   /validate-adr
    ```
 
 ### Proposing an Amendment
-1. **Trigger the amendment mode via Pi CLI**:
+1. **Trigger the skill**:
    ```bash
-   pi skill adr-manager --mode amend --file docs/adr/0XX-original-adr.md
+   /amend-adr
    ```
-2. **Complete the generated template** and validate.
+   Or conversational: *"Amend ADR-016 for controller factories"*.
+2. **Review two-way links**: Ensure `Amends` and `Amended By` are present.
 
----
-
-## References
-
-### Command Guides (within Skill)
-*   **Workflow**: `.agents/skills/sessioflow-sdlc/adr-manager/references/0-ADR-WORKFLOW.md`
-*   **Generate ADRs**: `.agents/skills/sessioflow-sdlc/adr-manager/references/1-generate-adrs-from-inception.md`
-*   **Validate**: `.agents/skills/sessioflow-sdlc/adr-manager/references/2-ADR-validator.md`
-*   **Summary**: `.agents/skills/sessioflow-sdlc/adr-manager/references/3-generate-adr-summary.md`
-*   **Traceability**: `.agents/skills/sessioflow-sdlc/adr-manager/references/4-generate-traceability-matrix.md`
-*   **Alternatives**: `.agents/skills/sessioflow-sdlc/adr-manager/references/5-analyze-adr-alternatives.md`
-*   **Amendments**: `.agents/skills/sessioflow-sdlc/adr-manager/references/7-generate-adr-amendment.md`
-
-### Quick References
-*   **Skill README**: `.agents/skills/sessioflow-sdlc/adr-manager/README.md`
+### Researching Alternatives
+1. **Trigger the review**:
+   ```bash
+   /review-adr-alternatives
+   ```
+   Or conversational: *"Review current alternatives for our tech stack"*.
 
 ---
 
 ## Best Practices
 
 ✅ **DO:**
-- Run the `adr-manager` Skill to perform all operations.
-- Reference templates stored inside `.agents/skills/sessioflow-sdlc/adr-manager/templates/`.
+- Use intention-based skills (`/create-adr`, `/amend-adr`, `/review-adr-alternatives`, `/validate-adr`).
 - Maintain two-way linking when creating an Amendment.
+- Adhere to the naming conventions in `guidelines/adr-naming-conventions.md`.
 
 ❌ **DON'T:**
-- Create ad-hoc template directories outside the Skill.
-- Modify active decisions without documenting them as Amendments or new ADRs.
+- Silently modify accepted ADRs without an Amendment or successor.
+- Leave sequence gaps in ADR numbering.
 
 ---
 
@@ -137,12 +124,14 @@ All templates and command guides are bundled inside the `adr-manager` Skill dire
 | To Find... | Go To... |
 | :--- | :--- |
 | Individual ADRs & Amendments | `docs/adr/0XX-*.md` |
-| ADR Lifecycle & SDLC Workflow | `docs/adr/ADR-WORKFLOW.md` |
-| Skill Configuration & Guide | `.agents/skills/sessioflow-sdlc/adr-manager/` |
-| Templates | `.agents/skills/sessioflow-sdlc/adr-manager/templates/` |
-| Command Guides | `.agents/skills/sessioflow-sdlc/adr-manager/references/` |
+| ADR Lifecycle & Management Guide | `docs/adr/ADR-WORKFLOW.md` |
+| Create ADR Skill | `.agents/skills/sessioflow-sdlc/create-adr/` |
+| Amend ADR Skill | `.agents/skills/sessioflow-sdlc/amend-adr/` |
+| Review Alternatives Skill | `.agents/skills/sessioflow-sdlc/review-adr-alternatives/` |
+| Validate ADR Skill | `.agents/skills/sessioflow-sdlc/validate-adr/` |
 | Analysis Reports | `docs/adr/_reports/` |
 
 ---
 
-**Last Updated:** 2026-06-23
+**Last Updated:** 2026-09-16
+
