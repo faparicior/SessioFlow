@@ -222,33 +222,17 @@ touch docs/adr/015-02-implement-caching-analysis-comparison.md
 
 ---
 
-## Integration with adr-manager Skill
+## Integration with the ADR Skills
 
-The adr-manager skill supports this naming convention:
+This naming convention is upheld by the four ADR skills — there is no `adr-manager` any more, and
+skills are invoked as `/skill:<name>`, not through a `pi skill` CLI:
 
-### Generate New ADR
-```bash
-pi skill adr-manager --mode generate
-# Automatically assigns next number with sequence 00
-```
-
-### Create Amendment
-```bash
-pi skill adr-manager --mode amend --file docs/adr/015-00-*.md
-# Creates: 015-01-*-amendment-*.md
-```
-
-### Validate Naming
-```bash
-pi skill adr-manager --mode validate --file docs/adr/0XX-*.md
-# Checks naming convention compliance
-```
-
-### Update Index
-```bash
-pi skill adr-manager --mode index
-# Rebuilds README.md with new file structure
-```
+| Need | Invoke | Naming effect |
+| :--- | :----- | :------------ |
+| New ADR | `/skill:adr-create` | assigns the next `NNN-00` sequence |
+| Amendment | `/skill:adr-amend` on `docs/adr/015-00-*.md` | creates `015-01-*-amendment-*.md` |
+| Validate naming & compliance | `/skill:adr-validate` on `docs/adr/0XX-*.md` | checks convention compliance |
+| Rebuild the index | ⚠️ **unowned after the split** — update `docs/adr/README.md` by hand | — |
 
 ---
 

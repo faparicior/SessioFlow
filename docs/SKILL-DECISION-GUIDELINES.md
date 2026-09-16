@@ -117,9 +117,9 @@ Provide explicit rules distinguishing autonomous decisions from operations that 
 | Scope | Mechanism | Managed By | Where It Lives |
 | :--- | :--- | :--- | :--- |
 | **Micro / Flow** | Lack of Information Log table | Feature specs & flow plans (`implement-flow`, `modify-flow`) | `features/feature-XX.md`, `[flow]-plan.md` |
-| **Macro / Architecture** | Architecture Decision Records (ADRs) | Architecture team & `adr-manager` skill | `docs/adr/0XX-*.md`, [docs/adr/README.md](./adr/README.md) |
+| **Macro / Architecture** | Architecture Decision Records (ADRs) | Architecture team & the `adr-*` skills (`adr-create`, `adr-amend`, `adr-validate`) | `docs/adr/0XX-*.md`, [docs/adr/README.md](./adr/README.md) |
 
-- When a micro decision establishes a repository-wide architectural precedent, escalate it to a proposed ADR using `/adr-manager`.
+- When a micro decision establishes a repository-wide architectural precedent, escalate it to a proposed ADR using `/skill:adr-create`.
 - Otherwise, keep it localized within the feature specification's Lack of Information Log.
 
 ---

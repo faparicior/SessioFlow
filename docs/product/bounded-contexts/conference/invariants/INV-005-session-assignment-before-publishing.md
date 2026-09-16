@@ -107,7 +107,8 @@ is a specification, not a claim about current code.
 | Domain — exception | `packages/modules/conference/src/domain/exceptions/` *(file to be created)* | `UnassignedSessionsError` | ⏳ Planned |
 | Database | `packages/shared/database/src/schema.ts` | intended `NOT NULL` on scheduled session assignment columns | ⏳ Planned |
 
-Enforcing entity: *none yet* — no `Session` entity exists in code
+Enforcing entity: ⏳ Planned — [Conference](../entities/conference.md) will own this gate through
+`publishSchedule()`; no `Session` entity exists in code today
 
 ### Verified by
 

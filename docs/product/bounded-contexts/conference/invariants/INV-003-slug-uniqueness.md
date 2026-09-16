@@ -28,9 +28,8 @@
 Scenario: Attempting to create conference with duplicate slug
   Given a conference exists with slug "tech-conference-2026"
   When another conference is created with the same name "Tech Conference 2026"
-  Then the system generates an alternative slug "tech-conference-2026-2"
-  And the new conference is created with the alternative slug
-  And the invariant (slug uniqueness) is maintained
+  Then the system throws SlugExistsError and persists nothing
+  And the organizer is asked to pick a different name (decision D1 — no auto-suffix retry)
 ```
 
 ### Critical Edge Cases Handled:
@@ -42,8 +41,9 @@ Scenario: Attempting to create conference with duplicate slug
 *What happens when this invariant is violated? Invariants always result in a rejected transaction and a domain exception.*
 
 * **Domain Exception:** `SlugExistsError` (duplicate slug → `409 SLUG_EXISTS`) or `EmptySlugError`
-  (nothing to build a slug from → `422 VALIDATION_ERROR`)
-* **HTTP/API Mapping:** `409 Conflict` (duplicate) or `422 Unprocessable Entity` (unusable name)
+  (nothing to build a slug from → `400 EMPTY_SLUG`)
+* **HTTP/API Mapping:** `409 Conflict` with code `SLUG_EXISTS` (duplicate) or `400` with code
+  `EMPTY_SLUG` (unusable name) — shared error mapper
 * **Rollback Behavior:** Complete database transaction rollback. No state is persisted.
 
 ## 5. Test Cases
@@ -125,4 +125,7 @@ none.
   `DatabaseUniqueViolationError` do not exist and the auto-suffix retry was never implemented — shipped
   behavior is `SlugExistsError` → `409 SLUG_EXISTS`, guaranteed by the `conferences_slug_unique` index in
   `packages/shared/database/src/schema.ts`.
+* **2026-09-16:** Docs audit correction. §3 positive Gherkin still described the retired auto-suffix
+  flow (`tech-conference-2026-2`) — replaced with the shipped hard fail (decision D1). §4 `EmptySlugError`
+  maps to `400 EMPTY_SLUG`, not 422.
 * **Database Constraint:** UNIQUE index on `conferences.slug` column provides additional enforcement layer.

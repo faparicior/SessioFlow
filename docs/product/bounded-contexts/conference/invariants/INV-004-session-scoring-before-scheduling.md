@@ -103,7 +103,8 @@ specification, not a claim about current code.
 | Domain — value object | `packages/modules/conference/src/domain/value-objects/` *(file to be created)* | `SessionScore` VO | ⏳ Planned |
 | Domain — exception | `packages/modules/conference/src/domain/exceptions/` *(file to be created)* | `UnscoredSessionsError` | ⏳ Planned |
 
-Enforcing entity: *none yet* — no `Session` entity exists in code
+Enforcing entity: ⏳ Planned — [Conference](../entities/conference.md) will own this gate through
+`completeSelection()`; no `Session` entity exists in code today
 
 ### Verified by
 

@@ -68,10 +68,12 @@ stateDiagram-v2
 | Method | Purpose | Pre-conditions | Post-conditions |
 |--------|---------|----------------|-----------------|
 | `CfpConfig.create()` | Initialize CfP configuration | Valid start/end dates | `CfpConfig` created with `ACTIVE` status |
-| `isActive()` | Check if CfP is accepting submissions | None | Returns `true` if status = `ACTIVE` and current time within window |
+| `isActive()` | Check if the CfP is open by status | None | Returns `true` if status = `ACTIVE` (window semantics live in `isWithinWindow`) |
 | `close()` | Close the submission window | Status must be `ACTIVE` | Status → `CLOSED`; submissions locked |
-| `validateDates()` | Validate date constraints | None | Throws error if `endDate` <= `startDate` or dates in past |
 | `isWithinWindow(date)` | Check if date falls within CfP window | None | Returns `true` if date between start and end |
+
+Date-order and 180-day-window checks run inside `CfpConfig.create()` — there is no separate
+`validateDates()` method, and the constructor is private.
 
 ### Domain Invariants
 
@@ -80,7 +82,7 @@ stateDiagram-v2
 | **Date Order** | `endDate` must always be after `startDate` |
 | **Future Dates** | `startDate` must be in the future at creation time |
 | **Max Submissions** | If set, must be a positive integer |
-| **Status Consistency** | `isActive()` returns `true` only if status = `ACTIVE` AND current time within window |
+| **Status Consistency** | `isActive()` reflects the stored `CfpStatus` only; "accepting submissions now" = `isActive()` **AND** `isWithinWindow(now)` (callers combine both) |
 
 ---
 

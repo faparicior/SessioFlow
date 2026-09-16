@@ -43,7 +43,7 @@ Scenario: Attempting to set invalid date order
 *What happens when this invariant is violated? Invariants always result in a rejected transaction and a domain exception.*
 
 * **Domain Exception:** `CfpDatesInvalidError`
-* **HTTP/API Mapping:** `422 Unprocessable Entity`
+* **HTTP/API Mapping:** `400 { error: { code: 'CFP_DATES_INVALID', message } }` (shared error mapper)
 * **Rollback Behavior:** Complete database transaction rollback. No state is persisted.
 
 ## 5. Test Cases
@@ -67,7 +67,7 @@ Scenario: Attempted invalid date order
   And end date 2026-07-01
   When they submit the CfP configuration
   Then the system throws CfpDatesInvalidError
-  And HTTP response is 422 Unprocessable Entity
+  And HTTP response is 400 { error: { code: 'CFP_DATES_INVALID', message } }
   And database transaction is rolled back
   And no state changes are persisted
   And user receives error message "End date must be after start date"
@@ -124,3 +124,6 @@ none.
   and the `fromData()` reconstitution exemption. Exception name corrected to `CfpDatesInvalidError`
   (`InvalidCfpConfigError` never existed).
 * **2026-06-09:** Invariant defined alongside CfpConfig entity documentation.
+* **2026-09-16:** Docs audit correction. §4/§5 "422 Unprocessable Entity" corrected to the 400
+  `CFP_DATES_INVALID` the shared error mapper returns. The §6 table already named the factory
+  correctly; the §3 guard is `CfpConfig.create()` — the constructor is private.

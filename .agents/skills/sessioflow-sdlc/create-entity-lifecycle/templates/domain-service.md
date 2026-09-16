@@ -25,8 +25,9 @@
 |--------|--------|
 | **Guards** | [Preconditions that must hold] |
 | **Steps** | [Ordered list of what the method does] |
-| **Side Effects** | [Domain events published, records persisted, etc.] |
+| **Side Effects** | [Domain events published, records persisted, etc. — only consumers that exist today] |
 | **Returns** | [What it returns and what the value means] |
+| **Status** | [✅ Built — found in the class you opened / ⚠️ Unverified — believed, not opened / ⏳ Planned — no code yet, write Steps in the future tense] |
 
 ---
 

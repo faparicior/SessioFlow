@@ -23,7 +23,7 @@
 
 ### Evaluation Logic
 * **If** `cfpEndDate` <= `cfpStartDate` -> Throw `CfpDatesInvalidError: "End date must be after start date"`
-* **If** `cfpStartDate` < today -> Throw `InvalidCfpStartDateError: "Start date must be in the future"`
+* **If** `cfpStartDate` < today -> Throw `CfpStartDateNotInFutureError: "CfpStartDate must be in the future or today"`
 * **Else** -> Allow CfP configuration creation/update
 
 ### Gherkin Scenarios
@@ -58,12 +58,16 @@ Scenario: Past start date
 * Enforced via a combination of Value Object design, structural domain invariants, and Aggregate Root creation checks.
 
 * **Enforcement Layer:** 
-  * **Structural Date Format/Validity:** Handled via constructor sanity checks in `CfpStartDate` and `CfpEndDate` value objects (ensuring the parameter represents a valid JavaScript `Date` object).
-  * **Structural Date Order (`cfpEndDate` after `cfpStartDate`):** Enforced as a **Domain Invariant ([INV-002](../invariants/INV-002-cfp-date-order.md))** inside the `CfpConfig` entity constructor, preventing invalid configurations from ever being instantiated.
-  * **Temporal Validity (Start date is today or future at creation):** Enforced inside the `Conference.create()` factory method. This contextual validation is skipped during repository reconstitution (which uses `Conference.fromData()`) so that historical conferences with past start dates can still be loaded from the database.
+  * **Structural Date Format/Validity:** Handled via creation-time sanity checks in
+    `CfpStartDate.create()` and `CfpEndDate.create()` (ensuring the parameter represents a valid
+    JavaScript `Date` object; the VO constructors are private).
+  * **Structural Date Order (`cfpEndDate` after `cfpStartDate`):** Enforced as a **Domain Invariant ([INV-002](../invariants/INV-002-cfp-date-order.md))** inside the `CfpConfig.create()` factory (the constructor is private), preventing invalid configurations from ever being instantiated.
+  * **Temporal Validity (Start date is today or future at creation):** Enforced inside `CfpStartDate.create()`, which the `CreateConferenceCommandHandler` calls when building the configuration. This contextual validation is skipped during repository reconstitution (which uses
+  `CfpStartDate.fromData()` via `CfpConfig.fromData()`/`Conference.fromData()`) so that historical
+  conferences with past start dates can still be loaded from the database.
 * **Handling Violations/Exceptions:** 
-  * Throws `CfpDatesInvalidError` (order & window), `InvalidCfpStartDateError` (past date, >365d) or `InvalidCfpEndDateError` (malformed date) — see `packages/modules/conference/src/domain/exceptions/`
-  * HTTP/API returns 422 Unprocessable Entity or 409 Conflict
+  * Throws `CfpDatesInvalidError` (order & window), `CfpStartDateNotInFutureError` (past date), `InvalidCfpStartDateError` (malformed date or >365d) or `InvalidCfpEndDateError` (malformed date) — see `packages/modules/conference/src/domain/exceptions/`
+  * HTTP/API returns 400 `{ error: { code, message } }` for every case (`CFP_DATES_INVALID`, `CFP_START_DATE_NOT_IN_FUTURE`, `INVALID_CFP_START_DATE`, `INVALID_CFP_END_DATE` — shared error mapper)
   * Form displays inline validation error to user
   * No state changes occur; transaction is aborted
 
@@ -98,7 +102,8 @@ Value objects: [CfpStartDate](../value-objects/cfp-start-date.md) · [CfpEndDate
 
 * `tests/unit/modules/conference/domain/cfp-config.test.ts` — "creates an ACTIVE configuration with a valid window (BR-001)"
 * `tests/unit/modules/conference/domain/value-objects/cfp-start-date.test.ts` — "allows today as the start date (BR-001: >= today)", "rejects start dates in the past (BR-001)"
-* `tests/unit/modules/conference/domain/value-objects/cfp-end-date.test.ts` — "rejects invalid dates" (covers BR-001, cites no rule id yet)
+* `tests/unit/modules/conference/domain/value-objects/cfp-start-date.test.ts` — "rejects start dates more than 365 days ahead"
+* `tests/unit/modules/conference/domain/value-objects/cfp-end-date.test.ts` — "rejects invalid dates" (covers the structural half of BR-001, cites no rule id yet)
 * `tests/backend/modules/conference/interfaces/api/v1/conferences/conferences.test.ts` — "maps the inverted CfP dates domain error to 400 { error: { code, message } }"
 * `tests/e2e/conference-setup.spec.ts` — "should reject conference with invalid CfP dates (End date before start date)"
 
@@ -116,3 +121,9 @@ none.
   with verification statuses, plus the tests that pin them. Exception names in §3/§4 corrected to the
   classes actually thrown (`CfpDatesInvalidError`, `InvalidCfpStartDateError`) — `InvalidCfpConfigError`
   never existed in `domain/exceptions/`.
+* **2026-09-16:** Docs audit correction. §3 past-date exception fixed again to the class actually
+  thrown (`CfpStartDateNotInFutureError` — the 2026-09-15 pass left §3 stale); §4 now lists it
+  alongside `InvalidCfpStartDateError` (malformed date / >365d only). The two "today or future"
+  test anchors were attributed to `cfp-end-date.test.ts` — they live in
+  `cfp-start-date.test.ts`. §4 "422 Unprocessable Entity or 409 Conflict" replaced with the
+  400 `{ error: { code, message } }` the error mapper actually returns for every BR-001 violation.

@@ -349,7 +349,10 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 │   ├── inception-workshop/        # Phase 1a — Lean Inception discovery
 │   ├── user-story-mapping/        # Phase 1b — User Story Mapping
 │   ├── prd-workshop/              # Optional — draft and validate formal PRDs
-│   ├── adr-manager/               # Any time — ADRs, amendments, traceability matrix
+│   ├── adr-create/                # Any time — draft a new ADR
+│   ├── adr-amend/                 # Any time — amendments & impact analysis
+│   ├── adr-validate/              # Any time — ADR quality & compliance audit
+│   ├── adr-review-alternatives/   # Any time — alternatives & tech-currency review
 │   ├── create-flow-documentation/ # Phase 2 — flow specs
 │   ├── create-entity-lifecycle/   # Phase 3 — domain model
 │   ├── create-module/             # Phase 4 — scaffold a workspace package

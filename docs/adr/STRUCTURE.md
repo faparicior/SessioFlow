@@ -39,7 +39,9 @@ docs/adr/
     └── TRACEABILITY_MATRIX.md
 ```
 
-*Note: Templates and automation scripts are stored centrally inside the Skill directory at `.agents/skills/sessioflow-sdlc/adr-manager/`.*
+*Note: templates and checklists are stored with the skill that uses them —
+`.agents/skills/sessioflow-sdlc/adr-create/templates/`, `adr-amend/templates/`, `adr-validate/templates/`
+and `adr-review-alternatives/templates/`. There is no central `adr-manager/` directory any more.*
 
 ---
 

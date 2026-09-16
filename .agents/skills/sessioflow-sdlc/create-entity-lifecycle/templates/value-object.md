@@ -26,20 +26,24 @@
 
 ## 🎯 Behavior & Methods
 
-| Method | Purpose |
-|--------|---------|
-| `static create(rawValue)` | Static factory method creating validated instance (enforces invariants) |
-| `static fromData(rawValue)` | Static factory method reconstituting from database (bypasses time-relative validation) |
-| `get value` | Encapsulated getter for underlying primitive |
-| `equals(other)` | Structural equality comparison |
+| Method | Purpose | Status |
+|--------|---------| ------ |
+| `static create(rawValue)` | Static factory method creating validated instance (enforces invariants) | ✅ Built |
+| `static fromData(rawValue)` | Static factory method reconstituting from database (bypasses time-relative validation) | ✅ Built |
+| `get value` | Encapsulated getter for underlying primitive | ✅ Built |
+| `equals(other)` | Structural equality comparison | ✅ Built |
+
+> `✅ Built` only for a member you found in the class you opened; `⏳ Planned` for anything you are
+> specifying rather than describing. Never leave a method row in the present tense if the code does not
+> have it.
 
 ---
 
 ## ⚠️ Error Conditions
 
-| Error | Trigger |
-|-------|---------|
-| `[ExceptionClass]` | [When it is thrown] |
+| Error | Trigger | Status |
+|-------|---------| ------ |
+| `[ExceptionClass]` | [When it is thrown] | ✅ Built |
 
 ---
 

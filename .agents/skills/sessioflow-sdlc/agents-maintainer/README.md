@@ -78,7 +78,7 @@ A good AGENTS.md should score **80+** on the validation checklist:
 ## 🛠️ Integration
 
 This skill integrates with:
-- `adr-manager` - Reference ADRs in architecture sections
+- `adr-create` / `adr-amend` / `adr-validate` - Reference ADRs in architecture sections
 - Project documentation - Keep guidelines aligned
 - CI/CD - Enforce rules through automated checks
 

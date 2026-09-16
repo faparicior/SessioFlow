@@ -27,7 +27,7 @@
 | [BR-002](../bounded-contexts/conference/business-rules/BR-002-conference-name-validation.md) | Conference Name Validation | Conference | Conference title must be 3 to 100 characters long; non-empty, trimmed string. | [J01: Setup Conference](../bounded-contexts/conference/flows/journey-01-setup-conference.md) |
 | [BR-003](../bounded-contexts/conference/business-rules/BR-003-slug-uniqueness.md) | Conference Slug Uniqueness | Conference | URL slug must be lowercase alphanumeric with hyphens, globally unique across system. | [J01: Setup Conference](../bounded-contexts/conference/flows/journey-01-setup-conference.md) |
 | [BR-004](../bounded-contexts/conference/business-rules/BR-004-free-tier-conference-limit.md) | Free Tier Conference Limit | Conference | An organizer on the free tier may have at most 5 active conferences simultaneously. | [J01: Setup Conference](../bounded-contexts/conference/flows/journey-01-setup-conference.md) |
-| [BR-005](../bounded-contexts/conference/business-rules/BR-005-cfp-submission-when-active.md) | Submissions Window Active | Conference / Submission | Submissions can only be received while the conference status is strictly `CFP_OPEN`. | [J02: Submit Proposal](../../inception/5-user-journeys/journey-02-submitting-talk.md) |
+| [BR-005](../bounded-contexts/conference/business-rules/BR-005-cfp-submission-when-active.md) | Submissions Window Active | Conference | Submissions can only be received while `CfpConfig` status is `ACTIVE` **and** the current time falls inside the configured start/end window (the implemented guard reads `CfpStatus`, not `Conference.status`). | [J02: Submit Proposal](../../inception/5-user-journeys/journey-02-submitting-talk.md) |
 
 ### 🔒 Non-Negotiable Domain Invariants (INV)
 
@@ -36,8 +36,8 @@
 | [INV-001](../bounded-contexts/conference/invariants/INV-001-state-transition-validity.md) | State Transition Validity | Conference | Conference aggregate can only transition through permitted lifecycle states (e.g. `DRAFT` → `CFP_OPEN`). | [J01: Setup Conference](../bounded-contexts/conference/flows/journey-01-setup-conference.md) |
 | [INV-002](../bounded-contexts/conference/invariants/INV-002-cfp-date-order.md) | CfP Date Ordering | Conference | `CfpEndDate` must strictly succeed `CfpStartDate`. Never equal, never reversed. | [J01: Setup Conference](../bounded-contexts/conference/flows/journey-01-setup-conference.md) |
 | [INV-003](../bounded-contexts/conference/invariants/INV-003-slug-uniqueness.md) | Global Slug Integrity | Conference | Database unique constraint reified as domain invariant; duplicates throw `SlugExistsError`. | [J01: Setup Conference](../bounded-contexts/conference/flows/journey-01-setup-conference.md) |
-| [INV-004](../bounded-contexts/conference/invariants/INV-004-session-scoring-before-scheduling.md) | Session Scoring Before Schedule | Review / Scheduling | A session cannot be scheduled unless all assigned reviews are completed and scored. | [J03: Review Sessions](../../inception/5-user-journeys/journey-03-selection-and-program.md) |
-| [INV-005](../bounded-contexts/conference/invariants/INV-005-session-assignment-before-publishing.md) | Room & Slot Assignment | Scheduling | A conference schedule cannot transition to `PUBLISHED` if any session lacks room or time. | [J04: Acceptance & Logistics](../../inception/5-user-journeys/journey-04-acceptance-and-logistics.md) |
+| [INV-004](../bounded-contexts/conference/invariants/INV-004-session-scoring-before-scheduling.md) | Session Scoring Before Schedule | Conference (Review/Scheduling journeys) | A session cannot be scheduled unless all assigned reviews are completed and scored. | [J03: Review Sessions](../../inception/5-user-journeys/journey-03-selection-and-program.md) |
+| [INV-005](../bounded-contexts/conference/invariants/INV-005-session-assignment-before-publishing.md) | Room & Slot Assignment | Conference (Scheduling journey) | A conference schedule cannot transition to `PUBLISHED` if any session lacks room or time. | [J04: Acceptance & Logistics](../../inception/5-user-journeys/journey-04-acceptance-and-logistics.md) |
 
 ---
 
@@ -81,7 +81,7 @@ Each journey's full specification is consolidated in a **single living file** in
 
 * **📄 Upstream Journey:** [journey-02-submitting-talk.md](../../inception/5-user-journeys/journey-02-submitting-talk.md) *(Flow spec pending)*
 * **Bounded Context:** `Submission` (Primary: `Submission`, `Speaker`; Referenced: `Conference`)
-* **Governing Rules:** [BR-005](../bounded-contexts/conference/business-rules/BR-005-cfp-submission-when-active.md) (Must be CFP_OPEN)
+* **Governing Rules:** [BR-005](../bounded-contexts/conference/business-rules/BR-005-cfp-submission-when-active.md) (`CfpStatus.ACTIVE` + within window)
 
 ---
 

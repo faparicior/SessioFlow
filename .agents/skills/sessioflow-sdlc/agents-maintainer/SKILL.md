@@ -180,7 +180,7 @@ A complete `AGENTS.md` should include:
 
 | Skill | Integration Point |
 |-------|-------------------|
-| `adr-manager` | Reference ADRs in architecture sections |
+| `adr-create` / `adr-amend` / `adr-validate` | Reference ADRs in architecture sections |
 | `testing-workflow` | Align testing guidelines |
 | `security-review` | Incorporate security constraints |
 | `code-quality` | Enforce coding standards |

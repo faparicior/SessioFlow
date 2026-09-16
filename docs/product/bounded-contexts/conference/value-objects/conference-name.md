@@ -4,7 +4,7 @@
 * **Description:** The display name/title of a conference. Includes validation for length and content constraints.
 * **Type:** String (validated and normalized)
 * **Immutability:** ✅ Immutable
-* **Validation:** Length, non-empty, character restrictions
+* **Validation:** Length bounds after trim (3–100); no character filtering
 
 ---
 
@@ -16,7 +16,7 @@
 | **Minimum Length** | At least 3 characters |
 | **Maximum Length** | Maximum 100 characters |
 | **Trimmed** | Leading/trailing whitespace is removed |
-| **No Special Characters** | Alphanumeric, spaces, and basic punctuation only |
+| **No sanitizing** | Other characters are kept as typed — `create()` validates length only (see the enforcement table below) |
 
 ---
 
@@ -27,7 +27,7 @@
 | `create(name: string)` | Create from validated string (throws on invalid input) |
 | `equals(other: ConferenceName)` | Compare two ConferenceName instances for equality |
 | `contains(search: string)` | Check if name contains a substring (case-insensitive) |
-| `toString()` | Convert to string representation |
+| `get value()` | Plain-string projection of the validated name |
 
 ---
 

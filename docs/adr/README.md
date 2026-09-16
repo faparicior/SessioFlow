@@ -255,11 +255,20 @@ sessioflow/
 
 ## Related Documentation
 
-### Command Documents & Skill
-The ADR workflow is managed via the `adr-manager` Skill. The skill assets are located in:
-- **Skill Configuration & Guide**: [.agents/skills/sessioflow-sdlc/adr-manager/](../../.agents/skills/sessioflow-sdlc/adr-manager/)
-- **Command Guides (References)**: [.agents/skills/sessioflow-sdlc/adr-manager/references/](../../.agents/skills/sessioflow-sdlc/adr-manager/references/)
-- **Templates**: [.agents/skills/sessioflow-sdlc/adr-manager/templates/](../../.agents/skills/sessioflow-sdlc/adr-manager/templates/)
+### Command Documents & Skills
+The ADR workflow is managed via four focused skills (the former `adr-manager` was split into these).
+Their assets live alongside each skill:
+
+| Task | Skill | Templates |
+| :--- | :---- | :-------- |
+| Create a new ADR | `/skill:adr-create` | [`TEMPLATE.md`](../../.agents/skills/sessioflow-sdlc/adr-create/templates/TEMPLATE.md) |
+| Amend an existing ADR | `/skill:adr-amend` | [`TEMPLATE-AMENDMENT.md`](../../.agents/skills/sessioflow-sdlc/adr-amend/templates/TEMPLATE-AMENDMENT.md), [`TEMPLATE-ANALYSIS.md`](../../.agents/skills/sessioflow-sdlc/adr-amend/templates/TEMPLATE-ANALYSIS.md) |
+| Validate quality & compliance | `/skill:adr-validate` | [`TEMPLATE-ADR_VALIDATOR.md`](../../.agents/skills/sessioflow-sdlc/adr-validate/templates/TEMPLATE-ADR_VALIDATOR.md) |
+| Review alternatives & tech currency | `/skill:adr-review-alternatives` | [`TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md`](../../.agents/skills/sessioflow-sdlc/adr-review-alternatives/templates/TEMPLATE-ADR_ALTERNATIVES_ANALYSIS.md), [`TEMPLATE-EXECUTIVE_SUMMARY.md`](../../.agents/skills/sessioflow-sdlc/adr-review-alternatives/templates/TEMPLATE-EXECUTIVE_SUMMARY.md) |
+
+> **No owner for `index` yet.** The old `adr-manager` `index` mode — rebuilding this catalog and the
+> traceability matrix — has no successor skill after the split. Until one is assigned, maintain this
+> README by hand and let `/skill:adr-validate` check that every record is listed here.
 
 ### Supporting Documents
 - [ADR Structure Guide](STRUCTURE.md)
@@ -269,24 +278,30 @@ The ADR workflow is managed via the `adr-manager` Skill. The skill assets are lo
 
 ## Creating & Managing ADRs
 
-You can manage ADRs using conversational commands with the AI or the Pi CLI:
+You manage ADRs by asking for the skill — skills run inside pi as `/skill:<name>`, there is no
+`pi skill ... --mode` CLI:
 
-1. **Activate the Skill**: Ask the AI: *"Create a new ADR using the adr-manager skill"* or run:
-   ```bash
-   pi skill adr-manager --mode generate
+1. **Draft a new ADR** — ask the AI, or run:
+   ```text
+   /skill:adr-create
    ```
-2. **Review & Validate**: Once drafted, validate it using:
-   ```bash
-   pi skill adr-manager --mode validate --file docs/adr/0XX-your-decision.md
+2. **Review & validate** the draft (`docs/adr/0XX-your-decision.md`):
+   ```text
+   /skill:adr-validate
    ```
-3. **Propose an Amendment**: To modify or refine an existing active decision:
-   ```bash
-   pi skill adr-manager --mode amend --file docs/adr/0XX-your-decision.md
+3. **Propose an amendment** to an active decision:
+   ```text
+   /skill:adr-amend
    ```
-4. **Link & Index**: Run the index update to rebuild index tables and statistics:
-   ```bash
-   pi skill adr-manager --mode index
+4. **Check the tech is still current** (alternatives analysis + executive summary):
+   ```text
+   /skill:adr-review-alternatives
    ```
+5. **Link & index** — ⚠️ currently unowned. The split that replaced `adr-manager` deleted its
+   `references/` guides (`6-update-adr-readme.md`, `4-generate-traceability-matrix.md`) and
+   `TEMPLATE-TRACEABILITY_MATRIX.md` / `TEMPLATE-ADR_GENERATION_SUMMARY.md` with no successor skill.
+   Until those are restored or reassigned, rebuild the index tables in this file by hand and let
+   `/skill:adr-validate` verify each record is listed.
 
 ### ADR Template Structure
 

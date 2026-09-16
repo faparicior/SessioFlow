@@ -48,6 +48,35 @@ After generating the entity lifecycle document, review the project's Architectur
 - [ ] Domain events are documented with triggers and side effects
 - [ ] State definitions are clear and unambiguous
 - [ ] Validation rules are comprehensive
+- [ ] Every state, transition, method, event and repository row carries a Status you earned by opening the class
+- [ ] `⏳ Planned` rows are phrased in the future tense, never in the present tense
+
+---
+
+## 🔍 Code Is Truth (Read The Class First)
+
+Before writing a single row, open the class the document describes — plus its value objects, the
+repository port in `domain/`, and `domain/events/`. This document describes **what ships**. The product
+blueprint describes **what is wanted**, and only one of those two is a claim about the code.
+
+1. **Every table row is a claim about the class.** `✅ Built` only for a state, transition, method, event
+   or repository method you found in the code you read; `⚠️ Unverified` when you believe it but did not
+   look; `⏳ Planned` when no code exists yet.
+2. **`⏳ Planned` is written in the future tense** — "will emit `CfpClosed`", never "publishes
+   `CfpClosed`". Present tense asserts the code ships.
+3. **A target-product state machine documented as if it were Wave 1 is the most expensive defect this
+   document can carry.** If the class implements one mutator, the matrix gets one `✅ Built` row and the
+   rest are `⏳ Planned`. That is a correct document, not an incomplete one.
+4. **Never invent an API in order to document one.** No `closeCfp()` in the class ⇒ it is a `⏳ Planned`
+   row or absent — never a present-tense row. Same rule for repository methods, event constructors and
+   value-object members.
+5. **A side effect needs a live consumer.** An event whose worker is not built gets `⏳ Planned`, and the
+   unbuilt worker does not appear as a bullet in the side-effect cell.
+6. **Transcribe the repository port, do not improve it** — optional parameters included (`save(e, tx?)`;
+   that `tx` is what makes the Transactional Outbox atomic). A phantom `findByStatus()` hides drift for
+   months.
+7. **A `✅` you did not earn by opening the file is worse than a `⚠️`** — this binds on this document's
+   tables exactly as it binds on a rule's `Enforced by` table (§Extraction item 5).
 
 ---
 
@@ -110,10 +139,13 @@ This skill is **language- and framework-agnostic**. File paths and class convent
 ### Entities (aggregate roots / child entities)
 1. **Definition & Context** - Description, database table / collection, primary key, implementation source path
 2. **State Machine Diagram** - Mermaid state diagram showing all states and transitions
-3. **State Transition Matrix** - Complete mapping of allowed state changes
+3. **State Transition Matrix** - Complete mapping of allowed state changes, every row carrying a Status
 4. **State Definitions** - Detailed criteria for each state
-5. **Invariants & Business Rules** - Links to extracted BRs and INVs
-6. **Linked User Stories & Flows** - References to flows that interact with the entity
+5. **Domain Behavior** - Every public method the class exposes, each with a Status
+6. **Domain Events** - Event, constructing call site, payload, and the consumer that exists today, each with a Status
+7. **Invariants & Business Rules** - Links to extracted BRs and INVs, plus the `Enforcement & tests` reverse edge
+8. **Repository Interface** *(aggregate roots only)* - The persistence port transcribed from `domain/`, signature included
+9. **Linked User Stories & Flows** - References to flows that interact with the entity
 
 ### Value Objects
 1. **Definition & Context** - Description, class/type name, implementation source path
@@ -160,8 +192,16 @@ This skill is **language- and framework-agnostic**. File paths and class convent
 
 ---
 
-**Last Updated:** 2026-07-14  
-**Version:** 1.2  
+**Last Updated:** 2026-09-16  
+**Version:** 1.3  
+**Changes from v1.2:**
+- Added `🔍 Code Is Truth`: open the class, its value objects, the repository port and `domain/events/`
+  before writing any row; every table row is an earned claim with a Status
+- `Documentation Structure → Entities` now lists `Domain Behavior`, `Domain Events` and
+  `Repository Interface` — the three sections whose absence let unbuilt mutators be documented in the
+  present tense
+- Templates `entity-lifecycle.md`, `value-object.md` and `domain-service.md` gained `Status` columns
+  (`✅ Built` / `⚠️ Unverified` / `⏳ Planned`) and a status legend
 **Changes from v1.1:**
 - Domain service documentation structure updated: sequence diagram + one flow diagram per method
 - `templates/domain-service.md` updated with separate flow diagram blocks per method and `rect`-based sequence diagram

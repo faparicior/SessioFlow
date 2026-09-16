@@ -29,7 +29,7 @@
    [Feature 01](../flows/features/feature-01-conference-creation-with-cfp.md):
    organizer picks a different name
 4. **If** the name contains no slug-able characters -> throw `EmptySlugError`
-   (mapped to `422 VALIDATION_ERROR`)
+   (mapped to `400 EMPTY_SLUG`)
 
 ### Gherkin Scenarios
 ```gherkin
@@ -48,7 +48,7 @@ Scenario: Slug collision rejected
 Scenario: Name with no slug-able characters
   Given an organizer submits the name "???"
   When the slug is derived from the name
-  Then the request is rejected with 422 VALIDATION_ERROR
+  Then the request is rejected with 400 EMPTY_SLUG
 ```
 
 ### Asynchronous or Downstream Effects
@@ -74,7 +74,7 @@ Scenario: Name with no slug-able characters
 
 * **Handling Violations/Exceptions:**
   * Throws `SlugExistsError` → `409 SLUG_EXISTS` (duplicate slug)
-  * Throws `EmptySlugError` → `422 VALIDATION_ERROR` (nothing to build a slug from)
+  * Throws `EmptySlugError` → `400 EMPTY_SLUG` (nothing to build a slug from)
   * Transaction aborts; no conference row and no outbox event are written
   * Organizer sees an inline form error asking for a different conference name
 
@@ -128,3 +128,6 @@ none.
   contradicted decision **D1** in
   [Feature 01](../flows/features/feature-01-conference-creation-with-cfp.md); §3/§4/§5 now state the
   actual behavior — hard fail with `SlugExistsError` → `409 SLUG_EXISTS`, `EmptySlugError` → 422.
+* **2026-09-16:** Docs audit correction. The `EmptySlugError` mapping is `400 EMPTY_SLUG` (code
+  `EMPTY_SLUG` in `@sessioflow/shared-http/error-mapper`), not `422 VALIDATION_ERROR` — the 2026-09-15
+  pass corrected the slug-collision path but left this one at 422.

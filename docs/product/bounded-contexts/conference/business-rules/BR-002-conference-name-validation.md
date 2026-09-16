@@ -24,7 +24,7 @@
 ### Evaluation Logic
 * **If** `eventName.length < 3` -> Throw `ConferenceNameTooShortError: "Conference name must be at least 3 characters"`
 * **If** `eventName.length > 100` -> Throw `ConferenceNameTooLongError: "Conference name cannot exceed 100 characters"`
-* **If** `eventName` contains invalid characters (e.g., control characters) -> Sanitize or reject
+* **If** `eventName` contains control characters or other noise -> **no sanitizing**: `ConferenceName.create()` only trims surrounding whitespace (Feature 01 enforcement table)
 * **Else** -> Allow conference creation; generate slug from sanitized name
 
 ### Gherkin Scenarios
@@ -56,7 +56,8 @@ Scenario: Name too long
 * **Enforcement Layer:** Value Object (`ConferenceName`) and Zod validation schema
 * **Handling Violations/Exceptions:** 
   * Throws `ConferenceNameTooShortError` / `ConferenceNameTooLongError` (or Zod's validation issue at the contract layer)
-  * HTTP/API returns 422 Unprocessable Entity
+  * HTTP/API returns 400 `{ error: { code: 'NAME_TOO_SHORT' | 'NAME_TOO_LONG', message } }` (shared
+    error mapper — see the Feature 01 HTTP error contract)
   * Form displays inline validation error in real-time
   * No state changes occur; transaction is aborted
 
@@ -107,3 +108,6 @@ none.
   `InvalidConferenceNameError` never existed. The shared contract layer
   (`ConferenceCreateSchema.name.min(3).max(100)`) is now recorded as an enforcement site — the bounds
   are duplicated there and must be edited together.
+* **2026-09-16:** Docs audit correction. §3 "Sanitize or reject" replaced with what ships: trim
+  only, no sanitizing. §4 "422 Unprocessable Entity" corrected to the 400
+  `{ error: { code, message } }` the error mapper returns for `NAME_TOO_SHORT` / `NAME_TOO_LONG`.

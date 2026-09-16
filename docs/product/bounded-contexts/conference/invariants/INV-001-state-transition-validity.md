@@ -36,14 +36,18 @@ Scenario: Attempting invalid state transition
 
 ### Critical Edge Cases Handled:
 * **Direct State Mutation:** The `status` field is private and can only be modified through domain methods that validate transitions.
-* **Concurrent Transitions:** Optimistic concurrency control via `version` field ensures only one transition can succeed per conference.
+* **Concurrent Transitions:** Wave 1 ships no `version` column and no optimistic locking — the
+  `conferences` table (`packages/shared/database/src/schema.ts`) has no such field. Today the only
+  mutator is `publishCfp()` (`DRAFT → CFP_OPEN`), so no concurrent state pair is reachable through
+  shipped code; version-based locking is a later-wave concern.
 * **Skipping States:** Attempting to transition from `DRAFT` directly to `REVIEWING` is rejected; must follow `DRAFT` → `CFP_OPEN` → `CFP_CLOSED` → `REVIEWING`.
 
 ## 4. Failure Response (Exception Handling)
 *What happens when this invariant is violated? Invariants always result in a rejected transaction and a domain exception.*
 
 * **Domain Exception:** `InvalidStatusTransitionError`
-* **HTTP/API Mapping:** `409 Conflict` or `422 Unprocessable Entity`
+* **HTTP/API Mapping:** `400 { error: { code: 'STATE_TRANSITION_INVALID', message } }` — the shared
+  error mapper routes `DomainInvariantError` subclasses to 400 (Feature 01 HTTP error contract)
 * **Rollback Behavior:** Complete database transaction rollback. No state is persisted.
 
 ## 5. Test Cases
@@ -65,7 +69,7 @@ Scenario: Attempted invalid state transition
   Given an Conference with status DRAFT
   When a command attempts to transition directly to REVIEWING
   Then the system throws InvalidStatusTransitionError
-  And HTTP response is 422 Unprocessable Entity
+  And HTTP response is 400 { error: { code: 'STATE_TRANSITION_INVALID', message } }
   And database transaction is rolled back
   And no state changes are persisted
   And user receives error message "Invalid state transition from DRAFT to REVIEWING"
@@ -119,3 +123,6 @@ none.
   (`InvalidStatusTransitionError` — there is no `InvalidStateTransitionError`). The transition table is
   now named as the single source of truth (`TRANSITIONS` + `ConferenceStatus.canTransitionTo()`), and the
   Wave 2 mutators listed in §1 are recorded as ⏳ Planned: only `publishCfp()` exists today.
+* **2026-09-16:** Docs audit correction. §3 optimistic-locking claim removed: there is no `version`
+  column in `schema.ts` and no plan for one in Wave 1. §4/§5 "409 Conflict or 422 Unprocessable
+  Entity" corrected to the 400 `STATE_TRANSITION_INVALID` the shared error mapper actually returns.
