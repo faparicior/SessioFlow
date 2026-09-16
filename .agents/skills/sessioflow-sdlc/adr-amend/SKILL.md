@@ -1,5 +1,5 @@
 ---
-name: amend-adr
+name: adr-amend
 description: >-
   Amend, refine, or record an architectural change to an existing ADR in docs/adr/.
   TRIGGER THIS SKILL when user mentions: amend adr, modify adr, change adr,

@@ -1,5 +1,5 @@
 ---
-name: create-adr
+name: adr-create
 description: >-
   Create a new Architecture Decision Record (ADR) in docs/adr/.
   TRIGGER THIS SKILL when user mentions: create adr, generate adr, new adr,

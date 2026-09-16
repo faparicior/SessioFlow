@@ -1,5 +1,5 @@
 ---
-name: validate-adr
+name: adr-validate
 description: >-
   Audit and validate the quality, completeness, and architectural compliance of any ADR or amendment in docs/adr/.
   TRIGGER THIS SKILL when user mentions: validate adr, audit adr, check adr quality,

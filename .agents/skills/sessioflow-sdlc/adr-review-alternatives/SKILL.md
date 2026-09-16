@@ -1,5 +1,5 @@
 ---
-name: review-adr-alternatives
+name: adr-review-alternatives
 description: >-
   Research current technologies, benchmarks, and modern alternatives to ADRs using active web search.
   TRIGGER THIS SKILL when user mentions: review adr alternatives, analyze adr alternatives,

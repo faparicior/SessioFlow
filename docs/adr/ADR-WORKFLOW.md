@@ -13,32 +13,32 @@ flowchart TD
     Start(["Architectural Need or Change"]) --> DecisionType{"What is the intent?"}
 
     %% Flow 1: New Decision
-    DecisionType -->|"New Architectural Decision"| F1_Gen["1. Create ADR\n(/create-adr)"]
+    DecisionType -->|"New Architectural Decision"| F1_Gen["1. Create ADR\n(/adr-create)"]
+    F1_Fill --> F1_Val["2. Validate Quality\n(/adr-validate)"]
     F1_Gen --> F1_Fill["Draft ADR using TEMPLATE.md\n(Context, Options, Decision, AX)"]
-    F1_Fill --> F1_Val["2. Validate Quality\n(/validate-adr)"]
     F1_Val --> F1_Idx["3. Auto-Catalog\n(README.md table & statistics)"]
 
     %% Flow 2: Amendment / Modification
-    DecisionType -->|"Modify / Refine Existing ADR"| F2_Amend["1. Amend ADR\n(/amend-adr)"]
+    DecisionType -->|"Modify / Refine Existing ADR"| F2_Amend["1. Amend ADR\n(/adr-amend)"]
     F2_Amend --> F2_Fill["Draft 0XX-01-*-amendment-*.md\n(Delta change & Rationale)"]
     F2_Fill --> F2_Link["2. Establish Two-Way Links\n(Amends <---> Amended By)"]
     F2_Link --> F1_Val
 
     %% Flow 3: Technical Analysis & Spike
-    DecisionType -->|"Technical Spike / Vendor Analysis"| F3_Ana["1. Analyze ADR\n(/amend-adr with Analysis template)"]
+    DecisionType -->|"Technical Spike / Vendor Analysis"| F3_Ana["1. Analyze ADR\n(/adr-amend with Analysis template)"]
     F3_Ana --> F3_Fill["Draft 0XX-02/03-*-analysis-*.md\n(Trade-off matrix & evaluations)"]
-    F3_Imp -->|"Multi-ADR ripple"| F3_ImpDoc["Draft 0XX-04-*-impact-analysis.md"]
     F3_Ana --> F3_Imp{"Cascading ripple\nto other ADRs?"}
+    F3_Imp -->|"Multi-ADR ripple"| F3_ImpDoc["Draft 0XX-04-*-impact-analysis.md"]
     F3_Imp -->|"No"| F1_Idx
     F3_ImpDoc --> F1_Idx
 
     %% Flow 4: Supersede
-    DecisionType -->|"Full Replacement / Deprecation"| F4_Super["1. Draft Replacement ADR\n(/create-adr with next sequence)"]
+    DecisionType -->|"Full Replacement / Deprecation"| F4_Super["1. Draft Replacement ADR\n(/adr-create with next sequence)"]
     F4_Super --> F4_Mark["2. Mark Old as 'Superseded'\n(Add 'Superseded By' link)"]
     F4_Mark --> F1_Idx
 
     %% Flow 5: Periodic Health
-    DecisionType -->|"Periodic Stack Health"| F5_Alt["Review Alternatives\n(/review-adr-alternatives)"]
+    DecisionType -->|"Periodic Stack Health"| F5_Alt["Review Alternatives\n(/adr-review-alternatives)"]
     F5_Alt --> F5_Done["Produces ADR_ALTERNATIVES_ANALYSIS.md\n& EXECUTIVE_SUMMARY.md"]
 
     F1_Idx --> End(["ADR Catalog Synchronized"])
@@ -129,17 +129,17 @@ Operations are segmented into dedicated skills per intention, with zero mode par
 
 | Skill | Directory | Natural Language Triggers | Primary Deliverable |
 | :--- | :--- | :--- | :--- |
-| **`/create-adr`** | `.agents/skills/sessioflow-sdlc/create-adr/` | *"Create a new ADR for...", "Draft an architecture decision for Redis"* | `docs/adr/0XX-*.md` (from `TEMPLATE.md`) + updated catalog |
-| **`/amend-adr`** | `.agents/skills/sessioflow-sdlc/amend-adr/` | *"Amend ADR-002 with DDD", "Create an amendment for ADR-016"* | `docs/adr/0XX-01-*-amendment-*.md` + two-way links |
-| **`/review-adr-alternatives`** | `.agents/skills/sessioflow-sdlc/review-adr-alternatives/` | *"Review alternatives for our stack", "Research tech stack alternatives"* | `docs/adr/_reports/ADR_ALTERNATIVES_ANALYSIS.md` & `EXECUTIVE_SUMMARY.md` |
-| **`/validate-adr`** | `.agents/skills/sessioflow-sdlc/validate-adr/` | *"Validate ADR-017", "Check the quality of ADR-023"* | Compliance score (High/Med/Low) & remediation points |
+| **`/adr-create`** | `.agents/skills/sessioflow-sdlc/adr-create/` | *"Create a new ADR for...", "Draft an architecture decision for Redis"* | `docs/adr/0XX-*.md` (from `TEMPLATE.md`) + updated catalog |
+| **`/adr-amend`** | `.agents/skills/sessioflow-sdlc/adr-amend/` | *"Amend ADR-002 with DDD", "Create an amendment for ADR-016"* | `docs/adr/0XX-01-*-amendment-*.md` + two-way links |
+| **`/adr-review-alternatives`** | `.agents/skills/sessioflow-sdlc/adr-review-alternatives/` | *"Review alternatives for our stack", "Research tech stack alternatives"* | `docs/adr/_reports/ADR_ALTERNATIVES_ANALYSIS.md` & `EXECUTIVE_SUMMARY.md` |
+| **`/adr-validate`** | `.agents/skills/sessioflow-sdlc/adr-validate/` | *"Validate ADR-017", "Check the quality of ADR-023"* | Compliance score (High/Med/Low) & remediation points |
 
 ### Shared Conventions & Templates
-- Standard ADR template: `create-adr/templates/TEMPLATE.md`
-- Amendment template: `amend-adr/templates/TEMPLATE-AMENDMENT.md`
-- Technical analysis template: `amend-adr/templates/TEMPLATE-ANALYSIS.md`
-- Tech review templates: `review-adr-alternatives/templates/`
-- Validation rubric: `validate-adr/templates/TEMPLATE-ADR_VALIDATOR.md`
+- Standard ADR template: `adr-create/templates/TEMPLATE.md`
+- Amendment template: `adr-amend/templates/TEMPLATE-AMENDMENT.md`
+- Technical analysis template: `adr-amend/templates/TEMPLATE-ANALYSIS.md`
+- Tech review templates: `adr-review-alternatives/templates/`
+- Validation rubric: `adr-validate/templates/TEMPLATE-ADR_VALIDATOR.md`
 - Shared naming conventions: `.agents/skills/sessioflow-sdlc/guidelines/adr-naming-conventions.md`
 
 ---
@@ -152,7 +152,7 @@ When a new architectural pattern, technology choice, or foundational constraint 
 
 1. **Trigger the Skill**:
    ```bash
-   /create-adr
+   /adr-create
    ```
    Or ask in natural language: *"Create a new ADR for adding Redis caching"*.
 2. **Interactive Drafting**:
@@ -160,7 +160,7 @@ When a new architectural pattern, technology choice, or foundational constraint 
    - Gathers context, decision drivers, considered options (min 2–3 with pros/cons), outcome, and consequences.
    - Completes the mandatory **🤖 AI & Agentic Ergonomics (AX)** section (`LLM Corpus Alignment`, `Guardrail Tax`, and drift risks).
 3. **Quality Validation**:
-   - Automatically verified via `/validate-adr` to ensure quality score ≥ Medium.
+   - Automatically verified via `/adr-validate` to ensure quality score ≥ Medium.
 4. **Catalog Synchronization**:
    - The skill writes the file to `docs/adr/0XX-your-decision.md` and appends the entry in `docs/adr/README.md`.
 
@@ -172,7 +172,7 @@ When a new architectural pattern, technology choice, or foundational constraint 
 
 1. **Trigger the Skill**:
    ```bash
-   /amend-adr
+   /adr-amend
    ```
    Or ask in natural language: *"Amend ADR-016 to introduce controller factories"*.
 2. **Draft the Delta**:
@@ -197,7 +197,7 @@ When a new architectural pattern, technology choice, or foundational constraint 
 When evaluating complex trade-offs or analyzing cascading effects across decisions:
 
 1. **Create Technical Spike**:
-   - Use `/amend-adr` specifying an analysis document.
+   - Use `/adr-amend` specifying an analysis document.
    - Creates `docs/adr/0XX-02-{topic}-analysis-{subtype}.md` (or `03`) to document benchmarks, alternatives evaluation, or vendor lock-in.
 2. **Assess Multi-ADR Ripple (Impact Analysis)**:
    - If the change alters assumptions in multiple ADRs (e.g. changing database ORM impacts auth, transactions, and repositories):
@@ -210,7 +210,7 @@ When evaluating complex trade-offs or analyzing cascading effects across decisio
 
 When a decision is completely replaced by a fundamentally different architecture:
 
-1. **Create Replacement ADR**: Use `/create-adr` to draft the successor with the next sequential number.
+1. **Create Replacement ADR**: Use `/adr-create` to draft the successor with the next sequential number.
 2. **Mark Original ADR as Superseded**:
    - Change `Status` of original ADR to: `⚠️ Superseded`.
    - Add link in original ADR header:
@@ -231,7 +231,7 @@ To verify whether active decisions remain competitive and up-to-date:
 
 1. **Trigger Tech Review**:
    ```bash
-   /review-adr-alternatives
+   /adr-review-alternatives
    ```
    Or: *"Review current alternatives for our database and auth stack"*.
 2. **Active Web Search**:
@@ -239,7 +239,7 @@ To verify whether active decisions remain competitive and up-to-date:
    - Classifies technologies in the Tech Radar (*Adopt / Trial / Assess / Hold*).
 3. **Deliverables**:
    - Updates `docs/adr/_reports/ADR_ALTERNATIVES_ANALYSIS.md` and `docs/adr/_reports/EXECUTIVE_SUMMARY.md`.
-   - Suggests running `/amend-adr` or `/create-adr` if action is warranted.
+   - Suggests running `/adr-amend` or `/adr-create` if action is warranted.
 
 ---
 

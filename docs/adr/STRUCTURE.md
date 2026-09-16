@@ -69,10 +69,10 @@ Templates and operational logic are distributed into dedicated skills by intenti
 
 | Skill | Path | Primary Role |
 | :--- | :--- | :--- |
-| `/create-adr` | `.agents/skills/sessioflow-sdlc/create-adr/` | Draft and catalog a new ADR |
-| `/amend-adr` | `.agents/skills/sessioflow-sdlc/amend-adr/` | Propose an amendment or technical analysis |
-| `/review-adr-alternatives` | `.agents/skills/sessioflow-sdlc/review-adr-alternatives/` | Web research & Tech Radar ecosystem review |
-| `/validate-adr` | `.agents/skills/sessioflow-sdlc/validate-adr/` | Quality audit against compliance rubric |
+| `/adr-create` | `.agents/skills/sessioflow-sdlc/adr-create/` | Draft and catalog a new ADR |
+| `/adr-amend` | `.agents/skills/sessioflow-sdlc/adr-amend/` | Propose an amendment or technical analysis |
+| `/adr-review-alternatives` | `.agents/skills/sessioflow-sdlc/adr-review-alternatives/` | Web research & Tech Radar ecosystem review |
+| `/adr-validate` | `.agents/skills/sessioflow-sdlc/adr-validate/` | Quality audit against compliance rubric |
 
 ---
 
@@ -81,18 +81,18 @@ Templates and operational logic are distributed into dedicated skills by intenti
 ### Creating a New ADR
 1. **Trigger the skill**:
    ```bash
-   /create-adr
+   /adr-create
    ```
    Or conversational: *"Create a new ADR for Redis caching"*.
 2. **Review & validate**:
    ```bash
-   /validate-adr
+   /adr-validate
    ```
 
 ### Proposing an Amendment
 1. **Trigger the skill**:
    ```bash
-   /amend-adr
+   /adr-amend
    ```
    Or conversational: *"Amend ADR-016 for controller factories"*.
 2. **Review two-way links**: Ensure `Amends` and `Amended By` are present.
@@ -100,7 +100,7 @@ Templates and operational logic are distributed into dedicated skills by intenti
 ### Researching Alternatives
 1. **Trigger the review**:
    ```bash
-   /review-adr-alternatives
+   /adr-review-alternatives
    ```
    Or conversational: *"Review current alternatives for our tech stack"*.
 
@@ -109,7 +109,7 @@ Templates and operational logic are distributed into dedicated skills by intenti
 ## Best Practices
 
 ✅ **DO:**
-- Use intention-based skills (`/create-adr`, `/amend-adr`, `/review-adr-alternatives`, `/validate-adr`).
+- Use intention-based skills (`/adr-create`, `/adr-amend`, `/adr-review-alternatives`, `/adr-validate`).
 - Maintain two-way linking when creating an Amendment.
 - Adhere to the naming conventions in `guidelines/adr-naming-conventions.md`.
 
@@ -125,10 +125,10 @@ Templates and operational logic are distributed into dedicated skills by intenti
 | :--- | :--- |
 | Individual ADRs & Amendments | `docs/adr/0XX-*.md` |
 | ADR Lifecycle & Management Guide | `docs/adr/ADR-WORKFLOW.md` |
-| Create ADR Skill | `.agents/skills/sessioflow-sdlc/create-adr/` |
-| Amend ADR Skill | `.agents/skills/sessioflow-sdlc/amend-adr/` |
-| Review Alternatives Skill | `.agents/skills/sessioflow-sdlc/review-adr-alternatives/` |
-| Validate ADR Skill | `.agents/skills/sessioflow-sdlc/validate-adr/` |
+| Create ADR Skill | `.agents/skills/sessioflow-sdlc/adr-create/` |
+| Amend ADR Skill | `.agents/skills/sessioflow-sdlc/adr-amend/` |
+| Review Alternatives Skill | `.agents/skills/sessioflow-sdlc/adr-review-alternatives/` |
+| Validate ADR Skill | `.agents/skills/sessioflow-sdlc/adr-validate/` |
 | Analysis Reports | `docs/adr/_reports/` |
 
 ---

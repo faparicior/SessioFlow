@@ -51,8 +51,8 @@ flowchart TD
     subgraph Operations ["Continuous Operations & Auditing"]
         O1["/explore-domain\n(Query flows, rules, events)"]
         O2["/audit-docs\n(Verify docs vs code drift)"]
-        O3["/create-adr & /amend-adr\n(Record & evolve decisions)"]
-        O4["/review-adr-alternatives\n(Evaluate stack currency)"]
+        O3["/adr-create & /adr-amend\n(Record & evolve decisions)"]
+        O4["/adr-review-alternatives\n(Evaluate stack currency)"]
     end
 
     subgraph Architecture ["Architectural Governance (docs/adr/)"]
@@ -81,10 +81,10 @@ The automation skills that drive each step of the SDLC are defined as self-conta
 | **`/modify-flow`** | `.agents/skills/sessioflow-sdlc/modify-flow/` | `docs/product/working-on/[change-name]/` | Existing, documented behavior needs modification or refactoring. |
 | **`/explore-domain`** | `.agents/skills/sessioflow-sdlc/explore-domain/` | *Read-only responses & diagrams* | Explaining behavior, querying business rules, cataloging domain events. |
 | **`/audit-docs`** | `.agents/skills/sessioflow-sdlc/audit-docs/` | *Drift analysis reports* | Health checks verifying alignment between living documentation and actual code. |
-| **`/create-adr`** | `.agents/skills/sessioflow-sdlc/create-adr/` | `docs/adr/0XX-*.md` | Recording a new Architectural Decision Record from discovery or technical need. |
-| **`/amend-adr`** | `.agents/skills/sessioflow-sdlc/amend-adr/` | `docs/adr/0XX-01-*.md` | Refining or amending an existing ADR non-destructively with two-way links. |
-| **`/review-adr-alternatives`** | `.agents/skills/sessioflow-sdlc/review-adr-alternatives/` | `docs/adr/_reports/` | Web research & evaluating tech stack currency against 2026 standards. |
-| **`/validate-adr`** | `.agents/skills/sessioflow-sdlc/validate-adr/` | *Quality score rubric* | Auditing compliance, options, consequences, and AX ergonomics in an ADR. |
+| **`/adr-create`** | `.agents/skills/sessioflow-sdlc/adr-create/` | `docs/adr/0XX-*.md` | Recording a new Architectural Decision Record from discovery or technical need. |
+| **`/adr-amend`** | `.agents/skills/sessioflow-sdlc/adr-amend/` | `docs/adr/0XX-01-*.md` | Refining or amending an existing ADR non-destructively with two-way links. |
+| **`/adr-review-alternatives`** | `.agents/skills/sessioflow-sdlc/adr-review-alternatives/` | `docs/adr/_reports/` | Web research & evaluating tech stack currency against 2026 standards. |
+| **`/adr-validate`** | `.agents/skills/sessioflow-sdlc/adr-validate/` | *Quality score rubric* | Auditing compliance, options, consequences, and AX ergonomics in an ADR. |
 | **`/create-module`** | `.agents/skills/sessioflow-sdlc/create-module/` | `packages/modules/[context]/` | Scaffolding a new DDD bounded context workspace package. |
 | **`/reverse-engineer-domain`** | `.agents/skills/sessioflow-sdlc/reverse-engineer-domain/` | `docs/product/discovered/`<br>`docs/product/bounded-contexts/` | Bottom-up software archeology extracting business rules and invariants from legacy code. |
 | **`/prd-workshop`** | `.agents/skills/sessioflow-sdlc/prd-workshop/` | `docs/product/prd/` *(or draft)* | *[Optional / Under Evaluation]* Drafting and validating formal Product Requirements Documents. |
@@ -227,4 +227,4 @@ When operating within this SDLC workflow, agents and engineers adhere to:
    - **Autonomous Sensible Defaults**: Stick to existing workspace packages, maintain strict TypeScript Value Objects, throw domain-specific exceptions, and avoid unnecessary pauses.
    - **Lack of Information Log**: Record assumptions explicitly using standardized tables (`Decision Domain`, `Choice Made`, `Rationale`, `Impact`).
 3. **[docs/ARCHITECTURE-RULES.md](file:///home/fernando/src/sessioflow/docs/ARCHITECTURE-RULES.md)**: Guardrails for domain isolation, Value Object invariants, and repository reconstitution patterns.
-4. **[docs/adr/ADR-WORKFLOW.md](file:///home/fernando/src/sessioflow/docs/adr/ADR-WORKFLOW.md)**: Full lifecycle and operational standards for creating (`/create-adr`), amending (`/amend-adr`), researching alternatives (`/review-adr-alternatives`), and validating (`/validate-adr`) architectural decisions.
+4. **[docs/adr/ADR-WORKFLOW.md](file:///home/fernando/src/sessioflow/docs/adr/ADR-WORKFLOW.md)**: Full lifecycle and operational standards for creating (`/adr-create`), amending (`/adr-amend`), researching alternatives (`/adr-review-alternatives`), and validating (`/adr-validate`) architectural decisions.
