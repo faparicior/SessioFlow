@@ -145,10 +145,11 @@ docs/
 │   │       └── value-objects/             # Phase 3: Domain Value Object specifications
 │   │           └── [vo-name].md           # Validation, immutability, and equality logic
 │   └── working-on/                        # Phase 5+: Transient change proposals & grace period buffer
-│       ├── README.md                      # Proposal lifecycle policy (Draft -> Implemented -> Ready to Purge)
-│       └── [change-name]/
-│           ├── proposal.md                # Problem statement, current vs desired behavior, scope
-│           └── implementation-plan.md     # Phased execution plan before updating living docs
+│       ├── README.md                      # Proposal lifecycle & strict agent isolation rules
+│       ├── active/[change-name]/          # In-flight proposals being drafted or implemented
+│       │   ├── proposal.md                # Problem statement, current vs desired behavior, scope
+│       │   └── implementation-plan.md     # Phased execution plan before updating living docs
+│       └── grace-period/[change-name]/    # Shipped proposals cooling off in production before purge
 │
 ├── templates/                             # ─── Standardized Documentation Templates ───
 │   ├── inception/                         # Templates for steps 1 through 8 of Lean Inception

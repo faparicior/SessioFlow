@@ -121,10 +121,9 @@ runs:
 
 ## Step 2: Write the Proposal
 
-Use `templates/proposal.md`. Save it next to wherever this repo keeps in-progress/pre-implementation
-product docs, if such a place exists (Step 0). If not, propose a location such as a `workin-on/` or
-`proposals/` folder alongside the existing flow documentation tree, and confirm it with the user before
-writing there.
+Use `templates/proposal.md`. In SessioFlow, proposals must be saved strictly under:
+`docs/product/working-on/active/[change-name]/proposal.md`
+(Never save directly in `working-on/` root or `grace-period/`, to prevent LLM context bleeding across worktrees/branches).
 
 Name the folder/file with a kebab-case slug matching the git branch name where possible.
 
@@ -243,7 +242,11 @@ Once the change is implemented and verified:
 
 Once Step 5 is complete and living documentation is updated:
 
-1. **Enter Grace Period**: Do not delete the proposal immediately upon shipping. Set status in `proposal.md`:
+1. **Move to Grace Period**: Do not delete the proposal immediately upon shipping. Move the directory out of active view to prevent LLM context contamination across branches or worktrees:
+   ```bash
+   mv docs/product/working-on/active/[change-name] docs/product/working-on/grace-period/
+   ```
+   Update status in `proposal.md`:
    ```markdown
    * **Status:** 🚀 Implemented (Grace Period)
    * **Shipped Date:** YYYY-MM-DD
@@ -253,9 +256,9 @@ Once Step 5 is complete and living documentation is updated:
    ```markdown
    * **Status:** 🧹 Ready to Purge
    ```
-3. **Safe Purge**: Because living documentation (`bounded-contexts/`, `flows/README.md`) was already updated in Step 5, deleting the `docs/product/working-on/[change-name]/` directory loses zero context:
+3. **Safe Purge**: Because living documentation (`bounded-contexts/`, `flows/README.md`) was already updated in Step 5, deleting the proposal directory loses zero context:
    ```bash
-   rm -rf docs/product/working-on/[change-name]
+   rm -rf docs/product/working-on/grace-period/[change-name]
    ```
 
 ---
