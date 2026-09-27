@@ -74,6 +74,16 @@ For each feature slice, conduct a thorough technical analysis:
      * **Dual-Write Consistency**: State saved but event dispatch dropped $\rightarrow$ Transactional Outbox in single DB transaction.
      * **Idempotency & Replays**: Repeated requests or duplicate webhooks $\rightarrow$ idempotency key / graceful no-op.
 
+3. **Cross-Check Active Invariants Across Bounded Contexts (Combat Flow Tunnel Vision)**:
+   - **Crucial Rule**: Do NOT rely solely on the target flow document's "Enforced Invariants" section, which may omit cross-context rules or lag behind the codebase.
+   - Search the entire invariants tree across all bounded contexts:
+     * `docs/product/bounded-contexts/**/invariants/INV-*.md`
+     * `docs/product/discovered/invariants/INV-RAW-*.md`
+   - Identify every invariant whose statement constrains any operation this feature performs (e.g. calling a domain service, mutating aggregate status, calculating dates, filtering roles/publishers).
+   - For each matching INV, ask: *"Does this new code path enforce it?"*
+     * If not: mark it as **⚠️ Implementation Trap**, add an explicit requirement (`F[X]-R[Y]`), and mandate a dedicated test before coding begins.
+     * Tabulate every checked invariant in the feature specification's `🛡️ Concurrency, TOCTOU & Invariant Integrity Analysis` table.
+
 ---
 
 ### Step 3: Define the Executable Contract & HTTP Error Contract

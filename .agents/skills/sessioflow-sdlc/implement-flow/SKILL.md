@@ -57,10 +57,12 @@ flowchart TD
    - Read any associated domain models: `entities/`, `business-rules/`, `invariants/`.
    - Extract the HTTP error contract table, concurrency safeguards, acceptance criteria, and layer scope.
 
-4. **Extract & Catalogue All Edge Cases and Implementation Traps**:
+4. **Extract & Catalogue All Edge Cases, Implementation Traps & Cross-Invariants**:
    - Read the feature spec's and flow doc's edge cases, technical failures, and alternative paths.
-   - Produce a numbered catalogue of **every** edge case, technical failure mode, and validation boundary.
-   - For each item, explicitly ask: *"Would a naive implementation contradict this?"* — mark those as **⚠️ Implementation Trap**. These are the cases most likely to be implemented incorrectly (e.g. a guard that skips delivery when the spec says delivery must continue).
+   - **Cross-check active invariants against new operation sites**: Search `docs/product/bounded-contexts/**/invariants/INV-*.md` (and `docs/product/discovered/invariants/INV-RAW-*.md`) for any invariant whose statement constrains an operation this feature performs (e.g. invoking a domain/application service, creating an aggregate, mutating state, filtering publishers/roles).
+   - For each matching INV, ask: *"Does this new code path enforce it?"* — if not explicitly enforced or tested, mark it as **⚠️ Implementation Trap** and add a dedicated test requirement to the catalogue before writing any code. Invariants relevant to an operation may live in a different bounded context or may not yet be listed in the target flow's "Enforced Invariants" section.
+   - Produce a numbered catalogue of **every** edge case, technical failure mode, cross-invariant boundary, and validation trap.
+   - For each item, explicitly ask: *"Would a naive implementation contradict this?"* — mark those as **⚠️ Implementation Trap** (e.g. a guard that skips an exclusion list when the spec requires exclusion).
    - This catalogue is the primary input for Phase 0 test writing. Every item must map to at least one test before implementation begins.
 
 5. **Consult Architectural Documents & ADRs (Single Sources of Truth)**:

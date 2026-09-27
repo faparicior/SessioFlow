@@ -97,11 +97,10 @@ runs:
      don't silently skip the frozen doc, and don't silently rewrite it either.
 5. While reading upstream docs, also note who is affected (personas) and whether this reverses or extends
    an already-scoped feature — this feeds Section 1 (Product Rationale), not just Section 6.
-6. Check whether a feature flag already exists for this behaviour (per Step 0's finding) — state explicitly
-   in the proposal whether one exists or would need to be created.
-7. **Perform Concurrency, TOCTOU, Idempotency & Invariant Impact Analysis** — evaluate if modifying this flow introduces
-   new race conditions, check-then-act vulnerabilities, duplicate replay side-effects, or alters domain invariant enforcements (e.g. database-level
-   unique indexes, optimistic locking versioning, aggregate consistency boundaries, transactional outbox atomicity, or transaction isolation).
+7. **Perform Concurrency, TOCTOU, Idempotency & Active Invariant Cross-Check** —
+   - **Cross-check active invariants across all bounded contexts**: Search `docs/product/bounded-contexts/**/invariants/INV-*.md` and `docs/product/discovered/invariants/INV-RAW-*.md` for any invariant whose statement constrains the operations being modified, extended, or newly called (e.g. calling an application/domain service from a new entry point, adding a new delivery mechanism, mutating status).
+   - For each matching invariant, verify whether the change preserves enforcement or introduces an unconstrained code path. List each relevant INV in the proposal's scope and implementation plan.
+   - Evaluate if modifying this flow introduces new race conditions, check-then-act vulnerabilities, duplicate replay side-effects, or alters domain invariant enforcements (e.g. database-level unique indexes, optimistic locking versioning, aggregate consistency boundaries, transactional outbox atomicity, or transaction isolation).
 8. **Evaluate Migration & Backward Compatibility** — determine if modifying data schemas, contracts, or business rules requires database column defaults,
    data backfill scripts, or API contract versioning for backward compatibility with clients.
 9. **Read the rule/invariant document's own traceability section before grepping.** If this repo links

@@ -67,8 +67,12 @@
 ## 🛡️ Concurrency, TOCTOU & Invariant Integrity Analysis
 *Evaluate race conditions, check-then-act vulnerabilities, and data consistency safeguards.*
 
-| Concurrency Vector | Risk in This Feature | Guard / Mitigation Strategy | Enforcement Mechanism |
-|--------------------|----------------------|-----------------------------|-----------------------|
+> [!IMPORTANT]
+> **Active Invariant Cross-Check**: Before filling this table, search the full `invariants/` tree across all bounded contexts (`docs/product/bounded-contexts/**/invariants/INV-*.md`) for INVs that apply to any operation this feature performs. Do NOT rely solely on the parent flow document's "Enforced Invariants" section, which may lag behind the codebase or omit cross-context invariants.
+
+| Concurrency & Invariant Vector | Risk in This Feature | Guard / Mitigation Strategy | Enforcement Mechanism |
+|--------------------------------|----------------------|-----------------------------|-----------------------|
+| **Active INV Cross-Check** | List every INV-XXX across all bounded contexts whose statement applies to an operation this feature performs. Does this code path enforce it? | e.g. Exclude restricted roles (INV-003); guard state with domain exception (INV-004) | Confirmed in unit/integration test asserting condition is checked |
 | **Uniqueness (TOCTOU)** | e.g. Concurrent inserts with duplicate slug | Database UNIQUE index + Domain Error translation | `UNIQUE INDEX` $\rightarrow$ `[DuplicateKeyError]` $\rightarrow$ `409` |
 | **Quotas & Limits** | e.g. Concurrent creations exceeding free tier quota | Atomic count check within transaction / lock / constraint | DB constraint / Isolation level |
 | **State Machine Race** | e.g. Concurrent transitions on same aggregate | Optimistic locking / conditional update | `version` column / `WHERE status = ...` |
