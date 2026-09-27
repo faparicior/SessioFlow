@@ -29,23 +29,28 @@ flowchart TD
     Discovery --> P2
 
     subgraph Specs ["Phase 2: Technical Flow Specs"]
-        P2["/create-flow-documentation"] --> D2["docs/product/bounded-contexts/[context]/flows/"]
+        P2["/create-flow-documentation"] --> D2["docs/product/bounded-contexts/[context]/flows/journey-XX-name.md"]
+    end
+
+    subgraph Features ["Phase 2b: Feature Specifications & Slicing"]
+        D2 --> P2b["/create-features"]
+        P2b --> D2b["docs/product/bounded-contexts/[context]/flows/features/\n(feature-01-*.md, feature-02-*.md)"]
     end
 
     subgraph DomainModel ["Phase 3: Domain Modeling"]
-        D2 --> P3["/create-entity-lifecycle"]
+        D2b --> P3["/create-entity-lifecycle"]
         P3 --> D3["docs/product/bounded-contexts/[context]/entities/\nbusiness-rules/\ninvariants/\nvalue-objects/"]
     end
 
     subgraph Implementation ["Phase 4: Layered Implementation (TDD/DDD)"]
-        D2 & D3 --> P4["/implement-flow"]
+        D2b & D3 --> P4["/implement-flow"]
         P4 --> D4["packages/modules/[context]/\ntests/"]
     end
 
     subgraph Evolution ["Phase 5+: Evolution & Change Management"]
         D4 --> P5["/modify-flow"]
         P5 --> D5["docs/product/working-on/[change-name]/"]
-        D5 -. In-place updates .-> D2 & D3
+        D5 -. In-place updates .-> D2 & D2b & D3
     end
 
     subgraph Operations ["Continuous Operations & Auditing"]
@@ -61,6 +66,7 @@ flowchart TD
 
     Discovery --> ADR
     ADR -. Read & Enforced .-> Specs
+    ADR -. Feature Boundaries .-> Features
     ADR -. Domain Purity .-> DomainModel
     ADR -. CQRS, DI, ORM .-> Implementation
 ```
@@ -76,8 +82,9 @@ The automation skills that drive each step of the SDLC are defined as self-conta
 | **`/inception-workshop`** | `.agents/skills/sessioflow-sdlc/inception-workshop/` | `docs/inception/` | Starting a new product, initiative, or MVP from scratch (8-step Lean Inception). |
 | **`/user-story-mapping`** | `.agents/skills/sessioflow-sdlc/user-story-mapping/` | `docs/user-story-mapping/` | Slicing user journeys into horizontal backbone, INVEST story cards, and release waves. |
 | **`/create-flow-documentation`** | `.agents/skills/sessioflow-sdlc/create-flow-documentation/` | `docs/product/bounded-contexts/[context]/flows/` | User journeys (Inception) or story cards (USM) defined; technical specs needed. |
-| **`/create-entity-lifecycle`** | `.agents/skills/sessioflow-sdlc/create-entity-lifecycle/` | `docs/product/bounded-contexts/[context]/entities/` | Domain entities with distinct states, transitions, and rules emerge from flows. |
-| **`/implement-flow`** | `.agents/skills/sessioflow-sdlc/implement-flow/` | `packages/modules/[context]/`<br>`tests/` | Flow specification is complete and ready for TDD / DDD implementation. |
+| **`/create-features`** | `.agents/skills/sessioflow-sdlc/create-features/` | `docs/product/bounded-contexts/[context]/flows/features/` | Flow document ready; needs decomposition into sequentially numbered vertical feature specifications with HTTP error contracts. |
+| **`/create-entity-lifecycle`** | `.agents/skills/sessioflow-sdlc/create-entity-lifecycle/` | `docs/product/bounded-contexts/[context]/entities/` | Domain entities with distinct states, transitions, and rules emerge from flows and features. |
+| **`/implement-flow`** | `.agents/skills/sessioflow-sdlc/implement-flow/` | `packages/modules/[context]/`<br>`tests/` | Feature specifications and domain models ready for TDD / DDD implementation. |
 | **`/modify-flow`** | `.agents/skills/sessioflow-sdlc/modify-flow/` | `docs/product/working-on/[change-name]/` | Existing, documented behavior needs modification or refactoring. |
 | **`/explore-domain`** | `.agents/skills/sessioflow-sdlc/explore-domain/` | *Read-only responses & diagrams* | Explaining behavior, querying business rules, cataloging domain events. |
 | **`/audit-docs`** | `.agents/skills/sessioflow-sdlc/audit-docs/` | *Drift analysis reports* | Health checks verifying alignment between living documentation and actual code. |
@@ -132,10 +139,10 @@ docs/
 │   ├── bounded-contexts/
 │   │   └── [context]/                     # e.g., conference, submission, review, scheduling
 │   │       ├── README.md                  # Bounded context summary and boundary definition
-│   │       ├── flows/                     # Phase 2: Flow specifications
-│   │       │   ├── journey-XX-name.md     # Flow spec (Mermaid diagrams, Gherkin, BR references)
+│   │       ├── flows/                     # Phase 2 & 2b: Flow & Feature specifications
+│   │       │   ├── journey-XX-name.md     # Phase 2: Flow spec (Mermaid diagrams, Gherkin, BR references)
 │   │       │   ├── journey-XX-plan.md     # Phase 4: Implementation task breakdown
-│   │       │   └── features/              # Fine-grained feature specs
+│   │       │   └── features/              # Phase 2b: Sequentially numbered feature specs (feature-01-*.md)
 │   │       ├── entities/                  # Phase 3: Entity lifecycle specifications
 │   │       │   └── [entity-name].md       # State machines, transitions, guards, actions
 │   │       ├── business-rules/            # Phase 3: Business rules
@@ -163,6 +170,7 @@ docs/
 │   │   └── 8-mvp-canvas-definition.md
 │   ├── product/                           # Templates for domain and flow artifacts
 │   │   ├── flows.md                       # Journey and flow template
+│   │   ├── features.md                    # Feature specification template (vertical slices)
 │   │   ├── entity-lifecycle.md            # Entity lifecycle template
 │   │   ├── business-rules.md              # Business rule template
 │   │   └── invariants.md                  # Invariant template

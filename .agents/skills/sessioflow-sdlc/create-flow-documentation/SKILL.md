@@ -171,6 +171,13 @@ The generated flow document should be a **single, comprehensive document** that 
 
 ---
 
+## ⏭️ Next Step in the SDLC Workflow
+
+Once the flow specification document (`journey-XX-[name].md`) is created and approved:
+* **Invoke `/create-features` (Phase 2b)** to slice the user journey into sequentially numbered feature specifications (`features/feature-01-[name].md`, `feature-02-[name].md`) with HTTP error contracts and concurrency analysis.
+
+---
+
 ## 📚 Bundled Resources
 
 ### Templates

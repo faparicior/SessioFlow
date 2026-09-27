@@ -14,7 +14,9 @@ Phase 1 — Product Discovery & Slicing (Equal Entry Points):
   └─ Option B: /user-story-mapping ──> docs/user-story-mapping/
   (Optional Bridge: Inception can feed directly into Story Mapping)
         ↓
-/create-flow-documentation   Phase 2 — Flow Specs (how each feature works)
+/create-flow-documentation   Phase 2 — Flow Specs (how each journey works end-to-end)
+        ↓
+/create-features             Phase 2b — Feature Specs (vertical slices, contracts, error mappings)
         ↓
 /create-entity-lifecycle     Phase 3 — Domain Model (entities, BRs, invariants)
         ↓
@@ -170,19 +172,52 @@ Step 2 (Map Big Picture / Backbone) and Step 3 (Explore Body / Story Cards) are 
 
 ---
 
+## Phase 2b — `/create-features`
+
+**Purpose:** Break down an end-to-end User Flow document into sequentially numbered vertical feature specifications (`features/feature-01-*.md`).
+
+**Trigger:** A flow document from Phase 2 (`journey-XX-[name].md`) is complete and needs slicing into executable feature specifications before domain modeling or TDD.
+
+### Inputs
+
+- `docs/product/bounded-contexts/[context]/flows/journey-XX-name.md`
+- Architecture references (`AGENTS.md`, `docs/ARCHITECTURE.md`, `docs/adr/`)
+
+### Output location
+
+`docs/product/bounded-contexts/[context]/flows/features/feature-[01]-[name].md`
+
+### Each feature specification includes
+
+- Functional & non-functional requirements (`F[X]-R[Y]`)
+- HTTP error contract table (Domain Exception $\rightarrow$ Error Code $\rightarrow$ HTTP Status $\rightarrow$ message)
+- Concurrency, TOCTOU & invariant integrity analysis (uniqueness, quotas, state races, outbox atomicity)
+- Layer-by-layer implementation scope (Contracts, Domain, Application, Infrastructure, Interface)
+- Lack of Information Log (`🧠 Agent Design Decisions & Assumptions`)
+
+### Existing feature specs in this repo
+
+| Bounded context | Feature | File |
+|-----------------|---------|------|
+| conference | Conference Creation with CfP (F1) | [`feature-01-conference-creation-with-cfp.md`](product/bounded-contexts/conference/flows/features/feature-01-conference-creation-with-cfp.md) |
+| conference | Conference Dashboard & CfP Link (F2) | [`feature-02-conference-dashboard-cfp-link.md`](product/bounded-contexts/conference/flows/features/feature-02-conference-dashboard-cfp-link.md) |
+
+---
+
 ## Phase 3 — `/create-entity-lifecycle`
 
-**Purpose:** Document each domain entity as a full lifecycle specification once it emerges from the flows.
+**Purpose:** Document each domain entity as a full lifecycle specification once it emerges from the flows and features.
 
-**Trigger:** One or more flows in Phase 2 reveal a domain entity worth formalising (recurring states, transitions, constraints).
+**Trigger:** One or more flows and feature specs reveal a domain entity worth formalising (recurring states, transitions, constraints).
 
 ### Recommended order within this phase
 
 ```
 1. Write initial flows (Phase 2)
-2. Entities become visible in the flows
-3. Document each entity lifecycle
-4. Write further flows that reference the documented entities
+2. Slice into feature specifications (Phase 2b)
+3. Entities, BRs and Invariants become visible with direct feature traceability
+4. Document each entity lifecycle (Phase 3)
+5. Write further flows that reference the documented entities
 ```
 
 ### Each entity document includes
@@ -206,7 +241,7 @@ Step 2 (Map Big Picture / Backbone) and Step 3 (Explore Body / Story Cards) are 
 
 **Purpose:** Implement each flow feature incrementally using hybrid TDD and DDD layering.
 
-**Trigger:** A flow document from Phase 2 is ready and you want to write production code for it.
+**Trigger:** Feature specifications from Phase 2b (and domain models from Phase 3) are ready and you want to plan and write production code for them.
 
 ### Implementation order (hybrid TDD)
 
@@ -227,7 +262,8 @@ Step 2 (Map Big Picture / Backbone) and Step 3 (Explore Body / Story Cards) are 
 | Artefact | Location |
 |----------|----------|
 | Flow development plan | `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md` |
-| Feature specification | `docs/product/bounded-contexts/[context]/flows/features/feature-[name].md` |
+
+*(Note: Feature specifications are created upstream in **Phase 2b via `/create-features`**)*
 
 ### DDD layer structure (this repo)
 
@@ -330,8 +366,9 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 | `/inception-workshop` | Starting a new product or epic — need to define vision, users, features, MVP |
 | `/user-story-mapping` | Need granular horizontal backbone, INVEST story cards, and release slices (standalone or from inception) |
 | `/create-flow-documentation` | Journeys / story cards are defined — need technical flow specs with diagrams and acceptance criteria |
+| `/create-features` | Flow doc is ready — need to slice it into sequentially numbered feature specifications with error contracts |
 | `/create-entity-lifecycle` | A domain entity with clear states/transitions has emerged — need its full lifecycle spec |
-| `/implement-flow` | A flow doc is ready — need to write production code for it, layer by layer |
+| `/implement-flow` | Feature specs are ready — need to plan and write production code for them, layer by layer |
 | `/modify-flow` | Changing existing behaviour — need a proposal, plan, and doc updates |
 | `/explore-domain` | Understanding what the system does — PO questions, onboarding, tracing an event, finding a rule |
 | `/audit-docs` | Checking whether docs still match code — periodic health check, pre-release sweep, post-refactor |
@@ -354,6 +391,7 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 │   ├── adr-validate/              # Any time — ADR quality & compliance audit
 │   ├── adr-review-alternatives/   # Any time — alternatives & tech-currency review
 │   ├── create-flow-documentation/ # Phase 2 — flow specs
+│   ├── create-features/           # Phase 2b — feature specs & slicing
 │   ├── create-entity-lifecycle/   # Phase 3 — domain model
 │   ├── create-module/             # Phase 4 — scaffold a workspace package
 │   ├── implement-flow/            # Phase 4 — code

@@ -2,12 +2,7 @@
   "retryCount": 2,
   "fallbackRetryDelay": "3s",
   "timeout": "15s",
-  "aliveStatusCodes": [
-    200,
-    203,
-    206,
-    429
-  ],
+  "aliveStatusCodes": [200, 203, 206, 429],
   "ignorePatterns": [
     {
       "pattern": "^#"

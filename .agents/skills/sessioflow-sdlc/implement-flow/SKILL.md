@@ -28,71 +28,54 @@ The user maintains explicit control over every stage and execution step:
 
 ---
 
-## 🔄 The 4-Stage Implementation Lifecycle
+## 🔄 The Implementation Lifecycle
 
 ```mermaid
 flowchart TD
-    A["1. Read Flow & Architecture<br/>(flows/, AGENTS.md, ARCHITECTURE.md)"] --> B["2. Create Feature Specs<br/>(features/feature-01-*.md, feature-02-*.md)"]
-    B --> R1{{"🛑 USER REVIEW & APPROVAL<br/>(Inspect Feature Specs)"}}
-    R1 -->|Approved| C["3. Create Flow Plan<br/>([flow]-plan.md)"]
+    A["1. Read Feature Specs & Architecture<br/>(features/, flows/, AGENTS.md, ARCHITECTURE.md)"] --> B["2. Create Development Plan<br/>([flow]-plan.md)"]
+    B --> R1{{"🛑 USER REVIEW & APPROVAL<br/>(Inspect Flow Plan)"}}
+    R1 -->|Approved| C["3. Apply / Execute<br/>(Phased TDD with per-phase gates)"]
     R1 -->|Changes requested| B
-    C --> R2{{"🛑 USER REVIEW & APPROVAL<br/>(Inspect Flow Plan)"}}
-    R2 -->|Approved| D["4. Apply / Execute<br/>(Phased TDD with per-phase gates)"]
-    R2 -->|Changes requested| C
 ```
 
 ---
 
-### Step 1: Read Flow Documentation, ADRs & Architecture
+### Step 1: Read Feature Specifications, Flow Documentation & Architecture
 
-1. **Inspect Existing Codebase & Artifacts First (Search-First)**:
+1. **Verify Prerequisites (Feature Specs Must Exist)**:
+   - Check `docs/product/bounded-contexts/[context]/flows/features/` for the feature specification(s) to implement (e.g. `feature-01-[name].md`).
+   - If feature specifications do NOT exist yet, stop and invoke **`/create-features`** first to slice and specify the features before planning implementation.
+
+2. **Inspect Existing Codebase & Artifacts First (Search-First)**:
    - Consult **`AGENTS.md`** and **`docs/ARCHITECTURE.md`** (or **`CLAUDE.md`** if `AGENTS.md` is absent) to determine the repository's folder structure, bounded context paths, and framework transport layers.
-   - **Check for cross-repo dependencies**: Read the `CLAUDE.md` (or `AGENTS.md`) **Cross-Repo Dependencies** section. If this flow touches other repositories, declare them in the plan's `🔗 Cross-Repo Dependencies` table **before writing any feature specs**. Flag any deploy-order constraint to the user at the summary step.
+   - **Check for cross-repo dependencies**: Read the `CLAUDE.md` (or `AGENTS.md`) **Cross-Repo Dependencies** section. If this flow touches other repositories, declare them in the plan's `🔗 Cross-Repo Dependencies` table **before writing the plan**. Flag any deploy-order constraint to the user at the summary step.
    - Check if the target bounded context module already exists in the codebase before scaffolding. **Never re-scaffold or overwrite existing modules**.
-   - Check the flow's features directory and existing flow plan files to identify pre-existing specifications or plans to refine/update.
 
-2. **Read Flow Specification & Business Rules**:
-   - Read the target flow document: `docs/product/bounded-contexts/[context]/flows/[flow-name].md` (or the repository's flow specification path).
-   - Extract the user journey, actors, sequence flow, state machine transitions, invariants, and business rules.
-   - Extract domain event side-effects and external integration boundaries.
+3. **Read Feature Specification & Domain Rules**:
+   - Read the target feature specification: `docs/product/bounded-contexts/[context]/flows/features/feature-[XX]-[feature-name].md`.
+   - Read the parent flow document: `docs/product/bounded-contexts/[context]/flows/[flow-name].md`.
+   - Read any associated domain models: `entities/`, `business-rules/`, `invariants/`.
+   - Extract the HTTP error contract table, concurrency safeguards, acceptance criteria, and layer scope.
 
-3. **Extract & Catalogue All Edge Cases and Implementation Traps**:
-   - Read the flow doc's "Edge Cases & Invariant Integrity", "Technical Failures", and "Alternative Paths" sections in full.
+4. **Extract & Catalogue All Edge Cases and Implementation Traps**:
+   - Read the feature spec's and flow doc's edge cases, technical failures, and alternative paths.
    - Produce a numbered catalogue of **every** edge case, technical failure mode, and validation boundary.
    - For each item, explicitly ask: *"Would a naive implementation contradict this?"* — mark those as **⚠️ Implementation Trap**. These are the cases most likely to be implemented incorrectly (e.g. a guard that skips delivery when the spec says delivery must continue).
    - This catalogue is the primary input for Phase 0 test writing. Every item must map to at least one test before implementation begins.
 
-4. **Consult Architectural Documents & ADRs (Single Sources of Truth)**:
+5. **Consult Architectural Documents & ADRs (Single Sources of Truth)**:
    - **`AGENTS.md` & `docs/ARCHITECTURE.md`**: For directory layout, package boundaries, framework routes/entrypoints, and verification commands.
    - **`docs/ARCHITECTURE-RULES.md`**: For strict DDD templates (Value Objects, Entities, Domain Events, Exceptions, CQRS Handlers, Response DTOs, and Repositories).
    - **`docs/adr/README.md`**: For architectural decisions relevant to this flow (CQRS, Auth, Storage, Data Access, Outbox, API Contracts).
 
-4. **Summarize Understanding & Scope**:
-   - Present a clear summary of the current codebase state (existing vs missing files), target flow scope, and impacted layers to the user before writing or updating specifications.
+6. **Summarize Understanding & Scope**:
+   - Present a clear summary of the current codebase state (existing vs missing files), target feature scope, and impacted layers to the user before generating the implementation plan.
 
 ---
 
-### Step 2: Create Feature Specifications (Sequentially Numbered)
-1. **Sequential Numbering & Ordering**:
-   - Break down the flow into **sequentially numbered** feature specifications under the context's flow features directory:
-     `docs/product/bounded-contexts/[context]/flows/features/feature-01-[feature-name].md`
-     `docs/product/bounded-contexts/[context]/flows/features/feature-02-[feature-name].md`
-   - Use two-digit zero-padded prefixes (`01`, `02`, `03`...) and standard short identifiers (`F1`, `F2`, `F3`...) to ensure clear, unambiguous execution ordering.
-2. Use the template: `templates/feature-specification.md` (located in this skill).
-3. **Log All Design Decisions & Assumptions (Lack of Information Log)**:
-   - Explicitly record any judgment calls, fallback ports, error code mappings, or tie-breakers made by the LLM in the `🧠 Agent Design Decisions & Assumptions` section so they are visible for user audit.
-4. **Perform Concurrency, TOCTOU & Invariant Analysis**:
-   - Explicitly evaluate race conditions, check-then-act vulnerabilities, and data consistency safeguards (e.g. database-level unique constraints, optimistic locking, idempotent event dispatch) in the `🛡️ Concurrency, TOCTOU & Invariant Integrity Analysis` section.
-5. Define the requirements, domain model, layer scope, and acceptance criteria mapped to the repository's architectural layers.
-6. **🛑 Review Gate**:
-   - Stop and present the generated feature specification document(s) to the user with file links.
-   - Ask the user to review the document and provide feedback on the design decisions.
-   - **Do NOT proceed to Step 3 until the user approves the feature specifications.**
+### Step 2: Create Flow Development Plan
 
----
-
-### Step 3: Create Flow Development Plan
-1. Create a flow-level plan alongside the flow document:
+1. Create a flow-level or feature-level development plan alongside the flow document:
    `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md`
 2. Use the template: `templates/flow-development-plan.md` (located in this skill).
 3. **Populate the Lack of Information Log**:
@@ -101,11 +84,11 @@ flowchart TD
 5. **🛑 Review Gate**:
    - Stop and present the generated flow development plan to the user with file links.
    - Confirm phase ordering, test scope, affected files, and LLM design decisions.
-   - **Do NOT start implementing code (Step 4) until the user explicitly approves the plan.**
+   - **Do NOT start implementing code (Step 3) until the user explicitly approves the plan.**
 
 ---
 
-### Step 4: Apply & Execute (Phase-by-Phase TDD with User Control)
+### Step 3: Apply & Execute (Phase-by-Phase TDD with User Control)
 
 Execute one phase at a time according to `[flow-name]-plan.md`. Within each phase, strictly follow the 4-step micro-cycle:
 
