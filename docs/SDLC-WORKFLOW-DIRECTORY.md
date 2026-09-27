@@ -34,7 +34,7 @@ flowchart TD
 
     subgraph Features ["Phase 2b: Feature Specifications & Slicing"]
         D2 --> P2b["/create-features"]
-        P2b --> D2b["docs/product/bounded-contexts/[context]/flows/features/\n(feature-01-*.md, feature-02-*.md)"]
+        P2b --> D2b["docs/product/bounded-contexts/[context]/flows/features/[journey-id]/\n(feature-01-*.md, feature-02-*.md)"]
     end
 
     subgraph DomainModel ["Phase 3: Domain Modeling"]
@@ -142,7 +142,7 @@ docs/
 │   │       ├── flows/                     # Phase 2 & 2b: Flow & Feature specifications
 │   │       │   ├── journey-XX-name.md     # Phase 2: Flow spec (Mermaid diagrams, Gherkin, BR references)
 │   │       │   ├── journey-XX-plan.md     # Phase 4: Implementation task breakdown
-│   │       │   └── features/              # Phase 2b: Sequentially numbered feature specs (feature-01-*.md)
+│   │       │   └── features/[journey-id]/ # Phase 2b: Feature specs grouped by journey (feature-01-*.md)
 │   │       ├── entities/                  # Phase 3: Entity lifecycle specifications
 │   │       │   └── [entity-name].md       # State machines, transitions, guards, actions
 │   │       ├── business-rules/            # Phase 3: Business rules

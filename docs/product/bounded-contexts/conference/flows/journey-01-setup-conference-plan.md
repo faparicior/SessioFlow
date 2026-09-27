@@ -21,8 +21,8 @@
 ### Associated Features (Sequentially Ordered)
 | # | Feature | Specification File | Status |
 |---|---------|---------------------|--------|
-| F1 | Conference Creation with CfP Configuration | [`features/feature-01-conference-creation-with-cfp.md`](./features/feature-01-conference-creation-with-cfp.md) | ✅ Implemented |
-| F2 | Conference Dashboard with CfP Link | [`features/feature-02-conference-dashboard-cfp-link.md`](./features/feature-02-conference-dashboard-cfp-link.md) | ✅ Implemented |
+| F1 | Conference Creation with CfP Configuration | [`features/journey-01/feature-01-conference-creation-with-cfp.md`](./features/journey-01/feature-01-conference-creation-with-cfp.md) | ✅ Implemented |
+| F2 | Conference Dashboard with CfP Link | [`features/journey-01/feature-02-conference-dashboard-cfp-link.md`](./features/journey-01/feature-02-conference-dashboard-cfp-link.md) | ✅ Implemented |
 
 ---
 

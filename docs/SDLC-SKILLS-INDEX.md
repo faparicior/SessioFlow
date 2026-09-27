@@ -174,7 +174,7 @@ Step 2 (Map Big Picture / Backbone) and Step 3 (Explore Body / Story Cards) are 
 
 ## Phase 2b — `/create-features`
 
-**Purpose:** Break down an end-to-end User Flow document into sequentially numbered vertical feature specifications (`features/feature-01-*.md`).
+**Purpose:** Break down an end-to-end User Flow document into sequentially numbered vertical feature specifications (`features/[journey-id]/feature-01-*.md`).
 
 **Trigger:** A flow document from Phase 2 (`journey-XX-[name].md`) is complete and needs slicing into executable feature specifications before domain modeling or TDD.
 
@@ -185,7 +185,7 @@ Step 2 (Map Big Picture / Backbone) and Step 3 (Explore Body / Story Cards) are 
 
 ### Output location
 
-`docs/product/bounded-contexts/[context]/flows/features/feature-[01]-[name].md`
+`docs/product/bounded-contexts/[context]/flows/features/[journey-id]/feature-[01]-[name].md`
 
 ### Each feature specification includes
 
@@ -199,8 +199,8 @@ Step 2 (Map Big Picture / Backbone) and Step 3 (Explore Body / Story Cards) are 
 
 | Bounded context | Feature | File |
 |-----------------|---------|------|
-| conference | Conference Creation with CfP (F1) | [`feature-01-conference-creation-with-cfp.md`](product/bounded-contexts/conference/flows/features/feature-01-conference-creation-with-cfp.md) |
-| conference | Conference Dashboard & CfP Link (F2) | [`feature-02-conference-dashboard-cfp-link.md`](product/bounded-contexts/conference/flows/features/feature-02-conference-dashboard-cfp-link.md) |
+| conference | Conference Creation with CfP (F1) | [`feature-01-conference-creation-with-cfp.md`](product/bounded-contexts/conference/flows/features/journey-01/feature-01-conference-creation-with-cfp.md) |
+| conference | Conference Dashboard & CfP Link (F2) | [`feature-02-conference-dashboard-cfp-link.md`](product/bounded-contexts/conference/flows/features/journey-01/feature-02-conference-dashboard-cfp-link.md) |
 
 ---
 

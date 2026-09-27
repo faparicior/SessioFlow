@@ -43,7 +43,7 @@ flowchart TD
 ### Step 1: Read Feature Specifications, Flow Documentation & Architecture
 
 1. **Verify Prerequisites (Feature Specs Must Exist)**:
-   - Check `docs/product/bounded-contexts/[context]/flows/features/` for the feature specification(s) to implement (e.g. `feature-01-[name].md`).
+   - Check `docs/product/bounded-contexts/[context]/flows/features/[journey-id]/` for the feature specification(s) to implement (e.g. `feature-01-[name].md`).
    - If feature specifications do NOT exist yet, stop and invoke **`/create-features`** first to slice and specify the features before planning implementation.
 
 2. **Inspect Existing Codebase & Artifacts First (Search-First)**:
@@ -52,7 +52,7 @@ flowchart TD
    - Check if the target bounded context module already exists in the codebase before scaffolding. **Never re-scaffold or overwrite existing modules**.
 
 3. **Read Feature Specification & Domain Rules**:
-   - Read the target feature specification: `docs/product/bounded-contexts/[context]/flows/features/feature-[XX]-[feature-name].md`.
+   - Read the target feature specification: `docs/product/bounded-contexts/[context]/flows/features/[journey-id]/feature-[XX]-[feature-name].md`.
    - Read the parent flow document: `docs/product/bounded-contexts/[context]/flows/[flow-name].md`.
    - Read any associated domain models: `entities/`, `business-rules/`, `invariants/`.
    - Extract the HTTP error contract table, concurrency safeguards, acceptance criteria, and layer scope.

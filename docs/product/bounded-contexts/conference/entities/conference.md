@@ -260,7 +260,7 @@ export interface ConferenceRepository {
 | Flow | Interaction | Status |
 |------|-------------| ------ |
 | [journey-01-setup-conference.md](../flows/journey-01-setup-conference.md) | Drives `Conference.create()` → `publishCfp()` | ✅ Built |
-| [feature-01-conference-creation-with-cfp.md](../flows/features/feature-01-conference-creation-with-cfp.md) | Realizes the same call chain end to end | ✅ Built |
+| [feature-01-conference-creation-with-cfp.md](../flows/features/journey-01/feature-01-conference-creation-with-cfp.md) | Realizes the same call chain end to end | ✅ Built |
 | [journey-03-selection-and-program.md](../../../../inception/5-user-journeys/journey-03-selection-and-program.md) | Will drive `closeCfp()` → `startReview()` → `completeSelection()` | ⏳ Planned |
 | [journey-04-acceptance-and-logistics.md](../../../../inception/5-user-journeys/journey-04-acceptance-and-logistics.md) | Will drive `publishSchedule()` → `complete()` | ⏳ Planned |
 

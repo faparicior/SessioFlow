@@ -1,8 +1,8 @@
 # Feature 02: Conference Dashboard with CfP Link - Feature Specification
 
 * **Feature ID:** `F2`
-* **Specification File:** `docs/product/bounded-contexts/conference/flows/features/feature-02-conference-dashboard-cfp-link.md`
-* **Parent Flow:** [journey-01-setup-conference.md](../journey-01-setup-conference.md)
+* **Specification File:** `docs/product/bounded-contexts/conference/flows/features/journey-01/feature-02-conference-dashboard-cfp-link.md`
+* **Parent Flow:** [journey-01-setup-conference.md](../../journey-01-setup-conference.md)
 * **Bounded Context:** `conference`
 * **Status:** ✅ Implemented — shipped in Wave 1; re-verified against code 2026-09-16 (docs audit)
 * **Priority:** High

@@ -63,8 +63,8 @@ The authoritative transition graph is the `TRANSITIONS` table in
 | **Entity** | [entities/conference.md](entities/conference.md) | Conference aggregate root lifecycle |
 | **Entity** | [entities/cfp-config.md](entities/cfp-config.md) | CfP configuration child entity |
 | **Flow** | [flows/journey-01-setup-conference.md](flows/journey-01-setup-conference.md) | Journey 1: Setup Conference and Open CfP |
-| **Feature** | [flows/features/feature-01-conference-creation-with-cfp.md](flows/features/feature-01-conference-creation-with-cfp.md) | F1: conference creation with CfP (incl. HTTP error contract) |
-| **Feature** | [flows/features/feature-02-conference-dashboard-cfp-link.md](flows/features/feature-02-conference-dashboard-cfp-link.md) | F2: conference dashboard with CfP link |
+| **Feature** | [flows/features/journey-01/feature-01-conference-creation-with-cfp.md](flows/features/journey-01/feature-01-conference-creation-with-cfp.md) | F1: conference creation with CfP (incl. HTTP error contract) |
+| **Feature** | [flows/features/journey-01/feature-02-conference-dashboard-cfp-link.md](flows/features/journey-01/feature-02-conference-dashboard-cfp-link.md) | F2: conference dashboard with CfP link |
 | **Guideline** | [../../guidelines/traceability.md](../../guidelines/traceability.md) | Traceability convention for every edge below |
 
 ## 🔗 Cross-Context Relationships

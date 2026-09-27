@@ -37,7 +37,7 @@ This pattern is already standard in this repository across `.agents/skills/` and
 
 ### Real Codebase Example
 
-In [feature-01-conference-creation-with-cfp.md](./product/bounded-contexts/conference/flows/features/feature-01-conference-creation-with-cfp.md), rather than pausing execution to prompt the user 13 times, the LLM logged decisions **D1 through D13** in this table:
+In [feature-01-conference-creation-with-cfp.md](./product/bounded-contexts/conference/flows/features/journey-01/feature-01-conference-creation-with-cfp.md), rather than pausing execution to prompt the user 13 times, the LLM logged decisions **D1 through D13** in this table:
 
 | # | Topic / Area | Documentation State / Gap | Decision / Judgment Made | Status |
 | :--- | :--- | :--- | :--- | :--- |

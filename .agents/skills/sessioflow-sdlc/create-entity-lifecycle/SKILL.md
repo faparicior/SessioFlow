@@ -28,7 +28,7 @@ Use the exact Markdown layout provided in `templates/entity-lifecycle.md`. Do no
 - **Value Objects:** [List value objects used by the entity]
 - **State Machine:** [List all possible states]
 - **Domain Behavior:** [List core domain methods]
-- **Feature References:** `docs/product/bounded-contexts/[context]/flows/features/` (feature specifications to establish bidirectional traceability in `BR-XXX` and `INV-XXX` docs)
+- **Feature References:** `docs/product/bounded-contexts/[context]/flows/features/[journey-id]/` (feature specifications to establish bidirectional traceability in `BR-XXX` and `INV-XXX` docs)
 
 ---
 

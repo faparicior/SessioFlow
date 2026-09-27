@@ -70,7 +70,7 @@ that document, in the same commit. Convention: [Traceability](../../../guideline
 
 * Journey: [Journey 01 — Setup Conference](../../../../inception/5-user-journeys/journey-01-setup-conference.md)
 * Flow: [Journey 01 — Setup Conference & Open CfP](../flows/journey-01-setup-conference.md)
-* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/feature-01-conference-creation-with-cfp.md) (`F1-R2`)
+* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/journey-01/feature-01-conference-creation-with-cfp.md) (`F1-R2`)
 * Related rules: [BR-003 — Conference Slug Must Be Unique](BR-003-slug-uniqueness.md) (slug is derived from this name)
 
 ### Enforced by

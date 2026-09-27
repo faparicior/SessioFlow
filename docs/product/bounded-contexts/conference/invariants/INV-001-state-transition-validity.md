@@ -84,7 +84,7 @@ that document, in the same commit. Convention: [Traceability](../../../guideline
 
 * Journey: [Journey 01 — Setup Conference](../../../../inception/5-user-journeys/journey-01-setup-conference.md)
 * Flow: [Journey 01 — Setup Conference & Open CfP](../flows/journey-01-setup-conference.md)
-* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/feature-01-conference-creation-with-cfp.md) (`F1-R5`)
+* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/journey-01/feature-01-conference-creation-with-cfp.md) (`F1-R5`)
 * Related rules: [BR-004 — Free Tier Conference Limit](../business-rules/BR-004-free-tier-conference-limit.md)
   (`DELETED` is what keeps a conference out of the free-tier count)
 

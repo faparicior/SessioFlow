@@ -49,8 +49,7 @@ number and never by prose ("the free-tier rule"), because an ID is greppable and
 | --- | --- |
 | `business-rules/BR-*.md`, `invariants/INV-*.md` | `Traces up to`, `Enforced by`, `Verified by` |
 | `entities/*.md` | `🔒 Invariants & Business Rules` (`Enforces`) + `Enforcement & tests` |
-| `value-objects/*.md` | `🔒 Invariants & Business Rules` (`Enforces`) |
-| `flows/*.md`, `flows/features/*.md` | `Enforced Business Rules`, `Enforced Invariants`, `Implementation & tests` |
+| `flows/*.md`, `flows/features/[journey-id]/*.md` | `Enforced Business Rules`, `Enforced Invariants`, `Implementation & tests` |
 
 An ID cited in prose does **not** count as an edge — `enforces BR-003 (checked before the free-tier
 rule)` inside a sequence diagram is commentary. The edge is the link in the section above it.
@@ -130,7 +129,7 @@ Rule side — `business-rules/BR-004-free-tier-conference-limit.md`:
 
 * Journey: [Journey 01 — Setup Conference](../../../../inception/5-user-journeys/journey-01-setup-conference.md)
 * Flow: [Journey 01 — Setup Conference](../flows/journey-01-setup-conference.md)
-* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/feature-01-conference-creation-with-cfp.md)
+* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/journey-01/feature-01-conference-creation-with-cfp.md)
 
 ### Enforced by
 

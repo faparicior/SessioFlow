@@ -50,7 +50,7 @@ Why this rule exists.
 
 * Journey: [Journey XX — Title](../../../../inception/5-user-journeys/[journey-XX]-[name].md)
 * Flow: [Flow — Journey XX](../flows/[journey-XX]-[name].md)
-* Feature: [Feature XX — Title](../flows/features/[feature-XX]-[name].md)
+* Feature: [Feature XX — Title](../flows/features/[journey-id]/[feature-XX]-[name].md)
 
 ### Related rules
 

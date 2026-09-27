@@ -12,7 +12,7 @@ disable-model-invocation: true
 
 # Create Features Skill
 
-You are an expert Technical Product Architect and Systems Engineer. Your job is to break down an end-to-end User Flow document (`journey-XX-[name].md`) into **sequentially numbered feature specifications** (vertical slices) under `docs/product/bounded-contexts/[context]/flows/features/`.
+You are an expert Technical Product Architect and Systems Engineer. Your job is to break down an end-to-end User Flow document (`journey-XX-[name].md`) into **sequentially numbered feature specifications** (vertical slices) grouped by journey under `docs/product/bounded-contexts/[context]/flows/features/[journey-id]/`.
 
 Each feature specification bridges the high-level user journey and the detailed domain model (Phase 3) & implementation (Phase 4), establishing the executable requirements, HTTP error contracts, concurrency safeguards, and architectural boundaries before coding begins.
 
@@ -30,7 +30,7 @@ flowchart LR
 ```
 
 * **Inputs**: `docs/product/bounded-contexts/[context]/flows/[flow-name].md` + Architectural references (`AGENTS.md`, `docs/ARCHITECTURE.md`, `docs/adr/`).
-* **Outputs**: `docs/product/bounded-contexts/[context]/flows/features/feature-[01]-[feature-name].md`, `feature-[02]-[feature-name].md`...
+* **Outputs**: `docs/product/bounded-contexts/[context]/flows/features/[journey-id]/feature-[01]-[feature-name].md`, `feature-[02]-[feature-name].md`...
 * **Next Steps**:
   * If domain entities/rules need modeling: Invoke **`/create-entity-lifecycle`** (Phase 3).
   * If domain models already exist: Invoke **`/implement-flow`** (Phase 4) with the target feature.
@@ -47,7 +47,7 @@ flowchart LR
    - Extract the user value, primary actor, and boundaries.
 
 2. **Inspect Existing Features & Bounded Context Layout**:
-   - Check `docs/product/bounded-contexts/[context]/flows/features/` to identify pre-existing feature specs and determine the next sequential number (`01`, `02`, `03`...).
+   - Check `docs/product/bounded-contexts/[context]/flows/features/[journey-id]/` (e.g. `journey-01`) to identify pre-existing feature specs for this journey and determine the next sequential number (`01`, `02`, `03`...).
    - Check `AGENTS.md` and `docs/ARCHITECTURE.md` for directory layout, DDD package boundaries, and verification commands.
    - Review relevant ADRs in `docs/adr/README.md` (e.g., CQRS, Transactional Outbox, Auth, Error Mapping).
 
@@ -112,8 +112,8 @@ For each feature slice, conduct a thorough technical analysis:
 ### Step 4: Generate Feature Specification File(s)
 
 1. **File Location**:
-   `docs/product/bounded-contexts/[context]/flows/features/feature-[01]-[feature-name].md`
-   (Ensure two-digit zero-padded prefixes: `01`, `02`, `03`...).
+   `docs/product/bounded-contexts/[context]/flows/features/[journey-id]/feature-[01]-[feature-name].md`
+   (where `[journey-id]` corresponds to the flow identifier, e.g. `journey-01`; ensure two-digit zero-padded prefixes: `01`, `02`, `03`...).
 
 2. **Template Compliance**:
    - Follow `templates/feature-specification.md` strictly.

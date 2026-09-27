@@ -26,7 +26,7 @@
 2. Check database for existing slug using `ConferenceRepository.findBySlug()`
 3. **If** the slug already exists -> abort creation and throw `SlugExistsError`
    (mapped to `409 SLUG_EXISTS`). There is **no auto-suffix retry** — see decision **D1** in
-   [Feature 01](../flows/features/feature-01-conference-creation-with-cfp.md):
+   [Feature 01](../flows/features/journey-01/feature-01-conference-creation-with-cfp.md):
    organizer picks a different name
 4. **If** the name contains no slug-able characters -> throw `EmptySlugError`
    (mapped to `400 EMPTY_SLUG`)
@@ -87,7 +87,7 @@ that document, in the same commit. Convention: [Traceability](../../../guideline
 
 * Journey: [Journey 01 — Setup Conference](../../../../inception/5-user-journeys/journey-01-setup-conference.md)
 * Flow: [Journey 01 — Setup Conference & Open CfP](../flows/journey-01-setup-conference.md)
-* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/feature-01-conference-creation-with-cfp.md) (`F1-R4`)
+* Feature: [Feature 01 — Conference Creation with CfP](../flows/features/journey-01/feature-01-conference-creation-with-cfp.md) (`F1-R4`)
 * Related rules: [BR-002 — Conference Name Validation](BR-002-conference-name-validation.md) (slug is
   derived from the validated name) · [INV-003 — Conference Slug Must Be Unique](../invariants/INV-003-slug-uniqueness.md)
   (the same policy stated as an invariant)
@@ -126,7 +126,7 @@ none.
 * **2026-09-15:** Traceability section (§5) added. Corrected against shipped code: the auto-suffix retry
   (steps 3–5: `my-conference-2`, `SlugGenerationError` after 3 attempts) was never implemented and
   contradicted decision **D1** in
-  [Feature 01](../flows/features/feature-01-conference-creation-with-cfp.md); §3/§4/§5 now state the
+  [Feature 01](../flows/features/journey-01/feature-01-conference-creation-with-cfp.md); §3/§4/§5 now state the
   actual behavior — hard fail with `SlugExistsError` → `409 SLUG_EXISTS`, `EmptySlugError` → 422.
 * **2026-09-16:** Docs audit correction. The `EmptySlugError` mapping is `400 EMPTY_SLUG` (code
   `EMPTY_SLUG` in `@sessioflow/shared-http/error-mapper`), not `422 VALIDATION_ERROR` — the 2026-09-15
