@@ -77,7 +77,7 @@ flowchart TD
 
 ### Step 2: Create Flow Development Plan
 
-1. Create a flow-level or feature-level development plan alongside the flow document:
+1. For a `/modify-flow` proposal, implement **one slice at a time**: save the plan as `docs/product/working-on/active/[change]/implementation-plan-sN.md` (only when slice N starts) and record "Grounded against commit X" in it. Otherwise create a flow-level or feature-level development plan alongside the flow document:
    `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md`
 2. Use the template: `templates/flow-development-plan.md` (located in this skill).
 3. **Populate the Lack of Information Log**:
@@ -136,4 +136,5 @@ flowchart LR
 A flow/feature is considered complete when:
 1. All checkboxes in `[flow-name]-plan.md` are marked `[x]`.
 2. All Definition of Done criteria listed in `AGENTS.md` pass (Architecture tests, Unit/Integration tests, E2E tests, Linting, and Typechecking).
-3. Final verification results have been presented to and approved by the user.
+3. For a `/modify-flow` proposal: the slice's `drafts/` are copied into their living docs (links fixed, re-checked against the code, traceability filled in) and deleted, and the slice is marked `Shipped` in the proposal. Every domain-service doc touched by the feature is updated: Part A1–A3 and Part B rows describe the shipped behaviour (Methods status, Traceability with real file/guard/test title), and the feature's row is removed from Part A4 (Pending Changes).
+4. Final verification results have been presented to and approved by the user.

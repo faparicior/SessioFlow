@@ -73,11 +73,32 @@ runs:
 
 ---
 
+## Step 0b: Triage — How Much Ceremony Does This Change Need?
+
+Before writing a proposal, ask the user (or infer from the request and confirm):
+
+1. Does it need more than one PR?
+2. Does it touch an invariant, a data migration, or another repository?
+3. Are there open business questions?
+4. Will it be paused and resumed later?
+
+| Tier | When | Path |
+| :--- | :--- | :--- |
+| **Light** | All answers "no" — a single behaviour tweak (threshold, validation, window length) | **Do not create a proposal folder.** Write a short change note for the PR, implement test-first, and edit the affected flow/entity/BR doc in the same PR (update its `Enforced by` / `Verified by` rows). Stop here. |
+| **Standard** | One PR-sized slice, but with a design choice, invariant or migration | Proposal with a single slice (S1), then Steps 3–6. No feature specs. |
+| **Full** | Several slices, several repos, or a long pause expected | Everything below, including feature specs (`/create-features`) saved inside the proposal folder. |
+
+If any answer is "yes" the change moves up a tier. Tell the user which tier you chose and why; let them
+override it. In every tier the living doc changes in the same PR as the code that makes it true.
+
+---
+
 ## Step 1: Ground the Change in Reality Before Writing Anything
 
 1. Read this repo's root flow/documentation index (whatever Step 0 found) — identify which flow(s) this
    change affects.
-2. Read the affected flow doc(s), entity doc(s), and business rule doc(s). These are usually **derived**
+2. Read the affected flow doc(s), entity doc(s), **domain-service doc(s)** (`docs/product/bounded-contexts/{ctx}/domain-services/` —
+   check it for every service whose behaviour the change touches), and business rule doc(s). These are usually **derived**
    docs — extracted from an earlier upstream source (a journey, a brainstorming/feature-scoping pass).
 3. **Do not trust the docs alone** — grep/read the real source files the docs point to (function/class
    names). Docs can be stale; the code is truth. If you're using an Explore-style agent for this, ask it to
@@ -164,6 +185,38 @@ Name the folder/file with a kebab-case slug matching the git branch name where p
 - If the proposal reverses part of an already-shipped feature, say so explicitly and link the original
   feature-scoping doc if this repo has one — don't silently contradict a shipped decision.
 
+### Delivery Slices (multi-slice changes)
+
+- If the change is big enough to ship in more than one increment (or may be paused and resumed later), fill
+  **Section 9, "Delivery Slices"**: group the scope into slices that can ship independently, and tag each
+  Open Question with the slice it blocks. A slice whose questions are all resolved can start even while
+  later slices stay blocked.
+- Single-pass changes keep one row (S1) — do not invent slices for small changes.
+- If the user wants to document now and implement later, set Status to `⏸ Parked` and make sure the
+  proposal (and any feature specs created for it) is committed. **Do not edit the living docs while
+  parked** — they describe shipped behaviour, and the proposal's Section 8 (with a slice per row) is what
+  records how they will change.
+- **Plan light, detail just in time.** Every slice gets a *Detail* level in Section 9: `Outline` (one
+  paragraph of intent, blockers, ticket) → `Specified` (detailed spec in `features/`) → `In progress` →
+  `Shipped`, or `Discarded / Superseded` with a one-line reason. Specify in detail only the slice that is
+  about to start; features may change or become obsolete before they reach production, so later slices
+  stay outlines until picked up.
+- **Not-yet-implemented docs live in the change folder, never in the living docs:**
+
+  ```
+  docs/product/working-on/active/<change>/
+  ├── proposal.md                   roadmap: slices, decisions, blockers, ticket keys
+  ├── features/                     detailed specs (specified slices only)
+  ├── drafts/                       planned text of living docs (+ README mapping draft → destination/slice)
+  └── implementation-plan-sN.md     written when slice N starts
+  ```
+
+  If a planned rewrite of an existing doc (BR, flow) is needed, write it as a file in `drafts/` and leave the
+  living doc untouched. A service doc may carry one row in its *Pending Changes* table pointing back here;
+  nothing else from this change appears in the living tree.
+- **Freeze and amend.** Once a slice is `In progress`, change its spec only through a dated amendment line in
+  the proposal, not by silently editing the spec.
+
 ### Before Finalizing
 
 - [ ] Every code reference has been verified against the actual source file, not assumed
@@ -178,10 +231,36 @@ Name the folder/file with a kebab-case slug matching the git branch name where p
 
 ---
 
+## Step 2b: Resume a Parked or Partially Shipped Proposal
+
+Run this whenever a proposal already exists in `working-on/` and the user wants to continue it (typically
+a new conversation, days or weeks later). Do not rely on memory of the earlier session.
+
+1. Read the proposal's **Section 9 (Delivery Slices)** and **Section 10 (Open Questions)**. Identify the
+   next slice that is `📋 Planned` and whose blocking questions are all resolved. If a blocking question is
+   still open, stop and ask the user — do not resolve it on their behalf.
+1b. **Ask "is this slice still wanted?"** before investing in detail. Features can become obsolete while
+   parked. If it is no longer wanted, follow Step 5b (discard). If it is still wanted but only an `Outline`,
+   write its detailed spec now (`/create-features`, saved in `features/`), then continue.
+2. **Re-ground the slice against the current code.** Compare the "Last checked against code" commit with
+   `HEAD` (`git log <commit>..HEAD -- <files in Scope of Change>`), re-read the real files in Section 6 and
+   the feature specs for the slice, and re-run the Step 1.7 invariant cross-check. Code may have moved
+   since the proposal was written.
+3. Report drift to the user (renamed files, changed signatures, already-shipped overlapping work, newly
+   relevant invariants) and update the proposal/specs where they are now wrong. Specs describe desired
+   *behaviour*; code-level findings (real table/method names, which component does what today) belong in
+   the slice's implementation plan, not in the feature specs.
+4. Update "Last checked against code" with today's date and commit, set Status to `🔄 In Progress`, then
+   continue with Step 3 for **that slice only**.
+
+---
+
 ## Step 3: Write the Implementation Plan
 
-Only after the proposal's Open Questions are resolved. Use `templates/implementation-plan.md`. Save it
-alongside the proposal, in the same folder.
+Only after the proposal's Open Questions are resolved (for the slice being planned). Use
+`templates/implementation-plan.md`. Save it alongside the proposal, in the same folder. For a multi-slice
+proposal, plan **one slice at a time** — the next slice is planned when it is resumed (Step 2b), against the
+code as it is then.
 
 - If the proposal's Section 6 listed cross-repo dependencies, fill in **Section 0 (Cross-Repo Dependencies)** of the implementation plan — carry the repo table and deploy-order note forward from the proposal verbatim. Phases that belong to an external repo come before phases in this repo when deploy order requires it.
 - Phases must be derived from the proposal's **Scope of Change** table — one phase per real
@@ -203,15 +282,26 @@ alongside the proposal, in the same folder.
 
 Follow this repo's own documented conventions (its `CLAUDE.md`/`AGENTS.md`/README, or equivalent) rather
 than any generic process — skip steps that assume infrastructure this repo doesn't have (e.g. an ADR index)
-unless Step 0 confirmed it exists. Work phase by phase from the implementation plan, checking off tasks as
+unless Step 0 confirmed it exists. Implement **only the current slice's features**; leave later slices
+untouched. Work phase by phase from the implementation plan, checking off tasks as
 they complete. Run this repo's real validation commands (found in Step 0) before marking a phase done.
 
 ---
 
 ## Step 5: Update the Original Docs (Post-Implementation)
 
-Once the change is implemented and verified:
+Once a slice is implemented and verified (for a single-slice change, that is the whole change):
 
+0. **Scope the doc update to the slice that shipped.** Only edit the Section 8 rows tagged with that slice:
+   copy the matching files from `drafts/` into their destination (fix the relative links, keep only the
+   parts whose slice shipped, re-check against the code), then delete the consumed drafts.
+   Docs tagged with later slices stay untouched, so the living docs never describe behaviour that is not
+   in the code. Mark the slice `✅ Shipped` in Section 9 with the date and ticket/PR, and set the
+   proposal Status to `🔄 Partially Shipped (slice N/M)` if slices remain.
+0b. **Domain-service docs have a Pending Changes table (Part A4).** While a change is parked or in progress,
+   record it there (change, slice, proposal link, ticket) and leave Part A1–A3 (shipped behaviour) untouched.
+   When the slice ships, update A1–A3 and the Part B rows (Methods status, Rules & Invariants Enforced,
+   Traceability with real file/guard/test title), then remove that slice's Pending Changes row.
 1. Update each affected doc **in place**, using whichever mechanism this repo already uses to author that
    kind of doc (Step 0) — e.g. if it has a paired skill for generating entity/business-rule/flow docs,
    re-invoke that skill on the existing file rather than writing free-hand.
@@ -237,9 +327,25 @@ Once the change is implemented and verified:
 
 ---
 
+## Step 5b: Discard or Supersede a Slice
+
+When a slice becomes obsolete, is replaced, or the business drops it:
+
+1. In Section 9 set the slice's Status to `🗑 Discarded` (or `Superseded by S#`) with a one-line reason and
+   the date. Keep the row — it is the decision record.
+2. Delete its `features/` specs and its `drafts/` files (and the entries in `drafts/README.md`).
+3. Remove its row from any domain-service doc's *Pending Changes* table. The living docs never contained
+   the slice, so nothing else needs reverting.
+4. Close or re-scope the linked tickets, and drop any Open Question that only blocked this slice.
+5. If every remaining slice is `Shipped` or `Discarded`, continue to Step 6.
+
+---
+
 ## Step 6: Grace Period & Purge Lifecycle (`working-on/`)
 
-Once Step 5 is complete and living documentation is updated:
+Once Step 5 is complete for the **last** slice and living documentation is updated. While any slice is
+still `📋 Planned`/`🔄 In Progress`, the proposal stays where it is (Status `🔄 Partially Shipped` or
+`⏸ Parked`) — it is the record of what remains.
 
 1. **Move to Grace Period**: Do not delete the proposal immediately upon shipping. Move the directory out of active view to prevent LLM context contamination across branches or worktrees:
    ```bash

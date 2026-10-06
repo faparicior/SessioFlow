@@ -156,13 +156,23 @@ This skill is **language- and framework-agnostic**. File paths and class convent
 5. **Linked Entities & Use Cases** - Which aggregates embed this VO
 
 ### Domain Services
-1. **Definition** - Description, service name, implementation source path
-2. **Collaborators** - Dependencies and what each provides
-3. **Methods** - Each public method: guards, steps, side effects, return value
+
+Two parts, so a PM can stop after Part A:
+
+**Part A — Product View** (shipped behaviour, business language, no code names)
+1. **Summary** - One sentence: what it decides and why it matters
+2. **Business Context** - Why it is a domain service, the business problem it solves, participating flows
+3. **How It Decides** - Decision paths, governing policies (BRs and INVs), one business-language decision flow per path
+4. **Pending Changes** - Changes coming from an open proposal (change, slice, proposal link, ticket, status); removed when the slice ships
+
+**Part B — Developer View**
+1. **Definition** - Type and implementation source path
+2. **Collaborators** - Dependencies, what each provides, Built/Planned status
+3. **Methods** - Each public method: guards, steps, side effects, return value, status
 4. **Sequence Diagram** - One diagram showing all method orchestration flows (use `rect` blocks per method)
-5. **Flow Diagram** - One flowchart per method showing branching logic and outcomes
-6. **Invariants** - Links to relevant INVs (no BRs — services enforce invariants, BRs live in the application layer)
-7. **Linked User Stories & Flows** - Which flows invoke which methods and at which step
+5. **Rules & Invariants Enforced** - BRs and INVs the service enforces, with the method that enforces each (a domain service may enforce business rules as well as invariants)
+6. **Traceability** - `Enforced by` (file + guard + status) and `Verified by` (test file + test title)
+7. **Linked Flows** - Which flows invoke which methods and at which step
 
 ---
 

@@ -7,7 +7,7 @@
 * **Status:** 📋 Planned | 🔄 In Progress | ✅ Complete
 * **Priority:** High | Medium | Low
 
-> **Architecture Reference**: See `AGENTS.md` and `docs/ARCHITECTURE.md` for project folder layout, layer conventions, and verification commands.
+> **Architecture Reference**: See `AGENTS.md` (or `CLAUDE.md`) and `docs/ARCHITECTURE.md` for project folder layout, layer conventions, and verification commands.
 
 ---
 
@@ -18,6 +18,8 @@
 **User Value:** [How this feature benefits users in the flow]
 
 **Flow Step:** [Which step(s) of the parent flow this feature implements]
+
+**Current state of the code:** [Describe the state of relevant code BEFORE this feature is implemented — which files/methods/columns exist, which are absent, what the current behaviour is. Anchors the implementation and prevents stale-spec drift.]
 
 ---
 
@@ -124,6 +126,14 @@ Follow the 4-step cycle: **1. First Test $\rightarrow$ 2. After Code $\rightarro
 - **Given** [operation has already completed successfully]
 - **When** [same payload / idempotency key is submitted again]
 - **Then** [system returns previous successful result without duplicate state mutations or duplicate event dispatches]
+
+---
+
+## 🔗 HTTP Error Contract
+
+| Condition | Domain Exception | Error Code | HTTP | User-visible message |
+|-----------|------------------|------------|------|----------------------|
+| [condition that triggers rejection] | `[DomainException]` | `[ERROR_CODE]` | [4xx] | `[message shown to caller]` |
 
 ---
 

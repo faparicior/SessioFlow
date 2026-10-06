@@ -112,6 +112,8 @@ For each feature slice, conduct a thorough technical analysis:
 ### Step 4: Generate Feature Specification File(s)
 
 1. **File Location**:
+   - **Modification of an already-documented flow (part of a `/modify-flow` proposal):** save under `docs/product/working-on/active/[change]/features/feature-NN-[name].md`, never in the living tree. For a multi-slice proposal write detailed specs **only for the slice about to start**; later slices stay outlines in the proposal's Delivery Slices table and are specified when resumed (features may change or become obsolete before they ship).
+   - **New flow:**
    `docs/product/bounded-contexts/[context]/flows/features/[journey-id]/feature-[01]-[feature-name].md`
    (where `[journey-id]` corresponds to the flow identifier, e.g. `journey-01`; ensure two-digit zero-padded prefixes: `01`, `02`, `03`...).
 
@@ -129,6 +131,7 @@ For each feature slice, conduct a thorough technical analysis:
 
 4. **Define Layer Scope**:
    - Outline impact across Contracts, Domain, Application, Infrastructure, and Interface layers per DDD guidelines.
+   - If the feature changes the behaviour of a domain service, name its doc under `docs/product/bounded-contexts/{ctx}/domain-services/` in the layer scope, so the implementation plan and the post-implementation doc update include it.
 
 ---
 

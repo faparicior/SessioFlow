@@ -1,10 +1,11 @@
 # Proposal: [Change Title]
 
-* **Status:** 📋 Draft | 🔄 In Review | ✅ Approved | 🚀 Implemented (Grace Period) | 🧹 Ready to Purge
+* **Status:** 📋 Draft | 🔄 In Review | ✅ Approved | ⏸ Parked | 🔄 Partially Shipped (slice N/M) | 🚀 Implemented (Grace Period) | 🧹 Ready to Purge
 * **Shipped Date:** [YYYY-MM-DD or Pending]
+* **Last checked against code:** [YYYY-MM-DD @ commit `abc1234` — update every time the proposal is resumed]
 * **Branch:** `[git-branch-name]`
 * **Bounded Context:** [Context]
-* **Affects:** [BR-XXX-name.md](../../bounded-contexts/[context]/business-rules/BR-XXX-name.md), [EntityName.md](../../bounded-contexts/[context]/entities/EntityName.md), [flow-NN-name.md](../../bounded-contexts/[context]/flows/flow-NN-name.md)
+* **Affects:** [BR-XXX-name.md](../../../bounded-contexts/[context]/business-rules/BR-XXX-name.md), [EntityName.md](../../../bounded-contexts/[context]/entities/EntityName.md), [flow-NN-name.md](../../../bounded-contexts/[context]/flows/flow-NN-name.md)
 
 ---
 
@@ -18,8 +19,8 @@
 
 | Persona | Current Experience | Experience After This Change |
 | :--- | :--- | :--- |
-| [Persona 1](../../../inception/3-personas/persona-1.md) | [What happens today] | [What happens after] |
-| [Persona 2](../../../inception/3-personas/persona-2.md) | [What happens today] | [What happens after] |
+| [Persona 1](../../../../inception/3-personas/persona-1.md) | [What happens today] | [What happens after] |
+| [Persona 2](../../../../inception/3-personas/persona-2.md) | [What happens today] | [What happens after] |
 
 ### Business Value & Why It Matters
 
@@ -105,15 +106,18 @@ Fill this section only if the Scope of Change table spans more than one reposito
 
 ## 8. Impact on Existing Documentation
 
-List the living docs this change will require updating **after implementation ships** — update them in place, do not create new files alongside them. If this repo has upstream product docs (journeys, personas, brainstorming/feature-scoping) behind its derived flow/entity/BR docs, split the impact into two groups — a derived doc rarely repeats its upstream source's full content, so the upstream doc can independently go stale even after the derived doc is fixed.
+List the living docs this change will require updating **after implementation ships** — update them in place, do not create new files alongside them. Assign each row to the slice (Section 9) whose shipping makes the doc true; a doc is only edited when its slice ships. If this repo has upstream product docs (journeys, personas, brainstorming/feature-scoping) behind its derived flow/entity/BR docs, split the impact into two groups — a derived doc rarely repeats its upstream source's full content, so the upstream doc can independently go stale even after the derived doc is fixed.
 
 ### 8.1 Derived Bounded-Context / Flow Docs
 
-| Doc | Change |
-| :--- | :--- |
-| [BR-XXX-name.md](../../bounded-contexts/[context]/business-rules/BR-XXX-name.md) | [How the rule text changes; add a dated History & Evolution entry] |
-| [EntityName.md](../../bounded-contexts/[context]/entities/EntityName.md) | [Which states/transitions/notes change] |
-| [flow-NN-name.md](../../bounded-contexts/[context]/flows/flow-NN-name.md) | [Which diagram stages / walkthrough steps / edge cases change] |
+The living docs are **not** edited until their slice ships. Write the planned text as a file in `drafts/` (with a `drafts/README.md` row: draft → destination → slice); in the PR that ships the slice, copy it into the destination and delete the draft.
+
+| Doc (destination) | Draft | Slice | Change |
+| :--- | :--- | :---: | :--- |
+| [BR-XXX-name.md](../../../bounded-contexts/[context]/business-rules/BR-XXX-name.md) | [draft](drafts/BR-XXX-name.md) | S1 | [How the rule text changes; add a dated History & Evolution entry] |
+| [EntityName.md](../../../bounded-contexts/[context]/entities/EntityName.md) | [draft](drafts/EntityName.md) | S1 | [Which states/transitions/notes change] |
+| [flow-NN-name.md](../../../bounded-contexts/[context]/flows/flow-NN-name.md) | [draft](drafts/flow-NN-name.md) | S2 | [Which diagram stages / walkthrough steps / edge cases change] |
+| [ServiceName.md](../../../bounded-contexts/[context]/domain-services/ServiceName.md) | — (Pending Changes row A4) | S1 | [Add a Pending Changes row (A4) now; update A1–A3, Methods status and Traceability when the slice ships, then remove the row] |
 
 ### 8.2 Upstream Product Docs
 
@@ -121,21 +125,32 @@ Only include this subsection if this repo has upstream journey/persona/brainstor
 
 | Doc | Stale Content | Change |
 | :--- | :--- | :--- |
-| [journey-name.md](../../../inception/6-user-journeys/journey-name.md) | [The specific line/step/table cell that states the old behaviour as present-tense fact] | [Edit to reflect the new behaviour] |
-| [5-brainstorming.md](../../../inception/5-brainstorming.md) | [The feature description that scoped the original, now-partially-reversed behaviour] | **Do not rewrite** — frozen record of the original decision. Leave as historical record; the derived doc's History & Evolution entry (7.1) is the forward-link documenting the reversal |
-| [3-personas/*.md](../../../inception/3-personas/) | [State explicitly whether any persona doc needs a change, even if the answer is "no change needed"] | [Edit, or confirm no change needed] |
+| [journey-name.md](../../../../inception/6-user-journeys/journey-name.md) | [The specific line/step/table cell that states the old behaviour as present-tense fact] | [Edit to reflect the new behaviour] |
+| [5-brainstorming.md](../../../../inception/5-brainstorming.md) | [The feature description that scoped the original, now-partially-reversed behaviour] | **Do not rewrite** — frozen record of the original decision. Leave as historical record; the derived doc's History & Evolution entry (8.1) is the forward-link documenting the reversal |
+| [3-personas/*.md](../../../../inception/3-personas/) | [State explicitly whether any persona doc needs a change, even if the answer is "no change needed"] | [Edit, or confirm no change needed] |
 
-## 9. Open Questions
+## 9. Delivery Slices
 
-| # | Question |
-| :---: | :--- |
-| 1 | [Decision still needed before implementation can start] |
-| 2 | [Decision still needed before implementation can start] |
+The ledger for incremental delivery. Group the change into slices that can ship independently; each slice is implemented, verified and documented on its own, possibly in a different conversation or weeks later. Single-pass changes use one row (S1). Update this table whenever a slice changes state — it is the first thing read when the proposal is resumed.
+
+Detail level: **Outline** (intent only) → **Specified** (detailed spec in `features/`) → **In progress** → **Shipped**; or **Discarded / Superseded** (keep the row with a one-line reason and date). Specify a slice in detail only when it is about to start; ask "still wanted?" when resuming.
+
+| Slice | Features / Scope | Blocked by (Open Question #) | Detail | Status | Shipped | Ticket / PR |
+| :---: | :--- | :---: | :---: | :--- | :---: | :--- |
+| S1 | [e.g. F01, F02] | — | Specified | 📋 Planned / 🔄 In Progress / ✅ Shipped | [YYYY-MM-DD] | [SCMI-123 / PR link] |
+| S2 | [e.g. F03, F04] | [#1] | Outline | 📋 Planned / 🗑 Discarded | — | — |
+
+## 10. Open Questions
+
+| # | Question | Blocks slice |
+| :---: | :--- | :---: |
+| 1 | [Decision still needed before implementation can start] | [S2 / none] |
+| 2 | [Decision still needed before implementation can start] | [S1 / none] |
 
 ---
 
 ## 🔗 Related Documentation
 
-- [Journey: Name](../../../inception/6-user-journeys/journey-name.md)
-- [Flow NN: Name](../../bounded-contexts/[context]/flows/flow-NN-name.md)
-- [BR-XXX: Name](../../bounded-contexts/[context]/business-rules/BR-XXX-name.md)
+- [Journey: Name](../../../../inception/6-user-journeys/journey-name.md)
+- [Flow NN: Name](../../../bounded-contexts/[context]/flows/flow-NN-name.md)
+- [BR-XXX: Name](../../../bounded-contexts/[context]/business-rules/BR-XXX-name.md)

@@ -8,23 +8,44 @@ navigation.
 
 ## Sequence Overview
 
+There are two primary paths, depending on whether the flow already has documentation:
+
+**Path A — new flow (nothing documented yet):**
+
 ```text
-Phase 1 — Product Discovery & Slicing (Equal Entry Points):
+Phase 1 — Product Discovery & Slicing:
   ├─ Option A: /inception-workshop ──> docs/inception/
   └─ Option B: /user-story-mapping ──> docs/user-story-mapping/
   (Optional Bridge: Inception can feed directly into Story Mapping)
         ↓
 /create-flow-documentation   Phase 2 — Flow Specs (how each journey works end-to-end)
         ↓
-/create-features             Phase 2b — Feature Specs (vertical slices, contracts, error mappings)
+/create-entity-lifecycle     Phase 3 — Domain Model (entities, VOs, domain services, BRs, invariants)   [optional]
         ↓
-/create-entity-lifecycle     Phase 3 — Domain Model (entities, BRs, invariants)
+/create-features             Phase 2b — Feature Specs (vertical slices, contracts, error mappings)  ← approval gate
         ↓
-/implement-flow              Phase 4 — Implementation (TDD/DDD, layer by layer)
-        ↓
-/modify-flow                 Phase 5+ — Ongoing Changes (proposal → plan → code → docs)
+/implement-flow              Phase 4 — Implementation (TDD/DDD, layer by layer)     ← approval gates (plan, each phase)
+```
 
-At any time:
+**Path B — change to an already-documented flow (`/modify-flow`):** start with the triage tier.
+
+```text
+Triage (see Phase 5+)
+ ├─ Light     one PR, one tweak        → implement test-first + edit the living doc in the same PR
+ ├─ Standard  one slice, real choices  → proposal → plan → implement → sync docs
+ └─ Full      several slices / repos / pauses
+                 proposal (slices as Outlines) → /create-features for the next slice only (specs inside the proposal folder)
+                 then, per slice:  resume ("still wanted?") → plan → implement → copy drafts into living docs
+                 (a slice can be Discarded at any point; nothing in the living docs to revert)
+                 after the last slice: grace-period
+```
+
+Inception is only revisited when the product itself changes (new personas, new differentiating features);
+update the inception docs first, then follow path B.
+
+**At any time:**
+
+```text
 /explore-domain              Understand the existing system (PO questions, onboarding, incident tracing)
 /audit-docs                  Verify docs still match code (health check, pre-release sweep)
 ```
@@ -228,6 +249,16 @@ Step 2 (Map Big Picture / Backbone) and Step 3 (Explore Body / Story Cards) are 
 - Invariants (`INV-XXX`) extracted from entity constraints
 - Value objects referenced
 
+### Domain-service docs
+
+Services that span aggregates or repositories are documented under
+`docs/product/bounded-contexts/[context]/domain-services/[ServiceName].md` with a two-part template:
+**Part A — Product View** (shipped behaviour in plain business language, decision paths, plus an
+**A4 Pending Changes** table) and **Part B — Developer View** (collaborators, methods with status,
+sequence diagrams, rules & invariants enforced, traceability). While a change is parked or in
+progress it is recorded only in Part A4; A1–A3 and Part B are updated when the slice ships (see
+`/modify-flow`).
+
 ### Existing entity docs in this repo
 
 | Bounded context | Entity | File |
@@ -261,7 +292,7 @@ Step 2 (Map Big Picture / Backbone) and Step 3 (Explore Body / Story Cards) are 
 
 | Artefact | Location |
 |----------|----------|
-| Flow development plan | `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md` |
+| Flow development plan | `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md`<br>*(or `docs/product/working-on/active/[change]/implementation-plan-sN.md` for `/modify-flow` slices)* |
 
 *(Note: Feature specifications are created upstream in **Phase 2b via `/create-features`**)*
 
@@ -288,24 +319,68 @@ packages/modules/[context]/
 
 | Artefact | Purpose |
 |----------|---------|
-| `proposal.md` | Product rationale (As a / I want / So that), current vs desired behaviour citing real code, scope of change, open questions |
-| `implementation-plan.md` | Phased tasks derived from the proposal's scope, ordered by DDD layer, with test tasks per phase |
+| `proposal.md` | Product rationale (As a / I want / So that), current vs desired behaviour citing real code, scope of change, delivery slices, open questions |
+| `implementation-plan-sN.md` | Phased tasks derived from the proposal's scope, ordered by DDD layer, with test tasks per phase (one per slice) |
 
-### Workflow
+### Triage: how much ceremony?
+
+Ask these first; if any answer is "yes", move up a tier:
+
+1. Does it need more than one PR?
+2. Does it touch an invariant, a data migration, or another repo?
+3. Are there open business questions?
+4. Will it be paused and resumed later?
+
+| Tier | When | What you do |
+|------|------|-------------|
+| **Light** | One behaviour tweak, one PR, none of the above (e.g. change a threshold, add a validation) | No proposal folder. Short change note in the PR, test-first implementation, and edit the affected flow/entity/BR doc **in the same PR** |
+| **Standard** | One slice, but with real design choices, an invariant or a migration | Single-slice proposal (no feature specs), then plan → implement → sync docs |
+| **Full** | Several slices, several repos, or a long pause expected | Full chain below |
+
+Whatever the tier, the living doc changes in the same PR as the code that makes it true.
+
+### Workflow (Standard / Full)
 
 ```
 1. Discover this repo's doc conventions and source layout
-2. Read affected flow/entity/BR docs
+2. Read affected flow/entity/domain-service/BR docs
 3. Verify against real source code (docs can be stale)
-4. Write proposal.md — present to user, resolve open questions
-5. Write implementation-plan.md
-6. Implement phase by phase, running real build/test commands
-7. Update original docs in place (no parallel new files)
+4. Write proposal.md (incl. Delivery Slices + Open Questions) — present to user, resolve open questions
+   Plan light: later slices stay Outlines; detailed specs (/create-features, saved in the proposal
+   folder) only for the slice about to start
+   Not ready to build? Status = Parked, commit the proposal folder (docs-only PR is fine);
+   planned text for living docs goes to drafts/, the living docs stay untouched
+5. Resume (Step 2b) — read the slice table, ask "is this slice still wanted?", check its specs
+   against today's code, record the commit in "Last checked against code", report drift
+6. Write implementation-plan-sN.md for that slice only (code-level findings go here)
+7. Implement the slice phase by phase, running real build/test commands; merge small PRs fast
+8. In the same PR: copy that slice's drafts into the living docs, fill traceability, mark it Shipped
+9. Repeat 5–8 per slice. A slice that becomes obsolete is Discarded (reason + date kept in the
+   proposal, specs/drafts deleted, service-doc Pending Changes row removed). When every slice is
+   Shipped or Discarded move the folder to grace-period
 ```
+
+### Where things live
+
+```text
+docs/product/working-on/
+├── active/<change>/
+│   ├── proposal.md                   roadmap: slices (Detail level + Status), decisions, blockers, tickets
+│   ├── features/                     detailed specs — only for specified slices
+│   ├── drafts/                       planned text of living docs + README (draft → destination → slice)
+│   └── implementation-plan-sN.md     written when slice N starts
+└── grace-period/<change>/            shipped/closed; kept until stable, then purged
+```
+
+The proposal's **Delivery Slices** table is the ledger: which features ship together, which open
+question blocks which slice, detail level, status, ship date and ticket/PR. It is the first thing
+read on resume. Only shipped behaviour belongs in the living docs under `bounded-contexts/`;
+everything not yet implemented (rationale, specs, drafts, open questions) stays in the change folder.
+The one back-link is a domain-service doc's *Pending Changes* table.
 
 ### Existing proposals in this repo
 
-No active proposals — proposals live under `docs/product/working-on/[change-name]/` once created.
+No active proposals — proposals live under `docs/product/working-on/active/[change-name]/` once created.
 
 ---
 
@@ -366,10 +441,10 @@ before a release, after a refactor, or when onboarding someone who needs to trus
 | `/inception-workshop` | Starting a new product or epic — need to define vision, users, features, MVP |
 | `/user-story-mapping` | Need granular horizontal backbone, INVEST story cards, and release slices (standalone or from inception) |
 | `/create-flow-documentation` | Journeys / story cards are defined — need technical flow specs with diagrams and acceptance criteria |
-| `/create-features` | Flow doc is ready — need to slice it into sequentially numbered feature specifications with error contracts |
-| `/create-entity-lifecycle` | A domain entity with clear states/transitions has emerged — need its full lifecycle spec |
-| `/implement-flow` | Feature specs are ready — need to plan and write production code for them, layer by layer |
-| `/modify-flow` | Changing existing behaviour — need a proposal, plan, and doc updates |
+| `/create-features` | A flow doc (Path A) or Full-tier proposal slice (Path B) needs to be sliced into feature specs with requirements, error contracts and concurrency analysis — approve before planning |
+| `/create-entity-lifecycle` | A domain entity with states/transitions or a cross-aggregate domain service has emerged — need its lifecycle or service spec |
+| `/implement-flow` | Feature specs are ready — need to plan and write production code for them, layer by layer (approval gates: plan & phases) |
+| `/modify-flow` | Changing existing behaviour — triage (Light / Standard / Full), proposal, delivery slices, drafts, and in-place living doc sync |
 | `/explore-domain` | Understanding what the system does — PO questions, onboarding, tracing an event, finding a rule |
 | `/audit-docs` | Checking whether docs still match code — periodic health check, pre-release sweep, post-refactor |
 | `/reverse-engineer-domain` | Extracting business rules and invariants from brownfield legacy code into docs/staging |

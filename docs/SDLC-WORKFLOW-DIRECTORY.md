@@ -10,15 +10,15 @@ The workflow progresses from initial product discovery and story mapping through
 
 ```mermaid
 flowchart TD
-    subgraph Discovery ["Phase 1: Product Discovery (Equal Entry Points)"]
+    subgraph Discovery ["Phase 1: Product Discovery (Path A - New Flows)"]
         direction LR
 
-        subgraph PathA ["Path A: Lean Inception"]
+        subgraph InceptionPath ["Option A: Lean Inception"]
             direction TB
             P1["Lean Inception\n(/inception-workshop)"] --> D1["docs/inception/"]
         end
 
-        subgraph PathB ["Path B: User Story Mapping"]
+        subgraph USMPath ["Option B: User Story Mapping"]
             direction TB
             P1b["User Story Mapping\n(/user-story-mapping)"] --> D1b["docs/user-story-mapping/"]
         end
@@ -32,26 +32,38 @@ flowchart TD
         P2["/create-flow-documentation"] --> D2["docs/product/bounded-contexts/[context]/flows/journey-XX-name.md"]
     end
 
-    subgraph Features ["Phase 2b: Feature Specifications & Slicing"]
+    subgraph DomainModel ["Phase 3: Domain Modeling (Entities, VOs, Services, Rules)"]
+        P3["/create-entity-lifecycle"] --> D3["docs/product/bounded-contexts/[context]/\nentities/\nvalue-objects/\ndomain-services/\nbusiness-rules/\ninvariants/"]
+    end
+
+    subgraph Features ["Phase 2b: Feature Specifications & Slicing (Approval Gate)"]
         D2 --> P2b["/create-features"]
         P2b --> D2b["docs/product/bounded-contexts/[context]/flows/features/[journey-id]/\n(feature-01-*.md, feature-02-*.md)"]
     end
 
-    subgraph DomainModel ["Phase 3: Domain Modeling"]
-        D2b --> P3["/create-entity-lifecycle"]
-        P3 --> D3["docs/product/bounded-contexts/[context]/entities/\nbusiness-rules/\ninvariants/\nvalue-objects/"]
-    end
+    Specs --> DomainModel
+    DomainModel -. Optional input .-> Features
+    Specs --> Features
 
     subgraph Implementation ["Phase 4: Layered Implementation (TDD/DDD)"]
-        D2b & D3 --> P4["/implement-flow"]
+        D2b & D3 --> P4["/implement-flow\n(Approval gates: plan & each phase)"]
         P4 --> D4["packages/modules/[context]/\ntests/"]
     end
 
-    subgraph Evolution ["Phase 5+: Evolution & Change Management"]
-        D4 --> P5["/modify-flow"]
-        P5 --> D5["docs/product/working-on/[change-name]/"]
-        D5 -. In-place updates .-> D2 & D2b & D3
+    subgraph Evolution ["Phase 5+: Evolution & Change Management (Path B - Existing Flows)"]
+        direction TB
+        Triage{"Triage Tier?\n(Light / Standard / Full)"}
+        Triage -->|"Light (1 PR, 1 tweak)"| LightExec["Test-First Code & Edit Living Doc in Same PR"]
+        Triage -->|"Standard / Full"| P5["/modify-flow\n(Delivery Slices S1..Sn)"]
+        P5 --> D5["docs/product/working-on/active/[change-name]/\n├── proposal.md\n├── features/ (specified slices)\n├── drafts/ (planned text)\n└── implementation-plan-sN.md"]
+        D5 --> SliceExec["Implement Slice S_N & Verify"]
+        SliceExec --> InPlace["Merge drafts/ into Living Docs\nMark Slice Shipped"]
+        InPlace -. Next slice or complete .-> P5
+        InPlace --> GP["docs/product/working-on/grace-period/"]
     end
+
+    D4 --> Evolution
+    InPlace -. Updates living tree .-> D2 & D2b & D3
 
     subgraph Operations ["Continuous Operations & Auditing"]
         O1["/explore-domain\n(Query flows, rules, events)"]
@@ -82,10 +94,10 @@ The automation skills that drive each step of the SDLC are defined as self-conta
 | **`/inception-workshop`** | `.agents/skills/sessioflow-sdlc/inception-workshop/` | `docs/inception/` | Starting a new product, initiative, or MVP from scratch (8-step Lean Inception). |
 | **`/user-story-mapping`** | `.agents/skills/sessioflow-sdlc/user-story-mapping/` | `docs/user-story-mapping/` | Slicing user journeys into horizontal backbone, INVEST story cards, and release waves. |
 | **`/create-flow-documentation`** | `.agents/skills/sessioflow-sdlc/create-flow-documentation/` | `docs/product/bounded-contexts/[context]/flows/` | User journeys (Inception) or story cards (USM) defined; technical specs needed. |
-| **`/create-features`** | `.agents/skills/sessioflow-sdlc/create-features/` | `docs/product/bounded-contexts/[context]/flows/features/` | Flow document ready; needs decomposition into sequentially numbered vertical feature specifications with HTTP error contracts. |
-| **`/create-entity-lifecycle`** | `.agents/skills/sessioflow-sdlc/create-entity-lifecycle/` | `docs/product/bounded-contexts/[context]/entities/` | Domain entities with distinct states, transitions, and rules emerge from flows and features. |
-| **`/implement-flow`** | `.agents/skills/sessioflow-sdlc/implement-flow/` | `packages/modules/[context]/`<br>`tests/` | Feature specifications and domain models ready for TDD / DDD implementation. |
-| **`/modify-flow`** | `.agents/skills/sessioflow-sdlc/modify-flow/` | `docs/product/working-on/[change-name]/` | Existing, documented behavior needs modification or refactoring. |
+| **`/create-features`** | `.agents/skills/sessioflow-sdlc/create-features/` | `docs/product/bounded-contexts/[context]/flows/features/`<br>`docs/product/working-on/active/[change]/features/` | Flow document ready (Path A), or Full-tier proposal slice about to start (Path B); produces vertical feature specifications with HTTP error contracts. |
+| **`/create-entity-lifecycle`** | `.agents/skills/sessioflow-sdlc/create-entity-lifecycle/` | `docs/product/bounded-contexts/[context]/entities/`<br>`domain-services/`<br>`value-objects/` | Domain entities or cross-aggregate domain services with distinct states, transitions, decision paths, and rules emerge from flows and features. |
+| **`/implement-flow`** | `.agents/skills/sessioflow-sdlc/implement-flow/` | `packages/modules/[context]/`<br>`tests/`<br>`docs/product/working-on/active/[change]/` | Feature specifications and domain models ready for TDD / DDD implementation. |
+| **`/modify-flow`** | `.agents/skills/sessioflow-sdlc/modify-flow/` | `docs/product/working-on/active/[change-name]/`<br>`docs/product/working-on/grace-period/[change-name]/` | Existing, documented behavior needs modification or refactoring (Triage: Light / Standard / Full). |
 | **`/explore-domain`** | `.agents/skills/sessioflow-sdlc/explore-domain/` | *Read-only responses & diagrams* | Explaining behavior, querying business rules, cataloging domain events. |
 | **`/audit-docs`** | `.agents/skills/sessioflow-sdlc/audit-docs/` | *Drift analysis reports* | Health checks verifying alignment between living documentation and actual code. |
 | **`/adr-create`** | `.agents/skills/sessioflow-sdlc/adr-create/` | `docs/adr/0XX-*.md` | Recording a new Architectural Decision Record from discovery or technical need. |
@@ -145,6 +157,8 @@ docs/
 │   │       │   └── features/[journey-id]/ # Phase 2b: Feature specs grouped by journey (feature-01-*.md)
 │   │       ├── entities/                  # Phase 3: Entity lifecycle specifications
 │   │       │   └── [entity-name].md       # State machines, transitions, guards, actions
+│   │       ├── domain-services/           # Phase 3: Domain service specifications
+│   │       │   └── [service-name].md      # Product & Developer view, policies, decision flow
 │   │       ├── business-rules/            # Phase 3: Business rules
 │   │       │   └── BR-[XXX]-[name].md     # Standalone business rule definitions
 │   │       ├── invariants/                # Phase 3: Domain invariants
@@ -154,8 +168,10 @@ docs/
 │   └── working-on/                        # Phase 5+: Transient change proposals & grace period buffer
 │       ├── README.md                      # Proposal lifecycle & strict agent isolation rules
 │       ├── active/[change-name]/          # In-flight proposals being drafted or implemented
-│       │   ├── proposal.md                # Problem statement, current vs desired behavior, scope
-│       │   └── implementation-plan.md     # Phased execution plan before updating living docs
+│       │   ├── proposal.md                # Roadmap: slices (Detail + Status), decisions, blockers, tickets
+│       │   ├── features/                  # Phase 2b: Detailed feature specs (specified slices only)
+│       │   ├── drafts/                    # Staged rewrites of living docs + README (draft → dest → slice)
+│       │   └── implementation-plan-sN.md  # Slice-specific execution plans (written when slice N starts)
 │       └── grace-period/[change-name]/    # Shipped proposals cooling off in production before purge
 │
 ├── templates/                             # ─── Standardized Documentation Templates ───
@@ -172,6 +188,7 @@ docs/
 │   │   ├── flows.md                       # Journey and flow template
 │   │   ├── features.md                    # Feature specification template (vertical slices)
 │   │   ├── entity-lifecycle.md            # Entity lifecycle template
+│   │   ├── domain-services.md             # Domain service template (Part A Product / Part B Developer)
 │   │   ├── business-rules.md              # Business rule template
 │   │   └── invariants.md                  # Invariant template
 │   └── user-story-mapping/                # Templates for User Story Mapping (USM)
