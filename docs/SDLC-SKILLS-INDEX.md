@@ -255,9 +255,9 @@ Services that span aggregates or repositories are documented under
 `docs/product/bounded-contexts/[context]/domain-services/[ServiceName].md` with a two-part template:
 **Part A — Product View** (shipped behaviour in plain business language, decision paths, plus an
 **A4 Pending Changes** table) and **Part B — Developer View** (collaborators, methods with status,
-sequence diagrams, rules & invariants enforced, traceability). While a change is parked or in
-progress it is recorded only in Part A4; A1–A3 and Part B are updated when the slice ships (see
-`/modify-flow`).
+sequence diagrams, rules & invariants enforced, traceability). While a change is parked or in progress, the living doc only gets a one-sentence row in Part A4;
+the planned rewrite lives in the change folder's `drafts/` and is copied over the living doc in the
+PR that ships the slice (see `/modify-flow`).
 
 ### Existing entity docs in this repo
 

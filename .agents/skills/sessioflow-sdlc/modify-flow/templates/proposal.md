@@ -5,7 +5,7 @@
 * **Last checked against code:** [YYYY-MM-DD @ commit `abc1234` — update every time the proposal is resumed]
 * **Branch:** `[git-branch-name]`
 * **Bounded Context:** [Context]
-* **Affects:** [BR-XXX-name.md](../../../bounded-contexts/[context]/business-rules/BR-XXX-name.md), [EntityName.md](../../../bounded-contexts/[context]/entities/EntityName.md), [flow-NN-name.md](../../../bounded-contexts/[context]/flows/flow-NN-name.md)
+* **Affects:** [BR-XXX-name.md](../../bounded-contexts/[context]/business-rules/BR-XXX-name.md), [EntityName.md](../../bounded-contexts/[context]/entities/EntityName.md), [flow-NN-name.md](../../bounded-contexts/[context]/flows/flow-NN-name.md)
 
 ---
 
@@ -19,8 +19,8 @@
 
 | Persona | Current Experience | Experience After This Change |
 | :--- | :--- | :--- |
-| [Persona 1](../../../../inception/3-personas/persona-1.md) | [What happens today] | [What happens after] |
-| [Persona 2](../../../../inception/3-personas/persona-2.md) | [What happens today] | [What happens after] |
+| [Persona 1](../../../inception/3-personas/persona-1.md) | [What happens today] | [What happens after] |
+| [Persona 2](../../../inception/3-personas/persona-2.md) | [What happens today] | [What happens after] |
 
 ### Business Value & Why It Matters
 
@@ -114,10 +114,10 @@ The living docs are **not** edited until their slice ships. Write the planned te
 
 | Doc (destination) | Draft | Slice | Change |
 | :--- | :--- | :---: | :--- |
-| [BR-XXX-name.md](../../../bounded-contexts/[context]/business-rules/BR-XXX-name.md) | [draft](drafts/BR-XXX-name.md) | S1 | [How the rule text changes; add a dated History & Evolution entry] |
-| [EntityName.md](../../../bounded-contexts/[context]/entities/EntityName.md) | [draft](drafts/EntityName.md) | S1 | [Which states/transitions/notes change] |
-| [flow-NN-name.md](../../../bounded-contexts/[context]/flows/flow-NN-name.md) | [draft](drafts/flow-NN-name.md) | S2 | [Which diagram stages / walkthrough steps / edge cases change] |
-| [ServiceName.md](../../../bounded-contexts/[context]/domain-services/ServiceName.md) | — (Pending Changes row A4) | S1 | [Add a Pending Changes row (A4) now; update A1–A3, Methods status and Traceability when the slice ships, then remove the row] |
+| [BR-XXX-name.md](../../bounded-contexts/[context]/business-rules/BR-XXX-name.md) | [draft](drafts/BR-XXX-name.md) | S1 | [How the rule text changes; add a dated History & Evolution entry] |
+| [EntityName.md](../../bounded-contexts/[context]/entities/EntityName.md) | [draft](drafts/EntityName.md) | S1 | [Which states/transitions/notes change] |
+| [flow-NN-name.md](../../bounded-contexts/[context]/flows/flow-NN-name.md) | [draft](drafts/flow-NN-name.md) | S2 | [Which diagram stages / walkthrough steps / edge cases change] |
+| [ServiceName.md](../../bounded-contexts/[context]/domain-services/ServiceName.md) | [draft](drafts/ServiceName.md) (+ one A4 row in the living doc now) | S1 | [Living doc gets a Pending Changes row (A4) now; when the slice ships copy the draft, keep other slices' A4 rows, remove this one] |
 
 ### 8.2 Upstream Product Docs
 
@@ -125,9 +125,9 @@ Only include this subsection if this repo has upstream journey/persona/brainstor
 
 | Doc | Stale Content | Change |
 | :--- | :--- | :--- |
-| [journey-name.md](../../../../inception/6-user-journeys/journey-name.md) | [The specific line/step/table cell that states the old behaviour as present-tense fact] | [Edit to reflect the new behaviour] |
-| [5-brainstorming.md](../../../../inception/5-brainstorming.md) | [The feature description that scoped the original, now-partially-reversed behaviour] | **Do not rewrite** — frozen record of the original decision. Leave as historical record; the derived doc's History & Evolution entry (8.1) is the forward-link documenting the reversal |
-| [3-personas/*.md](../../../../inception/3-personas/) | [State explicitly whether any persona doc needs a change, even if the answer is "no change needed"] | [Edit, or confirm no change needed] |
+| [journey-name.md](../../../inception/6-user-journeys/journey-name.md) | [The specific line/step/table cell that states the old behaviour as present-tense fact] | [Edit to reflect the new behaviour] |
+| [5-brainstorming.md](../../../inception/5-brainstorming.md) | [The feature description that scoped the original, now-partially-reversed behaviour] | **Do not rewrite** — frozen record of the original decision. Leave as historical record; the derived doc's History & Evolution entry (7.1) is the forward-link documenting the reversal |
+| [3-personas/*.md](../../../inception/3-personas/) | [State explicitly whether any persona doc needs a change, even if the answer is "no change needed"] | [Edit, or confirm no change needed] |
 
 ## 9. Delivery Slices
 
@@ -151,6 +151,6 @@ Detail level: **Outline** (intent only) → **Specified** (detailed spec in `fea
 
 ## 🔗 Related Documentation
 
-- [Journey: Name](../../../../inception/6-user-journeys/journey-name.md)
-- [Flow NN: Name](../../../bounded-contexts/[context]/flows/flow-NN-name.md)
-- [BR-XXX: Name](../../../bounded-contexts/[context]/business-rules/BR-XXX-name.md)
+- [Journey: Name](../../../inception/6-user-journeys/journey-name.md)
+- [Flow NN: Name](../../bounded-contexts/[context]/flows/flow-NN-name.md)
+- [BR-XXX: Name](../../bounded-contexts/[context]/business-rules/BR-XXX-name.md)

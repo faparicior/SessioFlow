@@ -7,7 +7,7 @@
 * **Status:** 📋 Planned | 🔄 In Progress | ✅ Complete
 * **Priority:** High | Medium | Low
 
-> **Architecture Reference**: See `AGENTS.md` (or `CLAUDE.md`) and `docs/ARCHITECTURE.md` for project folder layout, layer conventions, and verification commands.
+> **Architecture Reference**: See `CLAUDE.md` for project folder layout, layer conventions, and verification commands.
 
 ---
 

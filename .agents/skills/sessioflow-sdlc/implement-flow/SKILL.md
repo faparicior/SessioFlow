@@ -77,7 +77,7 @@ flowchart TD
 
 ### Step 2: Create Flow Development Plan
 
-1. For a `/modify-flow` proposal, implement **one slice at a time**: save the plan as `docs/product/working-on/active/[change]/implementation-plan-sN.md` (only when slice N starts) and record "Grounded against commit X" in it. Otherwise create a flow-level or feature-level development plan alongside the flow document:
+1. For a `/modify-flow` proposal, implement **one slice at a time**: save the plan as `working-on/active/[change]/implementation-plan-sN.md` (only when slice N starts) and record "Grounded against commit X" in it. Otherwise create a flow-level or feature-level development plan alongside the flow document:
    `docs/product/bounded-contexts/[context]/flows/[flow-name]-plan.md`
 2. Use the template: `templates/flow-development-plan.md` (located in this skill).
 3. **Populate the Lack of Information Log**:

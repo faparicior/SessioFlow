@@ -97,7 +97,7 @@ override it. In every tier the living doc changes in the same PR as the code tha
 
 1. Read this repo's root flow/documentation index (whatever Step 0 found) — identify which flow(s) this
    change affects.
-2. Read the affected flow doc(s), entity doc(s), **domain-service doc(s)** (`docs/product/bounded-contexts/{ctx}/domain-services/` —
+2. Read the affected flow doc(s), entity doc(s), **domain-service doc(s)** (`bounded-contexts/{ctx}/domain-services/` —
    check it for every service whose behaviour the change touches), and business rule doc(s). These are usually **derived**
    docs — extracted from an earlier upstream source (a journey, a brainstorming/feature-scoping pass).
 3. **Do not trust the docs alone** — grep/read the real source files the docs point to (function/class
@@ -204,14 +204,14 @@ Name the folder/file with a kebab-case slug matching the git branch name where p
 - **Not-yet-implemented docs live in the change folder, never in the living docs:**
 
   ```
-  docs/product/working-on/active/<change>/
+  working-on/active/<change>/
   ├── proposal.md                   roadmap: slices, decisions, blockers, ticket keys
   ├── features/                     detailed specs (specified slices only)
   ├── drafts/                       planned text of living docs (+ README mapping draft → destination/slice)
   └── implementation-plan-sN.md     written when slice N starts
   ```
 
-  If a planned rewrite of an existing doc (BR, flow) is needed, write it as a file in `drafts/` and leave the
+  If a planned rewrite of an existing doc (BR, flow, entity, domain service) is needed, write it as a file in `drafts/` and leave the
   living doc untouched. A service doc may carry one row in its *Pending Changes* table pointing back here;
   nothing else from this change appears in the living tree.
 - **Freeze and amend.** Once a slice is `In progress`, change its spec only through a dated amendment line in
@@ -298,10 +298,12 @@ Once a slice is implemented and verified (for a single-slice change, that is the
    Docs tagged with later slices stay untouched, so the living docs never describe behaviour that is not
    in the code. Mark the slice `✅ Shipped` in Section 9 with the date and ticket/PR, and set the
    proposal Status to `🔄 Partially Shipped (slice N/M)` if slices remain.
-0b. **Domain-service docs have a Pending Changes table (Part A4).** While a change is parked or in progress,
-   record it there (change, slice, proposal link, ticket) and leave Part A1–A3 (shipped behaviour) untouched.
-   When the slice ships, update A1–A3 and the Part B rows (Methods status, Rules & Invariants Enforced,
-   Traceability with real file/guard/test title), then remove that slice's Pending Changes row.
+0b. **Domain-service docs: planned text in `drafts/`, one pointer row in the living doc.** While a change is
+   parked or in progress, the service doc's *Pending Changes* table (Part A4) only gets a one-sentence row
+   (change, slice, proposal link, ticket); Part A1–A3 and Part B stay as shipped behaviour. The planned
+   rewrite lives in `drafts/<ServiceName>.md`. When the slice ships: copy the draft over the living doc,
+   keep the A4 rows of slices that have not shipped yet, remove the shipped slice's row, flip ⏳ to ✅ only
+   after opening the code, and fill `Verified by` with real test titles.
 1. Update each affected doc **in place**, using whichever mechanism this repo already uses to author that
    kind of doc (Step 0) — e.g. if it has a paired skill for generating entity/business-rule/flow docs,
    re-invoke that skill on the existing file rather than writing free-hand.
