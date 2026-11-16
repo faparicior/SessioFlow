@@ -702,6 +702,113 @@ export class ${queryPascal}QueryHandler {
 }
 `;
 
+  const getControllerCode = `import {DomainError} from '@sessioflow/shared-domain/exceptions';
+import {mapDomainErrorToResponse} from '@sessioflow/shared-http/error-mapper';
+import {${queryPascal}Query} from '../../application/queries/${d.query}/${d.query}.query.js';
+import type {${queryPascal}QueryHandler} from '../../application/queries/${d.query}/${d.query}.handler.js';
+import {jsonResponse} from './json-response.js';
+
+export async function ${queryCamel}Controller(
+  _request: Request,
+  id: string,
+  handler: ${queryPascal}QueryHandler,
+): Promise<Response> {
+  try {
+    const query = new ${queryPascal}Query({id});
+    const result = await handler.execute(query);
+    if (!result) {
+      return jsonResponse({error: {code: 'NOT_FOUND', message: '${d.entity} not found'}}, 404);
+    }
+    return jsonResponse({data: result}, 200);
+  } catch (error) {
+    if (error instanceof DomainError) {
+      return mapDomainErrorToResponse(error);
+    }
+    throw error;
+  }
+}
+`;
+
+  const patchControllerCode = `import {${d.entity}UpdateSchema} from '@sessioflow/api-definitions/zod/${d.mod}';
+import {DomainError} from '@sessioflow/shared-domain/exceptions';
+import {mapDomainErrorToResponse} from '@sessioflow/shared-http/error-mapper';
+import {Update${d.entity}Command} from '../../application/commands/update-${entityKebab}/update-${entityKebab}.command.js';
+import type {Update${d.entity}CommandHandler} from '../../application/commands/update-${entityKebab}/update-${entityKebab}.handler.js';
+import {invalidBodyResponse, jsonResponse, unauthorizedResponse} from './json-response.js';
+import type {GetAuthUser} from './${d.action}.controller.js';
+
+export async function update${d.entity}Controller(
+  request: Request,
+  id: string,
+  handler: Update${d.entity}CommandHandler,
+  getAuthUser: GetAuthUser,
+): Promise<Response> {
+  let payload: unknown;
+  try {
+    payload = await request.json();
+  } catch {
+    return invalidBodyResponse('Request body must be valid JSON');
+  }
+
+  const parsed = ${d.entity}UpdateSchema.safeParse(payload);
+  if (!parsed.success) {
+    const [issue] = parsed.error.issues;
+    return invalidBodyResponse(issue?.message ?? 'Invalid request body');
+  }
+
+  const user = await getAuthUser();
+  if (!user) {
+    return unauthorizedResponse();
+  }
+
+  try {
+    const command = new Update${d.entity}Command({
+      id,
+      ...parsed.data,
+      actorId: user.id,
+    });
+    const result = await handler.execute(command);
+    return jsonResponse({data: result}, 200);
+  } catch (error) {
+    if (error instanceof DomainError) {
+      return mapDomainErrorToResponse(error);
+    }
+    throw error;
+  }
+}
+`;
+
+  const deleteControllerCode = `import {DomainError} from '@sessioflow/shared-domain/exceptions';
+import {mapDomainErrorToResponse} from '@sessioflow/shared-http/error-mapper';
+import {Delete${d.entity}Command} from '../../application/commands/delete-${entityKebab}/delete-${entityKebab}.command.js';
+import type {Delete${d.entity}CommandHandler} from '../../application/commands/delete-${entityKebab}/delete-${entityKebab}.handler.js';
+import {unauthorizedResponse} from './json-response.js';
+import type {GetAuthUser} from './${d.action}.controller.js';
+
+export async function delete${d.entity}Controller(
+  _request: Request,
+  id: string,
+  handler: Delete${d.entity}CommandHandler,
+  getAuthUser: GetAuthUser,
+): Promise<Response> {
+  const user = await getAuthUser();
+  if (!user) {
+    return unauthorizedResponse();
+  }
+
+  try {
+    const command = new Delete${d.entity}Command({id, actorId: user.id});
+    await handler.execute(command);
+    return new Response(null, {status: 204});
+  } catch (error) {
+    if (error instanceof DomainError) {
+      return mapDomainErrorToResponse(error);
+    }
+    throw error;
+  }
+}
+`;
+
   const nextCollectionRouteCode = `import {${containerName}} from '@sessioflow/${d.mod}/container';
 import {internalErrorResponse} from '../../../../lib/api-error';
 
@@ -720,6 +827,8 @@ export async function POST(request: Request): Promise<Response> {
 import {internalErrorResponse} from '../../../../../lib/api-error';
 
 const ${queryCamel} = ${containerName}.create${queryPascal}Controller();
+const update${d.entity} = ${containerName}.createUpdate${d.entity}Controller();
+const delete${d.entity} = ${containerName}.createDelete${d.entity}Controller();
 
 export async function GET(
   request: Request,
@@ -731,6 +840,32 @@ export async function GET(
     return await ${queryCamel}(request, id);
   } catch (error) {
     return internalErrorResponse('GET ${d.route}/{id}', error);
+  }
+}
+
+export async function PATCH(
+  request: Request,
+  context: {params: Promise<{id: string}>},
+): Promise<Response> {
+  const {id} = await context.params;
+
+  try {
+    return await update${d.entity}(request, id);
+  } catch (error) {
+    return internalErrorResponse('PATCH ${d.route}/{id}', error);
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  context: {params: Promise<{id: string}>},
+): Promise<Response> {
+  const {id} = await context.params;
+
+  try {
+    return await delete${d.entity}(request, id);
+  } catch (error) {
+    return internalErrorResponse('DELETE ${d.route}/{id}', error);
   }
 }
 `;
@@ -792,6 +927,9 @@ describe('${d.entity}', () => {
       containerCode,
       nextCollectionRouteCode,
       nextItemRouteCode,
+      getControllerCode,
+      patchControllerCode,
+      deleteControllerCode,
       unitTestCode,
     },
   };
@@ -993,6 +1131,18 @@ function generateTrainDomainExamples(d) {
       `Should \`${handlerPath}\` wrap \`repository.save()\` in a \`try/catch\` and return an HTTP status?`,
       `No. In SessioFlow, application handlers are pure and never contain \`try/catch\` for domain errors—exceptions propagate to the controller, which translates \`DomainError\` via \`mapDomainErrorToResponse\`.`,
     ),
+
+    // 18. GET / PATCH / DELETE controllers
+    makeMessage(
+      `Implement the \`GET\`, \`PATCH\`, and \`DELETE\` HTTP controllers for \`${d.mod}\` (\`${d.query}.controller.ts\`, \`update-${m.entityKebab}.controller.ts\`, \`delete-${m.entityKebab}.controller.ts\`) catching \`DomainError\`.`,
+      `\`${base}/interfaces/http/${d.query}.controller.ts\`:\n\`\`\`typescript\n${m.getControllerCode.trimEnd()}\n\`\`\`\n\n\`${base}/interfaces/http/update-${m.entityKebab}.controller.ts\`:\n\`\`\`typescript\n${m.patchControllerCode.trimEnd()}\n\`\`\`\n\n\`${base}/interfaces/http/delete-${m.entityKebab}.controller.ts\`:\n\`\`\`typescript\n${m.deleteControllerCode.trimEnd()}\n\`\`\``,
+    ),
+
+    // 19. Fix: tsc + relative import + DomainError in controller
+    makeMessage(
+      `Fix the TypeScript and convention errors in \`${ctrlPath}\`:\n\`\`\`typescript\nimport {DomainInvariantError} from '@sessioflow/shared-domain/exceptions';\nimport {${m.actionPascal}Command} from '../../../application/commands/${d.action}/${d.action}.command.js';\n// ...\nexport async function ${toCamel(d.action)}Controller(handler, getAuthUser): Promise(async (request: Request) => Promise<Response>) {\n  // catch (error) { if (error instanceof DomainInvariantError) ... }\n}\n\`\`\``,
+      `Fix the 3 issues: (1) use \`../../application/...\` (2 levels up from \`interfaces/http/\`), (2) return \`Promise<Response>\` directly from \`${toCamel(d.action)}Controller(request, handler, getAuthUser)\` (valid TS), and (3) catch \`DomainError\` (base class) instead of \`DomainInvariantError\`:\n\`\`\`typescript\n${files[ctrlPath].trimEnd()}\n\`\`\``,
+    ),
   ];
 }
 
@@ -1043,8 +1193,12 @@ function generateEvalDomainExamples(d) {
       `\`${ctrlPath}\`:\n\`\`\`typescript\n${files[ctrlPath].trimEnd()}\n\`\`\``,
     ),
     makeMessage(
-      `Wire the Next.js App Router \`GET\` handler at \`${nextItemRoutePath}\` to \`${m.containerName}\`.`,
+      `Wire the Next.js App Router \`GET\`, \`PATCH\`, and \`DELETE\` handlers at \`${nextItemRoutePath}\` to \`${m.containerName}\`.`,
       `\`${nextItemRoutePath}\`:\n\`\`\`typescript\n${m.nextItemRouteCode.trimEnd()}\n\`\`\``,
+    ),
+    makeMessage(
+      `Implement \`update-${m.entityKebab}.controller.ts\` and \`delete-${m.entityKebab}.controller.ts\` for \`${d.mod}\` catching \`DomainError\` with \`../../application/...\` imports.`,
+      `\`${base}/interfaces/http/update-${m.entityKebab}.controller.ts\`:\n\`\`\`typescript\n${m.patchControllerCode.trimEnd()}\n\`\`\`\n\n\`${base}/interfaces/http/delete-${m.entityKebab}.controller.ts\`:\n\`\`\`typescript\n${m.deleteControllerCode.trimEnd()}\n\`\`\``,
     ),
     makeMessage(
       `\`npm run check:arch\` reported \`${d.event}\` is missing \`toJSON()\` and \`implements DomainEvent\`. Fix \`${eventPath}\`.`,
