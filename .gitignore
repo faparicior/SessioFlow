@@ -17,6 +17,7 @@ coverage/
 .next/
 out/
 out-thinking/
+out-tinking-teacher/
 
 # production
 /build

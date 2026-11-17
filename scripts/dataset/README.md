@@ -13,11 +13,15 @@ node scripts/dataset/generate-dataset.mjs --verify
 
 # Parallel thinking-aligned dataset (writes <think>...</think> traces to scripts/dataset/out-thinking/)
 node scripts/dataset/generate-dataset.mjs --thinking --verify
+
+# Distill real <think> + code from Unsloth Studio's local OpenAI-compatible API (filtered by check-architecture.mjs)
+node scripts/dataset/generate-dataset.mjs --teacher-url http://localhost:8080/v1 --teacher-limit 20
 ```
 
 Outputs:
 - `scripts/dataset/out/train.jsonl` & `eval.jsonl` — direct coder dataset (for inference with thinking OFF)
 - `scripts/dataset/out-thinking/train.jsonl` & `eval.jsonl` — thinking-aligned dataset (for inference with thinking ON)
+- `scripts/dataset/out-tinking-teacher/train.jsonl` & `eval.jsonl` — distilled & oracle-filtered dataset from your teacher API (`--teacher-model`, `--teacher-key` optional)
 
 ## Train with Unsloth (Qwen 3.5 4B)
 

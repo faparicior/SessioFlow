@@ -25,8 +25,28 @@ import {join, relative} from 'node:path';
 
 const ROOT = process.cwd();
 const THINKING = process.argv.includes('--thinking');
-const OUT_DIR = join(ROOT, THINKING ? 'scripts/dataset/out-thinking' : 'scripts/dataset/out');
 const VERIFY = process.argv.includes('--verify');
+
+function getArgValue(flag) {
+  const idx = process.argv.indexOf(flag);
+  if (idx === -1 || idx + 1 >= process.argv.length) return undefined;
+  return process.argv[idx + 1];
+}
+
+const TEACHER_URL = getArgValue('--teacher-url');
+const TEACHER_MODEL = getArgValue('--teacher-model') ?? 'default';
+const TEACHER_KEY = getArgValue('--teacher-key') ?? process.env.TEACHER_API_KEY;
+const TEACHER_LIMIT_RAW = getArgValue('--teacher-limit');
+const TEACHER_LIMIT = TEACHER_LIMIT_RAW ? Number.parseInt(TEACHER_LIMIT_RAW, 10) : undefined;
+
+const OUT_DIR = join(
+  ROOT,
+  TEACHER_URL
+    ? 'scripts/dataset/out-tinking-teacher'
+    : THINKING
+      ? 'scripts/dataset/out-thinking'
+      : 'scripts/dataset/out',
+);
 
 const MINIMAL_SYSTEM_PROMPT =
   'You are a TypeScript/DDD coding assistant for the SessioFlow monorepo.';
@@ -1537,10 +1557,123 @@ function extractConferenceExamples() {
   return examples;
 }
 
-function main() {
+function buildTeacherSystemPrompt() {
+  const parts = [
+    'You are a senior SessioFlow TypeScript/DDD architect generating verified training examples.',
+    'Always follow SessioFlow rules strictly (private constructor, create/fromData, get value(), equals(), DomainInvariantError, no zod in domain/, no domain imports in controllers or Command/Query DTOs, thin Next.js route.ts delegates to @sessioflow/<mod>/container with relative lib/api-error, never modify tests/unit/architecture/).',
+  ];
+  const archRulesPath = join(ROOT, 'docs/ARCHITECTURE-RULES.md');
+  if (existsSync(archRulesPath)) {
+    const rules = readFileSync(archRulesPath, 'utf8').slice(0, 6000);
+    parts.push(`Reference rules:\n${rules}`);
+  }
+  return parts.join('\n\n');
+}
+
+function extractFirstTsBlock(text) {
+  const match = text.match(/```typescript\n([\s\S]*?)```/);
+  return match ? match[1] : undefined;
+}
+
+function detectDomainTargetPath(userPrompt) {
+  const match = userPrompt.match(/packages\/modules\/[a-z0-9-]+\/src\/domain\/[a-z0-9-/.]+\.ts/i);
+  return match ? match[0] : undefined;
+}
+
+async function callTeacherApi(teacherSystemPrompt, userPrompt) {
+  const baseUrl = TEACHER_URL.replace(/\/+$/, '');
+  const endpoint = baseUrl.endsWith('/chat/completions') ? baseUrl : `${baseUrl}/chat/completions`;
+  const headers = {'Content-Type': 'application/json'};
+  if (TEACHER_KEY) {
+    headers.Authorization = `Bearer ${TEACHER_KEY}`;
+  }
+
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      model: TEACHER_MODEL,
+      temperature: 0.2,
+      max_tokens: 2048,
+      messages: [
+        {role: 'system', content: teacherSystemPrompt},
+        {role: 'user', content: userPrompt},
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Teacher API ${res.status}: ${await res.text()}`);
+  }
+
+  const data = await res.json();
+  const msg = data?.choices?.[0]?.message;
+  if (!msg?.content) return undefined;
+
+  const reasoning = msg.reasoning_content?.trim();
+  const content = msg.content.trim();
+  if (reasoning && !content.startsWith('<think>')) {
+    return `<think>\n${reasoning}\n</think>\n\n${content}`;
+  }
+  return content;
+}
+
+function verifyTeacherDomainCode(userPrompt, assistantOutput, idx) {
+  const domainPath = detectDomainTargetPath(userPrompt);
+  const tsCode = extractFirstTsBlock(assistantOutput);
+  if (!domainPath || !tsCode) return true;
+
+  const tempMod = `_synth_teacher_${idx}`;
+  const tempRoot = join(ROOT, 'packages/modules', tempMod);
+  const targetRel = domainPath.replace(/packages\/modules\/[a-z0-9-]+/, `packages/modules/${tempMod}`);
+  const targetAbs = join(ROOT, targetRel);
+  try {
+    mkdirSync(join(targetAbs, '..'), {recursive: true});
+    writeFileSync(targetAbs, tsCode, 'utf8');
+    const check = runCheckArch(`packages/modules/${tempMod}`);
+    return check.ok;
+  } finally {
+    rmSync(tempRoot, {recursive: true, force: true});
+  }
+}
+
+async function distillWithTeacher(samples, label) {
+  const teacherSystemPrompt = buildTeacherSystemPrompt();
+  const slice = TEACHER_LIMIT ? samples.slice(0, TEACHER_LIMIT) : samples;
+  const accepted = [];
+
+  for (const [idx, sample] of slice.entries()) {
+    const userMsg = sample.messages.find(m => m.role === 'user')?.content;
+    const sysMsg = sample.messages.find(m => m.role === 'system')?.content ?? MINIMAL_SYSTEM_PROMPT;
+    if (!userMsg) continue;
+
+    try {
+      const teacherOut = await callTeacherApi(teacherSystemPrompt, userMsg);
+      if (!teacherOut) continue;
+      if (!verifyTeacherDomainCode(userMsg, teacherOut, idx)) {
+        console.warn(`⚠️ [${label} #${idx}] Rejected by check-architecture.mjs`);
+        continue;
+      }
+      accepted.push({
+        messages: [
+          {role: 'system', content: sysMsg},
+          {role: 'user', content: userMsg},
+          {role: 'assistant', content: teacherOut},
+        ],
+      });
+      process.stdout.write(`\r🤖 Teacher [${label}]: ${accepted.length}/${slice.length} accepted`);
+    } catch (err) {
+      console.warn(`\n⚠️ [${label} #${idx}] Teacher error: ${err.message}`);
+    }
+  }
+  console.log('');
+  return accepted;
+}
+
+async function main() {
   mkdirSync(OUT_DIR, {recursive: true});
 
-  const trainSamples = [
+  let trainSamples = [
     ...extractConferenceExamples(),
     ...generateFrontendXoExamples(),
   ];
@@ -1548,9 +1681,15 @@ function main() {
     trainSamples.push(...generateTrainDomainExamples(d, idx));
   }
 
-  const evalSamples = [];
+  let evalSamples = [];
   for (const [idx, d] of EVAL_DOMAINS.entries()) {
     evalSamples.push(...generateEvalDomainExamples(d, idx));
+  }
+
+  if (TEACHER_URL) {
+    console.log(`🔗 Distilling real reasoning traces from teacher: ${TEACHER_URL} (model: ${TEACHER_MODEL})`);
+    trainSamples = await distillWithTeacher(trainSamples, 'train');
+    evalSamples = await distillWithTeacher(evalSamples, 'eval');
   }
 
   const trainPath = join(OUT_DIR, 'train.jsonl');
@@ -1566,4 +1705,7 @@ function main() {
   }
 }
 
-main();
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
