@@ -162,7 +162,8 @@ function makeMultiTurnMessage(turns) {
   return {messages};
 }
 
-function buildFilesForDomain(d) {
+function buildFilesForDomain(d, idx = 0) {
+  const archetype = idx % 4; // 0: quota/uniqueness, 1: lifecycle+soft-delete, 2: capacity+UTC-window, 3: paginated-search
   const entityKebab = toKebab(d.entity);
   const entityCamel = d.entity[0].toLowerCase() + d.entity.slice(1);
   const voKebab = toKebab(d.vo);
@@ -491,6 +492,15 @@ export class ${d.event} implements DomainEvent {
 }
 `;
 
+  const aggregateExtraMethod =
+    archetype === 0
+      ? `\n  public rename(nextTitle: ${d.vo}): void {\n    if (this._data.status.value === 'ARCHIVED') {\n      throw new DomainInvariantError('ARCHIVED_ENTITY_IMMUTABLE', 'Cannot rename an archived ${d.entity}');\n    }\n    this._data.${d.field} = nextTitle;\n  }`
+      : archetype === 1
+        ? `\n  public archive(): void {\n    const target = ${statusClass}.create('ARCHIVED');\n    if (!${statusClass}.canTransitionTo(this._data.status, target)) {\n      throw new DomainInvariantError('INVALID_STATUS_TRANSITION', 'Cannot archive from current status');\n    }\n    this._data.status = target;\n  }`
+        : archetype === 2
+          ? `\n  public canAcceptMore(currentCount: number): boolean {\n    return this._data.status.value === 'ACTIVE' && currentCount < this._data.${d.numField}.value;\n  }`
+          : `\n  public adjustLimit(nextLimit: ${d.numVo}): void {\n    if (this._data.status.value === 'ARCHIVED') {\n      throw new DomainInvariantError('ARCHIVED_ENTITY_IMMUTABLE', 'Cannot change limit when archived');\n    }\n    this._data.${d.numField} = nextLimit;\n  }`;
+
   const aggregateCode = `import {DomainInvariantError} from '@sessioflow/shared-domain/exceptions';
 import {DomainEvent} from './events/domain-event.interface.js';
 import {${d.event}} from './events/${eventKebab}.js';
@@ -544,7 +554,7 @@ export class ${d.entity} {
       throw new DomainInvariantError('INVALID_STATUS_TRANSITION', 'Cannot activate from current status');
     }
     this._data.status = target;
-  }
+  }${aggregateExtraMethod}
 
   public get id(): ${idClass} {
     return this._data.id;
@@ -669,6 +679,13 @@ export class ${actionPascal}CommandHandler {
 }
 `;
 
+  const repoExtraMethod =
+    archetype === 0
+      ? `\n  public async countActiveByOwner(ownerId: string): Promise<number> {\n    const rows = await this.client\n      .select({id: ${tableName}.id})\n      .from(${tableName})\n      .where(eq(${tableName}.status, 'ACTIVE'));\n    return rows.length;\n  }`
+      : archetype === 3
+        ? `\n  public async listByStatus(status: ${statusClass}, limit: number, offset: number): Promise<${d.entity}[]> {\n    const rows = await this.client\n      .select()\n      .from(${tableName})\n      .where(eq(${tableName}.status, status.value))\n      .limit(limit)\n      .offset(offset);\n    return rows.map(row => this.toDomain(row));\n  }`
+        : `\n  public async updateStatus(id: ${idClass}, status: ${statusClass}, tx?: TransactionClient): Promise<void> {\n    const executor = (tx as DatabaseClient | undefined) ?? this.client;\n    await executor\n      .update(${tableName})\n      .set({status: status.value})\n      .where(eq(${tableName}.id, id.value));\n  }`;
+
   const drizzleRepoCode = `import {eq} from 'drizzle-orm';
 import {db, type DatabaseClient} from '@sessioflow/shared-database/client';
 import {${tableName}} from '@sessioflow/shared-database/schema';
@@ -706,7 +723,7 @@ export class Drizzle${d.entity}Repository implements ${d.entity}Repository {
       status: ${entityCamel}.status.value,
       createdAt: ${entityCamel}.createdAt,
     });
-  }
+  }${repoExtraMethod}
 
   private toDomain(row: ${d.entity}Row): ${d.entity} {
     return ${d.entity}.fromData({
@@ -1130,8 +1147,8 @@ function verifyDomainFiles(d, files) {
   }
 }
 
-function generateTrainDomainExamples(d) {
-  const files = buildFilesForDomain(d);
+function generateTrainDomainExamples(d, idx = 0) {
+  const files = buildFilesForDomain(d, idx);
   if (!verifyDomainFiles(d, files)) return [];
 
   const m = files.meta;
@@ -1337,8 +1354,8 @@ function generateTrainDomainExamples(d) {
   ];
 }
 
-function generateEvalDomainExamples(d) {
-  const files = buildFilesForDomain(d);
+function generateEvalDomainExamples(d, idx = 0) {
+  const files = buildFilesForDomain(d, idx);
   if (!verifyDomainFiles(d, files)) return [];
 
   const m = files.meta;
@@ -1527,13 +1544,13 @@ function main() {
     ...extractConferenceExamples(),
     ...generateFrontendXoExamples(),
   ];
-  for (const d of TRAIN_DOMAINS) {
-    trainSamples.push(...generateTrainDomainExamples(d));
+  for (const [idx, d] of TRAIN_DOMAINS.entries()) {
+    trainSamples.push(...generateTrainDomainExamples(d, idx));
   }
 
   const evalSamples = [];
-  for (const d of EVAL_DOMAINS) {
-    evalSamples.push(...generateEvalDomainExamples(d));
+  for (const [idx, d] of EVAL_DOMAINS.entries()) {
+    evalSamples.push(...generateEvalDomainExamples(d, idx));
   }
 
   const trainPath = join(OUT_DIR, 'train.jsonl');
