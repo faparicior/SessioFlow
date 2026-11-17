@@ -1,6 +1,6 @@
 training:
   max_seq_length: 4096
-  num_epochs: 2
+  num_epochs: 1.5
   learning_rate: 0.0001
   embedding_learning_rate: null
   batch_size: 1
@@ -8,7 +8,7 @@ training:
   warmup_steps: 10
   max_steps: 0
   save_steps: 50
-  eval_steps: 0.25
+  eval_steps: 0.2
   early_stopping_patience: 0
   weight_decay: 0.01
   random_seed: 3407

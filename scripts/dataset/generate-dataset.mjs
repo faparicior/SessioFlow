@@ -42,6 +42,7 @@ const DETAILED_SYSTEM_PROMPT = [
   '- Response DTOs have `private constructor`, `readonly` primitive fields, and `static from(entity)`.',
   '- Controllers are factory functions in `interfaces/http/*.controller.ts`, validate with Zod, instantiate Command/Query DTOs, catch only `DomainError`, and NEVER import from `domain/**`.',
   '- Next.js `apps/frontend/src/app/api/v1/**/route.ts` files are thin delegates to `@sessioflow/<mod>/container` with relative `api-error` imports.',
+  '- Implement only what was requested (no speculative extra HTTP verbs or unused methods).',
   '- Never modify `tests/unit/architecture/` to make failing code pass; always fix application/domain code.',
 ].join('\n');
 
@@ -823,6 +824,25 @@ export async function POST(request: Request): Promise<Response> {
 }
 `;
 
+  const nextItemGetOnlyRouteCode = `import {${containerName}} from '@sessioflow/${d.mod}/container';
+import {internalErrorResponse} from '../../../../../lib/api-error';
+
+const ${queryCamel} = ${containerName}.create${queryPascal}Controller();
+
+export async function GET(
+  request: Request,
+  context: {params: Promise<{id: string}>},
+): Promise<Response> {
+  const {id} = await context.params;
+
+  try {
+    return await ${queryCamel}(request, id);
+  } catch (error) {
+    return internalErrorResponse('GET ${d.route}/{id}', error);
+  }
+}
+`;
+
   const nextItemRouteCode = `import {${containerName}} from '@sessioflow/${d.mod}/container';
 import {internalErrorResponse} from '../../../../../lib/api-error';
 
@@ -926,6 +946,7 @@ describe('${d.entity}', () => {
       drizzleRepoCode,
       containerCode,
       nextCollectionRouteCode,
+      nextItemGetOnlyRouteCode,
       nextItemRouteCode,
       getControllerCode,
       patchControllerCode,
@@ -1090,10 +1111,16 @@ function generateTrainDomainExamples(d) {
       `\`${containerPath}\`:\n\`\`\`typescript\n${m.containerCode.trimEnd()}\n\`\`\``,
     ),
 
-    // 11. Next.js App Router bridge
+    // 11. Next.js App Router bridge (strictly matching requested HTTP verbs)
     makeMessage(
-      `Create the Next.js App Router API route handlers (\`${nextRoutePath}\` and \`${nextItemRoutePath}\`) wired to \`${m.containerName}\`.`,
-      `\`${nextRoutePath}\`:\n\`\`\`typescript\n${m.nextCollectionRouteCode.trimEnd()}\n\`\`\`\n\n\`${nextItemRoutePath}\`:\n\`\`\`typescript\n${m.nextItemRouteCode.trimEnd()}\n\`\`\``,
+      `Create the Next.js App Router POST and GET-by-id route handlers (\`${nextRoutePath}\` and \`${nextItemRoutePath}\`) wired to \`${m.containerName}\`.`,
+      `\`${nextRoutePath}\`:\n\`\`\`typescript\n${m.nextCollectionRouteCode.trimEnd()}\n\`\`\`\n\n\`${nextItemRoutePath}\`:\n\`\`\`typescript\n${m.nextItemGetOnlyRouteCode.trimEnd()}\n\`\`\``,
+    ),
+
+    // 11b. Next.js App Router full CRUD item handler (only when GET, PATCH, DELETE are requested)
+    makeMessage(
+      `Create the Next.js App Router \`GET\`, \`PATCH\`, and \`DELETE\` handlers at \`${nextItemRoutePath}\` wired to \`${m.containerName}\`.`,
+      `\`${nextItemRoutePath}\`:\n\`\`\`typescript\n${m.nextItemRouteCode.trimEnd()}\n\`\`\``,
     ),
 
     // 12. Vitest unit test
@@ -1143,6 +1170,24 @@ function generateTrainDomainExamples(d) {
       `Fix the TypeScript and convention errors in \`${ctrlPath}\`:\n\`\`\`typescript\nimport {DomainInvariantError} from '@sessioflow/shared-domain/exceptions';\nimport {${m.actionPascal}Command} from '../../../application/commands/${d.action}/${d.action}.command.js';\n// ...\nexport async function ${toCamel(d.action)}Controller(handler, getAuthUser): Promise(async (request: Request) => Promise<Response>) {\n  // catch (error) { if (error instanceof DomainInvariantError) ... }\n}\n\`\`\``,
       `Fix the 3 issues: (1) use \`../../application/...\` (2 levels up from \`interfaces/http/\`), (2) return \`Promise<Response>\` directly from \`${toCamel(d.action)}Controller(request, handler, getAuthUser)\` (valid TS), and (3) catch \`DomainError\` (base class) instead of \`DomainInvariantError\`:\n\`\`\`typescript\n${files[ctrlPath].trimEnd()}\n\`\`\``,
     ),
+
+    // 20. Fix: no zod inside domain/
+    makeMessage(
+      `Review \`${dateRangePath}\`: it currently imports \`{z} from 'zod'\` to validate \`start\` and \`end\`. Is that allowed in SessioFlow's domain layer?`,
+      `No. Keep \`domain/\` pure TypeScript with zero \`zod\` imports (Zod schemas belong in \`@sessioflow/api-definitions\`). Validate invariants directly in \`create()\` using \`DomainInvariantError\`, and include \`get value()\` and \`equals()\`:\n\`\`\`typescript\n${files[dateRangePath].trimEnd()}\n\`\`\``,
+    ),
+
+    // 21. Fix: no domain import or toDomain() in Command DTO
+    makeMessage(
+      `\`tests/unit/architecture/ddd-boundaries.test.ts\` failed on \`${cmdPath}\` because it imports \`${d.vo}\` from \`../../../domain/value-objects/${m.voKebab}.js\` and defines \`toDomain()\`. How should \`${m.actionPascal}Command\` look?`,
+      `Command DTOs in \`application/commands/\` must be primitive-only and NEVER import from \`domain/\`. Construct Value Objects inside \`${m.actionPascal}CommandHandler.execute()\`, not on the command:\n\`\`\`typescript\n${m.commandCode.trimEnd()}\n\`\`\``,
+    ),
+
+    // 22. Fix: controller must not import container.ts
+    makeMessage(
+      `Review \`${ctrlPath}\`: it currently imports \`${m.containerName}\` from \`../../container.js\` and calls \`${m.containerName}.create${m.actionPascal}Controller()\`. Is that right?`,
+      `No, that inverts the dependency. \`container.ts\` is the composition root that imports \`${toCamel(d.action)}Controller\` and injects the handler—never import \`container\` inside \`interfaces/http/*.controller.ts\`:\n\`\`\`typescript\n${files[ctrlPath].trimEnd()}\n\`\`\``,
+    ),
   ];
 }
 
@@ -1191,6 +1236,10 @@ function generateEvalDomainExamples(d) {
     makeMessage(
       `Write the HTTP controller \`${ctrlPath}\` following SessioFlow's Zod + \`GetAuthUser\` + \`DomainError\` mapping conventions.`,
       `\`${ctrlPath}\`:\n\`\`\`typescript\n${files[ctrlPath].trimEnd()}\n\`\`\``,
+    ),
+    makeMessage(
+      `Wire the Next.js App Router \`GET\` handler at \`${nextItemRoutePath}\` to \`${m.containerName}\` (only GET).`,
+      `\`${nextItemRoutePath}\`:\n\`\`\`typescript\n${m.nextItemGetOnlyRouteCode.trimEnd()}\n\`\`\``,
     ),
     makeMessage(
       `Wire the Next.js App Router \`GET\`, \`PATCH\`, and \`DELETE\` handlers at \`${nextItemRoutePath}\` to \`${m.containerName}\`.`,
