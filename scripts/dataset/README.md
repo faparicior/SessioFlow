@@ -10,11 +10,14 @@ node scripts/dataset/generate-dataset.mjs
 
 # Oracle-verified generation (runs scripts/check-architecture.mjs on every synthetic module)
 node scripts/dataset/generate-dataset.mjs --verify
+
+# Parallel thinking-aligned dataset (writes <think>...</think> traces to scripts/dataset/out-thinking/)
+node scripts/dataset/generate-dataset.mjs --thinking --verify
 ```
 
 Outputs:
-- `scripts/dataset/out/train.jsonl` — training examples (conference baseline + 10 synthetic domains)
-- `scripts/dataset/out/eval.jsonl` — held-out domains (`billing`, `schedule`) to test generalization
+- `scripts/dataset/out/train.jsonl` & `eval.jsonl` — direct coder dataset (for inference with thinking OFF)
+- `scripts/dataset/out-thinking/train.jsonl` & `eval.jsonl` — thinking-aligned dataset (for inference with thinking ON)
 
 ## Train with Unsloth (Qwen 3.5 4B)
 

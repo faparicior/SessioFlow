@@ -24,7 +24,8 @@ import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from 'node:f
 import {join, relative} from 'node:path';
 
 const ROOT = process.cwd();
-const OUT_DIR = join(ROOT, 'scripts/dataset/out');
+const THINKING = process.argv.includes('--thinking');
+const OUT_DIR = join(ROOT, THINKING ? 'scripts/dataset/out-thinking' : 'scripts/dataset/out');
 const VERIFY = process.argv.includes('--verify');
 
 const MINIMAL_SYSTEM_PROMPT =
@@ -91,13 +92,49 @@ function toCamel(kebab) {
 
 let sampleCounter = 0;
 
+function buildThinkingTrace(user) {
+  const u = user.toLowerCase();
+  const checks = [];
+
+  if (u.includes('ddd-boundaries') || u.includes('relax') || u.includes('tests/unit/architecture')) {
+    checks.push('Architecture tests in `tests/unit/architecture/` are immutable guardrails: NEVER relax or modify them; fix the application/domain/interface code instead.');
+  }
+  if (u.includes('route.ts') || u.includes('app router')) {
+    checks.push('Next.js App Router `route.ts` must stay a thin delegate: resolve controller from `@sessioflow/<mod>/container`, import `internalErrorResponse` via relative `lib/api-error` (for `xo`), and implement ONLY the requested HTTP verbs (no speculative PATCH/DELETE).');
+  }
+  if (u.includes('controller')) {
+    checks.push('HTTP controller in `interfaces/http/*.controller.ts` must NEVER import from `domain/` or `container.ts`. Import DTOs from `../../application/...`, validate with Zod from `@sessioflow/api-definitions`, resolve `getAuthUser`, and catch `DomainError` (base class) via `mapDomainErrorToResponse`.');
+  }
+  if (u.includes('value object') || u.includes('vo') || u.includes('date-range') || u.includes('daterange') || u.includes('check:arch')) {
+    checks.push('Value Objects live in `domain/value-objects/` in pure TypeScript (no `zod` in `domain/`), with `private constructor`, static `create()`/`fromData()`, `get value()`, `equals(other)`, and `DomainInvariantError`.');
+  }
+  if (u.includes('aggregate') || u.includes('entity')) {
+    checks.push('Aggregate Root in `domain/` uses Value Objects (no raw primitives) in `create()` and `fromData()`, records Domain Events internally, and flushes them via `pullDomainEvents()`.');
+  }
+  if (u.includes('event')) {
+    checks.push('Domain Events live in `domain/events/`, end with `Event`, implement `DomainEvent` (`type`, `timestamp`), and implement `toJSON()` for Outbox persistence.');
+  }
+  if (u.includes('command') || u.includes('handler') || u.includes('response')) {
+    checks.push('CQRS DTOs (`*.command.ts`, `*.query.ts`, `*.response.ts`) must not import from `domain/` (except `Response.from(entity)` type). Handlers are pure (no `try/catch` for domain errors) and persist via `TransactionRunner` + `OutboxRepository`.');
+  }
+  if (u.includes('repository') || u.includes('drizzle')) {
+    checks.push('Infrastructure repositories in `infrastructure/database/` reconstitute domain aggregates via `.fromData(...)` on reads without running creation-time validations.');
+  }
+  if (checks.length === 0) {
+    checks.push('Follow SessioFlow DDD layer boundaries (`domain` -> `application` -> `infrastructure`/`interfaces`), `check:arch` invariants, and `xo`/Prettier rules.');
+  }
+
+  return `<think>\nChecking SessioFlow architecture rules:\n- ${checks.join('\n- ')}\n</think>\n\n`;
+}
+
 function makeMessage(user, assistant) {
   const systemPrompt = sampleCounter++ % 5 === 0 ? DETAILED_SYSTEM_PROMPT : MINIMAL_SYSTEM_PROMPT;
+  const finalAssistant = THINKING ? `${buildThinkingTrace(user)}${assistant}` : assistant;
   return {
     messages: [
       {role: 'system', content: systemPrompt},
       {role: 'user', content: user},
-      {role: 'assistant', content: assistant},
+      {role: 'assistant', content: finalAssistant},
     ],
   };
 }
