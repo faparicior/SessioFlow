@@ -124,7 +124,19 @@ function buildThinkingTrace(user) {
     checks.push('Follow SessioFlow DDD layer boundaries (`domain` -> `application` -> `infrastructure`/`interfaces`), `check:arch` invariants, and `xo`/Prettier rules.');
   }
 
-  return `<think>\nChecking SessioFlow architecture rules:\n- ${checks.join('\n- ')}\n</think>\n\n`;
+  const reqs = [];
+  if (u.includes('utc') || u.includes('iso') || u.includes('timezone')) {
+    reqs.push('Parse/normalize timestamps in UTC (require explicit Z or ±HH:MM offset when parsing ISO strings) and expose time/ISO helpers.');
+  }
+  if (u.includes('time') || u.includes('duration') || u.includes('minutes')) {
+    reqs.push('Support time-level precision and expose `durationMinutes()` without breaking VO immutability.');
+  }
+  if (u.includes('patch') && !u.includes('delete')) {
+    reqs.push('Add only the requested PATCH handler while preserving existing handlers and thin-delegate rules.');
+  }
+
+  const reqLine = reqs.length > 0 ? `\n- User requirements: ${reqs.join(' ')}` : '';
+  return `<think>\nChecking SessioFlow architecture rules:\n- ${checks.join('\n- ')}${reqLine}\n</think>\n\n`;
 }
 
 function makeMessage(user, assistant) {
@@ -137,6 +149,17 @@ function makeMessage(user, assistant) {
       {role: 'assistant', content: finalAssistant},
     ],
   };
+}
+
+function makeMultiTurnMessage(turns) {
+  const systemPrompt = sampleCounter++ % 5 === 0 ? DETAILED_SYSTEM_PROMPT : MINIMAL_SYSTEM_PROMPT;
+  const messages = [{role: 'system', content: systemPrompt}];
+  for (const turn of turns) {
+    messages.push({role: 'user', content: turn.user});
+    const assistant = THINKING ? `${buildThinkingTrace(turn.user)}${turn.assistant}` : turn.assistant;
+    messages.push({role: 'assistant', content: assistant});
+  }
+  return {messages};
 }
 
 function buildFilesForDomain(d) {
@@ -359,6 +382,79 @@ export class ${dateRangeClass} {
 
   public get end(): Date {
     return this._value.end;
+  }
+
+  public equals(other: ${dateRangeClass}): boolean {
+    if (!other || !(other instanceof ${dateRangeClass})) return false;
+    return (
+      this._value.start.getTime() === other._value.start.getTime() &&
+      this._value.end.getTime() === other._value.end.getTime()
+    );
+  }
+}
+`;
+
+  const utcDateRangeVoCode = `import {DomainInvariantError} from '@sessioflow/shared-domain/exceptions';
+
+const ISO_WITH_TZ_REGEX = /(?:Z|[+-]\\d{2}:\\d{2})$/;
+
+export type ${dateRangeClass}Value = {
+  readonly start: Date;
+  readonly end: Date;
+};
+
+export class ${dateRangeClass} {
+  private constructor(private readonly _value: ${dateRangeClass}Value) {}
+
+  public static create(startIso: string, endIso: string): ${dateRangeClass} {
+    const start = ${dateRangeClass}.parseUtcIso(startIso, 'start');
+    const end = ${dateRangeClass}.parseUtcIso(endIso, 'end');
+    if (end.getTime() <= start.getTime()) {
+      throw new DomainInvariantError('INVALID_DATE_RANGE', '${dateRangeClass} end must be after start');
+    }
+    return new ${dateRangeClass}({start, end});
+  }
+
+  public static fromData(start: Date, end: Date): ${dateRangeClass} {
+    return new ${dateRangeClass}({start: new Date(start.getTime()), end: new Date(end.getTime())});
+  }
+
+  private static parseUtcIso(raw: string, field: string): Date {
+    const trimmed = raw.trim();
+    if (!ISO_WITH_TZ_REGEX.test(trimmed)) {
+      throw new DomainInvariantError(
+        'MISSING_TIMEZONE_OFFSET',
+        \`${dateRangeClass} \${field} must include explicit UTC offset (Z or ±HH:MM)\`,
+      );
+    }
+    const parsed = new Date(trimmed);
+    if (Number.isNaN(parsed.getTime())) {
+      throw new DomainInvariantError('INVALID_DATE_RANGE', \`${dateRangeClass} \${field} is not a valid ISO timestamp\`);
+    }
+    return new Date(parsed.getTime());
+  }
+
+  public get value(): ${dateRangeClass}Value {
+    return this._value;
+  }
+
+  public get start(): Date {
+    return this._value.start;
+  }
+
+  public get end(): Date {
+    return this._value.end;
+  }
+
+  public durationMinutes(): number {
+    return Math.round((this._value.end.getTime() - this._value.start.getTime()) / 60_000);
+  }
+
+  public toISOString(): {readonly start: string; readonly end: string} {
+    return {
+      start: this._value.start.toISOString(),
+      end: this._value.end.toISOString(),
+    };
   }
 
   public equals(other: ${dateRangeClass}): boolean {
@@ -985,6 +1081,7 @@ describe('${d.entity}', () => {
       nextCollectionRouteCode,
       nextItemGetOnlyRouteCode,
       nextItemRouteCode,
+      utcDateRangeVoCode,
       getControllerCode,
       patchControllerCode,
       deleteControllerCode,
@@ -1225,6 +1322,18 @@ function generateTrainDomainExamples(d) {
       `Review \`${ctrlPath}\`: it currently imports \`${m.containerName}\` from \`../../container.js\` and calls \`${m.containerName}.create${m.actionPascal}Controller()\`. Is that right?`,
       `No, that inverts the dependency. \`container.ts\` is the composition root that imports \`${toCamel(d.action)}Controller\` and injects the handler—never import \`container\` inside \`interfaces/http/*.controller.ts\`:\n\`\`\`typescript\n${files[ctrlPath].trimEnd()}\n\`\`\``,
     ),
+
+    // 23. Multi-turn refinement: adapt DateRange to UTC ISO + time precision while keeping VO rules
+    makeMultiTurnMessage([
+      {
+        user: `Create a date-range Value Object \`${m.dateRangeClass}\` in \`${dateRangePath}\` validating that \`end\` is after \`start\`, with \`get value()\`, \`start\`, \`end\`, and \`equals()\`.`,
+        assistant: `\`${dateRangePath}\`:\n\`\`\`typescript\n${files[dateRangePath].trimEnd()}\n\`\`\``,
+      },
+      {
+        user: `Now adapt \`${m.dateRangeClass}\` to handle UTC conversion and time precision: accept ISO-8601 strings with explicit timezone offset (Z or ±HH:MM), expose \`durationMinutes()\` and \`toISOString()\`, and keep all SessioFlow VO rules.`,
+        assistant: `\`${dateRangePath}\`:\n\`\`\`typescript\n${m.utcDateRangeVoCode.trimEnd()}\n\`\`\``,
+      },
+    ]),
   ];
 }
 
@@ -1253,6 +1362,10 @@ function generateEvalDomainExamples(d) {
     makeMessage(
       `Create a date-range Value Object \`${m.dateRangeClass}\` in \`${dateRangePath}\` with \`get value()\`, \`start\`, \`end\`, and \`equals()\`.`,
       `\`${dateRangePath}\`:\n\`\`\`typescript\n${files[dateRangePath].trimEnd()}\n\`\`\``,
+    ),
+    makeMessage(
+      `Create \`${m.dateRangeClass}\` in \`${dateRangePath}\` handling UTC ISO-8601 string parsing (rejecting missing Z/offset), time precision (\`durationMinutes()\`), and \`toISOString()\` while preserving SessioFlow VO conventions.`,
+      `\`${dateRangePath}\`:\n\`\`\`typescript\n${m.utcDateRangeVoCode.trimEnd()}\n\`\`\``,
     ),
     makeMessage(
       `Write the \`${d.entity}\` Aggregate Root (\`${aggPath}\`) with \`create()\`, \`fromData()\`, state transition validation, and \`pullDomainEvents()\`.`,
